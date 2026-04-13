@@ -1,0 +1,21 @@
+# Core dependencies (compatible with Python 3.9)
+requests>=2.31.0,<3.0.0
+beautifulsoup4>=4.12.0,<5.0.0
+pandas>=2.0.0,<2.1.0
+numpy>=1.26.0,<2.0.0
+pyyaml>=6.0,<7.0.0
+python-dotenv>=1.0.0,<2.0.0
+emoji>=2.0.0,<3.0.0
+pyarrow>=14.0.0,<15.0.0
+
+# Optional but recommended
+pydantic>=2.0.0,<2.1.0  # For data validation (optional)
+lxml>=4.9.0,<5.0.0  # Faster HTML parsing
+tqdm>=4.65.0,<5.0.0  # Progress bars
+
+# Development dependencies (optional, compatible with Python 3.9)
+pytest>=7.4.0,<8.0.0
+pytest-cov>=4.1.0,<5.0.0
+black>=22.0.0,<23.0.0  # Black 23+ requires Python 3.10+
+isort>=5.12.0,<6.0.0
+mypy>=1.5.0,<1.6.0

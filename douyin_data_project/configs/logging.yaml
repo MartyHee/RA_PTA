@@ -1,0 +1,86 @@
+# Logging configuration
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  detailed:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  simple:
+    format: "%(levelname)s - %(message)s"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: "./logs/douyin_data_project.log"
+    maxBytes: 10485760  # 10 MB
+    backupCount: 5
+    encoding: utf-8
+
+  error_file:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: "./logs/errors.log"
+    maxBytes: 10485760  # 10 MB
+    backupCount: 5
+    encoding: utf-8
+
+  crawler_file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: "./logs/crawler.log"
+    maxBytes: 10485760  # 10 MB
+    backupCount: 3
+    encoding: utf-8
+
+  processing_file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: "./logs/processing.log"
+    maxBytes: 10485760  # 10 MB
+    backupCount: 3
+    encoding: utf-8
+
+loggers:
+  crawler:
+    level: INFO
+    handlers: [console, file, crawler_file]
+    propagate: false
+
+  processing:
+    level: INFO
+    handlers: [console, file, processing_file]
+    propagate: false
+
+  analysis:
+    level: INFO
+    handlers: [console, file]
+    propagate: false
+
+  api:
+    level: INFO
+    handlers: [console, file]
+    propagate: false
+
+  utils:
+    level: INFO
+    handlers: [console, file]
+    propagate: false
+
+root:
+  level: INFO
+  handlers: [console, file, error_file]

@@ -1,0 +1,342 @@
+# Field definitions and parsing rules
+# Based on Data_description.md
+
+# Raw web video data schema (raw_web_video_data)
+raw_web_video_data:
+  fields:
+    crawl_id:
+      type: "string"
+      required: true
+      description: "本次抓取任务ID"
+      example: "crawl_20250413_001"
+
+    source_entry:
+      type: "string"
+      required: true
+      description: "数据入口类型"
+      allowed_values: ["search", "topic", "rank", "manual_url"]
+
+    page_url:
+      type: "string"
+      required: true
+      description: "视频页面URL"
+      validation: "url"
+
+    raw_html_path:
+      type: "string"
+      required: false
+      description: "原始HTML保存路径"
+
+    raw_json_blob:
+      type: "string"
+      required: false
+      description: "从页面脚本中解析出的原始JSON片段"
+
+    http_status:
+      type: "integer"
+      required: true
+      description: "请求状态码"
+      example: 200
+
+    crawl_time:
+      type: "timestamp"
+      required: true
+      description: "抓取时间"
+      format: "%Y-%m-%d %H:%M:%S"
+
+    parse_status:
+      type: "string"
+      required: true
+      description: "解析状态"
+      allowed_values: ["success", "partial_success", "fail"]
+
+    parse_error_msg:
+      type: "string"
+      required: false
+      description: "解析异常信息"
+
+# Web video metadata schema (web_video_meta)
+web_video_meta:
+  fields:
+    video_id:
+      type: "string"
+      required: true
+      description: "视频唯一标识"
+      extraction:
+        selector: "//script[contains(text(), 'video_id')]"
+        regex: "video_id[\"']?:[\"']?([^\"',]+)"
+
+    page_url:
+      type: "string"
+      required: true
+      description: "视频页面URL"
+
+    author_id:
+      type: "string"
+      required: false
+      description: "作者ID，若页面可提取"
+
+    author_name:
+      type: "string"
+      required: false
+      description: "作者昵称"
+      extraction:
+        selector: "//a[contains(@href, '/user/')]"
+        attr: "text"
+
+    author_profile_url:
+      type: "string"
+      required: false
+      description: "作者主页URL"
+      extraction:
+        selector: "//a[contains(@href, '/user/')]"
+        attr: "href"
+
+    desc_text:
+      type: "string"
+      required: false
+      description: "视频文案/标题文本"
+      extraction:
+        selector: "//div[contains(@class, 'desc')]"
+        attr: "text"
+
+    publish_time_raw:
+      type: "string"
+      required: false
+      description: "页面显示的原始发布时间文本"
+      extraction:
+        selector: "//span[contains(@class, 'time')]"
+        attr: "text"
+
+    publish_time_std:
+      type: "timestamp"
+      required: false
+      description: "标准化后的发布时间"
+      format: "%Y-%m-%d %H:%M:%S"
+
+    like_count_raw:
+      type: "string"
+      required: false
+      description: "页面原始点赞数文本，如 '1.2w'"
+      extraction:
+        selector: "//span[contains(@class, 'like')]"
+        attr: "text"
+
+    comment_count_raw:
+      type: "string"
+      required: false
+      description: "页面原始评论数文本"
+      extraction:
+        selector: "//span[contains(@class, 'comment')]"
+        attr: "text"
+
+    share_count_raw:
+      type: "string"
+      required: false
+      description: "页面原始分享数文本"
+      extraction:
+        selector: "//span[contains(@class, 'share')]"
+        attr: "text"
+
+    like_count:
+      type: "bigint"
+      required: false
+      description: "归一化后的点赞数"
+      normalization:
+        - pattern: "([0-9.]+)w"
+          multiplier: 10000
+        - pattern: "([0-9.]+)k"
+          multiplier: 1000
+
+    comment_count:
+      type: "bigint"
+      required: false
+      description: "归一化后的评论数"
+
+    share_count:
+      type: "bigint"
+      required: false
+      description: "归一化后的分享数"
+
+    collect_count:
+      type: "bigint"
+      required: false
+      description: "收藏数，网页端不稳定，仅作为可选字段"
+
+    hashtag_list:
+      type: "array<string>"
+      required: false
+      description: "从文案中抽取的 #话题 列表"
+      extraction:
+        regex: "#([^#\\s]+)"
+
+    hashtag_count:
+      type: "integer"
+      required: true
+      description: "话题数量，无则为0"
+      default: 0
+
+    cover_url:
+      type: "string"
+      required: false
+      description: "封面图片链接"
+      extraction:
+        selector: "//img[contains(@class, 'cover')]"
+        attr: "src"
+
+    music_name:
+      type: "string"
+      required: false
+      description: "关联音乐名称，若页面可提取"
+
+    duration_sec:
+      type: "integer"
+      required: false
+      description: "视频时长（秒），若页面可提取"
+
+    source_entry:
+      type: "string"
+      required: true
+      description: "采样来源"
+
+    crawl_time:
+      type: "timestamp"
+      required: true
+      description: "抓取时间"
+
+# Processed video data schema (processed_video_data)
+processed_video_data:
+  fields:
+    video_id:
+      type: "string"
+      required: true
+
+    author_id:
+      type: "string"
+      required: false
+
+    desc_clean:
+      type: "string"
+      required: false
+      description: "清洗后的文案文本"
+
+    text_length:
+      type: "integer"
+      required: true
+      description: "文案长度"
+
+    publish_date:
+      type: "date"
+      required: false
+      description: "发布日期"
+
+    publish_hour:
+      type: "integer"
+      required: false
+      description: "发布时间小时"
+      range: [0, 23]
+
+    publish_weekday:
+      type: "integer"
+      required: false
+      description: "星期几"
+      range: [0, 6]
+
+    is_weekend:
+      type: "integer"
+      required: false
+      description: "是否周末"
+      allowed_values: [0, 1]
+
+    hashtag_list:
+      type: "array<string>"
+      required: false
+
+    hashtag_count:
+      type: "integer"
+      required: true
+
+    like_count:
+      type: "bigint"
+      required: false
+
+    comment_count:
+      type: "bigint"
+      required: false
+
+    share_count:
+      type: "bigint"
+      required: false
+
+    collect_count:
+      type: "bigint"
+      required: false
+
+    engagement_score:
+      type: "float"
+      required: false
+      description: "互动分数"
+      formula: "like_count + 2*comment_count + 3*share_count"
+
+    source_entry:
+      type: "string"
+      required: true
+
+    crawl_date:
+      type: "date"
+      required: true
+
+    data_version:
+      type: "string"
+      required: true
+
+# Field priority and source mapping
+field_priority:
+  # For fields available from multiple sources, prefer API over web
+  play_count: "api"
+  digg_count: "api"
+  comment_count: "api"
+  share_count: "api"
+  author_info: "api"
+
+# Field availability classification (from Data_description.md)
+availability:
+  web_high:
+    - video_id
+    - page_url
+    - desc_text
+    - publish_time_raw
+    - publish_time_std
+    - like_count
+    - comment_count
+    - share_count
+    - source_entry
+    - crawl_time
+
+  web_medium:
+    - author_id
+    - author_name
+    - author_profile_url
+    - cover_url
+    - music_name
+    - duration_sec
+    - collect_count
+    - hashtag_list
+
+  web_low:
+    - view_count
+    - video_url
+    - author_follower_count
+    - verification
+    - signature
+    - like_rate
+    - comment_rate
+    - share_rate
+    - author_follower_level
+
+  api_suitable:
+    - play_count
+    - digg_count
+    - comment_count
+    - share_count
+    - user_profile_info

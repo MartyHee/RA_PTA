@@ -1,0 +1,56 @@
+# Data source definitions
+sources:
+  # Web crawler sources
+  web:
+    # Entry types as defined in Data_description.md
+    entry_types:
+      search:
+        enabled: true
+        description: "搜索结果页"
+        base_url: "https://www.douyin.com/search/"
+        params:
+          keyword: ""
+          type: "video"
+          publish_time: ""
+        sample_keywords: ["美食", "旅游", "科技", "健身", "搞笑"]
+
+      topic:
+        enabled: true
+        description: "话题页"
+        base_url: "https://www.douyin.com/tag/"
+        params: {}
+        sample_hashtags: ["美食", "旅游", "科技", "健身", "搞笑"]
+
+      rank:
+        enabled: false  # 榜单页可能反爬严格，默认关闭
+        description: "榜单页"
+        base_url: "https://www.douyin.com/rank/"
+        params: {}
+
+      manual_url:
+        enabled: true
+        description: "手动输入URL"
+        base_url: ""
+        params: {}
+
+    # Sample URLs for testing and development
+    sample_urls:
+      - "https://www.douyin.com/video/1234567890123456789"
+      - "https://www.douyin.com/video/9876543210987654321"
+      - "https://www.douyin.com/video/1111111111111111111"
+
+    # Mock data configuration for development
+    mock:
+      enabled: true
+      html_samples_dir: "./data/samples/html"
+      json_samples_dir: "./data/samples/json"
+      use_mock_when_no_network: true
+
+  # API sources (future implementation)
+  api:
+    enabled: false
+    description: "抖音开放平台API"
+    required_scopes: ["video.data", "user_info"]
+    rate_limit:
+      requests_per_minute: 60
+      burst_limit: 10
