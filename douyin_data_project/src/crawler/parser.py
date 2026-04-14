@@ -259,12 +259,16 @@ class DouyinParser:
             r'/video/([^/?]+)',
             r'video/([^/?]+)',
             r'item_id=([^&]+)',
-            r'id=([^&]+)'
+            r'id=([^&]+)',
+            r'modal_id=([^&]+)'  # Support for jingxuan pages
         ]
         for pattern in patterns:
             match = re.search(pattern, url)
             if match:
-                return match.group(1)
+                video_id = match.group(1)
+                logger.debug(f"Extracted video_id '{video_id}' from URL using pattern '{pattern}'")
+                return video_id
+        logger.debug(f"No video_id found in URL: {url}")
         return None
 
     def _normalize_counts(self, data: Dict) -> Dict[str, Any]:

@@ -1,4 +1,4 @@
 video_id,author_id,desc_clean,text_length,publish_date,publish_hour,publish_weekday,is_weekend,hashtag_list,hashtag_count,like_count,comment_count,share_count,collect_count,engagement_score,source_entry,crawl_date,data_version
-video_001,author_001,测试视频描述 美食 旅行,12,2023-10-01,12,6,1,"['美食', '旅行']",2,12000,500,100,50,13300.0,search,2024-04-13,v0.1
-video_002,author_002,另一个测试视频 科技,10,2023-10-02,15,0,0,['科技'],1,5000,200,50,30,5550.0,topic,2024-04-13,v0.1
-video_003,author_003,没有标签的视频,7,2023-10-03,9,1,0,[],0,300,30,10,5,390.0,manual_url,2024-04-13,v0.1
+1234567890123456789,author_mock_001,这是一个测试视频描述 美食 旅行,16,2023-01-01,12,6,1,['美食旅行'],1,12000,450,120,56,13260.0,manual_url,2026-04-14,v0.1
+9876543210987654321,author_mock_001,这是一个测试视频描述 美食 旅行,16,2023-01-01,12,6,1,['美食旅行'],1,12000,450,120,56,13260.0,manual_url,2026-04-14,v0.1
+1111111111111111111,author_mock_001,这是一个测试视频描述 美食 旅行,16,2023-01-01,12,6,1,['美食旅行'],1,12000,450,120,56,13260.0,manual_url,2026-04-14,v0.1

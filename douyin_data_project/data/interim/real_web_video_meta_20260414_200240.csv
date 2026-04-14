@@ -1,0 +1,2 @@
+video_id,page_url,author_id,author_name,author_profile_url,desc_text,publish_time_raw,publish_time_std,like_count_raw,comment_count_raw,share_count_raw,like_count,comment_count,share_count,collect_count,hashtag_list,hashtag_count,cover_url,music_name,duration_sec,source_entry,crawl_time
+1234567890123456789,https://www.douyin.com/video/1234567890123456789,author123,测试用户,,这是一个测试视频描述 #美食 #旅行,,2023-01-01 08:00:00,12000,450,120,12000,450,120,56,"['美食', '旅行']",2,https://example.com/cover.jpg,测试音乐,15000,manual_url,2026-04-14 20:02:40.314245

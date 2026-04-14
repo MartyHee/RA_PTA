@@ -34,14 +34,23 @@ sources:
         params: {}
 
     # Sample URLs for testing and development
+    # For mock mode, these URLs are not fetched; for real crawl, they will be actually requested
+    # Replace with real Douyin video URLs for testing real crawl mode
     sample_urls:
       - "https://www.douyin.com/video/1234567890123456789"
       - "https://www.douyin.com/video/9876543210987654321"
       - "https://www.douyin.com/video/1111111111111111111"
 
+    # Real crawl settings
+    real_crawl:
+      enabled: true
+      max_urls_per_run: 5
+      save_raw_html: true
+      output_prefix: "real_"
+
     # Mock data configuration for development
     mock:
-      enabled: true
+      enabled: false  # Set to false for real crawl; use --mock flag to enable mock mode
       html_samples_dir: "./data/samples/html"
       json_samples_dir: "./data/samples/json"
       use_mock_when_no_network: true

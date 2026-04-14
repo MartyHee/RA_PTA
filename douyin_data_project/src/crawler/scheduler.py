@@ -16,7 +16,7 @@ from .parser import DouyinParser
 from ..schemas.tables import RawWebVideoData, WebVideoMeta
 from ..utils.config_loader import load_config, get_config
 from ..utils.logger import get_logger
-from ..utils.io_utils import write_jsonl, write_parquet
+from ..utils.io_utils import write_jsonl, write_parquet, write_csv
 
 logger = get_logger(__name__)
 
@@ -82,6 +82,20 @@ class CrawlScheduler:
         self.output_dir = Path(get_config('settings.paths.raw_data', './data/raw'))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
+        # Interim data directory for standardized output
+        self.interim_dir = Path(get_config('settings.paths.interim_data', './data/interim'))
+        self.interim_dir.mkdir(parents=True, exist_ok=True)
+
+        # Generate run ID and output prefix
+        self.run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
+        if self.use_mock:
+            self.output_prefix = "mock_"
+            self.file_suffix = self.run_id
+        else:
+            # Get prefix from config, default to "real_"
+            self.output_prefix = get_config('sources.web.real_crawl.output_prefix', 'real_')
+            self.file_suffix = self.run_id
+
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
 
@@ -141,6 +155,13 @@ class CrawlScheduler:
                         self.failed_tasks.append(task)
                     continue
 
+                # Log crawl evidence
+                logger.info(f"Crawl evidence - URL: {task.url}, "
+                           f"HTTP Status: {response.status_code}, "
+                           f"Final URL: {response.url}, "
+                           f"Content length: {len(response.text)} chars, "
+                           f"Content-Encoding: {response.headers.get('Content-Encoding', 'none')}")
+
                 # Parse
                 parsed_data = self.parser.parse_html(
                     html=response.text,
@@ -166,6 +187,9 @@ class CrawlScheduler:
 
                 if meta_record:
                     self._save_metadata(meta_record)
+
+                # Log parsing summary for evidence (regardless of meta_record creation)
+                self._log_parsing_summary(task.url, parsed_data, meta_record)
 
                 task.mark_completed()
                 with self._lock:
@@ -206,6 +230,7 @@ class CrawlScheduler:
                 html_file = html_dir / f"{crawl_id}.html"
                 html_file.write_text(response.text, encoding='utf-8')
                 raw_html_path = html_file
+                logger.info(f"Raw HTML saved to: {html_file}")
 
             return RawWebVideoData(
                 crawl_id=crawl_id,
@@ -229,8 +254,10 @@ class CrawlScheduler:
             raw_data: RawWebVideoData object.
         """
         try:
-            raw_file = self.output_dir / "raw_web_video_data.jsonl"
+            raw_filename = f"{self.output_prefix}crawl_{self.file_suffix}.jsonl"
+            raw_file = self.output_dir / raw_filename
             write_jsonl(raw_file, [raw_data.dict()], mode='a')
+            logger.debug(f"Raw data saved to {raw_file}")
         except Exception as e:
             logger.error(f"Failed to save raw data: {e}")
 
@@ -241,8 +268,16 @@ class CrawlScheduler:
             metadata: WebVideoMeta object.
         """
         try:
-            meta_file = self.output_dir / "web_video_meta.parquet"
-            write_parquet(meta_file, [metadata.dict()], mode='a')
+            # Save to interim directory as CSV (primary output for real crawl)
+            meta_filename = f"{self.output_prefix}web_video_meta_{self.file_suffix}.csv"
+            meta_file = self.interim_dir / meta_filename
+            write_csv(meta_file, [metadata.dict()], mode='a', index=False)
+            logger.debug(f"Metadata saved to {meta_file}")
+
+            # Also save as Parquet for compatibility (optional)
+            # Uncomment if needed
+            # parquet_file = self.interim_dir / f"{self.output_prefix}web_video_meta_{self.file_suffix}.parquet"
+            # write_parquet(parquet_file, [metadata.dict()], mode='a')
         except Exception as e:
             logger.error(f"Failed to save metadata: {e}")
 
@@ -283,6 +318,38 @@ class CrawlScheduler:
         """Stop the scheduler."""
         self._stop_event.set()
         logger.info("Scheduler stopped")
+
+    def _log_parsing_summary(self, url: str, parsed_data: Dict, meta_record):
+        """Log parsing summary for evidence.
+
+        Args:
+            url: Page URL.
+            parsed_data: Parsed data dictionary.
+            meta_record: WebVideoMeta object.
+        """
+        # Fields requested by user for evidence
+        evidence_fields = [
+            'video_id', 'page_url', 'desc_text', 'author_name',
+            'publish_time_raw', 'like_count_raw', 'comment_count_raw',
+            'share_count_raw', 'hashtag_list', 'cover_url'
+        ]
+
+        summary_lines = [f"Parsing summary for {url}:"]
+        for field in evidence_fields:
+            value = parsed_data.get(field)
+            if value is None or value == '':
+                summary_lines.append(f"  {field}: null")
+            else:
+                # Truncate long values for readability
+                if field == 'desc_text' and len(str(value)) > 100:
+                    value = str(value)[:100] + "..."
+                summary_lines.append(f"  {field}: {value}")
+
+        # Add parse status
+        parse_status = parsed_data.get('parse_status', 'unknown')
+        summary_lines.append(f"  parse_status: {parse_status}")
+
+        logger.info("\n".join(summary_lines))
 
     def _print_summary(self):
         """Print summary of crawl results."""
