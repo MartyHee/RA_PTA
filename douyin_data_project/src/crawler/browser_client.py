@@ -62,6 +62,7 @@ class BrowserClient:
 
         # Initialize only when needed
         self._initialized = False
+        self._run_id = None  # Run ID for organizing debug output by run
 
     def _initialize_browser(self):
         """Initialize Playwright browser if not already initialized."""
@@ -139,6 +140,15 @@ class BrowserClient:
         except Exception as e:
             logger.warning(f"Error closing browser: {e}")
 
+    def set_run_id(self, run_id: str):
+        """Set run ID for organizing debug output by run.
+
+        Args:
+            run_id: Unique identifier for this run (e.g., timestamp).
+        """
+        self._run_id = run_id
+        logger.info(f"Browser client run ID set to: {run_id}")
+
     def _setup_debug_output(self, url: str):
         """Set up debug output directory for network and runtime data.
 
@@ -149,13 +159,18 @@ class BrowserClient:
             # Create debug directory under raw data
             raw_data_dir = Path(get_config('settings.paths.raw_data', './data/raw'))
             debug_dir = raw_data_dir / "debug"
+
+            # If run ID is set, create subdirectory for this run
+            if self._run_id:
+                debug_dir = debug_dir / self._run_id
+
             debug_dir.mkdir(parents=True, exist_ok=True)
             self._debug_output_dir = debug_dir
 
             # Note: network_responses and runtime_objects are now managed per-request
             # No longer clearing instance variables as they're not used for storage
 
-            logger.debug(f"Debug output directory: {debug_dir}")
+            logger.debug(f"Debug output directory: {self._debug_output_dir}")
         except Exception as e:
             logger.warning(f"Failed to set up debug output: {e}")
             self._debug_output_dir = None

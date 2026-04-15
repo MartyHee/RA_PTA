@@ -81,6 +81,16 @@ class CrawlScheduler:
         self.completed_tasks = []
         self.failed_tasks = []
 
+        # Generate run ID and output prefix
+        self.run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
+        if self.use_mock:
+            self.output_prefix = "mock_"
+            self.file_suffix = self.run_id
+        else:
+            # Get prefix from config, default to "real_"
+            self.output_prefix = get_config('sources.web.real_crawl.output_prefix', 'real_')
+            self.file_suffix = self.run_id
+
         # Initialize appropriate client based on mode
         if use_mock:
             # Mock mode uses DouyinClient with mock responses
@@ -90,6 +100,8 @@ class CrawlScheduler:
             # Browser mode uses BrowserClient for JavaScript rendering
             self.client = None
             self.browser_client = BrowserClient(config_path, use_mock=False)
+            # Set run ID for organizing debug output
+            self.browser_client.set_run_id(self.run_id)
         else:
             # Default mode: real requests using DouyinClient
             self.client = DouyinClient(config_path, use_mock=False)
@@ -108,18 +120,20 @@ class CrawlScheduler:
         self.interim_dir = Path(get_config('settings.paths.interim_data', './data/interim'))
         self.interim_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generate run ID and output prefix
-        self.run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
-        if self.use_mock:
-            self.output_prefix = "mock_"
-            self.file_suffix = self.run_id
-        else:
-            # Get prefix from config, default to "real_"
-            self.output_prefix = get_config('sources.web.real_crawl.output_prefix', 'real_')
-            self.file_suffix = self.run_id
 
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
+
+        # Log run information
+        logger.info(f"Run ID: {self.run_id}")
+        if self.use_browser and not self.use_mock:
+            debug_dir = self.output_dir / "debug" / self.run_id
+            rendered_dir = self.output_dir / "rendered_html" / self.run_id
+            logger.info(f"Debug output directory: {debug_dir}")
+            logger.info(f"Rendered HTML directory: {rendered_dir}")
+        elif not self.use_mock:
+            html_dir = self.output_dir / "html" / self.run_id
+            logger.info(f"HTML output directory: {html_dir}")
 
     def add_task(self, url: str, source_entry: str = 'manual_url', priority: int = 0):
         """Add a task to the queue.
@@ -514,16 +528,16 @@ class CrawlScheduler:
             if self.save_raw_html and html_to_save:
                 if self.use_browser and not self.use_mock:
                     # Save rendered HTML for browser mode
-                    rendered_dir = self.output_dir / "rendered_html"
-                    rendered_dir.mkdir(exist_ok=True)
+                    rendered_dir = self.output_dir / "rendered_html" / self.run_id
+                    rendered_dir.mkdir(parents=True, exist_ok=True)
                     rendered_file = rendered_dir / f"{crawl_id}.html"
                     rendered_file.write_text(html_to_save, encoding='utf-8')
                     rendered_html_path = rendered_file
                     logger.info(f"Rendered HTML saved to: {rendered_file}")
                 else:
                     # Save raw HTML for regular mode
-                    html_dir = self.output_dir / "html"
-                    html_dir.mkdir(exist_ok=True)
+                    html_dir = self.output_dir / "html" / self.run_id
+                    html_dir.mkdir(parents=True, exist_ok=True)
                     html_file = html_dir / f"{crawl_id}.html"
                     html_file.write_text(html_to_save, encoding='utf-8')
                     raw_html_path = html_file
