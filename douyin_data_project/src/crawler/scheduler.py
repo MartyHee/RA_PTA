@@ -5,6 +5,7 @@ Supports queueing multiple URLs, rate limiting, and task tracking.
 """
 import time
 import threading
+import json
 from datetime import datetime
 from typing import List, Optional, Dict, Any, Callable
 from queue import Queue, Empty
@@ -185,6 +186,8 @@ class CrawlScheduler:
                 http_status = None
                 response_headers = {}
                 rendered_html_path = None
+                browser_extracted_fields = None
+                browser_extraction_summary = None
 
                 # Determine which client to use
                 if self.use_mock or not self.use_browser:
@@ -206,6 +209,11 @@ class CrawlScheduler:
                             fetched_url = browser_result['url']
                             http_status = browser_result['status']
                             response_headers = browser_result['headers']
+                            # Extract fields from browser runtime data if available
+                            if 'extracted_fields' in browser_result:
+                                browser_extracted_fields = browser_result['extracted_fields']
+                                browser_extraction_summary = browser_result.get('extraction_summary')
+                                logger.info(f"Browser extracted {len(browser_extracted_fields)} fields from runtime data")
                             logger.info(f"Successfully fetched canonical URL via browser: {fetched_url}")
                         else:
                             logger.warning(f"Canonical URL failed via browser, falling back to original: {task.original_url}")
@@ -234,6 +242,11 @@ class CrawlScheduler:
                             fetched_url = browser_result['url']
                             http_status = browser_result['status']
                             response_headers = browser_result['headers']
+                            # Extract fields from browser runtime data if available
+                            if 'extracted_fields' in browser_result:
+                                browser_extracted_fields = browser_result['extracted_fields']
+                                browser_extraction_summary = browser_result.get('extraction_summary')
+                                logger.info(f"Browser extracted {len(browser_extracted_fields)} fields from runtime data")
                         else:
                             response = None
                     else:
@@ -278,6 +291,44 @@ class CrawlScheduler:
                     crawl_time=crawl_time,
                     page_type=task.page_type
                 )
+
+                # Merge browser-extracted fields if available (higher priority than HTML parsing)
+                if browser_extracted_fields:
+                    logger.info(f"Merging {len(browser_extracted_fields)} browser-extracted fields into parsed data")
+                    # Field mapping from browser_extracted_fields to parsed_data field names
+                    field_mapping = {
+                        'video_id': 'video_id',
+                        'author_id': 'author_id',
+                        'author_name': 'author_name',
+                        'desc_text': 'desc_text',
+                        'publish_time_raw': 'publish_time_raw',
+                        'like_count_raw': 'like_count_raw',
+                        'comment_count_raw': 'comment_count_raw',
+                        'share_count_raw': 'share_count_raw',
+                        'hashtag_list': 'hashtag_list',
+                        'cover_url': 'cover_url'
+                    }
+
+                    for browser_field, parsed_field in field_mapping.items():
+                        if browser_field in browser_extracted_fields:
+                            value = browser_extracted_fields[browser_field]
+                            if value is not None:
+                                # Convert complex types to JSON strings for compatibility with WebVideoMeta schema
+                                if parsed_field in ['hashtag_list', 'cover_url']:
+                                    if isinstance(value, (list, dict)):
+                                        try:
+                                            value = json.dumps(value, ensure_ascii=False)
+                                            logger.debug(f"Converted {parsed_field} to JSON string")
+                                        except Exception as e:
+                                            logger.warning(f"Failed to convert {parsed_field} to JSON: {e}")
+
+                                parsed_data[parsed_field] = value
+                                logger.debug(f"Updated {parsed_field} from browser runtime data: {str(value)[:100]}")
+
+                    # Update parse status to indicate browser data was used
+                    parsed_data['parse_status'] = 'success_with_browser_data'
+                    if browser_extraction_summary:
+                        parsed_data['browser_extraction_summary'] = browser_extraction_summary
 
                 # Create raw data record
                 raw_data = self._create_raw_data(
