@@ -11,20 +11,20 @@
 3. 探索性数据分析（EDA）
 4. 为推荐系统提供数据基础
 
-## 项目状态（当前阶段：最小可运行骨架）
+## 项目状态（当前阶段：小批次抓取系统）
 
-本项目当前处于**最小可运行骨架**阶段，边界如下：
+本项目支持多种抓取模式与质量保证机制，边界如下：
 
-| 模块                     | 当前能力                                                                                                                                                                                 | 边界说明                                                                       |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| **crawler**        | 支持输入一个或多个测试 URL；抓取 HTML；预留 headers/cookies/delay/retry 接口；先用 mock/sample HTML 演示解析少量字段；输出 raw 层样例文件                                                | 真实抓取需配置反爬策略，当前以 mock 模式为主                                   |
-| **processing**     | 提供 clean、transform、feature_engineering、quality_check 的最小实现；可基于 mock 数据运行；函数签名清晰，方便后续补充真实逻辑                                                           | 各阶段已实现骨架函数，具体清洗规则可根据业务需要扩展                           |
-| **analysis**       | 提供最小 EDA 入口；能输出样本数据的基本统计；包含基础可视化与报告生成                                                                                                                    | 已实现快速分析模式与综合报告模式，支持 mock 数据                               |
-| **api**            | 只做占位结构；明确未来用于 OAuth 与 video.data；不伪造真实密钥或真实返回                                                                                                                 | 提供完整的授权、用户信息、视频数据等演示流程，但实际调用需申请抖音开放平台权限 |
-| **schemas**        | 根据 `docs/Data_description.md` 定义核心 schema/dataclass/pydantic 模型，包括：raw_web_video_data, web_video_meta, processed_video_data, author_dim, api_video_stats, api_user_profile | 模型字段与文档完全对齐，支持 Pydantic 验证与类型提示                           |
-| **utils & config** | 提供配置加载、日志、文本处理、时间处理、I/O 等基础工具；配置文件采用 YAML 格式                                                                                                           | 工具函数已实现，可根据实际需求扩展                                             |
+| 模块                     | 当前能力                                                                                                                                                                                                        | 边界说明                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **crawler**        | 支持命令行、文件输入、配置文件多种URL输入方式；提供Mock模式、普通HTTP抓取和浏览器模式（Playwright）三种抓取方式；支持批量抓取、run_id目录组织、高置信度样本自动筛选、质量报告生成；内置任务调度与基础反反爬策略 | 浏览器模式需要Playwright环境；真实抓取需合理配置反爬策略；API数据采集待实现    |
+| **processing**     | 提供 clean、transform、feature_engineering、quality_check 的最小实现；可基于 mock 数据运行；函数签名清晰，方便后续补充真实逻辑                                                                                  | 各阶段已实现骨架函数，具体清洗规则可根据业务需要扩展                           |
+| **analysis**       | 提供最小 EDA 入口；能输出样本数据的基本统计；包含基础可视化与报告生成                                                                                                                                           | 已实现快速分析模式与综合报告模式，支持 mock 数据                               |
+| **api**            | 只做占位结构；明确未来用于 OAuth 与 video.data；不伪造真实密钥或真实返回                                                                                                                                        | 提供完整的授权、用户信息、视频数据等演示流程，但实际调用需申请抖音开放平台权限 |
+| **schemas**        | 根据 `docs/Data_description.md` 定义核心 schema/dataclass/pydantic 模型，包括：raw_web_video_data, web_video_meta, processed_video_data, author_dim, api_video_stats, api_user_profile                        | 模型字段与文档完全对齐，支持 Pydantic 验证与类型提示                           |
+| **utils & config** | 提供配置加载、日志、文本处理、时间处理、I/O 等基础工具；配置文件采用 YAML 格式                                                                                                                                  | 工具函数已实现，可根据实际需求扩展                                             |
 
-**注**：所有模块均支持 **mock 模式**，无需网络请求或真实数据即可运行完整流程，便于开发与测试。
+**注**：所有模块均支持 **mock 模式**，无需网络请求或真实数据即可运行完整流程，便于开发与测试。新增的**浏览器模式**和**批量抓取**功能已投入实际使用。
 
 ## 项目结构
 
@@ -36,6 +36,7 @@ douyin_data_project/
 │   ├── crawler/                   # 爬虫模块
 │   │   ├── __init__.py
 │   │   ├── client.py              # HTTP客户端
+│   │   ├── browser_client.py      # 浏览器客户端（Playwright）
 │   │   ├── parser.py              # HTML解析器
 │   │   ├── scheduler.py           # 爬虫调度器
 │   │   ├── anti_block.py          # 反反爬策略
@@ -145,7 +146,41 @@ python run_api_demo.py --mode=mock
 python run_clean.py --input data/samples/sample_web_video_meta.csv
 ```
 
-### 4. 运行测试
+### 4. 批量抓取实战
+
+本项目支持浏览器模式批量抓取，可从文件读取URL列表进行自动化抓取。
+
+```bash
+# 基本浏览器抓取（单个URL）
+python run_crawl.py --urls "https://www.douyin.com/video/7626389557025705262" --browser
+
+# 批量抓取（从文件读取URL）
+python run_crawl.py --url-file configs/batch_urls.txt --browser --workers 2
+
+# 查看帮助
+python run_crawl.py --help
+```
+
+**批量抓取输出结构**：
+
+```
+data/
+├── interim/20260416_052908/                    # 按run_id组织的中间数据目录
+│   └── real_web_video_meta_20260416_052908.csv  # 全量标准化结果
+├── processed/20260416_052908/                  # 按run_id组织的处理数据目录  
+│   └── high_confidence_web_video_meta_20260416_052908.csv  # 高置信度可用样本
+└── raw/debug/20260416_052908/                  # 调试数据目录
+    └── quality_report_20260416_052908.txt      # 质量统计报告
+```
+
+**关键参数说明**：
+
+- `--browser`：使用浏览器模式（Playwright），处理JavaScript渲染页面
+- `--url-file`：从文件读取URL列表（每行一个URL，支持"序号 URL"格式）
+- `--workers`：并发工作线程数（默认1）
+- `--mock`：使用Mock模式（无网络请求）
+
+### 5. 运行测试
 
 ```bash
 # 运行冒烟测试
@@ -156,11 +191,13 @@ python tests/test_smoke.py
 
 ### 1. 爬虫模块（crawler）
 
-- **URL输入**：支持命令行、配置文件、交互式输入一个或多个测试 URL
-- **抓取能力**：抓取 HTML 页面，支持真实抓取与 mock 模式切换
-- **接口预留**：预留 headers/cookies/delay/retry 配置接口，便于后续扩展
-- **解析演示**：先用 mock/sample HTML 演示解析少量字段（视频ID、文案、点赞、评论等）
-- **输出**：生成 raw 层样例文件（JSONL/Parquet），保留原始 HTML 路径与解析状态
+- **URL输入**：支持命令行、配置文件、交互式输入、文件批量导入（--url-file）多种输入方式
+- **抓取模式**：支持Mock模式、普通HTTP抓取、浏览器模式（--browser，使用Playwright处理JavaScript渲染页面）
+- **批量抓取**：支持从文件读取URL列表进行批量抓取，自动生成统一run_id组织输出目录
+- **数据处理**：自动生成全量标准化结果（data/interim/）和高置信度可用样本结果（data/processed/）
+- **质量保证**：内置高置信度样本筛选（match_type=exact, confidence=high, video_id一致性验证）
+- **质量报告**：自动生成抓取质量统计报告，包含URL总数、成功抓取数、match_type分布、confidence分布、video_id一致性等指标
+- **输出组织**：按run_id（时间戳）组织输出目录，包含原始数据、中间数据、处理数据、调试数据和质量报告
 - **调度与反爬**：内置任务调度器与基础反反爬策略（频率控制、随机延迟）
 
 ### 2. 处理模块（processing）
@@ -220,20 +257,49 @@ python tests/test_smoke.py
 
 ## 数据流程
 
+### 抓取流程（批量抓取模式）
+
 ```
-网页采集 → 原始数据 → 清洗转换 → 特征工程 → 分析报告
-    ↓          ↓           ↓           ↓         ↓
-raw_web   web_video   processed   featured   eda_report
+URL列表 → 浏览器抓取 → 解析提取 → 全量结果（interim/） → 高置信度筛选 → 可用样本（processed/）
+    ↓           ↓           ↓             ↓                    ↓
+配置文件   Playwright   HTML解析    按run_id组织目录    质量报告生成（raw/debug/）
 ```
+
+### 目录组织结构（按run_id）
+
+```
+data/
+├── interim/YYYYMMDD_HHMMSS/                    # 中间数据（按run_id组织）
+│   └── real_web_video_meta_YYYYMMDD_HHMMSS.csv  # 全量标准化结果（所有抓取记录）
+├── processed/YYYYMMDD_HHMMSS/                  # 处理数据（按run_id组织）
+│   └── high_confidence_web_video_meta_YYYYMMDD_HHMMSS.csv  # 高置信度可用样本
+└── raw/debug/YYYYMMDD_HHMMSS/                  # 调试数据（按run_id组织）
+    ├── rendered_html/                          # 渲染后的HTML快照
+    ├── network_traces/                         # 网络请求跟踪
+    └── quality_report_YYYYMMDD_HHMMSS.txt      # 质量统计报告
+```
+
+### 高置信度样本筛选标准
+
+1. **match_type = 'exact'**：解析器精确匹配目标字段
+2. **confidence = 'high'**：解析器对结果有高置信度
+3. **video_id一致性**：从page_url提取的视频ID与解析的video_id一致
+4. **完整性检查**：关键字段（video_id, page_url, text等）非空
 
 ### 数据表设计
 
 1. **raw_web_video_data** - 原始网页数据（调试用）
-2. **web_video_meta** - 网页视频元数据（主表）
+2. **web_video_meta** - 网页视频元数据（主表），批量抓取时生成CSV文件（real_web_video_meta_*.csv），包含所有抓取记录
 3. **processed_video_data** - 处理后视频数据（分析用）
 4. **author_dim** - 作者维表（待扩展）
 5. **api_video_stats** - API视频统计（待实现）
 6. **api_user_profile** - API用户资料（待实现）
+
+**批量抓取输出文件**：
+
+- `real_web_video_meta_YYYYMMDD_HHMMSS.csv`：全量标准化结果，包含所有抓取记录（含match_type, confidence等质量字段）
+- `high_confidence_web_video_meta_YYYYMMDD_HHMMSS.csv`：高置信度可用样本，已通过质量筛选
+- `quality_report_YYYYMMDD_HHMMSS.txt`：质量统计报告，包含抓取成功率、match_type分布、confidence分布等
 
 *注：以上六个表的 Pydantic 模型已定义在 `src/schemas/tables.py` 中，字段与 `docs/Data_description.md` 完全对齐。*
 
@@ -276,6 +342,17 @@ raw_web   web_video   processed   featured   eda_report
 - 使用 pathlib 保证 Windows/Linux/macOS 路径兼容性
 - 主要依赖包支持 Python 3.9+
 - 配置使用 YAML 格式，便于阅读和修改
+
+## 已完成功能
+
+- [X] Mock模式骨架系统（最小可运行验证）
+- [X] 浏览器模式抓取（Playwright，支持JavaScript渲染页面）
+- [X] 批量抓取支持（从文件读取URL列表）
+- [X] 按run_id组织输出目录结构
+- [X] 高置信度样本自动筛选（match_type=exact, confidence=high, video_id一致性）
+- [X] 质量报告自动生成（统计抓取成功率、match_type分布、confidence分布等）
+- [X] 全量标准化结果与高置信度可用样本并行输出
+- [X] 多线程调度与基础反反爬策略
 
 ## 待实现功能
 
