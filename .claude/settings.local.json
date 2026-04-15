@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python tests/test_smoke.py)",
-      "Bash(python -c \"import sys; sys.path.insert\\(0, '.'\\); from src.utils.config_loader import load_config; config = load_config\\(\\); print\\('Config keys:', list\\(config.keys\\(\\)\\)\\)\")",
-      "Bash(python -m py_compile src/crawler/client.py)"
-    ]
-  }
-}

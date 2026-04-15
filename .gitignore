@@ -208,3 +208,7 @@ __marimo__/
 
 # 技术文档
 docs/
+CLAUDE.md
+
+.vscode/
+.claude/
