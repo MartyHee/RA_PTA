@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7624485550934914906
+Timestamp: 20260415_205130
+Network responses: 42
+Runtime objects: 0
+Video object candidates: 287
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 16306146
+    Path: network_response_11.data.abr_config.vid
+  author_id: 0e47c041-8858-c8d8-353d-00b3fee6de79
+    Path: network_response_2.data.user_id
+  author_name: 刘春歧
+    Path: network_response_17.aweme_detail.author.nickname
+  desc_text: - 抖音电商直播间带货榜是根据真实数据进行排名的直播间排行榜，希望帮助消费者通过榜单找到正在直播的好商品，让选择更简单。直播间排名越靠前曝光机会越大。
+    Path: network_response_15.data.ecom_live_product_rank_ruler.[0].content
+  publish_time_raw: 1776256936142
+    Path: network_response_2.data.timestamp
+  like_count_raw: 43364
+    Path: network_response_17.aweme_detail.statistics.digg_count
+  comment_count_raw: 316
+    Path: network_response_17.aweme_detail.statistics.comment_count
+  share_count_raw: 5571
+    Path: network_response_17.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 28, 'caption_start': 25, 'end': 28, 'hashtag_id': '1653004172633091', 'hashtag_name...
+    Path: network_response_17.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_17.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

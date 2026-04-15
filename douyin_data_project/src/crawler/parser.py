@@ -68,7 +68,13 @@ class DouyinParser:
             import hashlib
             debug_id = hashlib.md5(f"{url}_{crawl_time}".encode()).hexdigest()[:8]
 
-            blocks_info = self._extract_all_data_blocks(soup, debug_id)
+            # Skip deep block analysis for very large HTML to improve performance
+            # Browser mode already extracts fields from runtime data
+            if len(html) > 500000:
+                logger.info(f"HTML too large ({len(html)} chars), skipping deep block analysis")
+                blocks_info = {'blocks_found': [], 'decoded_blocks': {}, 'video_object_paths': [], 'field_mappings': {}}
+            else:
+                blocks_info = self._extract_all_data_blocks(soup, debug_id)
 
             # Merge field mappings from blocks analysis
             for field, mapping in blocks_info.get('field_mappings', {}).items():
@@ -1062,12 +1068,30 @@ class DouyinParser:
             if 'publish_time_std' in parsed_data and isinstance(parsed_data['publish_time_std'], (int, float)):
                 parsed_data['publish_time_std'] = datetime.fromtimestamp(parsed_data['publish_time_std'])
 
+            # Log detailed field information before creating WebVideoMeta
+            logger.info("Field details before creating WebVideoMeta:")
+            target_fields = [
+                'video_id', 'page_url', 'author_id', 'author_name', 'author_profile_url',
+                'desc_text', 'publish_time_raw', 'publish_time_std', 'like_count_raw',
+                'comment_count_raw', 'share_count_raw', 'like_count', 'comment_count',
+                'share_count', 'collect_count', 'hashtag_list', 'hashtag_count',
+                'cover_url', 'music_name', 'duration_sec', 'source_entry', 'crawl_time'
+            ]
+            for field in target_fields:
+                if field in parsed_data:
+                    value = parsed_data[field]
+                    logger.info(f"  {field}: value='{value}', type={type(value).__name__}")
+
             # Ensure required fields
             if not parsed_data.get('video_id'):
                 logger.warning("Missing video_id, cannot create WebVideoMeta")
                 return None
 
-            return WebVideoMeta(**parsed_data)
+            # Try to create WebVideoMeta with detailed error logging
+            logger.info("Attempting to create WebVideoMeta instance...")
+            meta = WebVideoMeta(**parsed_data)
+            logger.info(f"WebVideoMeta created successfully with {len(parsed_data)} fields")
+            return meta
         except Exception as e:
             logger.error(f"Failed to create WebVideoMeta: {e}")
             return None

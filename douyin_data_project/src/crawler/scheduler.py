@@ -284,6 +284,7 @@ class CrawlScheduler:
                                f"Content-Encoding: {response.headers.get('Content-Encoding', 'none')}")
 
                 # Parse HTML content
+                logger.info(f"Starting HTML parsing for {task.url}, HTML length: {len(html_content) if html_content else 0}")
                 parsed_data = self.parser.parse_html(
                     html=html_content if html_content else (response.text if response else ''),
                     url=task.url,
@@ -291,6 +292,7 @@ class CrawlScheduler:
                     crawl_time=crawl_time,
                     page_type=task.page_type
                 )
+                logger.info(f"HTML parsing completed, parsed_data keys: {list(parsed_data.keys())}")
 
                 # Merge browser-extracted fields if available (higher priority than HTML parsing)
                 if browser_extracted_fields:
@@ -313,22 +315,111 @@ class CrawlScheduler:
                         if browser_field in browser_extracted_fields:
                             value = browser_extracted_fields[browser_field]
                             if value is not None:
-                                # Convert complex types to JSON strings for compatibility with WebVideoMeta schema
-                                if parsed_field in ['hashtag_list', 'cover_url']:
-                                    if isinstance(value, (list, dict)):
+                                # Type conversion for WebVideoMeta schema compatibility
+                                if parsed_field in ['video_id', 'author_id', 'author_name', 'desc_text']:
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                        logger.debug(f"Converted {parsed_field} to string")
+
+                                elif parsed_field == 'cover_url':
+                                    # Ensure string URL
+                                    if isinstance(value, list):
+                                        # List of dicts, try to extract URL from first item
+                                        if value and isinstance(value[0], dict):
+                                            first = value[0]
+                                            if 'url_list' in first and isinstance(first['url_list'], list) and first['url_list']:
+                                                value = first['url_list'][0]
+                                            elif 'url' in first:
+                                                value = first['url']
+                                            elif 'cover_url' in first:
+                                                value = first['cover_url']
+                                            elif 'cover' in first:
+                                                value = first['cover']
+                                            else:
+                                                logger.warning(f"cover_url list item doesn't contain url key: {first}")
+                                                value = str(value)
+                                        else:
+                                            logger.warning(f"cover_url list doesn't contain dicts: {value}")
+                                            value = str(value)
+                                    elif isinstance(value, dict):
+                                        # Try to extract URL from common keys
+                                        if 'url' in value:
+                                            value = value['url']
+                                        elif 'cover_url' in value:
+                                            value = value['cover_url']
+                                        elif 'cover' in value:
+                                            value = value['cover']
+                                        else:
+                                            logger.warning(f"cover_url dict doesn't contain url key: {value}")
+                                            value = str(value)
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed cover_url: {value[:100]}")
+
+                                elif parsed_field in ['publish_time_raw', 'like_count_raw', 'comment_count_raw', 'share_count_raw']:
+                                    # Convert to string (raw counts and timestamps should be strings)
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                        logger.debug(f"Converted {parsed_field} to string")
+
+                                elif parsed_field == 'hashtag_list':
+                                    # Ensure list of strings
+                                    if isinstance(value, str):
+                                        # Try to parse JSON string
                                         try:
-                                            value = json.dumps(value, ensure_ascii=False)
-                                            logger.debug(f"Converted {parsed_field} to JSON string")
-                                        except Exception as e:
-                                            logger.warning(f"Failed to convert {parsed_field} to JSON: {e}")
+                                            parsed = json.loads(value)
+                                            if isinstance(parsed, list):
+                                                value = parsed
+                                            else:
+                                                logger.warning(f"hashtag_list JSON string is not a list: {value[:100]}")
+                                                value = []
+                                        except json.JSONDecodeError:
+                                            logger.warning(f"hashtag_list is string but not JSON: {value[:100]}")
+                                            value = [value]  # Treat as single hashtag
+                                    if isinstance(value, list):
+                                        # Convert list elements to strings, extract from dicts if needed
+                                        processed = []
+                                        for item in value:
+                                            if isinstance(item, str):
+                                                processed.append(item)
+                                            elif isinstance(item, dict):
+                                                # Try to extract hashtag name
+                                                if 'hashtag_name' in item:
+                                                    processed.append(str(item['hashtag_name']))
+                                                elif 'name' in item:
+                                                    processed.append(str(item['name']))
+                                                else:
+                                                    logger.warning(f"Unhandled dict item in hashtag_list: {item}")
+                                            else:
+                                                processed.append(str(item))
+                                        value = processed
+                                        logger.debug(f"Processed hashtag_list to list of strings, count={len(value)}")
+                                    elif isinstance(value, dict):
+                                        # Convert dict to list of keys or values? Probably not expected
+                                        logger.warning(f"hashtag_list is dict, converting to list of keys")
+                                        value = list(value.keys())
+                                    else:
+                                        logger.warning(f"Unhandled type for hashtag_list: {type(value)}, converting to empty list")
+                                        value = []
 
                                 parsed_data[parsed_field] = value
                                 logger.debug(f"Updated {parsed_field} from browser runtime data: {str(value)[:100]}")
 
                     # Update parse status to indicate browser data was used
-                    parsed_data['parse_status'] = 'success_with_browser_data'
+                    parsed_data['parse_status'] = 'success'  # RawWebVideoData validator only allows 'success', 'partial_success', 'fail'
                     if browser_extraction_summary:
                         parsed_data['browser_extraction_summary'] = browser_extraction_summary
+
+                    # Log detailed field information after merging browser data
+                    logger.info("Field details after merging browser data:")
+                    target_fields = ['video_id', 'author_id', 'author_name', 'desc_text',
+                                    'publish_time_raw', 'like_count_raw', 'comment_count_raw',
+                                    'share_count_raw', 'hashtag_list', 'cover_url']
+                    for field in target_fields:
+                        if field in parsed_data:
+                            value = parsed_data[field]
+                            logger.info(f"  {field}: value='{value}', type={type(value).__name__}")
 
                 # Create raw data record
                 raw_data = self._create_raw_data(
@@ -343,7 +434,12 @@ class CrawlScheduler:
                 )
 
                 # Create metadata record
+                logger.info(f"Calling create_web_video_meta with parsed_data keys: {list(parsed_data.keys())}")
                 meta_record = self.parser.create_web_video_meta(parsed_data)
+                if meta_record:
+                    logger.info(f"WebVideoMeta created successfully, video_id: {meta_record.video_id}")
+                else:
+                    logger.warning("create_web_video_meta returned None")
 
                 # Save results
                 if raw_data:
@@ -468,11 +564,17 @@ class CrawlScheduler:
             metadata: WebVideoMeta object.
         """
         try:
+            # Log metadata fields before saving
+            logger.info("Metadata fields before saving to CSV:")
+            data_dict = metadata.dict()
+            for field, value in data_dict.items():
+                logger.info(f"  {field}: value='{value}', type={type(value).__name__}")
+
             # Save to interim directory as CSV (primary output for real crawl)
             meta_filename = f"{self.output_prefix}web_video_meta_{self.file_suffix}.csv"
             meta_file = self.interim_dir / meta_filename
             write_csv(meta_file, [metadata.dict()], mode='a', index=False)
-            logger.debug(f"Metadata saved to {meta_file}")
+            logger.info(f"Metadata saved to {meta_file}")
 
             # Also save as Parquet for compatibility (optional)
             # Uncomment if needed
