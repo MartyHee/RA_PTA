@@ -51,7 +51,8 @@ class VideoIdExtractor(BaseExtractor):
                 r'/video/([^/?]+)',
                 r'video/([^/?]+)',
                 r'item_id=([^&]+)',
-                r'id=([^&]+)'
+                r'id=([^&]+)',
+                r'modal_id=([^&]+)'  # Support for jingxuan modal pages
             ]
             for pattern in patterns:
                 match = re.search(pattern, content)

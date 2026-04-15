@@ -68,8 +68,13 @@ class RawWebVideoData(BaseModel):
 
     crawl_id: str = Field(..., description="本次抓取任务ID")
     source_entry: str = Field(..., description="数据入口类型，如 search/topic/rank/manual_url")
+    original_url: Optional[str] = Field(None, description="原始输入URL")
+    canonical_video_url: Optional[str] = Field(None, description="标准视频详情页URL")
+    fetched_url: Optional[str] = Field(None, description="实际抓取的URL")
+    page_type: Optional[str] = Field(None, description="页面类型")
     page_url: str = Field(..., description="视频页面URL")
     raw_html_path: Optional[Path] = Field(None, description="原始HTML保存路径")
+    rendered_html_path: Optional[Path] = Field(None, description="渲染后的HTML保存路径（浏览器模式）")
     raw_json_blob: Optional[str] = Field(None, description="从页面脚本中解析出的原始JSON片段")
     http_status: int = Field(..., description="请求状态码")
     crawl_time: datetime = Field(..., description="抓取时间")
@@ -88,6 +93,15 @@ class RawWebVideoData(BaseModel):
         allowed = {'success', 'partial_success', 'fail'}
         if v not in allowed:
             raise ValueError(f'parse_status must be one of {allowed}')
+        return v
+
+    @validator('page_type')
+    def validate_page_type(cls, v):
+        if v is None:
+            return v
+        allowed = {'video_detail', 'jingxuan_modal', 'jingxuan_feed', 'unknown'}
+        if v not in allowed:
+            raise ValueError(f'page_type must be one of {allowed}')
         return v
 
 

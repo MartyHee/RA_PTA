@@ -31,6 +31,7 @@ def main():
                        choices=['search', 'topic', 'rank', 'manual_url'],
                        help='数据入口类型')
     parser.add_argument('--mock', action='store_true', help='使用mock模式（无需网络）')
+    parser.add_argument('--browser', action='store_true', help='使用浏览器模式（处理JavaScript渲染页面）')
     parser.add_argument('--workers', type=int, default=1, help='爬虫工作线程数')
     parser.add_argument('--sample', action='store_true', help='使用配置文件中的样本URL')
 
@@ -85,12 +86,13 @@ def main():
 
     print(f"\n准备抓取 {len(urls_to_crawl)} 个URL")
     print(f"数据入口: {args.source_entry}")
-    print(f"模式: {'Mock' if args.mock else '真实抓取'}")
+    mode = 'Mock' if args.mock else ('浏览器模式' if args.browser else '真实抓取')
+    print(f"模式: {mode}")
     print(f"工作线程: {args.workers}")
     print("-" * 60)
 
     # 创建调度器
-    scheduler = CrawlScheduler(config_path=args.config, use_mock=args.mock)
+    scheduler = CrawlScheduler(config_path=args.config, use_mock=args.mock, use_browser=args.browser)
 
     # 添加任务
     for url in urls_to_crawl:

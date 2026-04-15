@@ -1,0 +1,20 @@
+Collecting playwright
+  Downloading playwright-1.58.0-py3-none-win_amd64.whl.metadata (3.5 kB)
+Collecting pyee<14,>=13 (from playwright)
+  Downloading pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)
+Collecting greenlet<4.0.0,>=3.1.1 (from playwright)
+  Downloading greenlet-3.2.5.tar.gz (191 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: typing-extensions in d:\codedata\software\anaconda\anaconda3\envs\ra\lib\site-packages (from pyee<14,>=13->playwright) (4.15.0)
+Downloading playwright-1.58.0-py3-none-win_amd64.whl (36.8 MB)
+   ---------------------------------------- 36.8/36.8 MB 10.3 MB/s  0:00:03
+Downloading pyee-13.0.1-py3-none-any.whl (15 kB)
+Building wheels for collected packages: greenlet
+  Building wheel for greenlet (pyproject.toml): started
+  Building wheel for greenlet (pyproject.toml): finished with status 'error'
+Failed to build greenlet
