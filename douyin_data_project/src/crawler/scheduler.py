@@ -410,6 +410,12 @@ class CrawlScheduler:
                     parsed_data['parse_status'] = 'success'  # RawWebVideoData validator only allows 'success', 'partial_success', 'fail'
                     if browser_extraction_summary:
                         parsed_data['browser_extraction_summary'] = browser_extraction_summary
+                        # Extract match metadata for WebVideoMeta schema
+                        match_metadata_fields = ['match_type', 'confidence', 'selected_reason', 'is_primary_match', 'target_video_id', 'primary_source_key', 'matched_object_id']
+                        for field in match_metadata_fields:
+                            if field in browser_extraction_summary:
+                                parsed_data[field] = browser_extraction_summary[field]
+                                logger.debug(f"Added match metadata to parsed_data: {field} = {browser_extraction_summary[field]}")
 
                     # Log detailed field information after merging browser data
                     logger.info("Field details after merging browser data:")

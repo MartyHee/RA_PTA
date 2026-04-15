@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601523151377321262
+Timestamp: 20260416_023944
+Network responses: 74
+Runtime objects: 1
+Video object candidates: 1523
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601523151377321262
+    Path: url_extraction
+  author_id: 2140114442266275
+    Path: network_response_66.comments.[0].user.uid
+  author_name: laidy1981
+    Path: network_response_66.comments.[0].user.nickname
+  desc_text: {}
+    Path: network_response_46.aweme_detail.anchor_info.content
+  publish_time_raw: 1769955525
+    Path: network_response_66.comments.[0].create_time
+  like_count_raw: 6
+    Path: network_response_66.comments.[0].digg_count
+  comment_count_raw: 149
+    Path: network_response_46.aweme_detail.statistics.comment_count
+  share_count_raw: 208
+    Path: network_response_46.aweme_detail.statistics.share_count
+  hashtag_list: []
+    Path: network_response_66.comments.[0].text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_46.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

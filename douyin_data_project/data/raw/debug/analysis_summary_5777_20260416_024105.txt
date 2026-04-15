@@ -1,0 +1,28 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7626389557025705262
+Timestamp: 20260416_024105
+Network responses: 26
+Runtime objects: 0
+Video object candidates: 89
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7626389557025705262
+    Path: url_extraction
+  author_id: 29a192d7-08ed-c3bb-e97b-de79f4e4d695
+    Path: network_response_0.data.user_id
+  author_name: NOT FOUND
+  desc_text: - 抖音电商直播间带货榜是根据真实数据进行排名的直播间排行榜，希望帮助消费者通过榜单找到正在直播的好商品，让选择更简单。直播间排名越靠前曝光机会越大。
+    Path: network_response_6.data.ecom_live_product_rank_ruler.[0].content
+  publish_time_raw: 1776278464215
+    Path: network_response_0.data.timestamp
+  like_count_raw: NOT FOUND
+  comment_count_raw: NOT FOUND
+  share_count_raw: NOT FOUND
+  hashtag_list: NOT FOUND
+  cover_url: NOT FOUND
+
+Extracted 4 out of 10 target fields
+================================================================================

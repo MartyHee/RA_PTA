@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7624485550934914906
+Timestamp: 20260415_234610
+Network responses: 118
+Runtime objects: 0
+Video object candidates: 1488
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7624485550934914906
+    Path: network_response_117.aweme_detail.aweme_id
+  author_id: 7591045167445967921
+    Path: network_response_117.aweme_detail.author.uid
+  author_name: 刘春歧
+    Path: network_response_117.aweme_detail.author.nickname
+  desc_text: 他的脱口秀可能不是最好笑的，但是一定是最有深度的！#付航 #星爷 #爱情 #脱口秀 #讽刺
+    Path: network_response_117.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_117.aweme_detail.author.create_time
+  like_count_raw: 44215
+    Path: network_response_117.aweme_detail.statistics.digg_count
+  comment_count_raw: 318
+    Path: network_response_117.aweme_detail.statistics.comment_count
+  share_count_raw: 5709
+    Path: network_response_117.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 28, 'caption_start': 25, 'end': 28, 'hashtag_id': '1653004172633091', 'hashtag_name...
+    Path: network_response_117.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_117.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

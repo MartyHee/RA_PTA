@@ -135,6 +135,12 @@ class WebVideoMeta(BaseModel):
     music_name: Optional[str] = Field(None, description="关联音乐名称，若页面可提取")
     duration_sec: Optional[int] = Field(None, description="视频时长（秒），若页面可提取")
     source_entry: str = Field(..., description="采样来源")
+    # Match metadata for browser mode data quality assessment
+    match_type: Optional[str] = Field(None, description="主对象匹配类型: exact/partial/none")
+    confidence: Optional[str] = Field(None, description="数据置信度: high/medium/low")
+    selected_reason: Optional[str] = Field(None, description="主对象选择原因")
+    is_primary_match: Optional[bool] = Field(None, description="是否找到主匹配对象")
+    matched_object_id: Optional[str] = Field(None, description="浏览器运行时实际选中的主对象ID（如 aweme_id / item_id / group_id / video_id）")
     crawl_time: datetime = Field(..., description="抓取时间")
 
     @validator('hashtag_count', always=True)

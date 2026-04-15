@@ -1,0 +1,42 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7625852623463420379
+Timestamp: 20260416_024008
+Network responses: 63
+Runtime objects: 1
+Video object candidates: 1250
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7625852623463420379
+    Path: url_extraction
+  author_id: 64607145986
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 虞兮西
+    Path: network_response_28.aweme_detail.author.nickname
+  desc_text: 趁着周末的好天气☀️
+早早起床画一个美美的妆
+自驾去圣路易斯周边的Grafton镇
+虽然一直想坐的缆车没开🥹
+好在还有我的林间小火车
+阳光散在身上暖暖的🥰
+在码头边慢慢走走逛逛
+拍了好多春日感照片
+真...
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_28.aweme_detail.author.create_time
+  like_count_raw: 11891
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 295
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 238
+    Path: network_response_28.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 131, 'caption_start': 124, 'end': 157, 'hashtag_id': '7419051797869758527', 'hashta...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

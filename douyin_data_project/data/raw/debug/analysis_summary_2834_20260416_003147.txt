@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7616931519998774579
+Timestamp: 20260416_003147
+Network responses: 64
+Runtime objects: 0
+Video object candidates: 359
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7616931519998774579
+    Path: network_response_48.aweme_detail.aweme_id
+  author_id: 3118643368181163
+    Path: network_response_48.aweme_detail.author.uid
+  author_name: Mine威杰
+    Path: network_response_48.aweme_detail.author.nickname
+  desc_text: #我的世界极限生存 #我的世界多人剧情 #娱乐 #都市传说 #恐怖
+    Path: network_response_48.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_48.aweme_detail.author.create_time
+  like_count_raw: 122313
+    Path: network_response_48.aweme_detail.statistics.digg_count
+  comment_count_raw: 2442
+    Path: network_response_48.aweme_detail.statistics.comment_count
+  share_count_raw: 7910
+    Path: network_response_48.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 0, 'end': 28, 'hashtag_id': '1637371558469636', 'hashtag_name':...
+    Path: network_response_48.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_48.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================
