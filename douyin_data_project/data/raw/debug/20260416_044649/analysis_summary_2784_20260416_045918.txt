@@ -1,0 +1,37 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7599230984264879375
+Timestamp: 20260416_045918
+Network responses: 40
+Runtime objects: 1
+Video object candidates: 451
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7599230984264879375
+    Path: url_extraction
+  author_id: 89984243780
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 马克的技术工作坊
+    Path: network_response_31.aweme_detail.author.nickname
+  desc_text: 📌 本视频带大家从零开始，把 Claude Code 从“尝鲜”工具变成真正的“生产力利器”。#claude #claudecode #ai #agent #llm
+
+时间戳如下，方便大家跳转观看：
+...
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_31.aweme_detail.author.create_time
+  like_count_raw: 31877
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 766
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 3701
+    Path: network_response_31.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 55, 'caption_start': 48, 'end': 79, 'hashtag_id': '1640552203935755', 'hashtag_name...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

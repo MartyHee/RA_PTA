@@ -34,6 +34,7 @@ def main():
     parser.add_argument('--browser', action='store_true', help='使用浏览器模式（处理JavaScript渲染页面）')
     parser.add_argument('--workers', type=int, default=1, help='爬虫工作线程数')
     parser.add_argument('--sample', action='store_true', help='使用配置文件中的样本URL')
+    parser.add_argument('--url-file', type=Path, help='从文件读取URL列表（每行一个URL）')
 
     args = parser.parse_args()
 
@@ -50,7 +51,36 @@ def main():
     # 确定要抓取的URL
     urls_to_crawl = []
 
-    if args.urls:
+    if args.url_file:
+        # 从文件读取URL列表
+        try:
+            with open(args.url_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    # 处理格式: "1 https://..." 或直接是URL
+                    parts = line.split()
+                    if len(parts) > 1:
+                        # 取最后一个部分，假设是URL
+                        candidate = parts[-1]
+                        if candidate.startswith('http'):
+                            urls_to_crawl.append(candidate)
+                        else:
+                            # 如果不是URL，尝试整个行
+                            if line.startswith('http'):
+                                urls_to_crawl.append(line)
+                    else:
+                        # 直接是URL
+                        if line.startswith('http'):
+                            urls_to_crawl.append(line)
+            print(f"从文件 {args.url_file} 读取URL: {len(urls_to_crawl)}个")
+        except Exception as e:
+            print(f"读取URL文件失败: {e}")
+            return 1
+
+    elif args.urls:
         urls_to_crawl = args.urls
         print(f"使用命令行参数中的URL: {len(urls_to_crawl)}个")
 

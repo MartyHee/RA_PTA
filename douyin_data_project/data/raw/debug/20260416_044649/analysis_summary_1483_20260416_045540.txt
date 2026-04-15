@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7627031724655922484
+Timestamp: 20260416_045540
+Network responses: 92
+Runtime objects: 1
+Video object candidates: 2315
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7627031724655922484
+    Path: url_extraction
+  author_id: 1201115480466887
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 郝奕会客厅
+    Path: network_response_31.aweme_detail.author.nickname
+  desc_text: #郝奕会客厅 #法医 #刘良 #访谈 #视频播客扶持计划
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_31.aweme_detail.author.create_time
+  like_count_raw: 1427523
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 33
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 707549
+    Path: network_response_31.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 6, 'caption_start': 0, 'end': 37, 'hashtag_id': '7397328009612494911', 'hashtag_nam...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

@@ -6,6 +6,8 @@ Supports queueing multiple URLs, rate limiting, and task tracking.
 import time
 import threading
 import json
+import csv
+import re
 from datetime import datetime
 from typing import List, Optional, Dict, Any, Callable
 from queue import Queue, Empty
@@ -120,12 +122,24 @@ class CrawlScheduler:
         self.interim_dir = Path(get_config('settings.paths.interim_data', './data/interim'))
         self.interim_dir.mkdir(parents=True, exist_ok=True)
 
+        # Processed data directory for high-confidence samples
+        self.processed_dir = Path(get_config('settings.paths.processed_data', './data/processed'))
+        self.processed_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create run-specific subdirectories
+        self.interim_run_dir = self.interim_dir / self.run_id
+        self.interim_run_dir.mkdir(parents=True, exist_ok=True)
+        self.processed_run_dir = self.processed_dir / self.run_id
+        self.processed_run_dir.mkdir(parents=True, exist_ok=True)
+
 
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
 
         # Log run information
         logger.info(f"Run ID: {self.run_id}")
+        logger.info(f"Interim data directory: {self.interim_run_dir}")
+        logger.info(f"Processed data directory: {self.processed_run_dir}")
         if self.use_browser and not self.use_mock:
             debug_dir = self.output_dir / "debug" / self.run_id
             rendered_dir = self.output_dir / "rendered_html" / self.run_id
@@ -592,7 +606,7 @@ class CrawlScheduler:
 
             # Save to interim directory as CSV (primary output for real crawl)
             meta_filename = f"{self.output_prefix}web_video_meta_{self.file_suffix}.csv"
-            meta_file = self.interim_dir / meta_filename
+            meta_file = self.interim_run_dir / meta_filename
             write_csv(meta_file, [metadata.dict()], mode='a', index=False)
             logger.info(f"Metadata saved to {meta_file}")
 
@@ -635,6 +649,10 @@ class CrawlScheduler:
 
         logger.info("Scheduler finished")
         self._print_summary()
+        # Filter high-confidence samples after crawl completion
+        self._filter_and_save_high_confidence_samples()
+        # Generate quality report
+        self._generate_quality_report()
 
     def stop(self):
         """Stop the scheduler."""
@@ -699,6 +717,262 @@ class CrawlScheduler:
         logger.info(f"Crawl summary: {len(self.completed_tasks)} completed, "
                    f"{len(self.failed_tasks)} failed ({success_rate:.1f}% success)")
 
+    def _filter_and_save_high_confidence_samples(self):
+        """Filter high-confidence samples from interim CSV and save to processed directory."""
+        try:
+            # Find the interim CSV file
+            csv_filename = f"{self.output_prefix}web_video_meta_{self.file_suffix}.csv"
+            csv_path = self.interim_run_dir / csv_filename
+
+            if not csv_path.exists():
+                logger.warning(f"Interim CSV file not found: {csv_path}")
+                return
+
+            logger.info(f"Filtering high-confidence samples from {csv_path}")
+
+            # Read all records
+            records = []
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    records.append(row)
+
+            if not records:
+                logger.info("No records to filter")
+                return
+
+            logger.info(f"Total records loaded: {len(records)}")
+
+            # Helper function to extract video ID from URL
+            def extract_video_id_from_url(url: str) -> Optional[str]:
+                """Extract video ID from Douyin URL."""
+                patterns = [
+                    r'/video/([^/?]+)',
+                    r'video/([^/?]+)',
+                    r'item_id=([^&]+)',
+                    r'id=([^&]+)',
+                    r'modal_id=([^&]+)'
+                ]
+                for pattern in patterns:
+                    match = re.search(pattern, url)
+                    if match:
+                        return match.group(1)
+                return None
+
+            # Filter criteria
+            high_confidence_records = []
+            for row in records:
+                # Check match_type and confidence
+                match_type = row.get('match_type')
+                confidence = row.get('confidence')
+
+                if match_type != 'exact' or confidence != 'high':
+                    continue
+
+                # Check video_id consistency with page_url
+                video_id = row.get('video_id')
+                page_url = row.get('page_url')
+                if not video_id or not page_url:
+                    continue
+
+                target_id = extract_video_id_from_url(page_url)
+                if target_id and video_id == target_id:
+                    high_confidence_records.append(row)
+                else:
+                    # video_id may already be target_id from URL extraction
+                    # If extraction failed, still accept if video_id is not empty
+                    # but log warning
+                    logger.debug(f"Video ID mismatch: video_id={video_id}, target_id={target_id}")
+
+            logger.info(f"High-confidence samples found: {len(high_confidence_records)}")
+
+            # Save high-confidence samples to processed directory
+            if high_confidence_records:
+                output_filename = f"high_confidence_web_video_meta_{self.file_suffix}.csv"
+                output_path = self.processed_run_dir / output_filename
+
+                with open(output_path, 'w', encoding='utf-8', newline='') as f:
+                    writer = csv.DictWriter(f, fieldnames=high_confidence_records[0].keys())
+                    writer.writeheader()
+                    writer.writerows(high_confidence_records)
+
+                logger.info(f"High-confidence samples saved to {output_path}")
+            else:
+                logger.info("No high-confidence samples to save")
+
+        except Exception as e:
+            logger.error(f"Failed to filter high-confidence samples: {e}")
+
+    def _generate_quality_report(self):
+        """Generate quality statistics report for the crawl run."""
+        try:
+            # Find the interim CSV file
+            csv_filename = f"{self.output_prefix}web_video_meta_{self.file_suffix}.csv"
+            csv_path = self.interim_run_dir / csv_filename
+
+            if not csv_path.exists():
+                logger.warning(f"Interim CSV file not found: {csv_path}")
+                return
+
+            logger.info(f"Generating quality report from {csv_path}")
+
+            # Read all records
+            records = []
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    records.append(row)
+
+            if not records:
+                logger.info("No records for quality report")
+                return
+
+            total_records = len(records)
+            logger.info(f"Total records for quality analysis: {total_records}")
+
+            # Helper function to extract video ID from URL
+            def extract_video_id_from_url(url: str) -> Optional[str]:
+                """Extract video ID from Douyin URL."""
+                patterns = [
+                    r'/video/([^/?]+)',
+                    r'video/([^/?]+)',
+                    r'item_id=([^&]+)',
+                    r'id=([^&]+)',
+                    r'modal_id=([^&]+)'
+                ]
+                for pattern in patterns:
+                    match = re.search(pattern, url)
+                    if match:
+                        return match.group(1)
+                return None
+
+            # Initialize counters
+            match_type_counts = {'exact': 0, 'partial': 0, 'none': 0, 'unknown': 0}
+            confidence_counts = {'high': 0, 'medium': 0, 'low': 0, 'unknown': 0}
+            video_id_consistent = 0
+            video_id_short_or_abnormal = 0
+            video_id_mismatch = 0
+            cross_page_mixing_suspected = 0  # Placeholder for cross-page mixing detection
+
+            for row in records:
+                # Count match_type
+                match_type = row.get('match_type')
+                if match_type in match_type_counts:
+                    match_type_counts[match_type] += 1
+                else:
+                    match_type_counts['unknown'] += 1
+
+                # Count confidence
+                confidence = row.get('confidence')
+                if confidence in confidence_counts:
+                    confidence_counts[confidence] += 1
+                else:
+                    confidence_counts['unknown'] += 1
+
+                # Check video_id consistency with page_url
+                video_id = row.get('video_id')
+                page_url = row.get('page_url')
+                if video_id and page_url:
+                    target_id = extract_video_id_from_url(page_url)
+                    if target_id:
+                        if video_id == target_id:
+                            video_id_consistent += 1
+                        else:
+                            video_id_mismatch += 1
+                    # else: cannot extract target_id, skip consistency check
+
+                # Detect short or abnormal video_id (e.g., very short numeric values)
+                if video_id:
+                    # Check if video_id is suspiciously short (<= 3 chars) and numeric
+                    if len(video_id) <= 3 and video_id.isdigit():
+                        video_id_short_or_abnormal += 1
+                    # Check if video_id contains non-digit characters but very short
+                    elif len(video_id) <= 3:
+                        video_id_short_or_abnormal += 1
+
+                # Cross-page mixing detection (simplistic heuristic)
+                # If video_id doesn't match target_id and match_type is none/low confidence,
+                # might indicate cross-page mixing
+                if match_type == 'none' and confidence == 'low':
+                    cross_page_mixing_suspected += 1
+
+            # Calculate high-confidence samples (exact + high)
+            high_confidence_samples = 0
+            for row in records:
+                if row.get('match_type') == 'exact' and row.get('confidence') == 'high':
+                    high_confidence_samples += 1
+
+            # Calculate percentages
+            def safe_percent(count, total):
+                return count / total * 100 if total > 0 else 0.0
+
+            # Generate report lines
+            report_lines = []
+            report_lines.append("=" * 80)
+            report_lines.append(f"Quality Report for Run ID: {self.run_id}")
+            report_lines.append("=" * 80)
+            report_lines.append(f"Total URL processed: {self.task_queue.qsize() + len(self.completed_tasks) + len(self.failed_tasks)}")
+            report_lines.append(f"Successfully crawled: {len(self.completed_tasks)}")
+            report_lines.append(f"Failed to crawl: {len(self.failed_tasks)}")
+            report_lines.append(f"Records generated: {total_records}")
+            report_lines.append("")
+            report_lines.append("Match Type Distribution:")
+            for mt in ['exact', 'partial', 'none', 'unknown']:
+                count = match_type_counts[mt]
+                percent = safe_percent(count, total_records)
+                report_lines.append(f"  {mt}: {count} ({percent:.1f}%)")
+            report_lines.append("")
+            report_lines.append("Confidence Distribution:")
+            for conf in ['high', 'medium', 'low', 'unknown']:
+                count = confidence_counts[conf]
+                percent = safe_percent(count, total_records)
+                report_lines.append(f"  {conf}: {count} ({percent:.1f}%)")
+            report_lines.append("")
+            report_lines.append(f"High-confidence samples (exact+high): {high_confidence_samples} ({safe_percent(high_confidence_samples, total_records):.1f}%)")
+            report_lines.append(f"Video ID consistent with page_url: {video_id_consistent} ({safe_percent(video_id_consistent, total_records):.1f}%)")
+            report_lines.append(f"Video ID mismatch: {video_id_mismatch} ({safe_percent(video_id_mismatch, total_records):.1f}%)")
+            report_lines.append(f"Short/abnormal video_id (<=3 chars): {video_id_short_or_abnormal} ({safe_percent(video_id_short_or_abnormal, total_records):.1f}%)")
+            report_lines.append(f"Cross-page mixing suspected: {cross_page_mixing_suspected} ({safe_percent(cross_page_mixing_suspected, total_records):.1f}%)")
+            report_lines.append("")
+            report_lines.append("Run Stability Summary:")
+            report_lines.append(f"  URLs failed: {len(self.failed_tasks)}")
+            report_lines.append(f"  Pages with no candidates: {match_type_counts['none']}")
+            report_lines.append(f"  Pages with only low confidence: {confidence_counts['low']}")
+            report_lines.append("")
+            report_lines.append("Overall Assessment:")
+            if high_confidence_samples / total_records > 0.7:
+                report_lines.append("  ✅ High-confidence sample ratio is good (>70%)")
+            else:
+                report_lines.append("  ⚠️ High-confidence sample ratio is low (<70%)")
+            if video_id_consistent / total_records > 0.8:
+                report_lines.append("  ✅ Video ID consistency is good (>80%)")
+            else:
+                report_lines.append("  ⚠️ Video ID consistency needs improvement")
+            if video_id_short_or_abnormal == 0:
+                report_lines.append("  ✅ No short/abnormal video IDs detected")
+            else:
+                report_lines.append(f"  ⚠️ {video_id_short_or_abnormal} short/abnormal video IDs detected")
+            if cross_page_mixing_suspected == 0:
+                report_lines.append("  ✅ No obvious cross-page mixing detected")
+            else:
+                report_lines.append(f"  ⚠️ {cross_page_mixing_suspected} records suspected of cross-page mixing")
+            report_lines.append("=" * 80)
+
+            # Log report
+            for line in report_lines:
+                logger.info(line)
+
+            # Save report to debug directory
+            debug_dir = self.output_dir / "debug" / self.run_id
+            debug_dir.mkdir(parents=True, exist_ok=True)
+            report_file = debug_dir / f"quality_report_{self.run_id}.txt"
+            with open(report_file, 'w', encoding='utf-8') as f:
+                f.write("\n".join(report_lines))
+            logger.info(f"Quality report saved to {report_file}")
+
+        except Exception as e:
+            logger.error(f"Failed to generate quality report: {e}")
+
     def mock_run(self, urls: List[str], source_entry: str = 'manual_url'):
         """Run in mock mode (no network requests).
 
@@ -728,3 +1002,5 @@ class CrawlScheduler:
                 logger.error(f"Error in mock run for {url}: {e}")
 
         logger.info("Mock run completed")
+        # Filter high-confidence samples after mock run
+        self._filter_and_save_high_confidence_samples()

@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7621084150518336822
+Timestamp: 20260416_044924
+Network responses: 56
+Runtime objects: 1
+Video object candidates: 1238
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7621084150518336822
+    Path: url_extraction
+  author_id: 3419928973810448
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: Horcus
+    Path: network_response_28.aweme_detail.author.nickname
+  desc_text: 这一期太难猜了#horcus
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_28.aweme_detail.author.create_time
+  like_count_raw: 279576
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 1356
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 11563
+    Path: network_response_28.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 14, 'caption_start': 7, 'end': 14, 'hashtag_id': '1729439314080779', 'hashtag_name'...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7626740327148117611
+Timestamp: 20260416_053119
+Network responses: 56
+Runtime objects: 1
+Video object candidates: 1095
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7626740327148117611
+    Path: url_extraction
+  author_id: 2277841665529404
+    Path: network_response_43.aweme_detail.author.uid
+  author_name: 亲切的拓子
+    Path: network_response_43.aweme_detail.author.nickname
+  desc_text: 找对象，一定要会看着六点 #颜值遗传
+    Path: network_response_43.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_43.aweme_detail.author.create_time
+  like_count_raw: 659
+    Path: network_response_43.aweme_detail.statistics.digg_count
+  comment_count_raw: 43
+    Path: network_response_43.aweme_detail.statistics.comment_count
+  share_count_raw: 219
+    Path: network_response_43.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 18, 'caption_start': 13, 'end': 23, 'hashtag_id': '1643032538795016', 'hashtag_name...
+    Path: network_response_43.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_43.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

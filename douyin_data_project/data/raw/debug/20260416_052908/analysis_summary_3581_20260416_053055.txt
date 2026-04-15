@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7627333730952105252
+Timestamp: 20260416_053055
+Network responses: 67
+Runtime objects: 1
+Video object candidates: 1585
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7627333730952105252
+    Path: url_extraction
+  author_id: 101988387837
+    Path: network_response_61.comments.[0].user.uid
+  author_name: 落尽星辰
+    Path: network_response_61.comments.[0].user.nickname
+  desc_text: 
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1776054216
+    Path: network_response_61.comments.[0].create_time
+  like_count_raw: 73
+    Path: network_response_61.comments.[0].digg_count
+  comment_count_raw: 51
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 869
+    Path: network_response_29.aweme_detail.statistics.share_count
+  hashtag_list: []
+    Path: network_response_61.comments.[0].text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

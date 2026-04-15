@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614822256039988532
+Timestamp: 20260416_053019
+Network responses: 63
+Runtime objects: 1
+Video object candidates: 1291
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614822256039988532
+    Path: url_extraction
+  author_id: 1097781186667780
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 无尘游戏解说
+    Path: network_response_30.aweme_detail.author.nickname
+  desc_text: #机瞄 #悠一 #顶猎 #赋能 #三角洲行动
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_30.aweme_detail.author.create_time
+  like_count_raw: 58815
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 643
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 7660
+    Path: network_response_30.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 20, 'hashtag_id': '1596253644994573', 'hashtag_name':...
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

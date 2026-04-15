@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7621141530262179099
+Timestamp: 20260416_051722
+Network responses: 86
+Runtime objects: 1
+Video object candidates: 1234
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7621141530262179099
+    Path: url_extraction
+  author_id: 84492244869
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: papi酱
+    Path: network_response_27.aweme_detail.author.nickname
+  desc_text: #飞书 #安克AI录音豆
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_27.aweme_detail.author.create_time
+  like_count_raw: 939957
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 18836
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 663638
+    Path: network_response_27.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 23, 'hashtag_id': '1588474698098707', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

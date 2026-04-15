@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7605752547445411106
+Timestamp: 20260416_051336
+Network responses: 83
+Runtime objects: 1
+Video object candidates: 2831
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7605752547445411106
+    Path: url_extraction
+  author_id: 1014180958446636
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 做宁的书虫
+    Path: network_response_27.aweme_detail.author.nickname
+  desc_text: 今年最后一次大制作，熬了4个大夜，为你深度解读“人这一生不能不读的世界名著”第6期：《堂吉诃德》。我们有梦，就大胆地去做梦吧。做那个挑战风车的傻子，鲁莽也比怯懦更接近勇敢。虽然迄今所有的人生都大写着失...
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_27.aweme_detail.author.create_time
+  like_count_raw: 59477
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 792
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 4477
+    Path: network_response_27.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 254, 'caption_start': 245, 'end': 285, 'hashtag_id': '7599965573560961074', 'hashta...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

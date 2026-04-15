@@ -1,0 +1,35 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7628617795365915955
+Timestamp: 20260416_053147
+Network responses: 68
+Runtime objects: 1
+Video object candidates: 1457
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7628617795365915955
+    Path: url_extraction
+  author_id: 1344052127339097
+    Path: network_response_60.comments.[0].user.uid
+  author_name: ｜珊瑚🪸
+    Path: network_response_60.comments.[0].user.nickname
+  desc_text: Easy Nature English | Describe the World Around You (Comprehensible Input Vlog)
+#volkaenglish  #英语  ...
+    Path: network_response_34.aweme_detail.caption
+  publish_time_raw: 1776287664
+    Path: network_response_60.comments.[0].create_time
+  like_count_raw: 0
+    Path: network_response_60.comments.[0].digg_count
+  comment_count_raw: 50
+    Path: network_response_34.aweme_detail.statistics.comment_count
+  share_count_raw: 481
+    Path: network_response_34.aweme_detail.statistics.share_count
+  hashtag_list: []
+    Path: network_response_60.comments.[0].text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_34.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

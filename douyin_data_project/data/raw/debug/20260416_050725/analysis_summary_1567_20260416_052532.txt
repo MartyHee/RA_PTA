@@ -1,0 +1,35 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597053646329131242
+Timestamp: 20260416_052532
+Network responses: 77
+Runtime objects: 1
+Video object candidates: 1527
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597053646329131242
+    Path: url_extraction
+  author_id: 4119229776804686
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: TracyGogogo
+    Path: network_response_28.aweme_detail.author.nickname
+  desc_text: 因为工作后发现每天只有3小时…
+#认知分享 #女性智慧 #情感共鸣 #成长哲学 #打工人
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_28.aweme_detail.author.create_time
+  like_count_raw: 14603
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 365
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 1248
+    Path: network_response_28.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 21, 'caption_start': 16, 'end': 36, 'hashtag_id': '1664937903196167', 'hashtag_name...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

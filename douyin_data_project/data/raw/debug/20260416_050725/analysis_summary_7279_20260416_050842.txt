@@ -1,0 +1,35 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7618504350813424923
+Timestamp: 20260416_050842
+Network responses: 64
+Runtime objects: 1
+Video object candidates: 1302
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7618504350813424923
+    Path: url_extraction
+  author_id: 101161131471
+    Path: network_response_33.aweme_detail.author.uid
+  author_name: BB大王
+    Path: network_response_33.aweme_detail.author.nickname
+  desc_text: 1个BUG瘫痪一堆BUG就能WORK
+#美妆 #搞笑 #埃及 #立白大师香氛
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_33.aweme_detail.author.create_time
+  like_count_raw: 282844
+    Path: network_response_33.aweme_detail.statistics.digg_count
+  comment_count_raw: 2994
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 79858
+    Path: network_response_33.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 22, 'caption_start': 19, 'end': 39, 'hashtag_id': '1767586856764494', 'hashtag_name...
+    Path: network_response_33.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================

@@ -1,0 +1,34 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7626389557025705262
+Timestamp: 20260416_044848
+Network responses: 29
+Runtime objects: 0
+Video object candidates: 196
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7626389557025705262
+    Path: url_extraction
+  author_id: 272302036753048
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 钱继東
+    Path: network_response_26.aweme_detail.author.nickname
+  desc_text: 你是否睡足8小时，醒来依然疲惫、昏沉、像没睡一样？其实问题不在睡眠时长，而在于你的大脑是否允许自己“开机”。本视频从脑科学角度揭示：控制清晨状态的三大系统——昼夜节律、睡眠压力、认知负荷——只要一个失...
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 0
+    Path: network_response_26.aweme_detail.author.create_time
+  like_count_raw: 1717
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 14
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 157
+    Path: network_response_26.aweme_detail.statistics.share_count
+  hashtag_list: [{'caption_end': 775, 'caption_start': 772, 'end': 797, 'hashtag_id': '1586131606159373', 'hashtag_n...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+
+Extracted 10 out of 10 target fields
+================================================================================
