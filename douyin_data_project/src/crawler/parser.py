@@ -1073,8 +1073,7 @@ class DouyinParser:
             target_fields = [
                 'video_id', 'page_url', 'author_id', 'author_name', 'author_profile_url',
                 'desc_text', 'publish_time_raw', 'publish_time_std', 'like_count_raw',
-                'comment_count_raw', 'share_count_raw', 'like_count', 'comment_count',
-                'share_count', 'collect_count', 'hashtag_list', 'hashtag_count',
+                'comment_count_raw', 'share_count_raw', 'collect_count', 'hashtag_list', 'hashtag_count',
                 'cover_url', 'music_name', 'duration_sec', 'source_entry', 'crawl_time'
             ]
             for field in target_fields:

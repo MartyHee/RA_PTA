@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7621141530262179099
+Timestamp: 20260420_194151
+Network responses: 80
+Runtime objects: 1
+Video object candidates: 1160
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7621141530262179099
+    Path: url_extraction
+  author_id: 84492244869
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: papi酱
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAgRBUyjONHgY_Uq1F_8IX4Cgmcp8g0NSXKUCiA8rbCBo
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: #飞书 #安克AI录音豆
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1774605656
+    Path: aweme_detail
+  like_count_raw: 950304
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 19045
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 668429
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 35484
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 23, 'hashtag_id': '1588474698098707', 'hashtag_name':...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/7d09b9c72eb7de36dd9aba46e538b624~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @papi酱创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 192865
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 31695926
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 325461215
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 一个集美貌与才华于一身的女子。
+团队碎碎念小号在@种草papi酱 
+（商业合作邮箱：papijiang@papitube.com，请备注papi+品牌信息。）
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  risk_warning_text: NOT FOUND
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/039546266c7c4c0f8cad77cb9743d2f1', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oY0WkBCyg87GeLn7L8gdHg3eTe3d8MQVhFQAAB', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+  bitrate_count: NOT FOUND
+
+Extracted 21 out of 14 target fields
+================================================================================

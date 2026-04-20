@@ -125,15 +125,23 @@ class WebVideoMeta(BaseModel):
     like_count_raw: Optional[str] = Field(None, description="页面原始点赞数文本，如 '1.2w'")
     comment_count_raw: Optional[str] = Field(None, description="页面原始评论数文本")
     share_count_raw: Optional[str] = Field(None, description="页面原始分享数文本")
-    like_count: Optional[int] = Field(None, description="归一化后的点赞数")
-    comment_count: Optional[int] = Field(None, description="归一化后的评论数")
-    share_count: Optional[int] = Field(None, description="归一化后的分享数")
     collect_count: Optional[int] = Field(None, description="收藏数，网页端不稳定，仅作为可选字段")
     hashtag_list: Optional[List[str]] = Field(default_factory=list, description="从文案中抽取的 #话题 列表")
     hashtag_count: int = Field(0, description="话题数量，无则为0")
     cover_url: Optional[str] = Field(None, description="封面图片链接")
     music_name: Optional[str] = Field(None, description="关联音乐名称，若页面可提取")
     duration_sec: Optional[int] = Field(None, description="视频时长（秒），若页面可提取")
+    # 作者侧补充字段
+    author_follower_count: Optional[int] = Field(None, description="作者粉丝数")
+    author_total_favorited: Optional[int] = Field(None, description="作者总获赞数")
+    author_signature: Optional[str] = Field(None, description="作者签名/简介")
+    author_verification_type: Optional[int] = Field(None, description="作者认证类型")
+    # 风险/内容结构侧补充字段
+    risk_warning_text: Optional[str] = Field(None, description="风险提示文本")
+    video_cover_url: Optional[str] = Field(None, description="视频封面URL")
+    dynamic_cover_url: Optional[str] = Field(None, description="动态封面URL")
+    origin_cover_url: Optional[str] = Field(None, description="原始封面URL")
+    bitrate_count: Optional[int] = Field(None, description="码率数量")
     source_entry: str = Field(..., description="采样来源")
     # Match metadata for browser mode data quality assessment
     match_type: Optional[str] = Field(None, description="主对象匹配类型: exact/partial/none")
@@ -150,29 +158,40 @@ class WebVideoMeta(BaseModel):
             return len(values['hashtag_list'])
         return v or 0
 
-    @validator('like_count', pre=True)
-    def normalize_like_count(cls, v, values):
+
+    @validator('publish_time_std', pre=True, always=True)
+    def set_publish_time_std(cls, v, values):
+        """Convert publish_time_raw to datetime."""
         if v is not None:
             return v
-        if 'like_count_raw' in values and values['like_count_raw']:
-            return normalize_count(values['like_count_raw'])
+        if 'publish_time_raw' in values and values['publish_time_raw'] is not None:
+            raw = values['publish_time_raw']
+            # raw could be int, float, or str
+            try:
+                if isinstance(raw, (int, float)):
+                    timestamp = float(raw)
+                else:
+                    timestamp = float(raw)
+                # Determine if seconds or milliseconds
+                if timestamp > 253402300800:  # 年份 10000 的秒数，防止毫秒值过大
+                    # Likely milliseconds
+                    timestamp = timestamp / 1000.0
+                return datetime.fromtimestamp(timestamp)
+            except (ValueError, TypeError):
+                pass
         return None
 
-    @validator('comment_count', pre=True)
-    def normalize_comment_count(cls, v, values):
-        if v is not None:
-            return v
-        if 'comment_count_raw' in values and values['comment_count_raw']:
-            return normalize_count(values['comment_count_raw'])
-        return None
 
-    @validator('share_count', pre=True)
-    def normalize_share_count(cls, v, values):
-        if v is not None:
-            return v
-        if 'share_count_raw' in values and values['share_count_raw']:
-            return normalize_count(values['share_count_raw'])
-        return None
+    @validator('duration_sec', pre=True)
+    def normalize_duration_sec(cls, v, values):
+        """Convert duration from milliseconds to seconds if needed."""
+        if v is None:
+            return None
+        # If value is larger than 360000 (6 minutes in milliseconds), assume it's in milliseconds
+        # Convert to seconds
+        if v > 360000:
+            return int(v / 1000)
+        return v
 
 
 class ProcessedVideoData(BaseModel):

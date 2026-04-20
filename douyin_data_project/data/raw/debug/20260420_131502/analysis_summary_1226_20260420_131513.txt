@@ -1,0 +1,42 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7627399396702850340
+Timestamp: 20260420_131513
+Network responses: 41
+Runtime objects: 0
+Video object candidates: 277
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7627399396702850340
+    Path: url_extraction
+  author_id: 1090355730318606
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 姜Dora在此
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAN072cpRG6Ascc27mTfEvKj07hvclZfsDrjCqg3PzHZTYZ0WEknPaW61-qYa4...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: #搞钱#唯品会419特卖节#我的春日搭子#姜Dora
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1775905226
+    Path: aweme_detail
+  like_count_raw: 467101
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 7171
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 142734
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 187192
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 30, 'hashtag_id': '1580704555537421', 'hashtag_name':...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/cb16e73369684963f13014c5e97e69ba~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @姜Dora在此创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 1411
+    Path: network_response_29.aweme_detail.duration
+
+Extracted 14 out of 14 target fields
+================================================================================

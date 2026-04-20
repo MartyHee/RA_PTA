@@ -545,10 +545,13 @@ class BrowserClient:
             # Priority 1: exact match
             exact_match_candidates = [r for r in all_field_results if r.get('match_type') == 'exact']
             if exact_match_candidates:
-                # Sort exact match candidates by URL for stable selection
-                # Candidates with URLs come first, sorted alphabetically; candidates without URLs come last
+                # Sort exact match candidates: aweme_detail sources first, then by URL for stable selection
+                # 1. Sources without 'aweme_detail' come later (True > False)
+                # 2. Candidates with URLs come first, sorted alphabetically; candidates without URLs come last
+                # 3. Finally by source key for tie-breaking
                 exact_match_candidates.sort(key=lambda r: (
-                    source_url_map.get(r['source']) is None,  # False (0) first, True (1) later
+                    'aweme_detail' not in r['source'],  # False (0) first for aweme_detail sources
+                    source_url_map.get(r['source']) is None,  # False (0) first for sources with URLs
                     source_url_map.get(r['source']) or '',    # Then by URL string
                     r['source']                               # Finally by source key for tie-breaking
                 ))
@@ -561,9 +564,13 @@ class BrowserClient:
             if not primary_source_key:
                 partial_match_candidates = [r for r in all_field_results if r.get('match_type') == 'partial']
                 if partial_match_candidates:
-                    # Sort partial match candidates by URL for stable selection
+                    # Sort partial match candidates: aweme_detail sources first, then by URL for stable selection
+                    # 1. Sources without 'aweme_detail' come later (True > False)
+                    # 2. Candidates with URLs come first, sorted alphabetically; candidates without URLs come last
+                    # 3. Finally by source key for tie-breaking
                     partial_match_candidates.sort(key=lambda r: (
-                        source_url_map.get(r['source']) is None,  # False (0) first, True (1) later
+                        'aweme_detail' not in r['source'],  # False (0) first for aweme_detail sources
+                        source_url_map.get(r['source']) is None,  # False (0) first for sources with URLs
                         source_url_map.get(r['source']) or '',    # Then by URL string
                         r['source']                               # Finally by source key for tie-breaking
                     ))
@@ -648,13 +655,27 @@ class BrowserClient:
                 'video_id': {'value': None, 'path': None},
                 'author_id': {'value': None, 'path': None},
                 'author_name': {'value': None, 'path': None},
+                'author_profile_url': {'value': None, 'path': None},
                 'desc_text': {'value': None, 'path': None},
                 'publish_time_raw': {'value': None, 'path': None},
                 'like_count_raw': {'value': None, 'path': None},
                 'comment_count_raw': {'value': None, 'path': None},
                 'share_count_raw': {'value': None, 'path': None},
+                'collect_count': {'value': None, 'path': None},
                 'hashtag_list': {'value': None, 'path': None},
-                'cover_url': {'value': None, 'path': None}
+                'cover_url': {'value': None, 'path': None},
+                'music_name': {'value': None, 'path': None},
+                'duration_sec': {'value': None, 'path': None},
+                # 新增主表字段
+                'author_follower_count': {'value': None, 'path': None},
+                'author_total_favorited': {'value': None, 'path': None},
+                'author_signature': {'value': None, 'path': None},
+                'author_verification_type': {'value': None, 'path': None},
+                'risk_warning_text': {'value': None, 'path': None},
+                'video_cover_url': {'value': None, 'path': None},
+                'dynamic_cover_url': {'value': None, 'path': None},
+                'origin_cover_url': {'value': None, 'path': None},
+                'bitrate_count': {'value': None, 'path': None}
             }
 
             field_sources = {}
@@ -670,13 +691,18 @@ class BrowserClient:
                 is_primary_source = (source_key == primary_source_key)
                 for field_name, field_info in result['fields'].items():
                     if field_info['value'] is not None:
-                        field_candidates[field_name].append({
-                            'field_info': field_info,
-                            'source': source_key,
-                            'is_primary_source': is_primary_source,
-                            'candidate_video_id': result.get('candidate_video_id'),
-                            'match_type': result.get('match_type')
-                        })
+                        # Only collect fields that are in merged_fields (main table fields)
+                        # Skip candidate fields that are not part of the main table
+                        if field_name in field_candidates:
+                            field_candidates[field_name].append({
+                                'field_info': field_info,
+                                'source': source_key,
+                                'is_primary_source': is_primary_source,
+                                'candidate_video_id': result.get('candidate_video_id'),
+                                'match_type': result.get('match_type')
+                            })
+                        else:
+                            logger.debug(f"Skipping candidate field {field_name} (not in main table)")
 
             # Second pass: select best candidate for each field
             for field_name, candidates in field_candidates.items():
@@ -730,6 +756,146 @@ class BrowserClient:
                 merged_fields[field_name] = selected['field_info']
                 field_sources[field_name] = selected['source']
                 field_selection_reasons[field_name] = selection_reason
+
+            # Post-process author_profile_url: construct from sec_uid if not found or is sec_uid
+            author_profile_url_value = merged_fields['author_profile_url']['value']
+            author_profile_url_path = merged_fields['author_profile_url'].get('path', '')
+
+            # Check if we need to construct URL from sec_uid
+            if author_profile_url_value is None or ('sec_uid' in author_profile_url_path and not isinstance(author_profile_url_value, str)):
+                # Try to find sec_uid in the data sources
+                sec_uid = None
+                for source in all_data_sources:
+                    data = source['data']
+                    # Recursively search for sec_uid
+                    def find_sec_uid(obj, path=""):
+                        nonlocal sec_uid
+                        if sec_uid is not None:
+                            return
+                        if isinstance(obj, dict):
+                            if 'sec_uid' in obj:
+                                sec_uid = obj['sec_uid']
+                                return
+                            for k, v in obj.items():
+                                find_sec_uid(v, f"{path}.{k}" if path else k)
+                        elif isinstance(obj, list):
+                            for i, item in enumerate(obj):
+                                find_sec_uid(item, f"{path}[{i}]")
+                    find_sec_uid(data)
+                    if sec_uid is not None:
+                        # Construct profile URL
+                        profile_url = f"https://www.douyin.com/user/{sec_uid}"
+                        merged_fields['author_profile_url'] = {'value': profile_url, 'path': 'constructed_from_sec_uid'}
+                        field_sources['author_profile_url'] = 'constructed'
+                        field_selection_reasons['author_profile_url'] = 'constructed_from_sec_uid'
+                        logger.info(f"Constructed author_profile_url from sec_uid: {profile_url}")
+                        break
+            elif author_profile_url_value is not None and isinstance(author_profile_url_value, str):
+                # If value exists but looks like a sec_uid (not a URL and not a numeric ID)
+                if not author_profile_url_value.startswith(('http://', 'https://', 'www.', '/')) and len(author_profile_url_value) > 10:
+                    # Check if path indicates it's a sec_uid
+                    if 'sec_uid' in author_profile_url_path.lower():
+                        profile_url = f"https://www.douyin.com/user/{author_profile_url_value}"
+                        merged_fields['author_profile_url'] = {'value': profile_url, 'path': f"{author_profile_url_path}_constructed"}
+                        field_sources['author_profile_url'] = f"{field_sources.get('author_profile_url', 'unknown')}_constructed"
+                        field_selection_reasons['author_profile_url'] = 'constructed_from_sec_uid_value'
+                        logger.info(f"Constructed author_profile_url from sec_uid value: {profile_url}")
+
+            # Post-process publish_time_raw: try to find aweme_detail.create_time if current value is from author.create_time
+            publish_time_value = merged_fields['publish_time_raw']['value']
+            publish_time_path = merged_fields['publish_time_raw'].get('path', '')
+
+            if publish_time_value == 0 and 'author.create_time' in publish_time_path:
+                logger.info(f"publish_time_raw is 0 from author.create_time, searching for aweme_detail.create_time")
+                # Search for aweme_detail.create_time in all data sources
+                aweme_create_time = None
+                aweme_create_path = None
+                for source in all_data_sources:
+                    data = source['data']
+                    # Recursively search for create_time under aweme_detail
+                    def find_aweme_create_time(obj, path=""):
+                        nonlocal aweme_create_time, aweme_create_path
+                        if aweme_create_time is not None:
+                            return
+                        if isinstance(obj, dict):
+                            if 'create_time' in obj and 'aweme_detail' in path:
+                                aweme_create_time = obj['create_time']
+                                aweme_create_path = path
+                                return
+                            for k, v in obj.items():
+                                find_aweme_create_time(v, f"{path}.{k}" if path else k)
+                        elif isinstance(obj, list):
+                            for i, item in enumerate(obj):
+                                find_aweme_create_time(item, f"{path}[{i}]")
+                    find_aweme_create_time(data)
+                    if aweme_create_time is not None:
+                        break
+
+                if aweme_create_time is not None and aweme_create_time != 0:
+                    merged_fields['publish_time_raw'] = {'value': aweme_create_time, 'path': aweme_create_path}
+                    field_sources['publish_time_raw'] = field_sources.get('publish_time_raw', 'unknown') + '_corrected'
+                    field_selection_reasons['publish_time_raw'] = 'corrected_from_aweme_detail'
+                    logger.info(f"Corrected publish_time_raw from aweme_detail.create_time: {aweme_create_time}")
+
+            # Post-process cover_url: try to find video.cover if current value is from author.cover_url
+            cover_url_value = merged_fields['cover_url']['value']
+            cover_url_path = merged_fields['cover_url'].get('path', '')
+
+            if cover_url_value is not None and 'author.cover_url' in cover_url_path:
+                logger.info(f"cover_url is from author.cover_url, searching for video.cover")
+                # Search for video.cover in all data sources
+                video_cover = None
+                video_cover_path = None
+                for source in all_data_sources:
+                    data = source['data']
+                    # Recursively search for cover under video
+                    def find_video_cover(obj, path=""):
+                        nonlocal video_cover, video_cover_path
+                        if video_cover is not None:
+                            return
+                        if isinstance(obj, dict):
+                            if 'cover' in obj and 'video' in path:
+                                video_cover = obj['cover']
+                                video_cover_path = path
+                                return
+                            for k, v in obj.items():
+                                find_video_cover(v, f"{path}.{k}" if path else k)
+                        elif isinstance(obj, list):
+                            for i, item in enumerate(obj):
+                                find_video_cover(item, f"{path}[{i}]")
+                    find_video_cover(data)
+                    if video_cover is not None:
+                        break
+
+                if video_cover is not None:
+                    # video.cover might be a dict with url_list, need to extract URL
+                    if isinstance(video_cover, dict):
+                        if 'url_list' in video_cover and isinstance(video_cover['url_list'], list) and video_cover['url_list']:
+                            video_cover = video_cover['url_list'][0]
+                        elif 'url' in video_cover:
+                            video_cover = video_cover['url']
+                        elif 'cover' in video_cover:
+                            video_cover = video_cover['cover']
+
+                    merged_fields['cover_url'] = {'value': video_cover, 'path': video_cover_path}
+                    field_sources['cover_url'] = field_sources.get('cover_url', 'unknown') + '_corrected'
+                    field_selection_reasons['cover_url'] = 'corrected_from_video_cover'
+                    logger.info(f"Corrected cover_url from video.cover: {video_cover}")
+
+            # Post-process duration_sec: convert milliseconds to seconds if needed
+            duration_value = merged_fields['duration_sec']['value']
+            if duration_value is not None and isinstance(duration_value, (int, float)):
+                # If value is larger than 360000 (6 minutes in milliseconds), assume it's in milliseconds
+                if duration_value > 360000:
+                    duration_value = int(duration_value / 1000)
+                    merged_fields['duration_sec']['value'] = duration_value
+                    logger.info(f"Converted duration_sec from milliseconds to seconds: {duration_value}")
+
+            # Post-process publish_time_raw: ensure it's a string for schema compatibility
+            publish_time_value = merged_fields['publish_time_raw']['value']
+            if publish_time_value is not None and not isinstance(publish_time_value, str):
+                merged_fields['publish_time_raw']['value'] = str(publish_time_value)
+                logger.debug(f"Converted publish_time_raw to string: {publish_time_value}")
 
             # Log field selection summary
             logger.info("Field selection summary:")
@@ -791,13 +957,17 @@ class BrowserClient:
                     'video_id': {'value': None, 'path': None},
                     'author_id': {'value': None, 'path': None},
                     'author_name': {'value': None, 'path': None},
+                    'author_profile_url': {'value': None, 'path': None},
                     'desc_text': {'value': None, 'path': None},
                     'publish_time_raw': {'value': None, 'path': None},
                     'like_count_raw': {'value': None, 'path': None},
                     'comment_count_raw': {'value': None, 'path': None},
                     'share_count_raw': {'value': None, 'path': None},
+                    'collect_count': {'value': None, 'path': None},
                     'hashtag_list': {'value': None, 'path': None},
-                    'cover_url': {'value': None, 'path': None}
+                    'cover_url': {'value': None, 'path': None},
+                    'music_name': {'value': None, 'path': None},
+                    'duration_sec': {'value': None, 'path': None}
                 },
                 'field_sources': {},
                 'extracted_field_count': 0
@@ -840,7 +1010,7 @@ class BrowserClient:
                     lines.append(f"  {field_name}: NOT FOUND")
             lines.append("")
 
-            lines.append(f"Extracted {summary['extracted_field_count']} out of 10 target fields")
+            lines.append(f"Extracted {summary['extracted_field_count']} out of 14 target fields")
             lines.append("=" * 80)
 
             summary_text = "\n".join(lines)
@@ -1071,13 +1241,27 @@ class BrowserClient:
             'video_id': {'value': None, 'path': None},
             'author_id': {'value': None, 'path': None},
             'author_name': {'value': None, 'path': None},
+            'author_profile_url': {'value': None, 'path': None},
             'desc_text': {'value': None, 'path': None},
             'publish_time_raw': {'value': None, 'path': None},
             'like_count_raw': {'value': None, 'path': None},
             'comment_count_raw': {'value': None, 'path': None},
             'share_count_raw': {'value': None, 'path': None},
+            'collect_count': {'value': None, 'path': None},
             'hashtag_list': {'value': None, 'path': None},
-            'cover_url': {'value': None, 'path': None}
+            'cover_url': {'value': None, 'path': None},
+            'music_name': {'value': None, 'path': None},
+            'duration_sec': {'value': None, 'path': None},
+            # 新增主表字段
+            'author_follower_count': {'value': None, 'path': None},
+            'author_total_favorited': {'value': None, 'path': None},
+            'author_signature': {'value': None, 'path': None},
+            'author_verification_type': {'value': None, 'path': None},
+            'risk_warning_text': {'value': None, 'path': None},
+            'video_cover_url': {'value': None, 'path': None},
+            'dynamic_cover_url': {'value': None, 'path': None},
+            'origin_cover_url': {'value': None, 'path': None},
+            'bitrate_count': {'value': None, 'path': None}
         }
 
         # Field mapping configurations: field_name -> list of possible keys
@@ -1085,13 +1269,36 @@ class BrowserClient:
             'video_id': ['id', 'video_id', 'aweme_id', 'itemId', 'videoId', 'awemeId', 'vid'],
             'author_id': ['author_id', 'authorId', 'uid', 'user_id', 'userId', 'author.uid', 'author.id'],
             'author_name': ['author_name', 'nickname', 'author_name', 'authorName', 'author.nickname', 'user.nickname'],
+            'author_profile_url': ['profile_url', 'author.profile_url', 'homepage', 'author.homepage', 'sec_uid', 'author.sec_uid', 'unique_id', 'author.unique_id'],
             'desc_text': ['desc', 'description', 'title', 'content', 'desc_text', 'caption'],
-            'publish_time_raw': ['create_time', 'publish_time', 'timestamp', 'createTime', 'publishTime', 'time'],
+            'publish_time_raw': ['aweme_detail.create_time', 'aweme_detail.createTime', 'create_time', 'publish_time', 'timestamp', 'createTime', 'publishTime', 'time'],
             'like_count_raw': ['like_count', 'digg_count', 'likeCount', 'diggCount', 'statistics.digg_count', 'stats.digg_count'],
             'comment_count_raw': ['comment_count', 'commentCount', 'statistics.comment_count', 'stats.comment_count'],
             'share_count_raw': ['share_count', 'shareCount', 'statistics.share_count', 'stats.share_count'],
+            'collect_count': ['collect_count', 'collectCount', 'statistics.collect_count', 'stats.collect_count'],
             'hashtag_list': ['hashtags', 'tag_list', 'hashtag_list', 'challenges', 'text_extra'],
-            'cover_url': ['cover', 'cover_url', 'coverUrl', 'thumbnail', 'video.cover', 'cover_image']
+            'cover_url': ['video.cover', 'video.origin_cover', 'video.dynamic_cover', 'cover', 'cover_url', 'coverUrl', 'thumbnail', 'cover_image'],
+            'music_name': ['music.title', 'music_name', 'musicName', 'title', 'music.name'],
+            'duration_sec': ['duration', 'video.duration', 'duration_sec', 'durationSec', 'video.duration_sec'],
+            # 新增主表字段
+            'author_follower_count': ['author.follower_count', 'author.followerCount', 'follower_count', 'author_follower_count'],
+            'author_total_favorited': ['author.total_favorited', 'author.totalFavorited', 'total_favorited', 'author_total_favorited'],
+            'author_signature': ['author.signature', 'signature', 'author_signature'],
+            'author_verification_type': ['author.verification_type', 'author.verificationType', 'verification_type', 'author_verification_type'],
+            'risk_warning_text': ['risk_warning_text', 'riskWarningText', 'warning_text'],
+            'video_cover_url': ['video.cover', 'video.cover_url', 'cover_url'],
+            'dynamic_cover_url': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url'],
+            'origin_cover_url': ['video.origin_cover', 'origin_cover', 'origin_cover_url'],
+            'bitrate_count': ['video.bitrate_count', 'bitrate_count', 'video_bitrate_count'],
+            # 候选字段（暂不进入主表）
+            'co_creator_count': ['co_creator_count', 'coCreatorCount'],
+            'has_co_creator': ['has_co_creator', 'hasCoCreator'],
+            'product_genre_type': ['product_genre_type', 'productGenreType'],
+            'material_genre_sub_type_set': ['material_genre_sub_type_set', 'materialGenreSubTypeSet'],
+            'rate': ['rate', 'rate_level'],
+            'comment_gid': ['comment_gid', 'commentGid'],
+            'can_show_comment': ['can_show_comment', 'canShowComment'],
+            'comment_permission_status': ['comment_permission_status', 'commentPermissionStatus']
         }
 
         def search_in_dict(d, current_path):
@@ -1101,7 +1308,31 @@ class BrowserClient:
 
                 # Check each field
                 for field_name, possible_keys in field_configs.items():
-                    # Check exact key match
+                    # Skip candidate fields that are not in field_mappings (main table fields only)
+                    if field_name not in field_mappings:
+                        continue
+
+                    # Priority 1: Check for dot-separated path match (e.g., "video.cover" in "network_response_14.aweme_detail.video.cover")
+                    dot_path_matched = False
+                    for possible_key in possible_keys:
+                        if '.' in possible_key:
+                            # Check if possible_key appears in the path (suffix or as a segment)
+                            if possible_key in new_path:
+                                # Ensure it's a proper segment match, not just substring
+                                # Check if possible_key appears as a complete segment in the path
+                                path_segments = new_path.split('.')
+                                possible_segments = possible_key.split('.')
+                                # Check if possible_segments is a suffix of path_segments
+                                if path_segments[-len(possible_segments):] == possible_segments:
+                                    if field_mappings[field_name]['value'] is None:
+                                        field_mappings[field_name]['value'] = value
+                                        field_mappings[field_name]['path'] = new_path
+                                        dot_path_matched = True
+                                        break
+                    if dot_path_matched:
+                        continue
+
+                    # Priority 2: Check exact key match (only if not found via dot-separated path)
                     if key in possible_keys:
                         if field_mappings[field_name]['value'] is None:  # Take first found
                             field_mappings[field_name]['value'] = value

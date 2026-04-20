@@ -1,0 +1,42 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7626773012901598607
+Timestamp: 20260420_114355
+Network responses: 67
+Runtime objects: 1
+Video object candidates: 1215
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7626773012901598607
+    Path: url_extraction
+  author_id: 2963879239094627
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 第二内核
+    Path: network_response_30.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAr3UjYG_qnzpObHO9rOOv9y1mRaFcvxVD-rU7M8i9IktA1N79Wcc2x2IzP8Ow...
+    Path: network_response_30.aweme_detail.author.sec_uid_constructed
+  desc_text: 烂系统不会变好，你先别把命赔进去！教你三招清醒套利。 #职场真相 #老板思维 #人性博弈 #搞钱逻辑 #狠人进化论
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1775746470
+    Path: aweme_detail
+  like_count_raw: 1492
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 59
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 673
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 1085
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 32, 'caption_start': 27, 'end': 32, 'hashtag_id': '1643039979301901', 'hashtag_name...
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/1dd3fdb3634ff2cd64a52441a12d85cd~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @第二内核创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 397178
+    Path: network_response_30.aweme_detail.duration
+
+Extracted 14 out of 14 target fields
+================================================================================

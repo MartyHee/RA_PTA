@@ -330,13 +330,27 @@ class CrawlScheduler:
                         'video_id': 'video_id',
                         'author_id': 'author_id',
                         'author_name': 'author_name',
+                        'author_profile_url': 'author_profile_url',
                         'desc_text': 'desc_text',
                         'publish_time_raw': 'publish_time_raw',
                         'like_count_raw': 'like_count_raw',
                         'comment_count_raw': 'comment_count_raw',
                         'share_count_raw': 'share_count_raw',
+                        'collect_count': 'collect_count',
                         'hashtag_list': 'hashtag_list',
-                        'cover_url': 'cover_url'
+                        'cover_url': 'cover_url',
+                        'music_name': 'music_name',
+                        'duration_sec': 'duration_sec',
+                        # 新增主表字段
+                        'author_follower_count': 'author_follower_count',
+                        'author_total_favorited': 'author_total_favorited',
+                        'author_signature': 'author_signature',
+                        'author_verification_type': 'author_verification_type',
+                        'risk_warning_text': 'risk_warning_text',
+                        'video_cover_url': 'video_cover_url',
+                        'dynamic_cover_url': 'dynamic_cover_url',
+                        'origin_cover_url': 'origin_cover_url',
+                        'bitrate_count': 'bitrate_count'
                     }
 
                     for browser_field, parsed_field in field_mapping.items():
@@ -431,6 +445,113 @@ class CrawlScheduler:
                                         logger.warning(f"Unhandled type for hashtag_list: {type(value)}, converting to empty list")
                                         value = []
 
+                                elif parsed_field == 'author_profile_url':
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed author_profile_url: {value[:100]}")
+
+                                elif parsed_field == 'collect_count':
+                                    # Convert to integer if possible
+                                    if isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"collect_count string cannot be converted to int: {value}")
+                                            value = None
+                                    else:
+                                        logger.warning(f"Unhandled type for collect_count: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed collect_count: {value}")
+
+                                elif parsed_field == 'music_name':
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed music_name: {value[:100]}")
+
+                                elif parsed_field == 'duration_sec':
+                                    # Convert to integer if possible
+                                    if isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"duration_sec string cannot be converted to int: {value}")
+                                            value = None
+                                    else:
+                                        logger.warning(f"Unhandled type for duration_sec: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed duration_sec: {value}")
+
+                                # 新增字段类型转换
+                                elif parsed_field in ['author_follower_count', 'author_total_favorited', 'bitrate_count', 'author_verification_type']:
+                                    # Convert to integer if possible
+                                    if isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"{parsed_field} string cannot be converted to int: {value}")
+                                            value = None
+                                    else:
+                                        logger.warning(f"Unhandled type for {parsed_field}: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed {parsed_field}: {value}")
+
+                                elif parsed_field in ['author_signature', 'risk_warning_text']:
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed {parsed_field}: {value[:100]}")
+
+                                elif parsed_field in ['video_cover_url', 'dynamic_cover_url', 'origin_cover_url']:
+                                    # Similar processing as cover_url
+                                    if isinstance(value, list):
+                                        # List of dicts, try to extract URL from first item
+                                        if value and isinstance(value[0], dict):
+                                            first = value[0]
+                                            if 'url_list' in first and isinstance(first['url_list'], list) and first['url_list']:
+                                                value = first['url_list'][0]
+                                            elif 'url' in first:
+                                                value = first['url']
+                                            elif 'cover_url' in first:
+                                                value = first['cover_url']
+                                            elif 'cover' in first:
+                                                value = first['cover']
+                                            else:
+                                                logger.warning(f"{parsed_field} list item doesn't contain url key: {first}")
+                                                value = str(value)
+                                        else:
+                                            logger.warning(f"{parsed_field} list doesn't contain dicts: {value}")
+                                            value = str(value)
+                                    elif isinstance(value, dict):
+                                        # Try to extract URL from common keys
+                                        if 'url' in value:
+                                            value = value['url']
+                                        elif 'cover_url' in value:
+                                            value = value['cover_url']
+                                        elif 'cover' in value:
+                                            value = value['cover']
+                                        elif 'uri' in value:
+                                            # uri field, might need to construct URL
+                                            value = value['uri']
+                                            logger.debug(f"Extracted uri from {parsed_field}: {value}")
+                                        elif 'url_list' in value and isinstance(value['url_list'], list) and value['url_list']:
+                                            # Take first URL from url_list
+                                            value = value['url_list'][0]
+                                            logger.debug(f"Extracted first URL from url_list in {parsed_field}")
+                                        else:
+                                            logger.warning(f"{parsed_field} dict doesn't contain url key: {value}")
+                                            value = str(value)
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed {parsed_field}: {value[:100]}")
+
                                 parsed_data[parsed_field] = value
                                 logger.debug(f"Updated {parsed_field} from browser runtime data: {str(value)[:100]}")
 
@@ -447,9 +568,10 @@ class CrawlScheduler:
 
                     # Log detailed field information after merging browser data
                     logger.info("Field details after merging browser data:")
-                    target_fields = ['video_id', 'author_id', 'author_name', 'desc_text',
+                    target_fields = ['video_id', 'author_id', 'author_name', 'author_profile_url', 'desc_text',
                                     'publish_time_raw', 'like_count_raw', 'comment_count_raw',
-                                    'share_count_raw', 'hashtag_list', 'cover_url']
+                                    'share_count_raw', 'collect_count', 'hashtag_list', 'cover_url',
+                                    'music_name', 'duration_sec']
                     for field in target_fields:
                         if field in parsed_data:
                             value = parsed_data[field]
