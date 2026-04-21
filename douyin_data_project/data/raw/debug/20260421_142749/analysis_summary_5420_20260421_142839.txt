@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614822256039988532
+Timestamp: 20260421_142839
+Network responses: 39
+Runtime objects: 1
+Video object candidates: 235
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614822256039988532
+    Path: url_extraction
+  author_id: 1097781186667780
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 无尘游戏解说
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAq6DLNyT0q6GWtdR1Xt2Sw5sYCI3QBNTzUE2lDdjeadZIsXNP4ZE2EehVzXcl...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #机瞄 #悠一 #顶猎 #赋能 #三角洲行动
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1772963984
+    Path: aweme_detail
+  like_count_raw: 59044
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 648
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 7677
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 8097
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 20, 'hashtag_id': '1596253644994573', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ae0f72e2f8c35fbd0753bc20b10d2f5b~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: SEM PARA
+    Path: network_response_27.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 182138
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 24394
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 2903039
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 立志讲好每一个故事
+有想看的欢迎投稿
+尽量成为一个日更博主~
+商务合作+wg78951
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/07e38cae99714f0fa6ed61cee7ebc9fb', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oofpjQ9KAWDrwt1EOSFhGIFJACQlIgBjUeANuA', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

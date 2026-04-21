@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597053646329131242
+Timestamp: 20260421_143458
+Network responses: 56
+Runtime objects: 1
+Video object candidates: 1094
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597053646329131242
+    Path: url_extraction
+  author_id: 4119229776804686
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: TracyGogogo
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAp-FiK2cg2d2RPj2YRji3o774gBJCxJGOHiqi-6dMvbWkYBII_opT9Aky0ee2...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: 因为工作后发现每天只有3小时…
+#认知分享 #女性智慧 #情感共鸣 #成长哲学 #打工人
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1768826891
+    Path: aweme_detail
+  like_count_raw: 14825
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 370
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 1280
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 4185
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 21, 'caption_start': 16, 'end': 36, 'hashtag_id': '1664937903196167', 'hashtag_name...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/8b8a40c86a70be348a8207d1c1b9829c~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @TracyGogogo创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 137334
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 25428
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 97159
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 全英输出｜洞察人性与思维
+✨带你换个视角，修一颗通透的心
+🦢 ENTJ｜500强｜温柔有力量的姐姐
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/ooEuIAEAeK8tAlB05iBIfyxnJQ9AEiAwnTxACn', 'url_list': ['...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/ogPsBDBwZuMzxM48pIPACRwmzWsKIABiPia4M', 'url_list': ['h...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

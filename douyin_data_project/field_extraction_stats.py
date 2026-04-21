@@ -12,11 +12,9 @@ NEW_FIELDS = [
     'author_total_favorited',
     'author_signature',
     'author_verification_type',
-    'risk_warning_text',
     'video_cover_url',
     'dynamic_cover_url',
-    'origin_cover_url',
-    'bitrate_count'
+    'origin_cover_url'
 ]
 
 def analyze_csv(file_path: Path):

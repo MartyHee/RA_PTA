@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7622473264698314036
+Timestamp: 20260421_163100
+Network responses: 43
+Runtime objects: 0
+Video object candidates: 967
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7622473264698314036
+    Path: url_extraction
+  author_id: 105103838174
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 二次元大东
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAYokhxSv-FEBNnpiWOnybAXVU3DYt6-WrpmX7i4jntY4
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: 超好看的丧尸题材动漫，值得收藏#动漫推荐 #动漫解说 #二次元 #动漫充能计划 #我在抖音看动漫
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1774753080
+    Path: aweme_detail
+  like_count_raw: 20362
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 475
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 777
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 7917
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 20, 'caption_start': 15, 'end': 33, 'hashtag_id': '1587194314661901', 'hashtag_name...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/1e7a84a69e9fedbeed8e9634d2c5fdbf~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @二次元大东创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 986
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 895870
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 20199914
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 👉一个老二次元了
+👉没了动漫怎么能行
+👉不定期更新好看的番剧
+👉举报我的替我挡灾
+👉谢谢你们的厚爱
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/f511f50be3ef44ee954be3c643082223', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ogkYINiz2DAydvzRXHFeA9pADAKgCByyI7faIE', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================
