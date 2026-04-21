@@ -346,11 +346,9 @@ class CrawlScheduler:
                         'author_total_favorited': 'author_total_favorited',
                         'author_signature': 'author_signature',
                         'author_verification_type': 'author_verification_type',
-                        'risk_warning_text': 'risk_warning_text',
                         'video_cover_url': 'video_cover_url',
                         'dynamic_cover_url': 'dynamic_cover_url',
-                        'origin_cover_url': 'origin_cover_url',
-                        'bitrate_count': 'bitrate_count'
+                        'origin_cover_url': 'origin_cover_url'
                     }
 
                     for browser_field, parsed_field in field_mapping.items():
@@ -488,7 +486,7 @@ class CrawlScheduler:
                                     logger.debug(f"Processed duration_sec: {value}")
 
                                 # 新增字段类型转换
-                                elif parsed_field in ['author_follower_count', 'author_total_favorited', 'bitrate_count', 'author_verification_type']:
+                                elif parsed_field in ['author_follower_count', 'author_total_favorited', 'author_verification_type']:
                                     # Convert to integer if possible
                                     if isinstance(value, (int, float)):
                                         value = int(value)
@@ -503,7 +501,7 @@ class CrawlScheduler:
                                         value = None
                                     logger.debug(f"Processed {parsed_field}: {value}")
 
-                                elif parsed_field in ['author_signature', 'risk_warning_text']:
+                                elif parsed_field in ['author_signature']:
                                     # Convert to string
                                     if not isinstance(value, str):
                                         value = str(value)

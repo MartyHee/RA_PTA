@@ -671,11 +671,9 @@ class BrowserClient:
                 'author_total_favorited': {'value': None, 'path': None},
                 'author_signature': {'value': None, 'path': None},
                 'author_verification_type': {'value': None, 'path': None},
-                'risk_warning_text': {'value': None, 'path': None},
                 'video_cover_url': {'value': None, 'path': None},
                 'dynamic_cover_url': {'value': None, 'path': None},
-                'origin_cover_url': {'value': None, 'path': None},
-                'bitrate_count': {'value': None, 'path': None}
+                'origin_cover_url': {'value': None, 'path': None}
             }
 
             field_sources = {}
@@ -1257,11 +1255,9 @@ class BrowserClient:
             'author_total_favorited': {'value': None, 'path': None},
             'author_signature': {'value': None, 'path': None},
             'author_verification_type': {'value': None, 'path': None},
-            'risk_warning_text': {'value': None, 'path': None},
             'video_cover_url': {'value': None, 'path': None},
             'dynamic_cover_url': {'value': None, 'path': None},
-            'origin_cover_url': {'value': None, 'path': None},
-            'bitrate_count': {'value': None, 'path': None}
+            'origin_cover_url': {'value': None, 'path': None}
         }
 
         # Field mapping configurations: field_name -> list of possible keys
@@ -1285,11 +1281,9 @@ class BrowserClient:
             'author_total_favorited': ['author.total_favorited', 'author.totalFavorited', 'total_favorited', 'author_total_favorited'],
             'author_signature': ['author.signature', 'signature', 'author_signature'],
             'author_verification_type': ['author.verification_type', 'author.verificationType', 'verification_type', 'author_verification_type'],
-            'risk_warning_text': ['risk_warning_text', 'riskWarningText', 'warning_text'],
             'video_cover_url': ['video.cover', 'video.cover_url', 'cover_url'],
             'dynamic_cover_url': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url'],
             'origin_cover_url': ['video.origin_cover', 'origin_cover', 'origin_cover_url'],
-            'bitrate_count': ['video.bitrate_count', 'bitrate_count', 'video_bitrate_count'],
             # 候选字段（暂不进入主表）
             'co_creator_count': ['co_creator_count', 'coCreatorCount'],
             'has_co_creator': ['has_co_creator', 'hasCoCreator'],

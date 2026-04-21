@@ -136,12 +136,10 @@ class WebVideoMeta(BaseModel):
     author_total_favorited: Optional[int] = Field(None, description="作者总获赞数")
     author_signature: Optional[str] = Field(None, description="作者签名/简介")
     author_verification_type: Optional[int] = Field(None, description="作者认证类型")
-    # 风险/内容结构侧补充字段
-    risk_warning_text: Optional[str] = Field(None, description="风险提示文本")
+    # 内容结构侧补充字段
     video_cover_url: Optional[str] = Field(None, description="视频封面URL")
     dynamic_cover_url: Optional[str] = Field(None, description="动态封面URL")
     origin_cover_url: Optional[str] = Field(None, description="原始封面URL")
-    bitrate_count: Optional[int] = Field(None, description="码率数量")
     source_entry: str = Field(..., description="采样来源")
     # Match metadata for browser mode data quality assessment
     match_type: Optional[str] = Field(None, description="主对象匹配类型: exact/partial/none")
