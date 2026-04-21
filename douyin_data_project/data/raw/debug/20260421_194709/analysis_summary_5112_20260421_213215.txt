@@ -1,0 +1,64 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7616329006098533638
+Timestamp: 20260421_213215
+Network responses: 83
+Runtime objects: 1
+Video object candidates: 1531
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7616329006098533638
+    Path: url_extraction
+  author_id: 93151384288
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 嵩祺探长
+    Path: network_response_30.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAzIfgMRuKlNDd3gtJNpCUbWVPnvZ0q0iyj0GudtDq0ug
+    Path: network_response_30.aweme_detail.author.sec_uid_constructed
+  desc_text: 去了一趟越南，从胡志明一路南下到湄公河三角洲。
+本来以为就是个普通景区，结果遇到很多离谱的东西：
+ 一个“只吃椰子”的教派遗迹
+ 九根龙柱的奇怪建筑
+ 便宜到怀疑人生的水果市场
+有些地方真的 离谱，但...
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1773314821
+    Path: aweme_detail
+  like_count_raw: 11746
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 1059
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 2888
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 1370
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 110, 'caption_start': 105, 'end': 120, 'hashtag_id': '7379877970724259852', 'hashta...
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/9548a34661211e110b6574ecfc406981~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Rằng Em Mãi Ở Bên (Instrumental)
+    Path: network_response_30.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 1748
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 6316
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 33125
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 10年纪录片导演｜国家地理合作伙伴
+只说真话，不挣信息差的钱
+旅行社「玩转经纬」创始人
+👉🏻📧不踩坑：songqitanzhang
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/003a26a26d554def96665037f0c66933', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/os5nuyOIS9IeZlyTAYBI7ofLgeaSNkBGBGxCAD', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

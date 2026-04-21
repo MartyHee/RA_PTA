@@ -1,0 +1,62 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615160400543693914
+Timestamp: 20260421_211104
+Network responses: 74
+Runtime objects: 1
+Video object candidates: 1139
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615160400543693914
+    Path: url_extraction
+  author_id: 4472444156918444
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 你的茜茜上线啦！
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA37paBRBz4vXQxWTtNKoCJcr3Cc3by1uvHDj21rU-1c8aeWN2qWp_semu2J9P...
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: #挑战20倍辣一蘭拉面#夫妻
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1773050400
+    Path: aweme_detail
+  like_count_raw: 255144
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 1174
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 42045
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 7863
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 11, 'caption_start': 0, 'end': 23, 'hashtag_id': '7615160385808631817', 'hashtag_na...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/535187d8769fdc3d34e41bd180bb2431~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @你的茜茜上线啦！创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 208867
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 8339980
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 338112101
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 👥她关注了你
+153的茜茜和183的小梁的幸福生活
+有好物会种草～
+📮：fuenei1010@gmail.com（联系邮箱）
+🟢：Cc490539091（商单请联系）
+恋人：@小梁有脾气
+呆🐶已暂停合...
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0629/owiVqrEF7AgfXdNpnitKNjgIDfAaFAA4QCAppQ', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/owUfAEPCTVBQS3fcCHWQAVMTBXA79w4QQD8eaP', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

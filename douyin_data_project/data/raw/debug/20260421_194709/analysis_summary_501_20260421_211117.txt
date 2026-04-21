@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615193698905723274
+Timestamp: 20260421_211117
+Network responses: 34
+Runtime objects: 0
+Video object candidates: 265
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615193698905723274
+    Path: url_extraction
+  author_id: 92751163696
+    Path: network_response_23.aweme_detail.author.uid
+  author_name: 是靓仔 （摄影师 ）
+    Path: network_response_23.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAyC9V-yNy8WvtrR75MCX-EK99w9wVsWumIlTBU0OtGgQ
+    Path: network_response_23.aweme_detail.author.sec_uid_constructed
+  desc_text: 历时12个月 跨越四季 300多天  35000公里终于总结。了新疆一年四季的旅行攻略,希望能够帮到有需求的你！#万人说新疆 #RealXinjiang #SharetheRealXinjiangwi...
+    Path: network_response_23.aweme_detail.caption
+  publish_time_raw: 1773050453
+    Path: aweme_detail
+  like_count_raw: 10014
+    Path: network_response_23.aweme_detail.statistics.digg_count
+  comment_count_raw: 753
+    Path: network_response_23.aweme_detail.statistics.comment_count
+  share_count_raw: 3932
+    Path: network_response_23.aweme_detail.statistics.share_count
+  collect_count: 6791
+    Path: network_response_23.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 30, 'caption_start': 0, 'end': 30, 'start': 0, 'type': 7}, {'caption_end': 31, 'cap...
+    Path: network_response_23.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/b6ca0027a71b54101ac280c3027a6519~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: No Place on Earth
+    Path: network_response_23.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 1571
+    Path: network_response_23.aweme_detail.duration
+  author_follower_count: 62652
+    Path: network_response_23.aweme_detail.author.follower_count
+  author_total_favorited: 1140668
+    Path: network_response_23.aweme_detail.author.total_favorited
+  author_signature: 📷独立旅拍摄影师 滑雪摄影师 
+夏季伊犁旅拍 领队
+只做小众 感受不一样的风景
+但是值得！
+🛰合作:81912580
+    Path: network_response_23.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_23.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_23.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-p-0015/oAQ7lETAS53R5e6uDBQ17XFiAjBCIAflEmBe3m', 'url_list': ['https:/...
+    Path: network_response_23.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oQkoAtB9QuIxglyjGIvAn9vU7a9mIAaiPia6U', 'url_list': ['https://...
+    Path: network_response_23.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

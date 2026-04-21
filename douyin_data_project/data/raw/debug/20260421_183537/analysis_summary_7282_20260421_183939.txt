@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7598517694299639059
+Timestamp: 20260421_183939
+Network responses: 44
+Runtime objects: 1
+Video object candidates: 1007
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7598517694299639059
+    Path: url_extraction
+  author_id: 3012302539069598
+    Path: network_response_33.aweme_detail.author.uid
+  author_name: 磕糖少女胡里里
+    Path: network_response_33.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAutL_LfYi59IGGUf2UpYfZq3gmd_5BMLz-RrfOrxUp5_B6KnvJS1C1EDBJqb8...
+    Path: network_response_33.aweme_detail.author.sec_uid_constructed
+  desc_text: #磕糖少女胡里里 #心动 #高甜 #恋爱 #轻漫计划
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1769167815
+    Path: aweme_detail
+  like_count_raw: 286883
+    Path: network_response_33.aweme_detail.statistics.digg_count
+  comment_count_raw: 1933
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 12021
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 27018
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 8, 'caption_start': 0, 'end': 26, 'hashtag_id': '7485399101991815220', 'hashtag_nam...
+    Path: network_response_33.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/6a7463d210d15324ee6b8bd1ebd1bcc5~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @磕糖少女胡里里创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 239654
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 1522529
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 24286728
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 两眼一睁就是嗑CP！
+没更新就是还在画画QAQ🎨
+希望你能在这里收获一颗合口味的糖呀~(>ω<)~
+商务：hggs0601
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/11c068f63b7641558b8bdf5d3a7d7b80', 'url_list': ['https://p3-pc-s...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 480, 'uri': 'tos-cn-p-0015/oETf1FonA5i9PD5XQ2tAPE0xr8EAcpeDgDBmQK', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

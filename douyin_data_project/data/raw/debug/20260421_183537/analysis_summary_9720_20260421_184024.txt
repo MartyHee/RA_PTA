@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7598530037893546737
+Timestamp: 20260421_184024
+Network responses: 30
+Runtime objects: 0
+Video object candidates: 171
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7598530037893546737
+    Path: url_extraction
+  author_id: 62501463839
+    Path: network_response_19.aweme_detail.author.uid
+  author_name: 萝卜日记X（吃吃减减版
+    Path: network_response_19.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAuelj8TW0qt9sjWdaeF2s82jqMvK3yPdV8vYtzRSJu8k
+    Path: network_response_19.aweme_detail.author.sec_uid_constructed
+  desc_text: hhh这面包怎么越吃越多#爱吃食物的女孩子 #一天吃什么 #吃货 #便利店美食 #甜品
+    Path: network_response_19.aweme_detail.caption
+  publish_time_raw: 1769170644
+    Path: aweme_detail
+  like_count_raw: 23344
+    Path: network_response_19.aweme_detail.statistics.digg_count
+  comment_count_raw: 159
+    Path: network_response_19.aweme_detail.statistics.comment_count
+  share_count_raw: 3596
+    Path: network_response_19.aweme_detail.statistics.share_count
+  collect_count: 1474
+    Path: network_response_19.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 21, 'caption_start': 12, 'end': 34, 'hashtag_id': '1650745677750276', 'hashtag_name...
+    Path: network_response_19.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/4487541a4182f9df9043d13f9d3bf2bb~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @萝卜日记X（吃吃减减版创作的原声
+    Path: network_response_19.aweme_detail.music.title
+  duration_sec: 278567
+    Path: network_response_19.aweme_detail.duration
+  author_follower_count: 100436
+    Path: network_response_19.aweme_detail.author.follower_count
+  author_total_favorited: 2086559
+    Path: network_response_19.aweme_detail.author.total_favorited
+  author_signature: 在外疯狂干饭（放纵餐）
+在家好好吃饭（减肥餐）
+🈴️：lbrj0322（备注来意）
+🧣（偶尔更一下）：我我我的少女心
+    Path: network_response_19.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_19.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_19.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/o0Zx0L7BIIBEgk5esze2OAlA7AyISG8fJAFtEk', 'url_list': ['...
+    Path: network_response_19.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/o8imB0wcfAQx3ZDvED9pkaCAzEEeFA1xu2yQfx', 'url_list': ['...
+    Path: network_response_19.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

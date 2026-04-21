@@ -1,0 +1,38 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7598468663800368427
+Timestamp: 20260421_194823
+Network responses: 20
+Runtime objects: 0
+Video object candidates: 52
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7598468663800368427
+    Path: url_extraction
+  author_id: a15bd5a8-ee15-d4fd-6536-77cce3121b0e
+    Path: network_response_0.data.user_id
+  author_name: NOT FOUND
+  author_profile_url: NOT FOUND
+  desc_text: NOT FOUND
+  publish_time_raw: 1776772071115
+    Path: network_response_0.data.timestamp
+  like_count_raw: NOT FOUND
+  comment_count_raw: NOT FOUND
+  share_count_raw: NOT FOUND
+  collect_count: NOT FOUND
+  hashtag_list: NOT FOUND
+  cover_url: NOT FOUND
+  music_name: NOT FOUND
+  duration_sec: NOT FOUND
+  author_follower_count: NOT FOUND
+  author_total_favorited: NOT FOUND
+  author_signature: NOT FOUND
+  author_verification_type: NOT FOUND
+  video_cover_url: NOT FOUND
+  dynamic_cover_url: NOT FOUND
+  origin_cover_url: NOT FOUND
+
+Extracted 3 out of 14 target fields
+================================================================================

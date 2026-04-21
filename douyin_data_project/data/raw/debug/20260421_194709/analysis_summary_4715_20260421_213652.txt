@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7617024054834335019
+Timestamp: 20260421_213652
+Network responses: 76
+Runtime objects: 1
+Video object candidates: 1618
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7617024054834335019
+    Path: url_extraction
+  author_id: 699731334413051
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 篮球众星
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA9JqcOs1tMgVrOaxuMw3tfArAQObY_jp5PaLGjd9H8lU
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #库里38岁生日快乐 #库里 #篮球 #三分之神 #篮球众星
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1773476633
+    Path: aweme_detail
+  like_count_raw: 5562
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 153
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 262
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 1035
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 10, 'caption_start': 0, 'end': 36, 'hashtag_id': '7616252381319137326', 'hashtag_na...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/068258004e8cb1811530ea743badc704~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @篮球众星创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 1618
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 45923
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 1185720
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 讲诉一些被遗忘的篮球故事🏀
+招募优质文案、剪辑、运营
+合作学习📑LQGS991
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/6bcc564644924fe6903cda2c1c8ac996', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oA1JRIi1swqU8ZBAiQOb5Ga10AKAmIxv4IPDD', 'url_list': ['https://...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

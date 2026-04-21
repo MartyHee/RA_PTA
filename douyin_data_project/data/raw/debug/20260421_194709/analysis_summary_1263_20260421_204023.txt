@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7607401706338403529
+Timestamp: 20260421_204023
+Network responses: 78
+Runtime objects: 1
+Video object candidates: 1353
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7607401706338403529
+    Path: url_extraction
+  author_id: 4349309425555924
+    Path: network_response_33.aweme_detail.author.uid
+  author_name: 传奇老马·马亮
+    Path: network_response_33.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAnOCespxlawH0y-_s3A3xoYRap6bUuwxRLEwTS3-pv9TVoxMYZUJtu94cS8UE...
+    Path: network_response_33.aweme_detail.author.sec_uid_constructed
+  desc_text: @传奇老马清真餐厅(兰州店)官方号
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1771236237
+    Path: aweme_detail
+  like_count_raw: 46508
+    Path: network_response_33.aweme_detail.statistics.digg_count
+  comment_count_raw: 3908
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 22478
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 5336
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 17, 'caption_start': 0, 'end': 33, 'sec_uid': 'MS4wLjABAAAA0pFZZPuurYKEw5Won9OwmHTO...
+    Path: network_response_33.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/5acc495bead48c860d86156f955021ed~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 这个旋律有点毒
+    Path: network_response_33.aweme_detail.music.song.title
+  duration_sec: 271334
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 85128
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 578740
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 敦煌老马发小，大家点个关注，支持一下
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-p-0015/owfYSP3AACBEyjgbrFD7CpI5kImrV69MuFeAKo', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oESICI6bgArEAbr79FfoupDB1OkyeEAj55Y3CS', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

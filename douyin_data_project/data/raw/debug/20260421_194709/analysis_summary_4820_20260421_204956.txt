@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7611824713656225033
+Timestamp: 20260421_204956
+Network responses: 67
+Runtime objects: 1
+Video object candidates: 1161
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7611824713656225033
+    Path: url_extraction
+  author_id: 2648101473222957
+    Path: network_response_62.comments.[0].user.uid
+  author_name: 空神（空空电竞）
+    Path: network_response_62.comments.[0].user.nickname
+  author_profile_url: kongshen666
+    Path: network_response_62.comments.[0].user.unique_id
+  desc_text: #三角洲行动 #豆包
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1776604402
+    Path: network_response_62.comments.[0].create_time
+  like_count_raw: 1
+    Path: network_response_62.comments.[0].digg_count
+  comment_count_raw: 741
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 916
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 13897
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_62.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ec02bda09217df7f91c072a51c943748~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @晨露ZLQ创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 327734
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 103525
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 372397
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 一个不爱玩游戏的游戏博主
+全网同名，商务C123Lu
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/de142eb66b4e4bed92f4f8f5f8a13742', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o0lMIxiqt0CqC4piAABAIC0weo0goBSA8Vitfl', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

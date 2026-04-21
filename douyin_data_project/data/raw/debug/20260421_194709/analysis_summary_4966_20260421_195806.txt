@@ -1,0 +1,61 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601765886307841444
+Timestamp: 20260421_195806
+Network responses: 74
+Runtime objects: 1
+Video object candidates: 1230
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601765886307841444
+    Path: url_extraction
+  author_id: 4195337647700571
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 做大做强的顾小姐
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAJ2Fl4n9LBKnDjox9hF3Lj1hgzHGPxOTW2_mSIChc_BYLJorOyN0BDO6oyCBR...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: #露营#沉浸式露营#独居女孩的生活#日常vlog#帐篷
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1769924045
+    Path: aweme_detail
+  like_count_raw: 136934
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 1476
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 6963
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 15926
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 25, 'hashtag_id': '1580532647418893', 'hashtag_name':...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/e4ed0e05a1517a537edb737c417ee34c~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @做大做强的顾小姐创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 197740
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 1534167
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 17784624
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 📷高能量户外自驾Vlogger｜ENFJ
+🏃挑战开车体验100种户外生活
+用我的方式体验世界🌍 露营｜探险｜旅行｜徒步……
+下一站 就在我的脚下！
+
+🛰️wwwwenooo
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/oIAHAfmODBDSFALBLeE5uDIcfEGQig3Alt7pXA', 'url_list': ['htt...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/og29olvfIe9cALYz8HMQLACyr3BfE4G0DQ5e23', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

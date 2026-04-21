@@ -1,0 +1,52 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7600005088882593058
+Timestamp: 20260421_195051
+Network responses: 54
+Runtime objects: 1
+Video object candidates: 348
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7600005088882593058
+    Path: url_extraction
+  author_id: a15bd5a8-ee15-d4fd-6536-77cce3121b0e
+    Path: network_response_0.data.user_id
+  author_name: 探手电影
+    Path: network_response_52.aweme_list.[0].author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAjJ76y3l6vTiwZPH1JsPDaoim9YyoZIvA1aM4q3OX2YrX4wFO_NOJyhS7h3sO...
+    Path: network_response_52.aweme_list.[0].author.sec_uid_constructed
+  desc_text: - 抖音电商直播间带货榜是根据真实数据进行排名的直播间排行榜，希望帮助消费者通过榜单找到正在直播的好商品，让选择更简单。直播间排名越靠前曝光机会越大。
+    Path: network_response_21.data.ecom_live_product_rank_ruler.[0].content
+  publish_time_raw: 1776772071115
+    Path: network_response_0.data.timestamp
+  like_count_raw: 159791
+    Path: network_response_52.aweme_list.[0].statistics.digg_count
+  comment_count_raw: 2244
+    Path: network_response_52.aweme_list.[0].statistics.comment_count
+  share_count_raw: 11663
+    Path: network_response_52.aweme_list.[0].statistics.share_count
+  collect_count: 22327
+    Path: network_response_52.aweme_list.[0].statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 18, 'hashtag_id': '1593455819938819', 'hashtag_name':...
+    Path: network_response_52.aweme_list.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/1e6afca784787456e941a6b6e6982261~tplv-dy-resize-...
+    Path: aweme_list[0].video
+  music_name: 直播间带货榜
+    Path: network_response_21.data.ecom_live_product_rank_ruler.[0].title
+  duration_sec: 1127
+    Path: network_response_52.aweme_list.[0].music.duration
+  author_follower_count: NOT FOUND
+  author_total_favorited: NOT FOUND
+  author_signature: NOT FOUND
+  author_verification_type: NOT FOUND
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_52.aweme_list.[0].author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': '', 'url_list': [], 'width': 720}
+    Path: network_response_52.aweme_list.[0].video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oI6fTBQ8JCDRAYADQemBCQHH6aFJ7hKEuaSlfv', 'url_list': ['https:/...
+    Path: network_response_52.aweme_list.[0].video.origin_cover
+
+Extracted 17 out of 14 target fields
+================================================================================

@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7611128219177094463
+Timestamp: 20260421_204910
+Network responses: 31
+Runtime objects: 0
+Video object candidates: 276
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7611128219177094463
+    Path: url_extraction
+  author_id: 2458952711277975
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 文福姬Eat with Boki
+    Path: network_response_30.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAs9RTuqElb2ZKx65fBS5r618i7Z8nLTOF6MFyJPJ_VqlOn_95lU2jNATkTG54...
+    Path: network_response_30.aweme_detail.author.sec_uid_constructed
+  desc_text: 
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1772103914
+    Path: aweme_detail
+  like_count_raw: 100919
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 1271
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 48845
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 6631
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/6f9043f6b65fa96fff6085fa01edae24~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @文福姬Eat with Boki创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 541
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 2395274
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 23594621
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 文福姬专属电台
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/1251cdbab9f540438c56d596199a49cb', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4oPhigPiA2IOqaIxNQNgTMKAwaBA9y7jIKqB', 'url_list': ['https://...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

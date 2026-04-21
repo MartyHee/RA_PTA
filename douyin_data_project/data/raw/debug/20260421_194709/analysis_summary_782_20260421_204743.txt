@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7610377511456754995
+Timestamp: 20260421_204743
+Network responses: 67
+Runtime objects: 1
+Video object candidates: 1652
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7610377511456754995
+    Path: url_extraction
+  author_id: 1117544419170952
+    Path: network_response_59.comments.[0].user.uid
+  author_name: 睡觉
+    Path: network_response_59.comments.[0].user.nickname
+  author_profile_url: 89272581728
+    Path: network_response_59.comments.[0].user.unique_id
+  desc_text: @粑粑电竞 #红狼身法 #乔木课堂
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1772333288
+    Path: network_response_59.comments.[0].create_time
+  like_count_raw: 1349
+    Path: network_response_59.comments.[0].digg_count
+  comment_count_raw: 2200
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 21750
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 17484
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_59.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/109509ddf6c41bc1af82597d92a9bc41~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @乔木萧.(三角洲)创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 180167
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 1528798
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 21530784
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 6级牌 福袋切片@乔木X助理 
+猛男：  @柒柒游电竞（双端皆有） 
+哈弗：   @屯屯鼠的商行 @鲨鱼跑刀 
+@《天才少年养成记》 自己@木木木ovo 
+商务合作：@🥕
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/f11e9ce2814d4f5e92f634f298b7a5ff', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oMl1pTqGIizvALfZlGGgAABfajwOCQGwBgLe7A', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

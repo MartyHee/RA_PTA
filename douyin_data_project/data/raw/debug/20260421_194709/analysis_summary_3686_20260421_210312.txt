@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614422485593678198
+Timestamp: 20260421_210312
+Network responses: 61
+Runtime objects: 1
+Video object candidates: 1563
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614422485593678198
+    Path: url_extraction
+  author_id: 55365068410
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 哎么英仔
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA_t3zvsXUokK6sFC7fV0tQjU1xuQTJf7GFt42Q1tNboU
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: #望远市场 #韩国小吃 #韩国美食推荐 #韩国首尔 #韩国传统市场
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1772878080
+    Path: aweme_detail
+  like_count_raw: 53088
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 745
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 23337
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 10762
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 33, 'hashtag_id': '1703239805347848', 'hashtag_name':...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/a9c0603701c153a699b432f78b2cced6~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @哎么英仔创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 195400
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 69100
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 1441643
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 中韩两国生活的🇨🇳沈阳西塔朝鲜族
+Freelancer｜服装设计师｜中韩翻译
+分享Vlog｜美食｜旅行｜攻略
+朋友圈@Leey
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/oAZjkrIX6iCQcOIFBSA3FviaE6iADrOAAaAPP', 'url_list': ['http...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oUIBpqD3RUveABuMAL3AJFSAiGNPrEKIJgfi93', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

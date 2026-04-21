@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601016911404518690
+Timestamp: 20260421_184726
+Network responses: 125
+Runtime objects: 2
+Video object candidates: 1553
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601016911404518690
+    Path: url_extraction
+  author_id: 7568423125504984113
+    Path: network_response_121.aweme_detail.author.uid
+  author_name: 漫读小筑
+    Path: network_response_121.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAADjDM9z6HFDqiOHWUs0hecEwH8u-7jMbmCrBx6UUeB-pSO0A-No8A9jfJg6v6...
+    Path: network_response_121.aweme_detail.author.sec_uid_constructed
+  desc_text: #龙族 #小说 #青年创作者成长计划 #路鸣泽 #二次元
+    Path: network_response_121.aweme_detail.caption
+  publish_time_raw: 1769766600
+    Path: aweme_detail
+  like_count_raw: 110655
+    Path: network_response_121.aweme_detail.statistics.digg_count
+  comment_count_raw: 1324
+    Path: network_response_121.aweme_detail.statistics.comment_count
+  share_count_raw: 5245
+    Path: network_response_121.aweme_detail.statistics.share_count
+  collect_count: 13065
+    Path: network_response_121.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 31, 'hashtag_id': '1579049400314893', 'hashtag_name':...
+    Path: network_response_121.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/4c43e947f8d1242bc1717937930bfeb1~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @漫读小筑创作的原声
+    Path: network_response_121.aweme_detail.music.title
+  duration_sec: 262267
+    Path: network_response_121.aweme_detail.duration
+  author_follower_count: 12944
+    Path: network_response_121.aweme_detail.author.follower_count
+  author_total_favorited: 752528
+    Path: network_response_121.aweme_detail.author.total_favorited
+  author_signature: 向大家从不同角度分享各种动漫、小说，新人博主，希望大家多多关注，以后就都是铁粉了。
+    Path: network_response_121.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_121.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_121.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/ff0807b640ce49fe80219f5f7087652a', 'url_list': ['https://p3-pc-s...
+    Path: network_response_121.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o8e0JWeDQgngARenHw8VoN5A2iIHlMMFCCecEg', 'url_list': ['https:/...
+    Path: network_response_121.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

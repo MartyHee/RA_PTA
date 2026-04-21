@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597644971830676771
+Timestamp: 20260421_183554
+Network responses: 79
+Runtime objects: 1
+Video object candidates: 1205
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597644971830676771
+    Path: url_extraction
+  author_id: 4274507121438519
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 平姐电影
+    Path: network_response_26.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAIPgYA-Y-kZl-DKYXNlMDl2oWHyBdXEmgsXL_pIZr1GpWQpzpuUf2i4XzZ5OP...
+    Path: network_response_26.aweme_detail.author.sec_uid_constructed
+  desc_text: #暑期影视漫游企划#暑期档情报局#甄嬛传十级观众#甄嬛传解说#原创解说上热门
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 1769065200
+    Path: aweme_detail
+  like_count_raw: 62105
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 297
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 3529
+    Path: network_response_26.aweme_detail.statistics.share_count
+  collect_count: 4664
+    Path: network_response_26.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 0, 'end': 29, 'hashtag_id': '7519810464068175891', 'hashtag_nam...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/c3666dbd1f684eebaa4d58e75a949fb6~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @平姐电影创作的原声
+    Path: network_response_26.aweme_detail.music.title
+  duration_sec: 1657
+    Path: network_response_26.aweme_detail.duration
+  author_follower_count: 365184
+    Path: network_response_26.aweme_detail.author.follower_count
+  author_total_favorited: 10297358
+    Path: network_response_26.aweme_detail.author.total_favorited
+  author_signature: 原创文案~真人配音
+深度解读《甄嬛传》幕后故事
+用心制作每一个视频！
+    Path: network_response_26.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_26.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/c7b15fd699dc48909bdf81bba19132f1', 'url_list': ['https://p3-pc-s...
+    Path: network_response_26.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ocQYgSKBRCITLA70mcQA7LIBFgGPe4C2geSRfE', 'url_list': ['https:/...
+    Path: network_response_26.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

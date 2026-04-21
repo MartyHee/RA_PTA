@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601845184179047680
+Timestamp: 20260421_195836
+Network responses: 81
+Runtime objects: 1
+Video object candidates: 1083
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601845184179047680
+    Path: url_extraction
+  author_id: 2774775325799787
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 菠萝漫漫
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAUWIuLIN0-lmjAbDFucZTIS9ikiZO8ORxh8SIG6HegY3h5VDymDMUoRF0Pfj4...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #红太狼 #喜羊羊与灰太狼 #超能陆战队 #刺客伍六七 #秒开仙人模式
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1769942613
+    Path: aweme_detail
+  like_count_raw: 143126
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 987
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 7981
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 43904
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 4, 'caption_start': 0, 'end': 18, 'hashtag_id': '1595829842657357', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/74517b781badbb00e86ba402c882d235~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Automotivo Arrepiante
+    Path: network_response_27.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 311474
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 823465
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 10265178
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 你的三连就是我动力~
+持续更新中…
+商务🤝wg78951
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/5cc936725bda4a5e9c52e23aa5f91a5b', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/owIKeA7ql0DfgIglXfLeCEAKKXGHwggV2OGbDb', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

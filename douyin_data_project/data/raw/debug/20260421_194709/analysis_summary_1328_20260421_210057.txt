@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614013297335045422
+Timestamp: 20260421_210057
+Network responses: 74
+Runtime objects: 1
+Video object candidates: 1521
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614013297335045422
+    Path: url_extraction
+  author_id: 84856040888
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 聚宝鹏
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAEdBrQ6DzcER1Uj6P1toUCX3cKYYs0uHQ0ePvQkbSEIE
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #童年零食 #开箱 #显眼包 #美食挑战
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1772775624
+    Path: aweme_detail
+  like_count_raw: 3950
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 187
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 398
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 2970
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 35, 'hashtag_id': '1589091982718990', 'hashtag_name':...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/efde5c6c30ad1a7e9ca536134ae11c2b~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @聚宝鹏创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 241767
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 1555772
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 4823707
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/2df16b872e844b578231643edadd7828', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/okPqola44igzPIQCEpK6vRaA4iPAaBMiIIBTG', 'url_list': ['https://...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

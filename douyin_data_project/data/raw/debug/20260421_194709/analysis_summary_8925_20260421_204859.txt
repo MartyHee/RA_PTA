@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7611103881086455103
+Timestamp: 20260421_204859
+Network responses: 27
+Runtime objects: 0
+Video object candidates: 189
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7611103881086455103
+    Path: url_extraction
+  author_id: 2080700358212907
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 核桃派PecanPie
+    Path: network_response_26.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA_werfvhMjAZasavSz-za9BbVpAD72ajA1gpJjnr5SESimbR6jbA5MJ1AGq70...
+    Path: network_response_26.aweme_detail.author.sec_uid_constructed
+  desc_text: 有这样一座中国城市。
+它与世界上最动荡的地区之一缅北，只相隔了一条细长的国境线。
+有人说，这里是需要时刻保持警惕的危险边境，有人将这里当作能押上身家、改变命运的机遇之地，也有人被这里的异域风情和自然景...
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 1772098233
+    Path: aweme_detail
+  like_count_raw: 9064
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 521
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 2897
+    Path: network_response_26.aweme_detail.statistics.share_count
+  collect_count: 1177
+    Path: network_response_26.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 143, 'caption_start': 133, 'end': 167, 'hashtag_id': '7529832653680281615', 'hashta...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ce0bb9cd20964013d5584eabf77ead14~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @核桃派PecanPie创作的原声
+    Path: network_response_26.aweme_detail.music.title
+  duration_sec: 755
+    Path: network_response_26.aweme_detail.duration
+  author_follower_count: 33792
+    Path: network_response_26.aweme_detail.author.follower_count
+  author_total_favorited: 298843
+    Path: network_response_26.aweme_detail.author.total_favorited
+  author_signature: 旅居欧洲的 核桃&派 🏡
+好好吃饭，好好生活 🍰
+在其地方也能找到我哦🧐
+    Path: network_response_26.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_26.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/3c489c0106d14411a4a6ab302490329e', 'url_list': ['https://p3-pc-s...
+    Path: network_response_26.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oIg1PEA0pA3CEsNqADBneS3oFB1QDQf9wAQ6g2', 'url_list': ['https:/...
+    Path: network_response_26.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

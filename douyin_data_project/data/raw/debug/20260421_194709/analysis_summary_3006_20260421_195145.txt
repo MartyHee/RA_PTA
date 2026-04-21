@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7600042552905337152
+Timestamp: 20260421_195145
+Network responses: 72
+Runtime objects: 1
+Video object candidates: 1463
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7600042552905337152
+    Path: url_extraction
+  author_id: 102135554534
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 小小白今天午休了吗
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAiH0UmWbBrVtXzLR-Ft3CBH15ClsR7TnZZlBXNWhITvg
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #唯有美食治愈一切 #青年创作者成长计划 #拉面 #吃货的日常 #日式拉面
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1769522801
+    Path: aweme_detail
+  like_count_raw: 70917
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 583
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 8621
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 4165
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 0, 'end': 34, 'hashtag_id': '1662659977551886', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/a6a60f8888c033855f2f5deee48d8156~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: とある日常
+    Path: network_response_27.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 181900
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 151123
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 1554038
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 在日本工作的中国人🇨🇳
+喜欢记录自己的生活 ！
+热爱美食！！！🍟🍗🍙🍣🥟
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/o88OjxfM4ICX6oaIAQHAfAAePfmANlSlMD2xQD', 'url_list': ['htt...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/okI24vCPIjOIhzGsQwXiYianCIBaLXAGARGIx', 'url_list': ['https://...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

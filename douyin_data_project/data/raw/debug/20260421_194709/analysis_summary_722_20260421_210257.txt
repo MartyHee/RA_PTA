@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614416657586457871
+Timestamp: 20260421_210257
+Network responses: 81
+Runtime objects: 1
+Video object candidates: 2853
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614416657586457871
+    Path: url_extraction
+  author_id: 1013101209849082
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 哈姆雷妹
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAexeNc-Wa0bIiVYhLkNPOWUT-XxG4sfhBbo-Y6wr29xMvXfae7e-TYDcaU8me...
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #傲慢与偏见 #她说 #影视漫谈编辑部 #高分电影 #了不起的精讲团
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1772869544
+    Path: aweme_detail
+  like_count_raw: 172266
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 1272
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 14318
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 33620
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 6, 'caption_start': 0, 'end': 36, 'hashtag_id': '1582209000197134', 'hashtag_name':...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/615dcb3c104a9a9b4c32410981343083~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @哈姆雷妹创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 719
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 119401
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 646782
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 女性成长🎬
+戒掉恋爱脑💧不依附 🌊不内耗♥️
+做自己人生的主角👑
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/okOBBjpEjQA2mAefcQYDPeAmKAIRIEGGTIU7AL', 'url_list': ['htt...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/osrkiNgA9ICA7NRf3mIBMhBpJ3qiiACeBgZt1q', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

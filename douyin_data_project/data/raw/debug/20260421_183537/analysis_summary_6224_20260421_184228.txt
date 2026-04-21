@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7599584567191768339
+Timestamp: 20260421_184228
+Network responses: 30
+Runtime objects: 0
+Video object candidates: 173
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7599584567191768339
+    Path: url_extraction
+  author_id: 2507361040475383
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 小珍来咯…
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAKmiI2Cz3DQ4HceU1M7zjYL6wxTHhoq3CtcBEVUmzMHK2-3LP0M-RVON_JVL1...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: XL版寿司比巴掌还大  omakase终于吃爽了～#年味争霸赛开赛了 #诺梵松露 #诺梵坚果金松露 #无限回购的宝藏单品
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1769420368
+    Path: aweme_detail
+  like_count_raw: 409499
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 7203
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 85344
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 20383
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 34, 'caption_start': 25, 'end': 34, 'hashtag_id': '7597780623427635234', 'hashtag_n...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/4e66f1615674740b2f7df6cf2b745563~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @小珍来咯…创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 798
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 5252811
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 56784251
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 跟我一起好好吃好每一顿饭 开开心心过好每一天
+感谢您的关注❤️
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/28bfc2ca317643bd9e0d62bfbe68dde4', 'url_list': ['https://p3-pc-s...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oYAn1pyBihAEADF950IBBaAN9JgfrCe3mpdIgD', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

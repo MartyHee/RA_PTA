@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7617215052890872037
+Timestamp: 20260421_213821
+Network responses: 72
+Runtime objects: 1
+Video object candidates: 1723
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7617215052890872037
+    Path: url_extraction
+  author_id: 4420509520889496
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 罗瑞
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAdHQjyUDKpUKpJeIPTT4Dgm6YccnOCVML9Ecm0f2222VfHpJdPD7PfLbn-MEt...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: 【越南行记1｜老街】去了一次越南才知道什么叫低成本快乐！#青年创作者成长计划 #交换世界计划  #旅行 #越南 #出国旅行
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1773546000
+    Path: aweme_detail
+  like_count_raw: 3294
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 330
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 2665
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 2654
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 38, 'caption_start': 28, 'end': 38, 'hashtag_id': '7529832653680281615', 'hashtag_n...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/75502e315326120878a5e0aa4492ca40~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @罗瑞创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 597
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 4887
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 146206
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 一个旅行路上的拾光者☀️
+我是罗瑞 想把小城背后的故事讲给你听！
+能被认真生活的你关注 荣幸至极～
+合vx：runzihe8low（备注来意）
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/c2b2575b35504fa6b7ec2e6f899426a2', 'url_list': ['https://p3-pc-s...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 480, 'uri': 'tos-cn-p-0015c000-ce/oooutbB93INeAyPEEpcwPaDlFCfBABMTiIX1QN', 'url_list': ['...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

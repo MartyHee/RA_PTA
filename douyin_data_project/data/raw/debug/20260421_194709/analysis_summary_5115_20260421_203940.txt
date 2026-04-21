@@ -1,0 +1,66 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7607355442037132570
+Timestamp: 20260421_203940
+Network responses: 76
+Runtime objects: 1
+Video object candidates: 1167
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7607355442037132570
+    Path: url_extraction
+  author_id: 2522699791349580
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 小太阳的美好生活
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA2fcQNTB-oo5xAqO2weJTbcj8Vh6xnWtI6rZx46DnMcGEaoinW-yMCqV_Z7K8...
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: 暴雨天露营这种感觉真的超解压：
+ 
+- 外面越乱，里面越安稳
+
+- 雨声白噪音直接把烦恼全冲走
+
+- 平时紧绷的情绪，被暴雨一次性浇透、放松
+
+ps:安全地方拍摄，无不良引导
+#房车生活 #房车露营 ...
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1771225600
+    Path: aweme_detail
+  like_count_raw: 49930
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 1319
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 11659
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 10625
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 93, 'caption_start': 88, 'end': 115, 'hashtag_id': '1619305613438984', 'hashtag_nam...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/40475c71681b8e83fba0cc3c74d45151~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 꽃날
+    Path: network_response_28.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 101308
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 106645
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 487003
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 用自己喜欢的方式去生活
+jn081352@163.com
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/0903715ae0e945b193460b96590dc5f8', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 779, 'uri': 'tos-cn-p-0015/o4klfADkewKAgF9xpoyN6CDAgIwSB9OIQh0rE3', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

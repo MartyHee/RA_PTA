@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597796630277204197
+Timestamp: 20260421_183649
+Network responses: 62
+Runtime objects: 1
+Video object candidates: 1634
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597796630277204197
+    Path: url_extraction
+  author_id: 1768448196346648
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 七七超正
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA_x7H9zFjHigz7p3IAZdJD-9fBYWOPWvOPviIL63nXcVqNfJdDj5mYuia8_la...
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: 
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1768999881
+    Path: aweme_detail
+  like_count_raw: 133254
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 6022
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 138596
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 76995
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 0, 'caption_start': 0, 'end': 14, 'start': 0, 'type': 7}, {'caption_end': 0, 'capti...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/cece61c9f457973004bdac1e5bf557ca~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @七七超正创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 369
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 64687
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 2286086
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: （全网同名）：七七超正  
+🈴：🟢xuekaidi1014
+饭搭子@小月半子_
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/o8fHAx4DMpFjIwEelCwF6ArDC9ACcQ9hvroAAE', 'url_list': ['...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 480, 'uri': 'tos-cn-p-0015c000-ce/oMvlfC0KpbEOyC5hByFEwoDjAcA9NaTQQ2f5oM', 'url_list': ['...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

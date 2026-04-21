@@ -1,0 +1,61 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604885085570406473
+Timestamp: 20260421_202658
+Network responses: 38
+Runtime objects: 0
+Video object candidates: 275
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604885085570406473
+    Path: url_extraction
+  author_id: 880025629891079
+    Path: network_response_20.aweme_detail.author.uid
+  author_name: 猴儿甜猴儿甜
+    Path: network_response_20.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA57tz6ABT9J4NqTi99buroQz_ZcF_BqRb8-CtmgTU4TY
+    Path: network_response_20.aweme_detail.author.sec_uid_constructed
+  desc_text: 二刷武汉！爽胖7斤好吃的我不想走！耗时1周整理超全攻略#武汉美食 #妈呀太香了 #spes干发喷雾
+    Path: network_response_20.aweme_detail.caption
+  publish_time_raw: 1770717655
+    Path: aweme_detail
+  like_count_raw: 224415
+    Path: network_response_20.aweme_detail.statistics.digg_count
+  comment_count_raw: 8822
+    Path: network_response_20.aweme_detail.statistics.comment_count
+  share_count_raw: 201935
+    Path: network_response_20.aweme_detail.statistics.share_count
+  collect_count: 115390
+    Path: network_response_20.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 32, 'caption_start': 27, 'end': 32, 'hashtag_id': '1580974954143790', 'hashtag_name...
+    Path: network_response_20.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ff30710c0aba764102d8e61eb665113b~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @猴儿甜猴儿甜创作的原声
+    Path: network_response_20.aweme_detail.music.title
+  duration_sec: 843
+    Path: network_response_20.aweme_detail.duration
+  author_follower_count: 751246
+    Path: network_response_20.aweme_detail.author.follower_count
+  author_total_favorited: 9762245
+    Path: network_response_20.aweme_detail.author.total_favorited
+  author_signature: 🈴 🛰️houer_tian（备注品牌谢谢🙏不接暗广谢谢🙏）
+兄弟：@小胡爱吃甜食 
+小宝贝：@猴宝和龙宝 
+旅游攻略没有店铺推广（如果后面接到了会标出来）
+好吃的店铺就发出来做成攻略😍
+不好吃的店就...
+    Path: network_response_20.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_20.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_20.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/osDTAQExQFwEVIECrf7eBFgJTqSkfgaAA6AAFT', 'url_list': ['...
+    Path: network_response_20.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/o0NSGDfQyLFeTg6fDAkT1gmteE2GJAiJEQQGDB', 'url_list': ['...
+    Path: network_response_20.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

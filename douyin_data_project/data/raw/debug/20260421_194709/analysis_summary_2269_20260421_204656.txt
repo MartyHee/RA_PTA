@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7608863932044180334
+Timestamp: 20260421_204656
+Network responses: 68
+Runtime objects: 1
+Video object candidates: 1278
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7608863932044180334
+    Path: url_extraction
+  author_id: 4429305963363502
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: caiCaii
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAWEF_IDdCeeOMCIxeFyCpcoodiE__t54vY_281DlhWouybSK_Q3NOy9LSUNtm...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: 
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1771576689
+    Path: aweme_detail
+  like_count_raw: 7419
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 140
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 391
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 1835
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/08658ab3cce0d5e1d4aadc6cd30fb616~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Sugar and Smiles 11
+    Path: network_response_27.aweme_detail.music.song.title
+  duration_sec: 214273
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 47614
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 715344
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 🍠。Caicai
+📮caicaigz98@163.com
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oQEAIecfBXqEaxA9wHmprAF1AAoDfCwEAXoAYE', 'url_list': ['...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/ocBXLqhPdXdgqEGIQBiihcYa1vI1v0ZAaAMHH', 'url_list': ['h...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

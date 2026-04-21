@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7609234531203206446
+Timestamp: 20260421_204732
+Network responses: 66
+Runtime objects: 1
+Video object candidates: 1340
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7609234531203206446
+    Path: url_extraction
+  author_id: 109633370113
+    Path: network_response_59.comments.[0].user.uid
+  author_name: 冰昙
+    Path: network_response_59.comments.[0].user.nickname
+  author_profile_url: 
+    Path: network_response_59.comments.[0].user.unique_id
+  desc_text: #动漫解说#goat#百合#福瑞#动物世界
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1773491565
+    Path: network_response_59.comments.[0].create_time
+  like_count_raw: 1
+    Path: network_response_59.comments.[0].digg_count
+  comment_count_raw: 341
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 4598
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 6365
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_59.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/e1bc01cc4698cea5a150d4c2fe7101b2~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @驱动笑颜创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 403
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 83574
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 2563435
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 二次元，你要自信！
+抖音群:522178164726
+商务合作vx:qudongxiaoyan
+@鸽子型驱动 ←主要用来分享日常
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/629f26b58f9e4f08a586511c6c595600', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4FvmIawGIIrOBQK6lmt8AqiBZklaAbtivvPZ', 'url_list': ['https://...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

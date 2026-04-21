@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7600401002751362734
+Timestamp: 20260421_195254
+Network responses: 44
+Runtime objects: 1
+Video object candidates: 313
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7600401002751362734
+    Path: url_extraction
+  author_id: 3347370884992487
+    Path: network_response_22.aweme_detail.author.uid
+  author_name: 卷卷测评
+    Path: network_response_22.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAEsZBbXOOJqnT4uu4Tj5gptZFn5sWaPBqkrN0RlcXX15iJzl30guNJS1YwA5g...
+    Path: network_response_22.aweme_detail.author.sec_uid_constructed
+  desc_text: #速食测评 #火鸡面 #螺蛳粉 #泡面 #酸辣粉
+    Path: network_response_22.aweme_detail.caption
+  publish_time_raw: 1769606262
+    Path: aweme_detail
+  like_count_raw: 362843
+    Path: network_response_22.aweme_detail.statistics.digg_count
+  comment_count_raw: 8097
+    Path: network_response_22.aweme_detail.statistics.comment_count
+  share_count_raw: 64831
+    Path: network_response_22.aweme_detail.statistics.share_count
+  collect_count: 89842
+    Path: network_response_22.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 22, 'hashtag_id': '1658488804965389', 'hashtag_name':...
+    Path: network_response_22.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ca99f197b6cade470620d1e3d392ef1b~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @卷卷测评创作的原声
+    Path: network_response_22.aweme_detail.music.title
+  duration_sec: 306834
+    Path: network_response_22.aweme_detail.duration
+  author_follower_count: 439385
+    Path: network_response_22.aweme_detail.author.follower_count
+  author_total_favorited: 2817456
+    Path: network_response_22.aweme_detail.author.total_favorited
+  author_signature: 无打光 无滤镜路人测评
+不接广 个人小号自费购买（防止AB货）
+还原真实到手情况 测到好的才会放橱窗 
+如有售后问题找客服 客服不管来找我
+欢迎粉丝宝宝投稿 感谢关注😊
+    Path: network_response_22.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_22.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_22.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813/oEIXm7ESfe0GxFWTyADDOAABaoBfA0vADQAMEg', 'url_list': ['https:/...
+    Path: network_response_22.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/ogpIB2mpEFAfTeBAI7QDa8sAg9D2vyS6XB6fCI', 'url_list': ['https:/...
+    Path: network_response_22.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601079780076127483
+Timestamp: 20260421_195433
+Network responses: 83
+Runtime objects: 1
+Video object candidates: 1531
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601079780076127483
+    Path: url_extraction
+  author_id: 102093118104
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 精致小春姐
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAj2-SOxZApJUoDbM0arqyKlTUcCmYQJJ91DKhmHRsMI0
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: 小蝌蚪打火锅？！瑶族长发阿姐带我去广西桂林龙胜集市开眼了！#小春姐#特色美食
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1769764299
+    Path: aweme_detail
+  like_count_raw: 59394
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 22048
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 104498
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 6257
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 33, 'caption_start': 29, 'end': 33, 'hashtag_id': '1663010904668190', 'hashtag_name...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/dd3372c2ee04944a49317d3cf94d0089~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Disaster（Phonk）
+    Path: network_response_28.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 287394
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 260631
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 3123704
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 带你看遍广东乡村特产美食！！
+✅女大学生返乡创业近10年、自营农业公司@粤春田农食养专卖店 三家实体在广东新兴；
+✅选品要求：自家企业、龙头企业、地标产品、非遗产品、老号产品、黑标品牌、地方助农；售后...
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oIEbp2KlBe8duLV4jfBGcAADgeTeAVnAaIARIO', 'url_list': ['...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/ogxYcLG2gGlnemDS1AB6Af2qgeDrWeTIEpgYOJ', 'url_list': ['...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

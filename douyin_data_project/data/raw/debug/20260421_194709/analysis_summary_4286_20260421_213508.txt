@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7616699320989040506
+Timestamp: 20260421_213508
+Network responses: 164
+Runtime objects: 1
+Video object candidates: 2486
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7616699320989040506
+    Path: url_extraction
+  author_id: 63631662468
+    Path: network_response_112.comments.[0].user.uid
+  author_name: 爱播
+    Path: network_response_112.comments.[0].user.nickname
+  author_profile_url: should.sleep
+    Path: network_response_112.comments.[0].user.unique_id
+  desc_text: #热梗 #音乐推荐 #不知火舞#熊大快跑
+    Path: network_response_63.aweme_detail.caption
+  publish_time_raw: 1773401351
+    Path: network_response_112.comments.[0].create_time
+  like_count_raw: 116
+    Path: network_response_112.comments.[0].digg_count
+  comment_count_raw: 201
+    Path: network_response_63.aweme_detail.statistics.comment_count
+  share_count_raw: 981
+    Path: network_response_63.aweme_detail.statistics.share_count
+  collect_count: 6551
+    Path: network_response_63.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_112.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/cb1516b54a9d61e8075bc5041d1c1734~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Napoleon
+    Path: network_response_63.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 207934
+    Path: network_response_63.aweme_detail.duration
+  author_follower_count: 1440246
+    Path: network_response_63.aweme_detail.author.follower_count
+  author_total_favorited: 13409750
+    Path: network_response_63.aweme_detail.author.total_favorited
+  author_signature: 听歌不emo，盘点不啰嗦
+每天盘点好歌，专治不开心
+亚比，囧囧囧～
+    Path: network_response_63.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_63.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_63.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oUAAEAXpnieAA9bI1P0fCiDtCBV3OAE5bLEEBw', 'url_list': ['...
+    Path: network_response_63.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/okI582FmAzz8WLfL2KWG6AAD4eTeABkdkICwIe', 'url_list': ['...
+    Path: network_response_63.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

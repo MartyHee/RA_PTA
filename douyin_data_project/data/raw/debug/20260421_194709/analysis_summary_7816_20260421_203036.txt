@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7606277440058510628
+Timestamp: 20260421_203036
+Network responses: 82
+Runtime objects: 1
+Video object candidates: 2868
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7606277440058510628
+    Path: url_extraction
+  author_id: 97414386230
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 白菜根难吃
+    Path: network_response_26.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAiFYJOkUnZS7RhX42bZGk9_IshJeidGHxPU1b1DN7fII
+    Path: network_response_26.aweme_detail.author.sec_uid_constructed
+  desc_text: #海南旅游攻略 #三亚旅游攻略 #陵水旅游攻略 #万宁旅游攻略 #交换世界计划
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 1770974509
+    Path: aweme_detail
+  like_count_raw: 14838
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 756
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 4100
+    Path: network_response_26.aweme_detail.statistics.share_count
+  collect_count: 8086
+    Path: network_response_26.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 7, 'caption_start': 0, 'end': 33, 'hashtag_id': '1611956695192584', 'hashtag_name':...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/2bc628d67cefaed3cae89d0c21dc8e43~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 温馨幸福热情喜悦烟花Fireworks Sound Effect  six
+    Path: network_response_26.aweme_detail.music.song.title
+  duration_sec: 495
+    Path: network_response_26.aweme_detail.duration
+  author_follower_count: 724247
+    Path: network_response_26.aweme_detail.author.follower_count
+  author_total_favorited: 3156166
+    Path: network_response_26.aweme_detail.author.total_favorited
+  author_signature: 最近出门玩了，很快会更
+评论区卖团的引流评论，请擦亮眼睛👀
+视频、文案皆为原创，搬运抄袭必究😡
+评论、私信都很难去回复，非常抱歉😐
+    Path: network_response_26.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_26.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/8192a0380f47476fb7c1f2da9205c03f', 'url_list': ['https://p3-pc-s...
+    Path: network_response_26.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o86yIDEDP7fAemaA7puOAZ4IT1FV09AjRhBT9g', 'url_list': ['https:/...
+    Path: network_response_26.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

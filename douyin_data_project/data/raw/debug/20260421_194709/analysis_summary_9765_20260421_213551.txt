@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7616751829237419299
+Timestamp: 20260421_213551
+Network responses: 84
+Runtime objects: 1
+Video object candidates: 2950
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7616751829237419299
+    Path: url_extraction
+  author_id: 3714596697288060
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 不染电影
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAvVzlg1nh7-Cudjzo_La439xudoNSb4ldhXVgtrWneTQn23Kv6Wziw7qq9pJ_...
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #电影解说 #动作电影 #美剧 #悬疑 #犯罪悬疑
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1773413252
+    Path: aweme_detail
+  like_count_raw: 25777
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 369
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 2099
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 7205
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 22, 'hashtag_id': '1593455819938819', 'hashtag_name':...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/bb3ca300795cd4a31d1b87b483163527~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @不染电影创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 1687
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 245458
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 1625056
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 🦿沉迷扒动作科幻的野生解说员！
+🖐🏼手速追得上打戏
+🧠脑洞能装下宇宙🌌 
+抖音独家认证，视频纯享无广，放心冲～
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/5268829b88e945fa8eaef8c721bd8c7a', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oguTaFMDBBCQ3LLf8BAAAJfWBEQje55LqTk7Ej', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

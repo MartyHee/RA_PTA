@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7605950727755746623
+Timestamp: 20260421_202909
+Network responses: 71
+Runtime objects: 1
+Video object candidates: 1564
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7605950727755746623
+    Path: url_extraction
+  author_id: 7434418908100133948
+    Path: network_response_33.aweme_detail.author.uid
+  author_name: 大开眼界
+    Path: network_response_33.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAALEMt9LuOsAXekLQuhD8CpEWIpzRV0Ujgvvrkt1QitcuTYB2vdOaWuVzUAaEi...
+    Path: network_response_33.aweme_detail.author.sec_uid_constructed
+  desc_text: 
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1770898422
+    Path: aweme_detail
+  like_count_raw: 18267
+    Path: network_response_33.aweme_detail.statistics.digg_count
+  comment_count_raw: 738
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 1710
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 7582
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_33.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/4fc6b89c8595900d7821b9cff19a043b~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @大开眼界创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 1507
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 22664
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 78082
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 点赞+关注，不迷路
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/7bc2ff39e09b4d4daed085088544dca1', 'url_list': ['https://p3-pc-s...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ogAABf3bh6pQfBaBzcDcSQdbNjh9EGFgXsPAgd', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604108206822925178
+Timestamp: 20260421_201357
+Network responses: 65
+Runtime objects: 1
+Video object candidates: 1470
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604108206822925178
+    Path: url_extraction
+  author_id: 2944972033366729
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 我是王铉铉
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAEJHq0RyvudxNCa9_eOP_o29N2LlAoaUC9r6rNzXBbL8IyAoafhNcM4Dw2Kdg...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: 这个面真甜 #美食 #抖音美食 #爆辣
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1770469411
+    Path: aweme_detail
+  like_count_raw: 46513
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 2233
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 40664
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 3722
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 6, 'end': 15, 'hashtag_id': '1767586897793101', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/f986b7a909cbbc129762d4a263449388~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: The Party Troll
+    Path: network_response_27.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 198420
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 161577
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 1425204
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 作品视频均原创对搬运/盗用画面者一定追究到底
+感谢抖音官方🥰
+商务：KSwxx666777(备注来意)
+本人唯一抖音号（谨防上当受骗）
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-p-0015c000-ce/ow3elCoBpBg8zd6iiLz3dAEBAE1HfhmwU9IQGi', 'url_list': ['...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/owGwUzgiABeA38op9o3BE61yRiITICiHV2MhfB', 'url_list': ['...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

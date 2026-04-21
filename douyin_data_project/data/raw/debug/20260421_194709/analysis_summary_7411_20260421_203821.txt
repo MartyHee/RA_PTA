@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7606691536411168015
+Timestamp: 20260421_203821
+Network responses: 25
+Runtime objects: 0
+Video object candidates: 172
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7606691536411168015
+    Path: url_extraction
+  author_id: 88861666583
+    Path: network_response_17.aweme_detail.author.uid
+  author_name: 冯声不会拍
+    Path: network_response_17.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAN_pMA0PJu3f74URSdAaR9ikYluUWplSijaWEI_oUinQ
+    Path: network_response_17.aweme_detail.author.sec_uid_constructed
+  desc_text: 故事不长，也不难讲，有些心动从开始就注定，不辜负遇见，不勉强结局。@怡宝 #遗憾 #热门
+    Path: network_response_17.aweme_detail.caption
+  publish_time_raw: 1771071090
+    Path: aweme_detail
+  like_count_raw: 4353
+    Path: network_response_17.aweme_detail.statistics.digg_count
+  comment_count_raw: 103
+    Path: network_response_17.aweme_detail.statistics.comment_count
+  share_count_raw: 670
+    Path: network_response_17.aweme_detail.statistics.share_count
+  collect_count: 806
+    Path: network_response_17.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 36, 'caption_start': 33, 'end': 36, 'sec_uid': 'MS4wLjABAAAAE_BDrCSs3jSPhMHnjEO0A5J...
+    Path: network_response_17.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/5e35295faf1b0fa6b5237201289fb104~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 等我回家
+    Path: network_response_17.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 2739
+    Path: network_response_17.aweme_detail.duration
+  author_follower_count: 35708
+    Path: network_response_17.aweme_detail.author.follower_count
+  author_total_favorited: 324548
+    Path: network_response_17.aweme_detail.author.total_favorited
+  author_signature: 挑战拍摄100期恋综
+我们都是自己故事里的主角
+日常：@冯声会拍 
+🈴作：@冯声会拍
+    Path: network_response_17.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_17.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_17.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0629/owDgANE7QCCkrIEiTfVfnsoAO0OCHgHEAWAAFp', 'url_list': ['https:/...
+    Path: network_response_17.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o0BxAzHkwFEj0AFCQpEDlgfMQ2e3gp55ANgIO9', 'url_list': ['https:/...
+    Path: network_response_17.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604080100560080179
+Timestamp: 20260421_201338
+Network responses: 87
+Runtime objects: 1
+Video object candidates: 2691
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604080100560080179
+    Path: url_extraction
+  author_id: 3364957321435422
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 七二说漫
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAfsG7b01BEY0k2qZEBza6iJX8VCt2-ZLNHLKFhKT1HRWNBF--bEdI0T2S8jMo...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: #动漫 #动漫解说 #你的名字
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1770462885
+    Path: aweme_detail
+  like_count_raw: 16129
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 294
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 1002
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 2274
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 15, 'hashtag_id': '1562324094309378', 'hashtag_name':...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/02085c5cc9e7965211fc1021781199f4~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @七二说漫创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 643
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 305772
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 8087779
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 感谢大家的支持
+每天定时更新✨
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/18d9786dde744eab9fba707381b446f9', 'url_list': ['https://p3-pc-s...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o8DyhA29VIfuAH2AEpxgtxD3FFfAABqsWIBHVU', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

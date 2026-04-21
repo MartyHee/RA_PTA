@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7610402973683895578
+Timestamp: 20260421_204753
+Network responses: 57
+Runtime objects: 1
+Video object candidates: 1209
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7610402973683895578
+    Path: url_extraction
+  author_id: 55759189426
+    Path: network_response_36.aweme_detail.author.uid
+  author_name: Tim孟游记
+    Path: network_response_36.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAaoRrwJq5WTCeKNLPDdmZEwHS9e8tYobYNR-DcaMNHwc
+    Path: network_response_36.aweme_detail.author.sec_uid_constructed
+  desc_text: #分享我的旅行回忆 #吹爆美好目的地 #香港 #香港旅行 #香港小众景点
+    Path: network_response_36.aweme_detail.caption
+  publish_time_raw: 1771935070
+    Path: aweme_detail
+  like_count_raw: 12733
+    Path: network_response_36.aweme_detail.statistics.digg_count
+  comment_count_raw: 392
+    Path: network_response_36.aweme_detail.statistics.comment_count
+  share_count_raw: 5359
+    Path: network_response_36.aweme_detail.statistics.share_count
+  collect_count: 9929
+    Path: network_response_36.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 0, 'end': 27, 'hashtag_id': '7583817077786413083', 'hashtag_nam...
+    Path: network_response_36.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/33efdb8df0a2cd708742029f17ac2bfa~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @Tim孟游记创作的原声
+    Path: network_response_36.aweme_detail.music.title
+  duration_sec: 303700
+    Path: network_response_36.aweme_detail.duration
+  author_follower_count: 31407
+    Path: network_response_36.aweme_detail.author.follower_count
+  author_total_favorited: 265635
+    Path: network_response_36.aweme_detail.author.total_favorited
+  author_signature: 北京生北京长的INFJ
+加拿大三年，澳洲四年
+旅行是我爱这个世界的方式
+希望自己一直在路上
+    Path: network_response_36.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_36.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_36.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/a32ed01225694cfa88a7e203fcdd6957', 'url_list': ['https://p9-pc-s...
+    Path: network_response_36.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4filshNzBAiOA1IBIzA08APojkgW0jqBAediy', 'url_list': ['https:/...
+    Path: network_response_36.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

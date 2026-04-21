@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7598749019711540489
+Timestamp: 20260421_184114
+Network responses: 73
+Runtime objects: 1
+Video object candidates: 2659
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7598749019711540489
+    Path: url_extraction
+  author_id: 4234929081166396
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 木叶·铁头娃
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAn_6SHo68STAROuUzP2Q4Vx7L-FywGNViP2dxkrk7xNG7T7frDk7OMfIIk3-1...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #鬼灭 #鬼灭之刃 #动漫杂谈 #动漫 #鬼灭之刃无限城篇 合集 这是合集哈  无刀的！！大概
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1769221669
+    Path: aweme_detail
+  like_count_raw: 288791
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 2790
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 33442
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 73822
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 17, 'hashtag_id': '1662161154737163', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ddc25b6e3a23f795b49e253d08151448~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @木叶·铁头娃创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 251984
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 2013896
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 55027794
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 十年火影迷ヽ(•̀ω•́ )ゝ
+只要喜欢火影，那我们就是伙伴😏   👊🏻对拳
+小号:@铁头娃的分身  日常:@小铁酱  
+诚招 有趣 有感情的写手～  有兴趣可私信
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/24a5e7ad491940f78da87ee7309763d1', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oQOJIBALbQL177CASfB6htQFaeXlGeCCEEYSdo', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

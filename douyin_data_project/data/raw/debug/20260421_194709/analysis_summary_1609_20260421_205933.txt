@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613072307984026920
+Timestamp: 20260421_205933
+Network responses: 31
+Runtime objects: 0
+Video object candidates: 184
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613072307984026920
+    Path: url_extraction
+  author_id: 1849791771050423
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 小胡特费电
+    Path: network_response_26.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAM7TU6cFAoV9CsE0v1kzPAK5o2wrkzh8nyHId_cBeugxP9lQaqC68ZXpFpBVg...
+    Path: network_response_26.aweme_detail.author.sec_uid_constructed
+  desc_text: #特斯拉 #自驾新疆 #modely #modelyl #特斯拉露
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 1772593140
+    Path: aweme_detail
+  like_count_raw: 5491
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 624
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 4390
+    Path: network_response_26.aweme_detail.statistics.share_count
+  collect_count: 667
+    Path: network_response_26.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 4, 'caption_start': 0, 'end': 35, 'hashtag_id': '1767586840628232', 'hashtag_name':...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/1cd5320f843cda79cfcfec3e3bfac09a~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 我们的时光
+    Path: network_response_26.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 318694
+    Path: network_response_26.aweme_detail.duration
+  author_follower_count: 109332
+    Path: network_response_26.aweme_detail.author.follower_count
+  author_total_favorited: 1089902
+    Path: network_response_26.aweme_detail.author.total_favorited
+  author_signature: 🔆特斯拉 Y、YL 车主分享用车日常｜梦想开电车走遍全国
+🛒橱窗里都是精心挑选的产品  感谢大家信任支持
+📦售后问题请联系@小胡特费电助理❤️记得回关我 
+🚗交流 /合作/车友群🛰： XHTFD218...
+    Path: network_response_26.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_26.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/8780798f5c57424eb651f74fbd8975b3', 'url_list': ['https://p3-pc-s...
+    Path: network_response_26.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oMpACBiwQhB89pgUf4pFiUnAf6DAypIAEKI42a', 'url_list': ['https:/...
+    Path: network_response_26.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

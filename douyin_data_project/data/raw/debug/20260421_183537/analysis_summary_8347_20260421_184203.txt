@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7599220717007195455
+Timestamp: 20260421_184203
+Network responses: 58
+Runtime objects: 1
+Video object candidates: 1791
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7599220717007195455
+    Path: url_extraction
+  author_id: 676886962781079
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 袁锐（萌新的圆）
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAhpf3ooBmpiMxKalwOhW4K41l240Y_X91yzX38njmlrk
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #年夜饭 #干锅鸡翅虾 #家常菜 #好好吃饭好好生活 #干锅土豆
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1769331508
+    Path: aweme_detail
+  like_count_raw: 22265
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 459
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 11617
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 19480
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 4, 'caption_start': 0, 'end': 35, 'hashtag_id': '1588002245131278', 'hashtag_name':...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/88071b437f39108467edfe64234ccb62~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @袁锐（萌新的圆）创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 266900
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 419843
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 3620006
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 做暖心暖胃的菜！做认真细致的教程！
+小咪@看我干什么
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/93b81f0df4714d24a9c8adf672d9b1cb', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/owOc22g7mEv5PespACCnQ2Q1fuA9hBADwD29dF', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7606204994043623232
+Timestamp: 20260421_203008
+Network responses: 73
+Runtime objects: 1
+Video object candidates: 1442
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7606204994043623232
+    Path: url_extraction
+  author_id: 1446610112358676
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: myokey
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA3ctOqPbEEp0xwQ7K5FSseRgc7uOnVWgQrl25-zEfg4s8lSBz7kb403fTsVbc...
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #我们都是发财的小羊#元梦探灵包灵的 #原创动画#元梦之星
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1770957609
+    Path: aweme_detail
+  like_count_raw: 69925
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 612
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 5583
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 15084
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 10, 'caption_start': 0, 'end': 28, 'hashtag_id': '7605823493665458222', 'hashtag_na...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/bd6e205c1a83de143ce003ba6e12a2ec~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 我恨明月不照我（Cover 阿YueYue）
+    Path: network_response_28.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 100775
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 211280
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 9986254
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 平时玩点游戏画点破画，发点oc和同人！
+oc家产有各自属性，请不要ky和在无关地方提及
+想看的系列可以在对应合集里找更新✨
+合作请加🛰myokey0330（备注来意）
+不授权任何搬运，感谢大家的喜欢！
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813/ogAAAAy0CiTAAeBIW6OfCiqxCB1cD1E9g21cJg', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 480, 'uri': 'tos-cn-p-0015/ocHAECIVnCGG7YAePIC4LXdBeaEAcTQBVXQbof', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

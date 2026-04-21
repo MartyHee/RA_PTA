@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7618116094112337202
+Timestamp: 20260421_214320
+Network responses: 159
+Runtime objects: 0
+Video object candidates: 3398
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7618116094112337202
+    Path: url_extraction
+  author_id: 105525949232
+    Path: network_response_93.aweme_detail.author.uid
+  author_name: 影视飓风
+    Path: network_response_93.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAaCcBHb3Rhc4zxF8YkBOfHfLh6k-IWEK2l3Ne9xOXPnQ
+    Path: network_response_93.aweme_detail.author.sec_uid_constructed
+  desc_text: *本期内容不建议18岁以下未成年人观看。#人文 #纪录 #纪实 #孟加拉#人间观察计划
+    Path: network_response_93.aweme_detail.caption
+  publish_time_raw: 1773738120
+    Path: aweme_detail
+  like_count_raw: 5122383
+    Path: network_response_93.aweme_detail.statistics.digg_count
+  comment_count_raw: 64015
+    Path: network_response_93.aweme_detail.statistics.comment_count
+  share_count_raw: 2058287
+    Path: network_response_93.aweme_detail.statistics.share_count
+  collect_count: 650921
+    Path: network_response_93.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 23, 'caption_start': 20, 'end': 44, 'hashtag_id': '1588870264630291', 'hashtag_name...
+    Path: network_response_93.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/bdce4ac37bf61fcb970b80eb05ee9629~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Opaque
+    Path: network_response_93.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 1565
+    Path: network_response_93.aweme_detail.duration
+  author_follower_count: 13683279
+    Path: network_response_93.aweme_detail.author.follower_count
+  author_total_favorited: 104534036
+    Path: network_response_93.aweme_detail.author.total_favorited
+  author_signature: 无限进步！
+短视频合作请联系WX：MediaStormBD（添加时请备注公司、咨询内容）
+    Path: network_response_93.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_93.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_93.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/07df3e1fe3824f87ab3a95b574a15b4b', 'url_list': ['https://p3-pc-s...
+    Path: network_response_93.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o0f5fPADuBAF8TKQCQSx9PA70vvgGpNYDA9xEl', 'url_list': ['https:/...
+    Path: network_response_93.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

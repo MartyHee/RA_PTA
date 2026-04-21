@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613592279432924468
+Timestamp: 20260421_210029
+Network responses: 69
+Runtime objects: 1
+Video object candidates: 1748
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613592279432924468
+    Path: url_extraction
+  author_id: 1020818953866695
+    Path: network_response_63.comments.[0].user.uid
+  author_name: 自由落体运动员
+    Path: network_response_63.comments.[0].user.nickname
+  author_profile_url: 92683377796
+    Path: network_response_63.comments.[0].user.unique_id
+  desc_text: 无广测评！
+#糯叽叽 #抹茶控 #甜品治愈一切 #拼多多甜品 #糯叽叽美食
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1772847996
+    Path: network_response_63.comments.[0].create_time
+  like_count_raw: 14
+    Path: network_response_63.comments.[0].digg_count
+  comment_count_raw: 138
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 1191
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 2039
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'start': 0, 'end': 3, 'type': 5, 'search_text': '上行斋', 'search_query_id': '6722390179975271688', '...
+    Path: network_response_63.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/d374cd51a98933af04edfcfd6b3bd478~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @柚柚还能吃亿口创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 241367
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 6931
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 76879
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 全网同名 江浙沪探店
+嗜甜如命！面包甜品控！
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/3356df94c8c54f8c8306a727f0d6a261', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o8OpBRvEEReF5d0ASgxQqc8d9jMzDACsAfqQ0C', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

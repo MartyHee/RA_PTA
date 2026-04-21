@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615149319166922027
+Timestamp: 20260421_211046
+Network responses: 83
+Runtime objects: 1
+Video object candidates: 1550
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615149319166922027
+    Path: url_extraction
+  author_id: 4234972565605982
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 穿毛裤的小拉泽
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAW_bd4vhZg6M4Zu9x7fk6lHrDpTSZQ-aEeURGPC3wou5nQ-Uk9oRG3mPYUjuv...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: 美食测评千人千味，口味仅代表我个人，仅供大家参考！如果大家近期有什么超想看的测评，记得给我发私信或者评论区留言喔！注：封神榜>名士榜>凡人榜>妖魔榜#神奇的闲鱼 #新版闲鱼 #按斤称零食 #网红零食 ...
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1773046199
+    Path: aweme_detail
+  like_count_raw: 167493
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 1657
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 23476
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 39513
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 80, 'caption_start': 74, 'end': 103, 'hashtag_name': '神奇的闲鱼', 'start': 97, 'type': ...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/473438cebc94446325f2bdf5c451dded~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @穿毛裤的小拉泽创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 717
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 1745863
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 9729222
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 全网统一ID：穿毛裤的小拉泽
+星图VX：laze66668888或jsjs2888「麻烦添加注明来意」
+带货VX：laze66668888 「麻烦添加注明来意」
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/209d9b5bb88d473a9e6f9cae04004c5d', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o8LAiJjTXAKOB9zBICQOq7cCEIueIR83BefAIG', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615452906074098971
+Timestamp: 20260421_211830
+Network responses: 83
+Runtime objects: 1
+Video object candidates: 1498
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615452906074098971
+    Path: url_extraction
+  author_id: 1795969867321703
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 古桥文乃的动漫笔记
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA7oDW1x2XR1LOJjum9otvFntOMqeCeh_--pmnXdyt1-i77653SmJLdYrROHPk...
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: #抖音精选 #鬼灭之刃 #富冈义勇 #动漫编年史 #鬼灭之刃无限城篇
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1773110808
+    Path: aweme_detail
+  like_count_raw: 42428
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 575
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 3556
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 18337
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 33, 'hashtag_id': '1568943621383170', 'hashtag_name':...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/5e8716d9fb91553c45eac124507a05f7~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @古桥文乃的动漫笔记创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 259668
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 39056
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 1022007
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 恭喜你发现了一个即将百万粉的UP！确定不来当个原始股东吗？
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/050ebcbf2941465ba5c1cbe108a03e3b', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oIfbf5ha4pNIQgEkhFVFYALDBvWqrQ9vXrNABA', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

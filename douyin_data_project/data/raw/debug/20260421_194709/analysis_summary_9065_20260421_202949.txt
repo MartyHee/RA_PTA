@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7606165999628389683
+Timestamp: 20260421_202949
+Network responses: 70
+Runtime objects: 1
+Video object candidates: 1074
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7606165999628389683
+    Path: url_extraction
+  author_id: 4248938752259255
+    Path: network_response_60.comments.[0].user.uid
+  author_name: 程天睡大觉
+    Path: network_response_60.comments.[0].user.nickname
+  author_profile_url: 73777498122
+    Path: network_response_60.comments.[0].user.unique_id
+  desc_text: #涨知识 #美食 #科普 #猪奶 #牛奶
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1771776106
+    Path: network_response_60.comments.[0].create_time
+  like_count_raw: 400
+    Path: network_response_60.comments.[0].digg_count
+  comment_count_raw: 673
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 6058
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 1550
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_60.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/bdcc8781bc2acd837f653c25e751eec5~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Fear
+    Path: network_response_31.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 303334
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 15697
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 181768
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 不只是干饭人，
+更是美食 “刨根党”！
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/7bc0301e02e04b3daf7eb10f2985ddcc', 'url_list': ['https://p9-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oEEPA6dE9DpfDd0EDgAoeQCjQANp1lDEhj4AFB', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

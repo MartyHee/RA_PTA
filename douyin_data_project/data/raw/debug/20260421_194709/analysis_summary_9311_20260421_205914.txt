@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7612974643011472681
+Timestamp: 20260421_205914
+Network responses: 69
+Runtime objects: 1
+Video object candidates: 2152
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7612974643011472681
+    Path: url_extraction
+  author_id: 2052121179721611
+    Path: network_response_39.aweme_detail.author.uid
+  author_name: 废柴菌的吐槽之魂
+    Path: network_response_39.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAcQewKGeVwGchChIVTOBSZHowu0XzipEMcw88smzb3dvUhn8Tc34yFqXSuwfq...
+    Path: network_response_39.aweme_detail.author.sec_uid_constructed
+  desc_text: #电锯人 #电锯人漫画 #藤本树
+    Path: network_response_39.aweme_detail.caption
+  publish_time_raw: 1772533850
+    Path: aweme_detail
+  like_count_raw: 35008
+    Path: network_response_39.aweme_detail.statistics.digg_count
+  comment_count_raw: 1490
+    Path: network_response_39.aweme_detail.statistics.comment_count
+  share_count_raw: 3262
+    Path: network_response_39.aweme_detail.statistics.share_count
+  collect_count: 3771
+    Path: network_response_39.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 4, 'caption_start': 0, 'end': 20, 'hashtag_id': '1645822496627724', 'hashtag_name':...
+    Path: network_response_39.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/31af3b7127c83ab7a020387289278e14~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @废柴菌的吐槽之魂创作的原声
+    Path: network_response_39.aweme_detail.music.title
+  duration_sec: 225067
+    Path: network_response_39.aweme_detail.duration
+  author_follower_count: 23516
+    Path: network_response_39.aweme_detail.author.follower_count
+  author_total_favorited: 1614252
+    Path: network_response_39.aweme_detail.author.total_favorited
+  author_signature: 商务✨:mhsw0745
+一个在二次元夹缝中生存的吐槽役&玩梗大师。
+    Path: network_response_39.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_39.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_39.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/bb55626ee8a540ccab4e8dc41012ce1f', 'url_list': ['https://p3-pc-s...
+    Path: network_response_39.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4mPIIAaZyUQX3kibuYa7TAHAG8SBai4PXIvY', 'url_list': ['https://...
+    Path: network_response_39.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

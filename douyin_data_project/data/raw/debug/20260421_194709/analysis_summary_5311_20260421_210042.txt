@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613683628375133455
+Timestamp: 20260421_210042
+Network responses: 63
+Runtime objects: 1
+Video object candidates: 1479
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613683628375133455
+    Path: url_extraction
+  author_id: 104571122388
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 吃货老外铁蛋儿
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAANAEutGKGcARnmU8bc8_4krwn9nMJPkR6jNqE1Gp7AWI
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #炸鸡 #夜宵 #一起吃饭吧 #火鸡面 #汉堡
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1772699844
+    Path: aweme_detail
+  like_count_raw: 718506
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 19454
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 212298
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 127492
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 15, 'hashtag_id': '1584426492366861', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/f6e5589d12a40a5c6032774edd32e88d~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @吃货老外铁蛋儿创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 551
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 18856175
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 245275679
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 谢谢抖音！谢谢各位粉丝！感谢你们的支持！
+商务Tiedanshangwuhao（备注内容）
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/45b1d927095b4a92acc37a0585d1c98e', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oEJaCvWPI7iZw8pAcY8PQGiQBEBIckWAGIaow', 'url_list': ['https://...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

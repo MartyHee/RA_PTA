@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604325164871978246
+Timestamp: 20260421_201802
+Network responses: 91
+Runtime objects: 1
+Video object candidates: 2852
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604325164871978246
+    Path: url_extraction
+  author_id: 106605001361
+    Path: network_response_46.aweme_detail.author.uid
+  author_name: ZS剪辑
+    Path: network_response_46.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAfoErmemgyZUBPNuB_nP3KHQSziuGrHHSUiOFMY55Tag
+    Path: network_response_46.aweme_detail.author.sec_uid_constructed
+  desc_text: 
+    Path: network_response_46.aweme_detail.caption
+  publish_time_raw: 1770519974
+    Path: aweme_detail
+  like_count_raw: 666440
+    Path: network_response_46.aweme_detail.statistics.digg_count
+  comment_count_raw: 9048
+    Path: network_response_46.aweme_detail.statistics.comment_count
+  share_count_raw: 39393
+    Path: network_response_46.aweme_detail.statistics.share_count
+  collect_count: 66531
+    Path: network_response_46.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_46.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/24736e8089bed1aaccd34c83d7f363d6~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @ZS剪辑创作的原声
+    Path: network_response_46.aweme_detail.music.title
+  duration_sec: 1585
+    Path: network_response_46.aweme_detail.duration
+  author_follower_count: 369949
+    Path: network_response_46.aweme_detail.author.follower_count
+  author_total_favorited: 10708213
+    Path: network_response_46.aweme_detail.author.total_favorited
+  author_signature: 用心讲好每个故事，跟我一起穿越荧幕，触摸故事的温度
+影视宣发：qechen5355(注明来意）
+    Path: network_response_46.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_46.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_46.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/5769983e9ed24d09bc0468f044b0f79c', 'url_list': ['https://p3-pc-s...
+    Path: network_response_46.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oc1cPApmfaCOxEQTUDFfBCAdrf4nxMQj7XDsBU', 'url_list': ['https:/...
+    Path: network_response_46.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

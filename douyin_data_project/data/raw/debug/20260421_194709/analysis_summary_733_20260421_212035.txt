@@ -1,0 +1,61 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615563220561199778
+Timestamp: 20260421_212035
+Network responses: 59
+Runtime objects: 1
+Video object candidates: 2101
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615563220561199778
+    Path: url_extraction
+  author_id: 93485574432
+    Path: network_response_24.aweme_detail.author.uid
+  author_name: 盈盈吃不饱🍖
+    Path: network_response_24.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAzO38izEm9L0Ehg-9aWYlPEQZe8YJbEHVtL6LwJxWBqM
+    Path: network_response_24.aweme_detail.author.sec_uid_constructed
+  desc_text: {}
+    Path: network_response_24.aweme_detail.anchor_info.content
+  publish_time_raw: 1773136488
+    Path: aweme_detail
+  like_count_raw: 184020
+    Path: network_response_24.aweme_detail.statistics.digg_count
+  comment_count_raw: 10791
+    Path: network_response_24.aweme_detail.statistics.comment_count
+  share_count_raw: 214287
+    Path: network_response_24.aweme_detail.statistics.share_count
+  collect_count: 108140
+    Path: network_response_24.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 29, 'hashtag_id': '1597960699305997', 'hashtag_name':...
+    Path: network_response_24.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/261cc3a91eb300296303e10eba1bbe60~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 
+    Path: network_response_24.aweme_detail.anchor_info.title
+  duration_sec: 731
+    Path: network_response_24.aweme_detail.duration
+  author_follower_count: 1003450
+    Path: network_response_24.aweme_detail.author.follower_count
+  author_total_favorited: 7815152
+    Path: network_response_24.aweme_detail.author.total_favorited
+  author_signature: 攻略都是自己做的！！千人千味 理性种草😘
+极限48小时城市逛吃合集里不加探店暗广！勿扰
+🚫禁止任何人搬用我的逛吃视频，禁止商用！！！
+俺的穿搭分享@盈盈今天穿什么 
+喜欢的主播@盈盈的小跟班🍗 
+🈴：...
+    Path: network_response_24.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_24.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_24.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/ok7AaCirEEBJy3AAUYAgf3i9pvIW9mBACAmf6C', 'url_list': ['htt...
+    Path: network_response_24.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oABK8i9CLI6r4iLAGCZf6n3th9dvB9grvpIfAA', 'url_list': ['https:/...
+    Path: network_response_24.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7606701802095922473
+Timestamp: 20260421_203833
+Network responses: 68
+Runtime objects: 1
+Video object candidates: 2173
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7606701802095922473
+    Path: url_extraction
+  author_id: 111608898696
+    Path: network_response_63.comments.[0].user.uid
+  author_name: cc要长生
+    Path: network_response_63.comments.[0].user.nickname
+  author_profile_url: 
+    Path: network_response_63.comments.[0].user.unique_id
+  desc_text: #末日迁徙2 #影娱漫谈编辑部  #了不起的精讲团  #dou来聊电影  #影娱年味不打烊
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1771288313
+    Path: network_response_63.comments.[0].create_time
+  like_count_raw: 106
+    Path: network_response_63.comments.[0].digg_count
+  comment_count_raw: 3575
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 28553
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 97148
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'start': 5, 'end': 10, 'type': 5, 'search_text': '末日逃生2', 'search_query_id': '6671831281182971149'...
+    Path: network_response_63.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/f899415eaf4730d500c7edb81bb6520a~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Anacreon
+    Path: network_response_30.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 1649
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 1842402
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 14635680
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 只关注最新上映的悬疑惊悚佳作！
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/5b312d80fd7140f69f0ec9c3713a7c50', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oM3GqTgIXEMRjnCpAwAlQ3QgfyA8eBANCD19kF', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

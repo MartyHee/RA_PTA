@@ -1,0 +1,41 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597796630277204197
+Timestamp: 20260421_190318
+Network responses: 3
+Runtime objects: 1
+Video object candidates: 53
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597796630277204197
+    Path: url_extraction
+  author_id: 2895488534447034
+    Path: runtime_object_window.SSR_RENDER_DATA.app.odin.user_id
+  author_name: NOT FOUND
+  author_profile_url: NOT FOUND
+  desc_text: PC Tab
+    Path: runtime_object_window.SSR_RENDER_DATA.app.tccConfig.admin_common_conf.admin_pc_tab.title
+  publish_time_raw: 2025-11-26
+    Path: runtime_object_window.SSR_RENDER_DATA.app.tccConfig.download_impc_info.time
+  like_count_raw: NOT FOUND
+  comment_count_raw: NOT FOUND
+  share_count_raw: NOT FOUND
+  collect_count: NOT FOUND
+  hashtag_list: NOT FOUND
+  cover_url: NOT FOUND
+  music_name: PC Tab
+    Path: runtime_object_window.SSR_RENDER_DATA.app.tccConfig.admin_common_conf.admin_pc_tab.title
+  duration_sec: 60000
+    Path: runtime_object_window.SSR_RENDER_DATA.app.tccConfig.ctr1.duration
+  author_follower_count: NOT FOUND
+  author_total_favorited: NOT FOUND
+  author_signature: NOT FOUND
+  author_verification_type: NOT FOUND
+  video_cover_url: NOT FOUND
+  dynamic_cover_url: NOT FOUND
+  origin_cover_url: NOT FOUND
+
+Extracted 6 out of 14 target fields
+================================================================================

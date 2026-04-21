@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7612586895486307590
+Timestamp: 20260421_205823
+Network responses: 67
+Runtime objects: 1
+Video object candidates: 2009
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7612586895486307590
+    Path: url_extraction
+  author_id: 61197954847616
+    Path: network_response_61.comments.[0].user.uid
+  author_name: Nachhaltig
+    Path: network_response_61.comments.[0].user.nickname
+  author_profile_url: yingzhan6188
+    Path: network_response_61.comments.[0].user.unique_id
+  desc_text: 写三本火三本，墨香铜臭有多厉害？#墨香铜臭 #魔道祖师 #穿书自救指南 #天官赐福 #小说
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1772455502
+    Path: network_response_61.comments.[0].create_time
+  like_count_raw: 5893
+    Path: network_response_61.comments.[0].digg_count
+  comment_count_raw: 3078
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 4960
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 5992
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_61.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/c35dda8b49ba3103dbbc85cebd8bc70f~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @小南碎碎念创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 215040
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 86798
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 5230054
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 看小说动漫怕踩雷？😺
+找我就对了！🙌
+小南都给你整的明明白白的！🤜
+商务：kaozhu123
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/2e85c6b85d854961bbafc81a6a2fe46d', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oouV4Bi3p6AqO0glBeFEgcDOApA9DNZIIkf1DV', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

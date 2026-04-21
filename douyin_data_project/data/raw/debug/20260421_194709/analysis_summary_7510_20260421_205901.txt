@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7612968545047088438
+Timestamp: 20260421_205901
+Network responses: 58
+Runtime objects: 1
+Video object candidates: 1037
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7612968545047088438
+    Path: url_extraction
+  author_id: 2608458007323943
+    Path: network_response_45.aweme_detail.author.uid
+  author_name: 小果食🍜
+    Path: network_response_45.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA-3TYRvFY8npSuDzHBWqpAZ51x2O2N_D3K5-qWI6fgG-b9UddvgszhsG9DMzV...
+    Path: network_response_45.aweme_detail.author.sec_uid_constructed
+  desc_text: #火鸡面 #爆浆蛋糕 #炸鸡 #福团 #芝士虾滑
+    Path: network_response_45.aweme_detail.caption
+  publish_time_raw: 1772532415
+    Path: aweme_detail
+  like_count_raw: 17332
+    Path: network_response_45.aweme_detail.statistics.digg_count
+  comment_count_raw: 404
+    Path: network_response_45.aweme_detail.statistics.comment_count
+  share_count_raw: 8445
+    Path: network_response_45.aweme_detail.statistics.share_count
+  collect_count: 3706
+    Path: network_response_45.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 4, 'caption_start': 0, 'end': 34, 'hashtag_id': '1555244017786881', 'hashtag_name':...
+    Path: network_response_45.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/f41bde07f71e5c29ecff394b485ab177~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @小果食🍜创作的原声
+    Path: network_response_45.aweme_detail.music.title
+  duration_sec: 324546
+    Path: network_response_45.aweme_detail.duration
+  author_follower_count: 202405
+    Path: network_response_45.aweme_detail.author.follower_count
+  author_total_favorited: 2287097
+    Path: network_response_45.aweme_detail.author.total_favorited
+  author_signature: 我们的口号是：
+好好吃饭，好好生活！
+详情请拨打：Xiaoguofcfcfc
+    Path: network_response_45.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_45.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_45.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/08591c430efc46b69e0aaeb7b4b44566', 'url_list': ['https://p3-pc-s...
+    Path: network_response_45.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oUPAOII5UQBuaHqQKtBRAIahsKmB8w9isIiav', 'url_list': ['https://...
+    Path: network_response_45.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

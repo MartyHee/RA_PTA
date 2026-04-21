@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614020063171054867
+Timestamp: 20260421_210112
+Network responses: 64
+Runtime objects: 1
+Video object candidates: 2962
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614020063171054867
+    Path: url_extraction
+  author_id: 110222466413
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: 六斤Libra
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAeEhy0A_rr4sUaxklUeAKZ-SpTNlssflshdHvpPUQcxU
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: 真实的韩国到底是什么样？这次我们会从韩国本地人、留学生以及我们自己的游客视角一起来看看！
+#韩国 #旅行 #真实的韩国 #首尔 #vlog
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1772798400
+    Path: aweme_detail
+  like_count_raw: 8075
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 245
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 1016
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 960
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 48, 'caption_start': 45, 'end': 73, 'hashtag_id': '1563557967112193', 'hashtag_name...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/5df2f7e754353e5a618725edea5d0556~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: Just Friends
+    Path: network_response_31.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 842
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 361732
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 1530497
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 记录我们看到的世界
+全网同名
+📧：517651538@🐧.com
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/0afd58f4c981483bb2e81617102947fb', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oA4BaAfiUg110zzDDIBReKAkcZIqi3AoB2OTbq', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

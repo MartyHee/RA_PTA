@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614132371868224811
+Timestamp: 20260421_210205
+Network responses: 73
+Runtime objects: 1
+Video object candidates: 1953
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614132371868224811
+    Path: url_extraction
+  author_id: 101255463967
+    Path: network_response_67.comments.[0].user.uid
+  author_name: sanctuary👾
+    Path: network_response_67.comments.[0].user.nickname
+  author_profile_url: 
+    Path: network_response_67.comments.[0].user.unique_id
+  desc_text: #飞机餐 #公务舱 #商务舱 #坐飞机
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1772929552
+    Path: network_response_67.comments.[0].create_time
+  like_count_raw: 229
+    Path: network_response_67.comments.[0].digg_count
+  comment_count_raw: 2035
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 545
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 1080
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: [{'start': 4, 'end': 12, 'type': 5, 'search_text': '12个小时经济舱', 'search_query_id': '67469148581443883...
+    Path: network_response_67.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/371c36dc764e375e9ae5e894f9fcb6e4~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @Yui柯基大聪明创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 718
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 88414
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 813536
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 大小号合并啦！都在这里！
+你们也可以亲切地叫我柯基～
+喜欢快乐🎉
+热爱生活😎
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/4df09d783edc4c25807e4cbb2eedd0f1', 'url_list': ['https://p3-pc-s...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/okqP9CpA9Q8AXCsfveQCQ6DpcG4FEA8tBgCF1q', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

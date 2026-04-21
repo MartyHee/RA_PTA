@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614483854670306546
+Timestamp: 20260421_210401
+Network responses: 62
+Runtime objects: 1
+Video object candidates: 1249
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614483854670306546
+    Path: url_extraction
+  author_id: 4145605466404825
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 村里人
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAeaZY289xnAhXTtuON8kjZxHV0Hoa2KCoEDtuVsamXFpLWjJd1cxkm6cZpqYQ...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #天价美食 #上海美食 #地方特色美食
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1772885178
+    Path: aweme_detail
+  like_count_raw: 17958
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 2601
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 28113
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 5829
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 12, 'hashtag_id': '1700367516519502', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/b5bb200d9f4f5ecf9f0b5d4be50288de~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @村里人创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 331255
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 283036
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 3205401
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 一个农村人
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-p-0015/ogDfrEY9tIoLAFaAEpBgPQDzFsfAABMsqI2sR1', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oYsBMfgFLElYoBapAEBSIFIsfQASCBADtDz9rF', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

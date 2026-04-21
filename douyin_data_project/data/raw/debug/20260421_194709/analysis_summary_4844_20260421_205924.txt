@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613006121490676075
+Timestamp: 20260421_205924
+Network responses: 27
+Runtime objects: 0
+Video object candidates: 145
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613006121490676075
+    Path: url_extraction
+  author_id: 4235784672253620
+    Path: network_response_26.aweme_detail.author.uid
+  author_name: 杭州晓明旅行记
+    Path: network_response_26.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA0opP1ZCGrk9NC7HN4N_5Jb5NK6rBxPPMc7Gm0C8EZqH8rLfbskiYcbrSmlbO...
+    Path: network_response_26.aweme_detail.author.sec_uid_constructed
+  desc_text: 灵隐寺为什么叫云林禅寺？灵隐寺里面有哪些看点？有哪些重要的古迹文物你知道吗？#杭州旅游攻略 #灵隐寺攻略  #浙江文旅宣推官 #灵隐寺 #灵隐寺飞来峰
+    Path: network_response_26.aweme_detail.caption
+  publish_time_raw: 1772596500
+    Path: aweme_detail
+  like_count_raw: 2054
+    Path: network_response_26.aweme_detail.statistics.digg_count
+  comment_count_raw: 106
+    Path: network_response_26.aweme_detail.statistics.comment_count
+  share_count_raw: 671
+    Path: network_response_26.aweme_detail.statistics.share_count
+  collect_count: 1370
+    Path: network_response_26.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 45, 'caption_start': 38, 'end': 67, 'hashtag_id': '1610164686746627', 'hashtag_name...
+    Path: network_response_26.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/354e3c80c1662dcff6ef2af0e4441cd4~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @杭州晓明旅行记创作的原声
+    Path: network_response_26.aweme_detail.music.title
+  duration_sec: 669
+    Path: network_response_26.aweme_detail.duration
+  author_follower_count: 80269
+    Path: network_response_26.aweme_detail.author.follower_count
+  author_total_favorited: 132546
+    Path: network_response_26.aweme_detail.author.total_favorited
+  author_signature: 🌏Hzcyxm2023
+80后大叔，杭州人做了20多年旅游，熟悉这里的每处风景和烟火气。有啥想问的，随时找我聊聊，帮您少走弯路，玩得更地道！”
+    Path: network_response_26.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_26.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_26.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813/o8bAaCFpJEDj6yAASeAgfyEtpmIq94hACALt1C', 'url_list': ['https:/...
+    Path: network_response_26.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/octvaIPgVIImvDQu3sCSVApiBa5baA1OiCLPm', 'url_list': ['https://...
+    Path: network_response_26.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

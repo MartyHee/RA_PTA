@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7601048622565821747
+Timestamp: 20260421_184820
+Network responses: 89
+Runtime objects: 1
+Video object candidates: 1290
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7601048622565821747
+    Path: url_extraction
+  author_id: 4058994014683581
+    Path: network_response_31.aweme_detail.author.uid
+  author_name: OK哥环球探海记
+    Path: network_response_31.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAS7hm6jtlJZMAUBAcIoOJPz9RWXeY_ezZxmfIiLT2BiQKr5bwJQjZ-YgrS9N5...
+    Path: network_response_31.aweme_detail.author.sec_uid_constructed
+  desc_text: 首次钓获破个人记录大金枪/首次抓到紫色大青蟹#酒蒙子的日常 #迎驾贡酒洞藏9 #迎驾贡酒
+    Path: network_response_31.aweme_detail.caption
+  publish_time_raw: 1769828463
+    Path: aweme_detail
+  like_count_raw: 612348
+    Path: network_response_31.aweme_detail.statistics.digg_count
+  comment_count_raw: 20072
+    Path: network_response_31.aweme_detail.statistics.comment_count
+  share_count_raw: 100573
+    Path: network_response_31.aweme_detail.statistics.share_count
+  collect_count: 85769
+    Path: network_response_31.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 29, 'caption_start': 22, 'end': 40, 'hashtag_id': '1600196468119566', 'hashtag_name...
+    Path: network_response_31.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/6e75f5edca81f06858a73e55985c9073~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @OK哥环球探海记创作的原声
+    Path: network_response_31.aweme_detail.music.title
+  duration_sec: 1590
+    Path: network_response_31.aweme_detail.duration
+  author_follower_count: 8115145
+    Path: network_response_31.aweme_detail.author.follower_count
+  author_total_favorited: 38451626
+    Path: network_response_31.aweme_detail.author.total_favorited
+  author_signature: 全网首个“探索全球海岛”的旅行博主
+2021年07月07日开始我的环球之旅
+荒岛探索：露营、赶海、渔猎、潜水、海钓、海鲜盲盒（抓啥吃啥）
+已经打卡～土耳其、北塞浦路斯、埃及、坦桑尼亚、阿曼、马尔代夫、...
+    Path: network_response_31.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_31.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_31.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/19432f003ed44a6a900f5d77dd45c564', 'url_list': ['https://p3-pc-s...
+    Path: network_response_31.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oMAlAhIgCOAijiiWlveIyvfuzRBqABRIyBb0b8', 'url_list': ['https:/...
+    Path: network_response_31.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

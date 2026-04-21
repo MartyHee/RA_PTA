@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613229026765384881
+Timestamp: 20260421_205945
+Network responses: 66
+Runtime objects: 1
+Video object candidates: 1136
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613229026765384881
+    Path: url_extraction
+  author_id: 3399332604689403
+    Path: network_response_37.aweme_detail.author.uid
+  author_name: 庄哥铁路游（原名郑局庄段）
+    Path: network_response_37.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAGh4z9IzvriU4yoOt1ev-9nfNgYKaRC9F6so5M4zhGpYqGuv2gPIGGJ63GT8o...
+    Path: network_response_37.aweme_detail.author.sec_uid_constructed
+  desc_text: #铁路  #火车 #高铁 #庄哥铁路游#瓜子二手车
+    Path: network_response_37.aweme_detail.caption
+  publish_time_raw: 1772614888
+    Path: aweme_detail
+  like_count_raw: 70518
+    Path: network_response_37.aweme_detail.statistics.digg_count
+  comment_count_raw: 2633
+    Path: network_response_37.aweme_detail.statistics.comment_count
+  share_count_raw: 8710
+    Path: network_response_37.aweme_detail.statistics.share_count
+  collect_count: 6345
+    Path: network_response_37.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 29, 'hashtag_id': '1577233306393613', 'hashtag_name':...
+    Path: network_response_37.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/39d24085009980618960c68616dfc734~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @庄哥铁路游（原名郑局庄段）创作的原声
+    Path: network_response_37.aweme_detail.music.title
+  duration_sec: 265403
+    Path: network_response_37.aweme_detail.duration
+  author_follower_count: 1747387
+    Path: network_response_37.aweme_detail.author.follower_count
+  author_total_favorited: 25219552
+    Path: network_response_37.aweme_detail.author.total_favorited
+  author_signature: 感谢您的关注和支持，欢迎投稿（有酬）
+商务合作💗ZJZ5277（注明来意）
+视频均为后期制作（剧情演绎，仅供娱乐）
+素材来源往期作品和广大网友投稿~
+    Path: network_response_37.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_37.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_37.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oIAf5F9VA3j9cDfLIanE3XApCmEAppUewAEnEx', 'url_list': ['...
+    Path: network_response_37.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/oI5leFDD9AERYQVwePEQ0sCAPD5wwqjRppf2X9', 'url_list': ['...
+    Path: network_response_37.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

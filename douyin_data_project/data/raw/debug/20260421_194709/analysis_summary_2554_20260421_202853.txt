@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7605885802895150362
+Timestamp: 20260421_202853
+Network responses: 77
+Runtime objects: 1
+Video object candidates: 1185
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7605885802895150362
+    Path: url_extraction
+  author_id: 3598034102664655
+    Path: network_response_33.aweme_detail.author.uid
+  author_name: 虾说电影联盟
+    Path: network_response_33.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA7NL0oJ01NOv-olf699WL5gbpyCGmvEBJTCCRrpUzMDcJ8L2vI5S9t_sO6e1j...
+    Path: network_response_33.aweme_detail.author.sec_uid_constructed
+  desc_text: #前任3再见前任 #前任 #爱情 #影娱年味不打烊  #了不起的精讲团
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1770883300
+    Path: aweme_detail
+  like_count_raw: 198046
+    Path: network_response_33.aweme_detail.statistics.digg_count
+  comment_count_raw: 6048
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 39521
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 20235
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 8, 'caption_start': 0, 'end': 39, 'hashtag_id': '1587449276228622', 'hashtag_name':...
+    Path: network_response_33.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/fc8aba34c6f9f8b11827ea7b75088397~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @虾说电影联盟创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 1601
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 336486
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 13240039
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 青春疼痛回忆作品赏析⏱️   故事很短 满是遗憾⛈️
+长篇be小说解读📖   好好告个别吧🎥
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/879dcd04a5504bb69c5d6fef329b3c83', 'url_list': ['https://p3-pc-s...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oE2OptBB7gMAeGZ8e4gDWsMTxfwXQBZvCAi6IG', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

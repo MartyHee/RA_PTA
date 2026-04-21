@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7603977638683643178
+Timestamp: 20260421_201133
+Network responses: 189
+Runtime objects: 1
+Video object candidates: 4362
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7603977638683643178
+    Path: url_extraction
+  author_id: 57702219311
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 清酒
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAwYM4TKUp9rT8jSH7dSxSDS27eV5iF6VpRYplzcZBD9c
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #2026KPL春季赛
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1770446400
+    Path: aweme_detail
+  like_count_raw: 420351
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 8892
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 36622
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 40190
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 11, 'caption_start': 0, 'end': 30, 'hashtag_id': '7545796015014545427', 'hashtag_na...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/555d4543ebf8d1196f3e5cc181e80636~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @清酒创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 1658
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 584805
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 8074238
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 一个好奇心比较重的游戏玩家 商务合作：clxw258
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/7c2638866983433f98a6750b01e135f9', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ooVdpBfI6bi1AQWPAg5GbC0ZwaeBwApTiIiBAM', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

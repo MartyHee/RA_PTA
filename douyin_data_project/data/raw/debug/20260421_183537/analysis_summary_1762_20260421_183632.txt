@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597740490842925562
+Timestamp: 20260421_183632
+Network responses: 28
+Runtime objects: 1
+Video object candidates: 221
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597740490842925562
+    Path: url_extraction
+  author_id: 88305901531
+    Path: network_response_18.aweme_detail.author.uid
+  author_name: 逗哥游世界
+    Path: network_response_18.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAgQbdJ3qoZLymYH7xkHQdk2jEqwWgN5HXKdAhoid0WJA
+    Path: network_response_18.aweme_detail.author.sec_uid_constructed
+  desc_text: 有钱真的可以为所欲为吗？这里的筛选机制过于严苛了#逗哥游世界 #韩国夜生活 #首尔夜生活  #首尔旅行 #春节旅行好去处
+    Path: network_response_18.aweme_detail.caption
+  publish_time_raw: 1769038800
+    Path: aweme_detail
+  like_count_raw: 10725
+    Path: network_response_18.aweme_detail.statistics.digg_count
+  comment_count_raw: 252
+    Path: network_response_18.aweme_detail.statistics.comment_count
+  share_count_raw: 1075
+    Path: network_response_18.aweme_detail.statistics.share_count
+  collect_count: 2041
+    Path: network_response_18.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 30, 'caption_start': 24, 'end': 40, 'hashtag_id': '1788067537797146', 'hashtag_name...
+    Path: network_response_18.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/0495a96cf71a9cdebba5a56a858edf56~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @逗哥游世界创作的原声
+    Path: network_response_18.aweme_detail.music.title
+  duration_sec: 498
+    Path: network_response_18.aweme_detail.duration
+  author_follower_count: 287037
+    Path: network_response_18.aweme_detail.author.follower_count
+  author_total_favorited: 1506090
+    Path: network_response_18.aweme_detail.author.total_favorited
+  author_signature: 记录旅行中见到的陌生人的故事
+读万卷书，行万里路
+看真实的世界体验不同的人生可能
+各国玩乐会员攻略598起！大阪东京有一户建可以预定！
+商务请注明来意：Holywarriorworld
+    Path: network_response_18.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_18.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_18.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oMBUwLfxAY6E0iAAlEwCAbn9iuIEmEGwe4BAdL', 'url_list': ['...
+    Path: network_response_18.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/oMticmFMIB7AnAuBhwsBfEFewHAiCTEwMxH0IS', 'url_list': ['...
+    Path: network_response_18.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

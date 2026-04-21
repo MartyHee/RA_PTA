@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7602563636745309474
+Timestamp: 20260421_200116
+Network responses: 60
+Runtime objects: 1
+Video object candidates: 1812
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7602563636745309474
+    Path: url_extraction
+  author_id: 3301191113779828
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 星落追漫
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAHrysiOJNyKlQTgjOFnRKciedJndYSIvYXusVVq58CyYmi-kckJV3xgWVwylX...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: 却遭受人设崩塌#叶罗丽精灵梦 #茉莉 #我在抖音看动漫 #动漫编年史 #叶罗丽
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1770109802
+    Path: aweme_detail
+  like_count_raw: 12551
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 295
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 679
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 1712
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 14, 'caption_start': 7, 'end': 40, 'hashtag_id': '1582325924876318', 'hashtag_name'...
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/9bfd5a50d31905d601b723983fa6741d~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @星落追漫创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 183137
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 23328
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 1266449
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 你来点播我来评，挖掘童年动画，梦游动漫世界！
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/821c0666e05d4b99821b61899962eb38', 'url_list': ['https://p3-pc-s...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oIYR3BaGTCu9COfLIx43rAQoBBiBeA6A27Q2eZ', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

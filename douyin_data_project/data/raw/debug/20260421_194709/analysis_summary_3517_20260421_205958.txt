@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7613300192837668142
+Timestamp: 20260421_205958
+Network responses: 69
+Runtime objects: 1
+Video object candidates: 1400
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7613300192837668142
+    Path: url_extraction
+  author_id: 70429709448
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 金盆儿
+    Path: network_response_30.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAtvP7uD_3EZ7GuO9QqZKN-mxl0hmKVTxL2WMj_lOdQ2A
+    Path: network_response_30.aweme_detail.author.sec_uid_constructed
+  desc_text: #安女士美食教程 #朝鲜族 #朝鲜族美食 #茄子咸菜
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1772629200
+    Path: aweme_detail
+  like_count_raw: 42562
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 860
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 6247
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 24682
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 8, 'caption_start': 0, 'end': 22, 'hashtag_id': '7380713835264477224', 'hashtag_nam...
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/b51cd965e349b0c8eead1e6e076e30d1~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @金盆儿创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 404
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 1517022
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 12912929
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 朝鲜族家常美食教学！每晚9点准时更新！周日我妈酒休…
+关注我！您将解锁【安女士版毫无保留的美食教程】
+👇👇👇锅碗瓢盆调料食材都在橱窗里
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/9a7fd99d0de14ba6ac30f6b0ade0adf4', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/oQn6xFB9CDpepbAv4gIqA6DzQfato2AEAoQt9D', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

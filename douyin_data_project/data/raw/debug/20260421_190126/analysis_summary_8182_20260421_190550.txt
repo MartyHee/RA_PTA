@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7598224870405513894
+Timestamp: 20260421_190550
+Network responses: 168
+Runtime objects: 1
+Video object candidates: 4021
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7598224870405513894
+    Path: url_extraction
+  author_id: 109100916967
+    Path: network_response_146.comments.[0].user.uid
+  author_name: 闲人。
+    Path: network_response_146.comments.[0].user.nickname
+  author_profile_url: hejianguo_2020
+    Path: network_response_146.comments.[0].user.unique_id
+  desc_text: {}
+    Path: network_response_44.aweme_detail.anchor_info.content
+  publish_time_raw: 1776768849
+    Path: network_response_146.comments.[0].create_time
+  like_count_raw: 0
+    Path: network_response_146.comments.[0].digg_count
+  comment_count_raw: 13326
+    Path: network_response_44.aweme_detail.statistics.comment_count
+  share_count_raw: 78322
+    Path: network_response_44.aweme_detail.statistics.share_count
+  collect_count: 29346
+    Path: network_response_44.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_146.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/5853c2f79394ca9abc4e8647e500d0f2~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 王者荣耀
+    Path: network_response_44.aweme_detail.anchor_info.title
+  duration_sec: 309167
+    Path: network_response_44.aweme_detail.duration
+  author_follower_count: 1836104
+    Path: network_response_44.aweme_detail.author.follower_count
+  author_total_favorited: 46304123
+    Path: network_response_44.aweme_detail.author.total_favorited
+  author_signature: 巅峰↑⭐️包时包标🛰️: dygzs03
+配音非本人！本人性别男@乐崽1号 
+商务:lezaiovo2
+商务2️⃣:anff0928(备注乐崽)
+    Path: network_response_44.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_44.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_44.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/okAAYeEQIEwpHocf1oFekEDs8oFUaAAXDEl9Aj', 'url_list': ['...
+    Path: network_response_44.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/oMBoFwff9pEzBeEaCMDyyAFlzXycwA1ILKUiIA', 'url_list': ['...
+    Path: network_response_44.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

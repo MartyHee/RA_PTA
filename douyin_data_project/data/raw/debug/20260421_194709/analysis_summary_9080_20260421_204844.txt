@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7610805605535607657
+Timestamp: 20260421_204844
+Network responses: 65
+Runtime objects: 1
+Video object candidates: 1435
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7610805605535607657
+    Path: url_extraction
+  author_id: 53558099034
+    Path: network_response_59.comments.[0].user.uid
+  author_name: 甜宝
+    Path: network_response_59.comments.[0].user.nickname
+  author_profile_url: 
+    Path: network_response_59.comments.[0].user.unique_id
+  desc_text: 以做起来，当预备早餐放冰箱，早上煮一煮很方便#私房馄饨#全职妈妈#备餐 #开学 #在平凡的日子里热爱生活
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1772032702
+    Path: network_response_59.comments.[0].create_time
+  like_count_raw: 1
+    Path: network_response_59.comments.[0].digg_count
+  comment_count_raw: 1636
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 13541
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 45704
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_59.comments.[0].reply_comment.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/efaef63803a602d3ea04678ef3574f2e~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @小魏魏的厨房创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 377
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 52883
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 323828
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 35岁全职宝妈，14岁的哥哥，12岁的弟弟 。
+记录自己每次用心做菜的过程，也在不断的学习中。
+一拖二，一人两娃的一日三餐。
+孩子爸爸现在和我异地，有空会回来看看我们。
+宝妈也想通过自己的努力，实现梦...
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813/osZBAbTgeb9GTEcBABEsgeIfLBA7JAPHA07EAQ', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/o4WTLiVeYAEUD7sZAQL4PAEG9ed7y3gIBBCkfQ', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

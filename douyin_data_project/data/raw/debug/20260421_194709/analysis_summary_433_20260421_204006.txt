@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7607361982099147889
+Timestamp: 20260421_204006
+Network responses: 80
+Runtime objects: 1
+Video object candidates: 1283
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7607361982099147889
+    Path: url_extraction
+  author_id: 1856399109523917
+    Path: network_response_61.comments.[0].user.uid
+  author_name: 空白格.
+    Path: network_response_61.comments.[0].user.nickname
+  author_profile_url: 93274223884
+    Path: network_response_61.comments.[0].user.unique_id
+  desc_text: 怯怯凶案‖加长版，我看似洗脱了嫌疑，但我知道我和杨过的博弈才刚刚开始！#悬疑 #细思极恐 #反转 #推理 #睡前故事
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1771677414
+    Path: network_response_61.comments.[0].create_time
+  like_count_raw: 276
+    Path: network_response_61.comments.[0].digg_count
+  comment_count_raw: 906
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 11317
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 15857
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_61.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/b57c810c46eb3c6d9805f55d8fe5316e~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @怯怯私语创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 1507
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 91920
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 1022358
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: 我给你讲的故事适合躲在被窝里叫上好友一起听哦～😜
+短剧内容均已获得版权方授权，请勿误伤友军，如有疑问可配合核查❤️
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/o4nBJJxO3gAXBAf11IepK8ACsgQfhFMJTQA7AW', 'url_list': ['...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015c000-ce/oA42In0QbBA3xPvMkVixEe0AqAhwgBByIMfFSi', 'url_list': ['...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7597707131379148409
+Timestamp: 20260421_190232
+Network responses: 33
+Runtime objects: 1
+Video object candidates: 234
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7597707131379148409
+    Path: url_extraction
+  author_id: 2852562902715588
+    Path: network_response_13.aweme_detail.author.uid
+  author_name: 传说中的蕙蕙
+    Path: network_response_13.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAAcOgbFvDQ0fTGouIk6ihHTVbHD5Qu7C0Ug6tlo7_EWGFva14LsG3CpwvqhdL...
+    Path: network_response_13.aweme_detail.author.sec_uid_constructed
+  desc_text: #妈呀太香了 #唯品会 #唯品会新春特卖
+    Path: network_response_13.aweme_detail.caption
+  publish_time_raw: 1768986583
+    Path: aweme_detail
+  like_count_raw: 235761
+    Path: network_response_13.aweme_detail.statistics.digg_count
+  comment_count_raw: 6621
+    Path: network_response_13.aweme_detail.statistics.comment_count
+  share_count_raw: 100800
+    Path: network_response_13.aweme_detail.statistics.share_count
+  collect_count: 15330
+    Path: network_response_13.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 6, 'caption_start': 0, 'end': 24, 'hashtag_id': '1767587175419917', 'hashtag_name':...
+    Path: network_response_13.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/e3a889ddbb0158383eb89533b6807040~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @传说中的蕙蕙创作的原声
+    Path: network_response_13.aweme_detail.music.title
+  duration_sec: 1447
+    Path: network_response_13.aweme_detail.duration
+  author_follower_count: 4261533
+    Path: network_response_13.aweme_detail.author.follower_count
+  author_total_favorited: 46009805
+    Path: network_response_13.aweme_detail.author.total_favorited
+  author_signature: 直播📺预告：4月23日星期四晚上6：50，辣白菜和冷面都有货啦~
+之前是甄甄 是mini~以后就是蕙蕙啦😘欢迎回家💖
+好吃好玩好物土特产分享小号@蕙蕙爱分享😎😁
+🐏🐂🐙🦐🦑🐚🍖🍗🥩🦪🥟🍜🧄🥢🍻
+有任何...
+    Path: network_response_13.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_13.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_13.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c000-ce/oIykfADc2eDEmF9GpY6ipAeAwIWgEUKQAA2HEa', 'url_list': ['...
+    Path: network_response_13.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015c000-ce/oQe7o4Qjc6C5gg8mBcBzeFgQM8AjXJE0fCNSPQ', 'url_list': ['...
+    Path: network_response_13.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

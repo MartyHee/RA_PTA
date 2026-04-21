@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7607145241375706403
+Timestamp: 20260421_203924
+Network responses: 65
+Runtime objects: 1
+Video object candidates: 1706
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7607145241375706403
+    Path: url_extraction
+  author_id: 4068617671150462
+    Path: network_response_64.comments.[0].user.uid
+  author_name: 璎珞
+    Path: network_response_64.comments.[0].user.nickname
+  author_profile_url: 23736501200
+    Path: network_response_64.comments.[0].user.unique_id
+  desc_text: 爱是常觉亏欠，不是转移到其他人身上！#童年动画 #童年回忆 #充能计划 #喜灰 #喜羊羊
+    Path: network_response_33.aweme_detail.caption
+  publish_time_raw: 1772413415
+    Path: network_response_64.comments.[0].create_time
+  like_count_raw: 119
+    Path: network_response_64.comments.[0].digg_count
+  comment_count_raw: 1413
+    Path: network_response_33.aweme_detail.statistics.comment_count
+  share_count_raw: 1373
+    Path: network_response_33.aweme_detail.statistics.share_count
+  collect_count: 11043
+    Path: network_response_33.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_64.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/c9674798cab9773c3f6a616dd4275ab2~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @吐噜动漫酱创作的原声
+    Path: network_response_33.aweme_detail.music.title
+  duration_sec: 217456
+    Path: network_response_33.aweme_detail.duration
+  author_follower_count: 119139
+    Path: network_response_33.aweme_detail.author.follower_count
+  author_total_favorited: 4048351
+    Path: network_response_33.aweme_detail.author.total_favorited
+  author_signature: ✨ 一个快乐的二次元杂食动物，专治不开心！
+商务👉LR5557799（注明来意哦）
+    Path: network_response_33.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_33.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_33.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/7853f74465ce4327aad564f64b951575', 'url_list': ['https://p3-pc-s...
+    Path: network_response_33.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oIEpkCDTQABEPktjfAAgQeEF7gkJds4IsaZ9DB', 'url_list': ['https:/...
+    Path: network_response_33.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

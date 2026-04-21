@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7608904928903433535
+Timestamp: 20260421_204721
+Network responses: 65
+Runtime objects: 1
+Video object candidates: 1181
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7608904928903433535
+    Path: url_extraction
+  author_id: 96841097299
+    Path: network_response_58.comments.[0].user.uid
+  author_name: 顺其自然吧
+    Path: network_response_58.comments.[0].user.nickname
+  author_profile_url: renlihe48025
+    Path: network_response_58.comments.[0].user.unique_id
+  desc_text: #非洲 #马拉维 #环球旅行 #旅行 #野生玩家
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1772956029
+    Path: network_response_58.comments.[0].create_time
+  like_count_raw: 2
+    Path: network_response_58.comments.[0].digg_count
+  comment_count_raw: 267
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 208
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 652
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'start': 7, 'end': 11, 'type': 5, 'search_text': '嘉莹妈妈', 'search_query_id': '6781047581079246093',...
+    Path: network_response_58.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/96761668d27b8234ac2b76c16c63272f~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @司徒小韩环球旅行(在非洲)创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 1682
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 222607
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 1536543
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 司徒与小韩|两个真实的人，记录和分享真实的旅行
+正在环球旅行第36国:博茨瓦纳🇧🇼
+身未动心已远的你，和我们一起走吧
++🛰：han9527666
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/e37c1a78aa27428b9d3de000959b6c25', 'url_list': ['https://p9-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oA1YVG3QuNLGBuFeBAhYLGT8Qe7MMAv7IQeCE3', 'url_list': ['https:/...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

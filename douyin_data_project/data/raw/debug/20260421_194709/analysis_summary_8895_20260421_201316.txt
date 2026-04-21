@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7603987685513907471
+Timestamp: 20260421_201316
+Network responses: 103
+Runtime objects: 1
+Video object candidates: 2760
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7603987685513907471
+    Path: url_extraction
+  author_id: 3227813844096955
+    Path: network_response_28.aweme_detail.author.uid
+  author_name: 李可真会玩儿
+    Path: network_response_28.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA-RfN1GB5NDgDU2m1eZxQ-eBI55Hh3YziBf4er-F7MBpQUsAZnadGf-hnjpBe...
+    Path: network_response_28.aweme_detail.author.sec_uid_constructed
+  desc_text: #缅甸   #国产AI在境外太好用了 #百度文心助手 #百度搜全球 #新年带上老己奔赴人生的山海
+    Path: network_response_28.aweme_detail.caption
+  publish_time_raw: 1770456600
+    Path: aweme_detail
+  like_count_raw: 87578
+    Path: network_response_28.aweme_detail.statistics.digg_count
+  comment_count_raw: 2140
+    Path: network_response_28.aweme_detail.statistics.comment_count
+  share_count_raw: 9047
+    Path: network_response_28.aweme_detail.statistics.share_count
+  collect_count: 6589
+    Path: network_response_28.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 3, 'caption_start': 0, 'end': 30, 'hashtag_id': '1576799130017806', 'hashtag_name':...
+    Path: network_response_28.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/e9883fde6183d6fe81c7e84fa35828a1~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @李可真会玩儿创作的原声
+    Path: network_response_28.aweme_detail.music.title
+  duration_sec: 1732
+    Path: network_response_28.aweme_detail.duration
+  author_follower_count: 531702
+    Path: network_response_28.aweme_detail.author.follower_count
+  author_total_favorited: 5366045
+    Path: network_response_28.aweme_detail.author.total_favorited
+  author_signature: 拍摄记录世界真实的另一面🛹
+📮naiyoumom@yeah.net
+商务合作：cdlc1001
+女主人：@奶油多妮
+    Path: network_response_28.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_28.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p9-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_28.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/b6eadc16b24e49039f0883fad34068dd', 'url_list': ['https://p3-pc-s...
+    Path: network_response_28.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oweIASDIeB2yBYT8MLZRB9IGGGjseoAs7CCNaG', 'url_list': ['https:/...
+    Path: network_response_28.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

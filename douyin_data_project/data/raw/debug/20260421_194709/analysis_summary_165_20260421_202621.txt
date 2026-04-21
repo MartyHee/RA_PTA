@@ -1,0 +1,57 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604830322613751067
+Timestamp: 20260421_202621
+Network responses: 77
+Runtime objects: 1
+Video object candidates: 3017
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604830322613751067
+    Path: url_extraction
+  author_id: 810756876804283
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 亿只羊
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAA04qr-wk5b0Pn4VWVThJGN96MPaW2nFmnj_46kLtioFE
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #爆裂飞车 #童年动画 #青年创作者成长计划 #星座 #排行榜
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1771030800
+    Path: aweme_detail
+  like_count_raw: 39138
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 1067
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 3860
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 8214
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 25, 'hashtag_id': '1594185199692807', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/509216e3ff833ca9bdd96c3802aacf29~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @亿只羊创作的原声
+    Path: network_response_27.aweme_detail.music.title
+  duration_sec: 431
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 73685
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 2527346
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 小羊喜欢看动漫，解说纯属娱乐，请勿较真喔
+商务：chenha626（备注品牌）
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/7e91faa362dc44b48e72fd73d15a3f4d', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oUejyyf0JECLeKCQDQhh8eAA4uAAUmiFGD2JI6', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

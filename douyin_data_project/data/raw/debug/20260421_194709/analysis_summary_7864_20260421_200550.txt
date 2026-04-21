@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7603282927102758163
+Timestamp: 20260421_200550
+Network responses: 77
+Runtime objects: 1
+Video object candidates: 1408
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7603282927102758163
+    Path: url_extraction
+  author_id: 819562742551363
+    Path: network_response_22.aweme_detail.author.uid
+  author_name: 追番指北
+    Path: network_response_22.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAr25BRIqxtjG9NU-LuvC0y7bSTHYtdZEqNvsUUm4tnps
+    Path: network_response_22.aweme_detail.author.sec_uid_constructed
+  desc_text: #叶罗丽精灵梦 #精灵梦叶罗丽 #世王灵公主 #找婆娘 #叶罗丽cp
+    Path: network_response_22.aweme_detail.caption
+  publish_time_raw: 1770277888
+    Path: aweme_detail
+  like_count_raw: 6404
+    Path: network_response_22.aweme_detail.statistics.digg_count
+  comment_count_raw: 184
+    Path: network_response_22.aweme_detail.statistics.comment_count
+  share_count_raw: 542
+    Path: network_response_22.aweme_detail.statistics.share_count
+  collect_count: 2063
+    Path: network_response_22.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 7, 'caption_start': 0, 'end': 27, 'hashtag_id': '1582325924876318', 'hashtag_name':...
+    Path: network_response_22.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/75c8fde45e8c4d27e6303a2c1de8e7c2~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @追番指北创作的原声
+    Path: network_response_22.aweme_detail.music.title
+  duration_sec: 187502
+    Path: network_response_22.aweme_detail.duration
+  author_follower_count: 7649
+    Path: network_response_22.aweme_detail.author.follower_count
+  author_total_favorited: 207491
+    Path: network_response_22.aweme_detail.author.total_favorited
+  author_signature: 你身边的追番指南针🧭
+    Path: network_response_22.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_22.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_22.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/2c02e3fdb5b04e8085639c7f7410aba0', 'url_list': ['https://p3-pc-s...
+    Path: network_response_22.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ooQAIFpiEBC1AvDeQfYjuNEgE2kLKhi7KUGA90', 'url_list': ['https:/...
+    Path: network_response_22.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7602872373020486784
+Timestamp: 20260421_200402
+Network responses: 205
+Runtime objects: 1
+Video object candidates: 3460
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7602872373020486784
+    Path: url_extraction
+  author_id: 775596896170601
+    Path: network_response_71.comments.[0].user.uid
+  author_name: 冯继伟
+    Path: network_response_71.comments.[0].user.nickname
+  author_profile_url: 48715715587
+    Path: network_response_71.comments.[0].user.unique_id
+  desc_text: {}
+    Path: network_response_27.aweme_detail.anchor_info.content
+  publish_time_raw: 1775127048
+    Path: network_response_71.comments.[0].create_time
+  like_count_raw: 1
+    Path: network_response_71.comments.[0].digg_count
+  comment_count_raw: 7628
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 38913
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 78610
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_71.comments.[0].text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/e6af053793e5a5cb3c335894b0870520~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: 
+    Path: network_response_27.aweme_detail.anchor_info.title
+  duration_sec: 166209
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 15023394
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 226757466
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 看你能解锁🔓多少沙雕快乐😂
+希望能带给你们快乐🤪
+愿大家天天开心哦🥳
+商务v：gogogo7688（备注品牌）
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-0813c001/oECCgbfACttD5BqHAAA9CsfQAbAFC1EpgECIMw', 'url_list': ['htt...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 640, 'uri': 'tos-cn-p-0015/o8AXRL1mgiID2c1CGaByIQPTBPzYBL1aAiUIw', 'url_list': ['https://...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

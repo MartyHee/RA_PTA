@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7608752163040415039
+Timestamp: 20260421_204646
+Network responses: 32
+Runtime objects: 0
+Video object candidates: 244
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7608752163040415039
+    Path: url_extraction
+  author_id: 3237397023693579
+    Path: network_response_19.aweme_detail.author.uid
+  author_name: 小钟Johnny
+    Path: network_response_19.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAnsr6J6jnubMTqFpkFDdC7yqGPAM1MNHXlwwrVtxTbc_r616UzLlXePcD2vOi...
+    Path: network_response_19.aweme_detail.author.sec_uid_constructed
+  desc_text: 在东南亚最穷的国家，100元能买多少东西，当地人的真实生活怎么样#非洲小钟
+    Path: network_response_19.aweme_detail.caption
+  publish_time_raw: 1771581600
+    Path: aweme_detail
+  like_count_raw: 113409
+    Path: network_response_19.aweme_detail.statistics.digg_count
+  comment_count_raw: 5331
+    Path: network_response_19.aweme_detail.statistics.comment_count
+  share_count_raw: 10543
+    Path: network_response_19.aweme_detail.statistics.share_count
+  collect_count: 8709
+    Path: network_response_19.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 37, 'caption_start': 32, 'end': 37, 'hashtag_id': '1722889778895880', 'hashtag_name...
+    Path: network_response_19.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/2a72a0fcb8f651b42c771bfcdf18d996~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @小钟Johnny创作的原声
+    Path: network_response_19.aweme_detail.music.title
+  duration_sec: 701
+    Path: network_response_19.aweme_detail.duration
+  author_follower_count: 4100042
+    Path: network_response_19.aweme_detail.author.follower_count
+  author_total_favorited: 23049703
+    Path: network_response_19.aweme_detail.author.total_favorited
+  author_signature: 大家好我是小钟，一名环球旅行者，非洲旅行7年，走过27个非洲国家，梦想是走遍非洲，很高兴在这里分享我的旅行见闻，谢谢支持！
+    Path: network_response_19.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_19.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_19.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/bad661fa589a4b1387dd3637cfd479e6', 'url_list': ['https://p3-pc-s...
+    Path: network_response_19.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oAe7GIAsQoTHMRBJQCX58aLCuLQEuBe2f4ASn3', 'url_list': ['https:/...
+    Path: network_response_19.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

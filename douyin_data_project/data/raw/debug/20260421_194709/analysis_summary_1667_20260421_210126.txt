@@ -1,0 +1,59 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614051080132889866
+Timestamp: 20260421_210126
+Network responses: 70
+Runtime objects: 1
+Video object candidates: 1575
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614051080132889866
+    Path: url_extraction
+  author_id: 3634312509659018
+    Path: network_response_27.aweme_detail.author.uid
+  author_name: 动漫安利局
+    Path: network_response_27.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAnJIG-_cmaZVI-vuesaey6nvzcinzOzg2qlaQFaHLiJ6w0xca8gvTYQZWP2li...
+    Path: network_response_27.aweme_detail.author.sec_uid_constructed
+  desc_text: #鬼灭之刃 #日漫 #富冈义勇 #蝴蝶忍
+    Path: network_response_27.aweme_detail.caption
+  publish_time_raw: 1772785028
+    Path: aweme_detail
+  like_count_raw: 9871
+    Path: network_response_27.aweme_detail.statistics.digg_count
+  comment_count_raw: 473
+    Path: network_response_27.aweme_detail.statistics.comment_count
+  share_count_raw: 757
+    Path: network_response_27.aweme_detail.statistics.share_count
+  collect_count: 4673
+    Path: network_response_27.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 5, 'caption_start': 0, 'end': 25, 'hashtag_id': '1607410609782791', 'hashtag_name':...
+    Path: network_response_27.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/4cda3219b8cd2ab7c2a7719b2349b2c4~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: WHOOO
+    Path: network_response_27.aweme_detail.music.matched_pgc_sound.title
+  duration_sec: 311775
+    Path: network_response_27.aweme_detail.duration
+  author_follower_count: 6527
+    Path: network_response_27.aweme_detail.author.follower_count
+  author_total_favorited: 119282
+    Path: network_response_27.aweme_detail.author.total_favorited
+  author_signature: 用爱发电的二创，有时比原作更上头
+关注我，收获双倍的快乐与感动
+为爱产粮
+无限致敬
+    Path: network_response_27.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_27.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_27.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/c040d977985c46f28a824c826ca14519', 'url_list': ['https://p3-pc-s...
+    Path: network_response_27.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4lBYeRVeAf7GLYQDHrIAzCaFBVLQYAmToAaBt', 'url_list': ['https:/...
+    Path: network_response_27.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

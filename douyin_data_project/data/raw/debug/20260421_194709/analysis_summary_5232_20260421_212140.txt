@@ -1,0 +1,56 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7615566765363318054
+Timestamp: 20260421_212140
+Network responses: 76
+Runtime objects: 1
+Video object candidates: 2405
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7615566765363318054
+    Path: url_extraction
+  author_id: 2966939591508179
+    Path: network_response_21.aweme_detail.author.uid
+  author_name: 动漫补给站
+    Path: network_response_21.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAyXE1nJBzJG003rJUso-Jl1QJ93935oLL-Ye8eOCc_csGHklLpEpYNnuX4gKq...
+    Path: network_response_21.aweme_detail.author.sec_uid_constructed
+  desc_text: 有爱的家庭养出恋家的鸟，其他人都去见了自己亲人，而她把家人留在人间#鬼灭之刃 #甘露寺蜜璃 #伊黑小芭内 #蛇恋
+    Path: network_response_21.aweme_detail.caption
+  publish_time_raw: 1773137318
+    Path: aweme_detail
+  like_count_raw: 4216
+    Path: network_response_21.aweme_detail.statistics.digg_count
+  comment_count_raw: 105
+    Path: network_response_21.aweme_detail.statistics.comment_count
+  share_count_raw: 255
+    Path: network_response_21.aweme_detail.statistics.share_count
+  collect_count: 2178
+    Path: network_response_21.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 38, 'caption_start': 33, 'end': 38, 'hashtag_id': '1607410609782791', 'hashtag_name...
+    Path: network_response_21.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/75c72ef79380f49c5cf2c1135ac538d4~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @动漫补给站创作的原声
+    Path: network_response_21.aweme_detail.music.title
+  duration_sec: 212167
+    Path: network_response_21.aweme_detail.duration
+  author_follower_count: 6298
+    Path: network_response_21.aweme_detail.author.follower_count
+  author_total_favorited: 102778
+    Path: network_response_21.aweme_detail.author.total_favorited
+  author_signature: 锐评世界动画，不妨和我一起探索动漫世界！
+    Path: network_response_21.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_21.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_21.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/ddaa8d8933c243d7acfec49df0bf1ed4', 'url_list': ['https://p3-pc-s...
+    Path: network_response_21.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/ooAB1YMzBM2XQaUfexXqAoAQ7AVDNhR8BeCT19', 'url_list': ['https:/...
+    Path: network_response_21.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

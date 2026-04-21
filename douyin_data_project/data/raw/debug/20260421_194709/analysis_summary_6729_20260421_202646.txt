@@ -1,0 +1,58 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7604872549914201378
+Timestamp: 20260421_202646
+Network responses: 71
+Runtime objects: 1
+Video object candidates: 1433
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7604872549914201378
+    Path: url_extraction
+  author_id: 471035583937214
+    Path: network_response_36.aweme_detail.author.uid
+  author_name: 星空
+    Path: network_response_36.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAphL8WWz_8EjFJeqlxFMc0BkQ2QNzP-l_jHh96moWo00
+    Path: network_response_36.aweme_detail.author.sec_uid_constructed
+  desc_text: #甄嬛传十级观众 #万字精讲
+    Path: network_response_36.aweme_detail.caption
+  publish_time_raw: 1770647565
+    Path: aweme_detail
+  like_count_raw: 393128
+    Path: network_response_36.aweme_detail.statistics.digg_count
+  comment_count_raw: 5270
+    Path: network_response_36.aweme_detail.statistics.comment_count
+  share_count_raw: 28215
+    Path: network_response_36.aweme_detail.statistics.share_count
+  collect_count: 29760
+    Path: network_response_36.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 8, 'caption_start': 0, 'end': 38, 'hashtag_id': '1709796197715979', 'hashtag_name':...
+    Path: network_response_36.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/ca9d329dbc20d106e0a9ed127776e466~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @星空创作的原声
+    Path: network_response_36.aweme_detail.music.title
+  duration_sec: 1650
+    Path: network_response_36.aweme_detail.duration
+  author_follower_count: 867766
+    Path: network_response_36.aweme_detail.author.follower_count
+  author_total_favorited: 15685004
+    Path: network_response_36.aweme_detail.author.total_favorited
+  author_signature: 没有任何解说可以代替原片
+目前更新《甄嬛传》
+真人配音，正在进步，谢谢理解
+    Path: network_response_36.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_36.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_36.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/c371d22b7a734066ad7bb289234a0f18', 'url_list': ['https://p3-pc-s...
+    Path: network_response_36.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/o4UTlEAE8AQiV1kfCM7TeCCg4QBGWBwpq9zQGe', 'url_list': ['https:/...
+    Path: network_response_36.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

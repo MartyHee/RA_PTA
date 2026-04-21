@@ -1,0 +1,60 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7599221715415092507
+Timestamp: 20260421_184211
+Network responses: 31
+Runtime objects: 0
+Video object candidates: 235
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7599221715415092507
+    Path: url_extraction
+  author_id: 3430928216231496
+    Path: network_response_30.aweme_detail.author.uid
+  author_name: 莉莉周影探
+    Path: network_response_30.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAHTgjUWkoPeGj62uaRC9FjZTRnM4Y9sjzg7IbEVoyvYlkifhm8QFIoItxi4nY...
+    Path: network_response_30.aweme_detail.author.sec_uid_constructed
+  desc_text: #抖音ACG新春会 #温暖新春 #名侦探柯南 #动漫解说
+    Path: network_response_30.aweme_detail.caption
+  publish_time_raw: 1769331719
+    Path: aweme_detail
+  like_count_raw: 82369
+    Path: network_response_30.aweme_detail.statistics.digg_count
+  comment_count_raw: 479
+    Path: network_response_30.aweme_detail.statistics.comment_count
+  share_count_raw: 4615
+    Path: network_response_30.aweme_detail.statistics.share_count
+  collect_count: 10248
+    Path: network_response_30.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 9, 'caption_start': 0, 'end': 36, 'hashtag_id': '7577626406927763465', 'hashtag_nam...
+    Path: network_response_30.aweme_detail.text_extra
+  cover_url: https://p3-pc-sign.douyinpic.com/image-cut-tos-priv/f985bfd38f9e9353cd328ca1e879c154~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @莉莉周影探创作的原声
+    Path: network_response_30.aweme_detail.music.title
+  duration_sec: 402
+    Path: network_response_30.aweme_detail.duration
+  author_follower_count: 1726589
+    Path: network_response_30.aweme_detail.author.follower_count
+  author_total_favorited: 40667239
+    Path: network_response_30.aweme_detail.author.total_favorited
+  author_signature: 莉莉周的心事是渴望成为推理蒸蛋🔎
+（悬疑故事/女性视角/第一人称/真人配音）
+福尔摩斯系列筹备中...插播更新阿加莎、东野圭吾
+另一个我：@莉莉周 
+商务：up2020430
+    Path: network_response_30.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_30.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_30.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/b9eb8446d06045d3a34c6e742167c114', 'url_list': ['https://p3-pc-s...
+    Path: network_response_30.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oAv1bba3JIwyPIQAPXZ0Bc3AtiKAXBAiIIEW3', 'url_list': ['https://...
+    Path: network_response_30.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================

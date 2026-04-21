@@ -1,0 +1,61 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7614695862547025194
+Timestamp: 20260421_210623
+Network responses: 35
+Runtime objects: 1
+Video object candidates: 344
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7614695862547025194
+    Path: url_extraction
+  author_id: 7507529782327706681
+    Path: network_response_29.aweme_detail.author.uid
+  author_name: 贵州领队 | 阿骆
+    Path: network_response_29.aweme_detail.author.nickname
+  author_profile_url: https://www.douyin.com/user/MS4wLjABAAAAmNnO7nptMgAI4KGcS_w9UclPQWXbyCW_pDiydLlcQyRw2KF4Ks7yosvWqYNq...
+    Path: network_response_29.aweme_detail.author.sec_uid_constructed
+  desc_text: 如果你时间充裕，来贵州可以这样玩~
+    Path: network_response_29.aweme_detail.caption
+  publish_time_raw: 1772934579
+    Path: aweme_detail
+  like_count_raw: 2990
+    Path: network_response_29.aweme_detail.statistics.digg_count
+  comment_count_raw: 295
+    Path: network_response_29.aweme_detail.statistics.comment_count
+  share_count_raw: 2419
+    Path: network_response_29.aweme_detail.statistics.share_count
+  collect_count: 3408
+    Path: network_response_29.aweme_detail.statistics.collect_count
+  hashtag_list: []
+    Path: network_response_29.aweme_detail.text_extra
+  cover_url: https://p9-pc-sign.douyinpic.com/image-cut-tos-priv/153e1b061c5cdfb022ebf63d002e3362~tplv-dy-resize-...
+    Path: aweme_detail.video
+  music_name: @贵州领队 | 阿骆创作的原声
+    Path: network_response_29.aweme_detail.music.title
+  duration_sec: 294012
+    Path: network_response_29.aweme_detail.duration
+  author_follower_count: 8642
+    Path: network_response_29.aweme_detail.author.follower_count
+  author_total_favorited: 41998
+    Path: network_response_29.aweme_detail.author.total_favorited
+  author_signature: 🚗贵州旅行策划师
+定制你的专属贵州之旅|小众深度游专家📸
+🔅路线设计|🏠酒店预订|❣️全程VIP服务
+📷网红打卡+秘境探索|亲子/团建/自由行
+⛺让旅行省心又好玩，跟我出发!
+⚠️除本人号外，评论区私...
+    Path: network_response_29.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_29.aweme_detail.author.verification_type
+  video_cover_url: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_29.aweme_detail.author.cover_url
+  dynamic_cover_url: {'height': 720, 'uri': 'tos-cn-i-dy/493df13cf30a49c98cfe41a6c758e53c', 'url_list': ['https://p3-pc-s...
+    Path: network_response_29.aweme_detail.video.dynamic_cover
+  origin_cover_url: {'height': 360, 'uri': 'tos-cn-p-0015/oYXAxSFrsIDr01CAT6lgfOEfpsIV95nADmbN1B', 'url_list': ['https:/...
+    Path: network_response_29.aweme_detail.video.origin_cover
+
+Extracted 21 out of 14 target fields
+================================================================================
