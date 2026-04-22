@@ -1,0 +1,14 @@
+[
+  "author_follower_count",
+  "author_total_favorited",
+  "hashtag_count",
+  "duration_sec",
+  "publish_hour",
+  "publish_weekday",
+  "is_weekend",
+  "days_since_publish",
+  "author_verification_type",
+  "desc_text_length",
+  "has_desc_text",
+  "has_hashtag"
+]

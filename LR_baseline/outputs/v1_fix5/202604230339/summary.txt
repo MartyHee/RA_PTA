@@ -1,0 +1,31 @@
+逻辑回归baseline实验总结
+运行时间: 2026-04-23 03:40:17
+
+数据信息:
+- 训练集: D:\CodeData\Program Coding\ByteDance\RA_PTA\LR_baseline\data\train\train_v1_fix5.csv (样本数: 129)
+- 测试集: D:\CodeData\Program Coding\ByteDance\RA_PTA\LR_baseline\data\test\test_v1_fix5.csv (样本数: 31)
+- 特征数: 12
+- 训练集正样本比例: 0.5426
+- 测试集正样本比例: 0.3548
+
+预处理:
+- 数值特征: 中位数填充缺失值 + 标准化
+- 类别特征: 最频繁值填充 + LabelEncoder编码
+- 布尔特征: 最频繁值填充
+
+模型参数:
+- 模型: LogisticRegression
+- class_weight: balanced
+- 其他参数: 默认
+
+评估结果:
+- AUC: 0.5727
+- Accuracy: 0.5161
+- Precision: 0.2500
+- Recall: 0.1818
+- F1: 0.2105
+- Recall@10: 0.2727
+- Precision@10: 0.3000
+
+结论:
+逻辑回归baseline在测试集上表现[请根据实际结果填写]。AUC为0.5727，准确率为0.5161。
