@@ -445,6 +445,26 @@ class FeatureEngineer:
         embeddings = self._hashtag_vectorizer.fit_transform(hashtag_texts)
         return embeddings
 
+    def create_features_from_web_video_meta(self, df: pd.DataFrame, feature_types: Optional[List[str]] = None) -> pd.DataFrame:
+        """Create features from web_video_meta data.
+
+        This method adapts the existing feature engineering logic to work with
+        web_video_meta data (high-confidence samples).
+
+        Args:
+            df: web_video_meta dataframe.
+            feature_types: Types of features to create.
+
+        Returns:
+            Dataframe with features.
+        """
+        # First, transform web_video_meta to processed format
+        from ..processing.transform import transform_web_video_meta_to_features
+        df_processed = transform_web_video_meta_to_features(df)
+
+        # Then apply existing feature engineering
+        return self.create_features(df_processed, feature_types)
+
 
 # Convenience functions
 def create_features(df: pd.DataFrame, config_path: Optional[Path] = None,

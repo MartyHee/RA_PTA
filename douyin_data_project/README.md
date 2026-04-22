@@ -132,6 +132,20 @@ python run_eda.py --mock
 python run_api_demo.py --mode=mock
 ```
 
+**新版特征Pipeline使用示例**：
+
+```bash
+# 使用高置信度样本生成特征（新版pipeline）
+python run_features.py \
+  --input "data/processed/20260421_194709/high_confidence_web_video_meta_20260421_194709.csv" \
+  --output-dir "data/features/20260421_194709/" \
+  --feature-version "v1" \
+  --run-id "20260421_194709"
+
+# 查看特征pipeline帮助
+python run_features.py --help
+```
+
 **Mock 模式特点**：
 
 - 无外部依赖：不访问抖音网站，不调用真实API
@@ -208,7 +222,16 @@ python tests/test_smoke.py
 - **质量检查（quality_check）**：提供完整性、一致性、有效性的检查项，可输出质量报告
 - **Mock支持**：所有处理阶段均可基于 mock 数据运行，函数签名清晰，便于后续补充业务逻辑
 
-### 3. 分析模块（analysis）
+### 3. 特征Pipeline与离线存储（features）
+
+- **新版特征Pipeline**：重构的特征工程pipeline，专门适配高置信度样本数据（`web_video_meta`），支持特征版本管理和离线存储
+- **离线特征存储**：特征产物按`run_id`和`feature_version`组织目录，包含Parquet特征表、JSON元数据、构建报告和CSV样本
+- **特征版本管理**：支持手动指定特征版本（如`v1`），版本信息记录在元数据中，支持多版本共存和`latest`符号链接
+- **第一版特征集合（v1）**：包含23个关键特征，分为原始保留字段、关键数值特征、时间派生特征、基本类别特征和文本字段
+- **健壮性设计**：处理缺失字段和类型转换，提供默认值填充，支持向后兼容的Mock模式
+- **完整产物**：生成`features.parquet`、`feature_list.json`、`feature_metadata.json`、`build_report.json`、`sample_features.csv`五个标准文件
+
+### 4. 分析模块（analysis）
 
 - **EDA入口**：提供最小 EDA 入口，支持快速模式（基础统计）与综合模式（详细分析）
 - **统计输出**：能输出样本数据的基本统计（均值、中位数、分布、相关性）
@@ -216,7 +239,7 @@ python tests/test_smoke.py
 - **报告生成**：支持 JSON/HTML 格式报告，包含关键发现与建议
 - **Mock数据**：可使用 mock 数据运行完整分析流程，无需真实数据文件
 
-### 4. API模块（api）
+### 5. API模块（api）
 
 - **占位结构**：仅提供完整的模块结构与接口定义，不伪造真实密钥或真实返回
 - **OAuth演示**：实现 OAuth 授权流程演示（生成授权URL、换取token、刷新token）
@@ -224,7 +247,7 @@ python tests/test_smoke.py
 - **明确未来用途**：结构明确未来用于抖音开放平台的 OAuth 与 video.data 接口
 - **安全提示**：所有演示均为 mock 数据，真实调用需申请抖音开放平台权限并配置有效凭证
 
-### 5. 数据模式（schemas）
+### 6. 数据模式（schemas）
 
 - **完整覆盖**：根据 `docs/Data_description.md` 定义全部六个核心模型：
   - `RawWebVideoData`：原始网页数据层（调试用）
@@ -277,6 +300,20 @@ data/
     ├── rendered_html/                          # 渲染后的HTML快照
     ├── network_traces/                         # 网络请求跟踪
     └── quality_report_YYYYMMDD_HHMMSS.txt      # 质量统计报告
+```
+
+### 特征存储目录结构（按run_id和feature_version）
+
+```
+data/features/
+├── <run_id>/                    # 运行ID，如20260421_194709
+│   ├── <feature_version>/       # 特征版本，如v1
+│   │   ├── features.parquet     # 特征数据（Parquet格式）
+│   │   ├── feature_list.json    # 特征字段列表
+│   │   ├── feature_metadata.json # 特征元数据（来源、类型、构造方式）
+│   │   ├── build_report.json    # 构建报告（输入、输出、统计、版本）
+│   │   └── sample_features.csv  # 特征样本（CSV，前100行）
+│   └── latest -> <feature_version>/  # 符号链接指向最新版本（Windows下为LATEST_VERSION文件）
 ```
 
 ### 高置信度样本筛选标准

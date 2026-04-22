@@ -356,3 +356,28 @@ def transform_dataframe(df: pd.DataFrame, config_path: Optional[Path] = None) ->
     """
     transformer = DataTransformer(config_path)
     return transformer.transform_dataframe(df)
+
+
+def transform_web_video_meta_to_features(df: pd.DataFrame, config_path: Optional[Path] = None) -> pd.DataFrame:
+    """Transform web_video_meta dataframe to feature dataframe.
+
+    This function converts raw web_video_meta data (from high-confidence samples)
+    to feature dataframe suitable for modeling.
+
+    Args:
+        df: web_video_meta dataframe (with fields like video_id, page_url,
+             publish_time_std, like_count_raw, etc.)
+        config_path: Path to config.
+
+    Returns:
+        Feature dataframe with standardized schema.
+    """
+    from ..features.feature_pipeline import FeaturePipeline
+
+    # Create a temporary pipeline instance
+    pipeline = FeaturePipeline(feature_version='v1', verbose=False)
+
+    # Apply transformations
+    df_features = pipeline.transform_web_video_meta(df)
+
+    return df_features
