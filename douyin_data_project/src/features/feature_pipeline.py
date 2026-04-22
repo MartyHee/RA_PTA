@@ -117,36 +117,132 @@ class FeaturePipeline:
     def _process_time_fields(self, df: pd.DataFrame) -> pd.DataFrame:
         """处理时间字段。
 
+        时间特征生成优先级：
+        1. 优先使用publish_time_std（标准化时间字符串）
+        2. 对于publish_time_std解析失败的行，回退使用publish_time_raw（时间戳）
+        3. 两者都失败时使用默认值（-1）
+
         Args:
             df: 输入DataFrame
 
         Returns:
             处理后的DataFrame
         """
+        if self.verbose:
+            print("处理时间字段...")
+
         # 确保crawl_time是datetime类型
         if 'crawl_time' in df.columns:
             df['crawl_time'] = pd.to_datetime(df['crawl_time'], errors='coerce')
+            if self.verbose:
+                null_crawl = df['crawl_time'].isna().sum()
+                print(f"crawl_time: 总行数={len(df)}, 无效值={null_crawl}")
 
-        # 处理publish_time_std
+        # 初始化时间派生特征列，先全部填充默认值
+        df['publish_hour'] = -1
+        df['publish_weekday'] = -1
+        df['is_weekend'] = 0
+        df['days_since_publish'] = -1
+
+        # 准备一个datetime列，用于存储解析后的发布时间
+        publish_dt = pd.Series([pd.NaT] * len(df), index=df.index)
+
+        # 首先尝试解析publish_time_std（优先级1：标准化时间字符串）
         if 'publish_time_std' in df.columns:
-            # 转换为datetime
-            df['publish_time_std'] = pd.to_datetime(df['publish_time_std'], errors='coerce')
+            if self.verbose:
+                print("优先解析publish_time_std...")
+            # 转换为字符串，然后尝试解析
+            time_std_str = df['publish_time_std'].astype(str)
+            # 尝试多种解析方式：自动检测、标准格式、带毫秒格式
+            for fmt in [None, '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M:%S.%f']:
+                try:
+                    dt = pd.to_datetime(time_std_str, errors='coerce', format=fmt)
+                    # 更新尚未解析的行
+                    mask = dt.notna() & publish_dt.isna()
+                    publish_dt[mask] = dt[mask]
+                    if self.verbose and mask.any():
+                        print(f"使用格式 {fmt} 解析了 {mask.sum()} 行")
+                except Exception as e:
+                    if self.verbose:
+                        print(f"格式 {fmt} 解析失败: {e}")
 
-            # 提取时间特征
-            df['publish_hour'] = df['publish_time_std'].dt.hour
-            df['publish_weekday'] = df['publish_time_std'].dt.weekday  # 0=Monday, 6=Sunday
-            df['is_weekend'] = (df['publish_weekday'] >= 5).astype(int)  # 5=Saturday, 6=Sunday
+            if self.verbose:
+                parsed_by_std = publish_dt.notna().sum()
+                print(f"通过publish_time_std解析了 {parsed_by_std} 行")
 
-            # 计算发布天数（相对于抓取时间）
-            if 'crawl_time' in df.columns:
-                df['days_since_publish'] = (df['crawl_time'] - df['publish_time_std']).dt.days
-                # 处理负值（未来时间）
-                df['days_since_publish'] = df['days_since_publish'].clip(lower=0)
+        # 对于仍未解析的行，尝试使用publish_time_raw（优先级2：时间戳回退）
+        if 'publish_time_raw' in df.columns and publish_dt.isna().any():
+            if self.verbose:
+                print(f"回退解析publish_time_raw，剩余未解析行数: {publish_dt.isna().sum()}")
+            time_raw = df['publish_time_raw'].astype(str)
+            # 尝试解析时间戳（秒级或毫秒级）
+            for idx in df.index[publish_dt.isna()]:
+                val = time_raw[idx]
+                if pd.isna(val) or val.strip() == '':
+                    continue
+                # 尝试转换为数字
+                try:
+                    # 移除非数字字符
+                    num_str = ''.join(c for c in val if c.isdigit())
+                    if not num_str:
+                        continue
+                    timestamp = int(num_str)
+                    # 判断是秒级还是毫秒级（通常毫秒级长度>=13位）
+                    if len(num_str) >= 13:  # 毫秒级
+                        timestamp = timestamp / 1000.0
+                    # 转换为datetime
+                    dt = pd.to_datetime(timestamp, unit='s', errors='coerce')
+                    if pd.notna(dt):
+                        publish_dt[idx] = dt
+                except Exception:
+                    pass
+
+            if self.verbose:
+                # 记录解析前的已解析数量
+                before_parse_count = publish_dt.notna().sum()
+                # 解析publish_time_raw后
+                after_parse_count = publish_dt.notna().sum()
+                parsed_by_raw = after_parse_count - before_parse_count
+                print(f"通过publish_time_raw解析了 {parsed_by_raw} 行")
 
         # 处理publish_time_raw（保留原样）
         if 'publish_time_raw' in df.columns:
             # 确保是字符串类型
             df['publish_time_raw'] = df['publish_time_raw'].astype(str)
+        else:
+            df['publish_time_raw'] = ''
+
+        # 计算时间派生特征
+        valid_mask = publish_dt.notna()
+        if valid_mask.any():
+            df.loc[valid_mask, 'publish_hour'] = publish_dt[valid_mask].dt.hour
+            df.loc[valid_mask, 'publish_weekday'] = publish_dt[valid_mask].dt.weekday  # 0=Monday, 6=Sunday
+            df.loc[valid_mask, 'is_weekend'] = (df.loc[valid_mask, 'publish_weekday'] >= 5).astype(int)  # 5=Saturday, 6=Sunday
+
+            # 计算发布天数（相对于抓取时间）
+            if 'crawl_time' in df.columns:
+                valid_crawl_mask = df['crawl_time'].notna()
+                both_valid_mask = valid_mask & valid_crawl_mask
+                if both_valid_mask.any():
+                    time_diff = (df.loc[both_valid_mask, 'crawl_time'] - publish_dt[both_valid_mask]).dt.days
+                    # 处理负值（未来时间）
+                    time_diff = time_diff.clip(lower=0)
+                    df.loc[both_valid_mask, 'days_since_publish'] = time_diff
+
+        # 确保数据类型为int
+        time_int_cols = ['publish_hour', 'publish_weekday', 'is_weekend', 'days_since_publish']
+        for col in time_int_cols:
+            if col in df.columns:
+                df[col] = df[col].astype(int)
+
+        if self.verbose:
+            print(f"时间特征统计:")
+            for col in time_int_cols:
+                if col in df.columns:
+                    valid = (df[col] != -1).sum() if col != 'is_weekend' else (df[col] >= 0).sum()
+                    default = (df[col] == -1).sum() if col != 'is_weekend' else 0
+                    print(f"  {col}: 有效值={valid}, 默认值={default}, 最小值={df[col].min()}, 最大值={df[col].max()}")
+            print(f"总有效时间解析: {valid_mask.sum()}/{len(df)}")
 
         return df
 
@@ -159,11 +255,11 @@ class FeaturePipeline:
         Returns:
             处理后的DataFrame
         """
-        # 原始计数字段映射
+        # 原始计数字段映射（使用新的派生命名）
         count_fields = {
-            'like_count_raw': 'like_count',
-            'comment_count_raw': 'comment_count',
-            'share_count_raw': 'share_count',
+            'like_count_raw': 'like_count_num',
+            'comment_count_raw': 'comment_count_num',
+            'share_count_raw': 'share_count_num',
         }
 
         for raw_field, clean_field in count_fields.items():
@@ -259,18 +355,71 @@ class FeaturePipeline:
         """
         # desc_text字段
         if 'desc_text' in df.columns:
-            # 确保是字符串类型
-            df['desc_text'] = df['desc_text'].astype(str)
-            # 简单清洗（可选）
-            # df['desc_text'] = df['desc_text'].apply(clean_text)
+            # 复制原始列，用于检查NaN
+            desc_series = df['desc_text'].copy()
+
+            # 定义真实文本判断函数
+            def is_real_text(val):
+                # 检查是否为NaN或None
+                if pd.isna(val):
+                    return False
+                # 转换为字符串
+                if not isinstance(val, str):
+                    val = str(val)
+                # 去除首尾空白
+                val_stripped = val.strip()
+                # 检查是否为空字符串
+                if not val_stripped:
+                    return False
+                # 检查是否为"nan"（字符串形式的NaN）
+                if val_stripped.lower() == 'nan':
+                    return False
+                # 检查是否为"{}"（可能的占位值）
+                if val_stripped == '{}':
+                    return False
+                # 其他情况视为真实文本
+                return True
+
+            # 计算是否有真实文本
+            df['has_desc_text'] = desc_series.apply(is_real_text).astype(int)
+
+            # 计算文本长度：对于真实文本，计算去除空白后的长度；否则为0
+            def compute_text_length(val):
+                if pd.isna(val):
+                    return 0
+                if not isinstance(val, str):
+                    val = str(val)
+                val_stripped = val.strip()
+                # 检查占位值
+                if val_stripped.lower() == 'nan' or val_stripped == '{}':
+                    return 0
+                return len(val_stripped)
+
+            df['desc_text_length'] = desc_series.apply(compute_text_length)
+
+            # 确保desc_text为字符串类型，NaN替换为空字符串
+            df['desc_text'] = desc_series.fillna('').astype(str)
+        else:
+            # 字段不存在，创建默认值
+            df['desc_text'] = ''
+            df['desc_text_length'] = 0
+            df['has_desc_text'] = 0
 
         # author_name字段
         if 'author_name' in df.columns:
             df['author_name'] = df['author_name'].astype(str)
+        else:
+            df['author_name'] = ''
 
         # author_signature字段（保留但不使用）
         if 'author_signature' in df.columns:
             df['author_signature'] = df['author_signature'].astype(str)
+
+        # author_verification_type字段
+        if 'author_verification_type' in df.columns:
+            df['author_verification_type'] = df['author_verification_type'].astype(str)
+        else:
+            df['author_verification_type'] = ''
 
         return df
 
@@ -287,9 +436,16 @@ class FeaturePipeline:
         if 'hashtag_list' in df.columns:
             # 确保是字符串类型
             df['hashtag_list'] = df['hashtag_list'].astype(str)
+        else:
+            df['hashtag_list'] = ''
 
-            # 如果已经是列表格式（如"['美食', '旅行']"），保持原样
-            # 否则，尝试解析或保持原样
+        # 是否有话题标签：基于hashtag_count > 0
+        if 'hashtag_count' in df.columns:
+            # hashtag_count已在_process_count_fields中处理为数值
+            df['has_hashtag'] = (df['hashtag_count'] > 0).astype(int)
+        else:
+            # 回退到基于hashtag_list字符串判断
+            df['has_hashtag'] = (df['hashtag_list'].str.strip() != '').astype(int)
 
         return df
 

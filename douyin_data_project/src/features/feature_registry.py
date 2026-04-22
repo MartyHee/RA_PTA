@@ -215,27 +215,27 @@ class FeatureRegistry:
 
         # 计数转换特征（在pipeline中处理）
         self.register_feature(
-            name='like_count',
+            name='like_count_num',
             version='v1',
-            description='点赞数',
+            description='点赞数（数值化）',
             feature_type='numeric',
             source_fields=['like_count_raw'],
             default_value=0,
         )
 
         self.register_feature(
-            name='comment_count',
+            name='comment_count_num',
             version='v1',
-            description='评论数',
+            description='评论数（数值化）',
             feature_type='numeric',
             source_fields=['comment_count_raw'],
             default_value=0,
         )
 
         self.register_feature(
-            name='share_count',
+            name='share_count_num',
             version='v1',
-            description='分享数',
+            description='分享数（数值化）',
             feature_type='numeric',
             source_fields=['share_count_raw'],
             default_value=0,
@@ -306,6 +306,15 @@ class FeatureRegistry:
             default_value='',
         )
 
+        self.register_feature(
+            name='author_verification_type',
+            version='v1',
+            description='作者认证类型',
+            feature_type='categorical',
+            source_fields=['author_verification_type'],
+            default_value='',
+        )
+
         # 文本字段
         self.register_feature(
             name='desc_text',
@@ -332,6 +341,34 @@ class FeatureRegistry:
             feature_type='text',
             source_fields=['hashtag_list'],
             default_value='[]',
+        )
+
+        # 可选轻量派生特征
+        self.register_feature(
+            name='desc_text_length',
+            version='v1',
+            description='描述文本长度',
+            feature_type='numeric',
+            source_fields=['desc_text'],
+            default_value=0,
+        )
+
+        self.register_feature(
+            name='has_desc_text',
+            version='v1',
+            description='是否有描述文本',
+            feature_type='numeric',
+            source_fields=['desc_text'],
+            default_value=0,
+        )
+
+        self.register_feature(
+            name='has_hashtag',
+            version='v1',
+            description='是否有话题标签',
+            feature_type='numeric',
+            source_fields=['hashtag_list'],
+            default_value=0,
         )
 
 

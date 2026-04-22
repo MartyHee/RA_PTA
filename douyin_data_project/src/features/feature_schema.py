@@ -27,9 +27,9 @@ class FeatureSchema:
         'hashtag_count': {'dtype': 'int', 'required': False, 'description': '话题标签数量', 'default': 0},
         'duration_sec': {'dtype': 'int', 'required': False, 'description': '视频时长（秒）', 'default': 0},
         'collect_count': {'dtype': 'int', 'required': False, 'description': '收藏数', 'default': 0},
-        'like_count': {'dtype': 'int', 'required': False, 'description': '点赞数', 'default': 0},
-        'comment_count': {'dtype': 'int', 'required': False, 'description': '评论数', 'default': 0},
-        'share_count': {'dtype': 'int', 'required': False, 'description': '分享数', 'default': 0},
+        'like_count_num': {'dtype': 'int', 'required': False, 'description': '点赞数（数值化）', 'default': 0},
+        'comment_count_num': {'dtype': 'int', 'required': False, 'description': '评论数（数值化）', 'default': 0},
+        'share_count_num': {'dtype': 'int', 'required': False, 'description': '分享数（数值化）', 'default': 0},
 
         # 时间派生特征
         'publish_hour': {'dtype': 'int', 'required': False, 'description': '发布时间小时', 'default': -1},
@@ -41,16 +41,27 @@ class FeatureSchema:
         'source_entry': {'dtype': 'string', 'required': True, 'description': '数据来源入口'},
         'match_type': {'dtype': 'string', 'required': False, 'description': '匹配类型'},
         'confidence': {'dtype': 'string', 'required': False, 'description': '置信度'},
+        'author_verification_type': {'dtype': 'string', 'required': False, 'description': '作者认证类型'},
 
         # 文本字段
         'desc_text': {'dtype': 'string', 'required': False, 'description': '视频描述文本'},
         'author_name': {'dtype': 'string', 'required': False, 'description': '作者名称'},
         'hashtag_list': {'dtype': 'string', 'required': False, 'description': '话题标签列表（JSON格式）'},
+
+        # 可选轻量派生特征
+        'desc_text_length': {'dtype': 'int', 'required': False, 'description': '描述文本长度', 'default': 0},
+        'has_desc_text': {'dtype': 'int', 'required': False, 'description': '是否有描述文本', 'default': 0},
+        'has_hashtag': {'dtype': 'int', 'required': False, 'description': '是否有话题标签', 'default': 0},
     }
 
     # 特征版本映射
     FEATURE_SETS = {
         'v1': FEATURE_SET_V1,
+        'v1_fix': FEATURE_SET_V1,  # 修复版本使用相同的特征集合
+        'v1_fix2': FEATURE_SET_V1,  # 修复版本2
+        'v1_fix3': FEATURE_SET_V1,  # 修复版本3
+        'v1_fix4': FEATURE_SET_V1,  # 修复版本4
+        'v1_fix5': FEATURE_SET_V1,  # 修复版本5：明确时间特征生成优先级
     }
 
     @classmethod

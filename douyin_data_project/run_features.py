@@ -155,10 +155,31 @@ def run_new_pipeline(args, config: dict) -> Dict[str, Any]:
     if not input_path.exists():
         raise FileNotFoundError(f"输入文件不存在: {input_path}")
 
+    # 确定run_id
+    if args.run_id:
+        run_id = args.run_id
+    else:
+        # 从输入路径提取run_id
+        pipeline = FeaturePipeline(
+            feature_version=args.feature_version,
+            output_dir=args.output_dir,
+            verbose=args.verbose
+        )
+        run_id = pipeline._extract_run_id(input_path)
+
+    # 处理output_dir：如果以run_id结尾，移除run_id部分
+    output_dir = Path(args.output_dir)
+    if output_dir.name == run_id:
+        # output_dir已经包含run_id，使用父目录作为base_dir
+        base_dir = output_dir.parent
+        print(f"检测到output_dir包含run_id，使用base_dir: {base_dir}")
+    else:
+        base_dir = output_dir
+
     # 创建FeaturePipeline实例
     pipeline = FeaturePipeline(
         feature_version=args.feature_version,
-        output_dir=args.output_dir,
+        output_dir=base_dir,
         verbose=args.verbose
     )
 
@@ -172,9 +193,9 @@ def run_new_pipeline(args, config: dict) -> Dict[str, Any]:
     # 运行pipeline
     result = pipeline.run(
         input_path=input_path,
-        run_id=args.run_id,
+        run_id=run_id,
         feature_version=args.feature_version,
-        output_dir=args.output_dir,
+        output_dir=base_dir,
         save_sample=args.save_sample
     )
 

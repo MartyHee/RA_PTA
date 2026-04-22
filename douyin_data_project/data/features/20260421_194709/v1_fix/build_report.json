@@ -1,0 +1,358 @@
+{
+  "build_info": {
+    "feature_version": "v1_fix",
+    "created_at": "2026-04-23T00:58:31.860880",
+    "input_data_path": "data\\processed\\20260421_194709\\high_confidence_web_video_meta_20260421_194709.csv",
+    "input_run_id": "20260421_194709",
+    "num_samples": 162,
+    "num_features": 27,
+    "feature_fields": [
+      "video_id",
+      "page_url",
+      "author_id",
+      "publish_time_raw",
+      "crawl_time",
+      "author_follower_count",
+      "author_total_favorited",
+      "hashtag_count",
+      "duration_sec",
+      "collect_count",
+      "like_count_num",
+      "comment_count_num",
+      "share_count_num",
+      "publish_hour",
+      "publish_weekday",
+      "is_weekend",
+      "days_since_publish",
+      "source_entry",
+      "match_type",
+      "confidence",
+      "author_verification_type",
+      "desc_text",
+      "author_name",
+      "hashtag_list",
+      "desc_text_length",
+      "has_desc_text",
+      "has_hashtag"
+    ],
+    "field_categories": {
+      "video_id": "retention",
+      "page_url": "retention",
+      "author_id": "retention",
+      "publish_time_raw": "retention",
+      "crawl_time": "retention",
+      "author_follower_count": "model",
+      "author_total_favorited": "model",
+      "hashtag_count": "model",
+      "duration_sec": "model",
+      "collect_count": "excluded",
+      "like_count_num": "excluded",
+      "comment_count_num": "excluded",
+      "share_count_num": "excluded",
+      "publish_hour": "model",
+      "publish_weekday": "model",
+      "is_weekend": "model",
+      "days_since_publish": "model",
+      "source_entry": "retention",
+      "match_type": "retention",
+      "confidence": "retention",
+      "author_verification_type": "model",
+      "desc_text": "text",
+      "author_name": "text",
+      "hashtag_list": "text",
+      "desc_text_length": "model",
+      "has_desc_text": "model",
+      "has_hashtag": "model"
+    },
+    "generation_script": "FeaturePipeline",
+    "pipeline_version": "1.0",
+    "input_file_size_mb": 0.19260597229003906
+  },
+  "dataset_stats": {
+    "num_samples": 162,
+    "num_features": 27,
+    "memory_usage_mb": 0.18498706817626953
+  },
+  "feature_stats": {
+    "numeric": {
+      "author_follower_count": {
+        "min": -1.0,
+        "max": 18856175.0,
+        "mean": 1089608.4074074074,
+        "std": 2530334.968246853,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "author_total_favorited": {
+        "min": -1.0,
+        "max": 338112101.0,
+        "mean": 15470893.623456791,
+        "std": 40745862.21565795,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "hashtag_count": {
+        "min": 0.0,
+        "max": 6.0,
+        "mean": 3.185185185185185,
+        "std": 2.061845709423622,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "duration_sec": {
+        "min": 0.0,
+        "max": 352640.0,
+        "mean": 123146.20987654322,
+        "std": 130035.09246537036,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "collect_count": {
+        "min": 0.0,
+        "max": 650921.0,
+        "mean": 23126.40740740741,
+        "std": 56742.99363415635,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "like_count_num": {
+        "min": 0.0,
+        "max": 5122383.0,
+        "mean": 121385.92592592593,
+        "std": 429540.67293749604,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "comment_count_num": {
+        "min": 0.0,
+        "max": 109033.0,
+        "mean": 3670.7098765432097,
+        "std": 10860.128985131376,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "share_count_num": {
+        "min": 0.0,
+        "max": 2058287.0,
+        "mean": 39055.72839506173,
+        "std": 172595.1615587859,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "publish_hour": {
+        "min": -1.0,
+        "max": 19.0,
+        "mean": -0.7530864197530864,
+        "std": 2.2153101612410078,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "publish_weekday": {
+        "min": -1.0,
+        "max": 1.0,
+        "mean": -0.9753086419753086,
+        "std": 0.22153101612410084,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "is_weekend": {
+        "min": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "days_since_publish": {
+        "min": -1.0,
+        "max": 0.0,
+        "mean": -0.9876543209876543,
+        "std": 0.11076550806205042,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "desc_text_length": {
+        "min": 0.0,
+        "max": 167.0,
+        "mean": 36.39506172839506,
+        "std": 27.021352960847008,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "has_desc_text": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.9259259259259259,
+        "std": 0.2627034687463669,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "has_hashtag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.7530864197530864,
+        "std": 0.43255313672163254,
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "categorical": {
+      "video_id": {
+        "unique_count": 162,
+        "top_values": {
+          "6773901168964798477": 1,
+          "7602564878922042658": 1,
+          "7599584567191768339": 1,
+          "7598491119055293730": 1,
+          "7597644971830676771": 1,
+          "7597669301147779441": 1,
+          "7597707131379148409": 1,
+          "7597740490842925562": 1,
+          "7597796630277204197": 1,
+          "7598135403585031466": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "page_url": {
+        "unique_count": 162,
+        "top_values": {
+          "https://www.douyin.com/video/6773901168964798477": 1,
+          "https://www.douyin.com/video/7614525888310332707": 1,
+          "https://www.douyin.com/video/7612974643011472681": 1,
+          "https://www.douyin.com/video/7613006121490676075": 1,
+          "https://www.douyin.com/video/7613072307984026920": 1,
+          "https://www.douyin.com/video/7613229026765384881": 1,
+          "https://www.douyin.com/video/7613300192837668142": 1,
+          "https://www.douyin.com/video/7613396176133459219": 1,
+          "https://www.douyin.com/video/7613592279432924468": 1,
+          "https://www.douyin.com/video/7613683628375133455": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "author_id": {
+        "unique_count": 159,
+        "top_values": {
+          "f14b0c82-e6b2-36d4-f235-c42f6d0e340d": 2,
+          "471035583937214": 2,
+          "106605001361": 2,
+          "96841097299": 1,
+          "1849791771050423": 1,
+          "3399332604689403": 1,
+          "70429709448": 1,
+          "1097753690124362": 1,
+          "1020818953866695": 1,
+          "104571122388": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "publish_time_raw": {
+        "unique_count": 161,
+        "top_values": {
+          "1776771471109": 2,
+          "1771584341": 1,
+          "1772596500": 1,
+          "1772593140": 1,
+          "1772614888": 1,
+          "1772629200": 1,
+          "1772633144": 1,
+          "1772847996": 1,
+          "1772699844": 1,
+          "1772775624": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "source_entry": {
+        "unique_count": 1,
+        "top_values": {
+          "manual_url": 162
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "match_type": {
+        "unique_count": 1,
+        "top_values": {
+          "exact": 162
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "confidence": {
+        "unique_count": 1,
+        "top_values": {
+          "high": 162
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "author_verification_type": {
+        "unique_count": 2,
+        "top_values": {
+          "1.0": 160,
+          "nan": 2
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "desc_text": {
+        "unique_count": 150,
+        "top_values": {
+          "": 7,
+          "{}": 5,
+          "- 抖音电商直播间带货榜是根据真实数据进行排名的直播间排行榜，希望帮助消费者通过榜单找到正在直播的好商品，让选择更简单。直播间排名越靠前曝光机会越大。": 2,
+          "#甄嬛传十级观众 #万字精讲": 2,
+          "#鬼灭之刃 #日漫 #富冈义勇 #蝴蝶忍": 1,
+          "#安女士美食教程 #朝鲜族 #朝鲜族美食 #茄子咸菜": 1,
+          "#电影解说 #恐怖片 #恐怖电影解说 #抖音午夜放映厅": 1,
+          "无广测评！\n#糯叽叽 #抹茶控 #甜品治愈一切 #拼多多甜品 #糯叽叽美食": 1,
+          "#炸鸡 #夜宵 #一起吃饭吧 #火鸡面 #汉堡": 1,
+          "#童年零食 #开箱 #显眼包 #美食挑战": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "author_name": {
+        "unique_count": 159,
+        "top_values": {
+          "我的": 2,
+          "星空": 2,
+          "ZS剪辑": 2,
+          "顺其自然吧": 1,
+          "小胡特费电": 1,
+          "庄哥铁路游（原名郑局庄段）": 1,
+          "金盆儿": 1,
+          "恐不说": 1,
+          "自由落体运动员": 1,
+          "吃货老外铁蛋儿": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "hashtag_list": {
+        "unique_count": 122,
+        "top_values": {
+          "[]": 40,
+          "['甄嬛传十级观众', '万字精讲']": 2,
+          "['电影解说', '恐怖片', '恐怖电影解说', '抖音午夜放映厅']": 1,
+          "['英国', '伦敦', '富人区', '旅行', '春日撒野指南']": 1,
+          "['九华山祈福', '九华山风景区', '猫姐来了']": 1,
+          "['芝士猪排', '爆浆猪排', '美食推荐', '美食']": 1,
+          "['天价美食', '上海美食', '地方特色美食']": 1,
+          "['魔道祖师', '魏无羡', '沈清秋', '动漫编年史', '我在抖音看动漫']": 1,
+          "['望远市场', '韩国小吃', '韩国美食推荐', '韩国首尔', '韩国传统市场']": 1,
+          "['傲慢与偏见', '她说', '影视漫谈编辑部', '高分电影', '了不起的精讲团']": 1
+        },
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    }
+  },
+  "quality_metrics": {
+    "completeness": 1.0,
+    "duplicate_rows": 0
+  }
+}

@@ -80,6 +80,7 @@ class FeatureStorage:
             'num_samples': len(df_features),
             'num_features': len(df_features.columns),
             'feature_fields': list(df_features.columns),
+            'field_categories': self._get_field_categories(list(df_features.columns), feature_version),
         }
 
         # 合并额外元数据
@@ -131,6 +132,64 @@ class FeatureStorage:
             'build_report': report_path,
             'sample': feature_dir / 'sample_features.csv' if save_sample else None,
         }
+
+    def _get_field_categories(self, feature_fields: List[str], feature_version: str) -> Dict[str, str]:
+        """获取字段分类映射。
+
+        Args:
+            feature_fields: 特征字段列表
+            feature_version: 特征版本
+
+        Returns:
+            字段到分类的映射字典
+        """
+        # v1版本的字段分类
+        if feature_version == 'v1' or feature_version.startswith('v1'):
+            # 定义分类映射
+            category_map = {}
+
+            # A. 保留字段（用于追溯，不默认入模）
+            retention_fields = {
+                'video_id', 'page_url', 'author_id', 'publish_time_raw', 'crawl_time',
+                'source_entry', 'match_type', 'confidence'
+            }
+
+            # B. 可入模字段（第一版候选）
+            model_fields = {
+                'author_follower_count', 'author_total_favorited', 'hashtag_count',
+                'duration_sec', 'publish_hour', 'publish_weekday', 'is_weekend',
+                'days_since_publish', 'author_verification_type', 'desc_text_length',
+                'has_desc_text', 'has_hashtag'
+            }
+
+            # C. 默认不入模字段（保留在特征表中，但不能作为当前高互动预测baseline的默认输入）
+            excluded_fields = {
+                'like_count_num', 'comment_count_num', 'share_count_num', 'collect_count'
+            }
+
+            # 文本字段（保留原样，不默认入模）
+            text_fields = {
+                'desc_text', 'author_name', 'hashtag_list'
+            }
+
+            # 构建映射
+            for field in feature_fields:
+                if field in retention_fields:
+                    category_map[field] = 'retention'
+                elif field in model_fields:
+                    category_map[field] = 'model'
+                elif field in excluded_fields:
+                    category_map[field] = 'excluded'
+                elif field in text_fields:
+                    category_map[field] = 'text'
+                else:
+                    # 未知字段，默认归为保留字段
+                    category_map[field] = 'retention'
+
+            return category_map
+        else:
+            # 其他版本暂时全部归为保留字段
+            return {field: 'retention' for field in feature_fields}
 
     def _generate_build_report(
         self,
