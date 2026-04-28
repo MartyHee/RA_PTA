@@ -22,5 +22,10 @@ optimizer: adam
 # 损失函数
 loss: bce
 
+# 数据输入路径
+train_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_train.csv"
+eval_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_eval.csv"
+feature_info_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_feature_info.json"
+
 # 输出目录
 output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/dnn"

@@ -1,0 +1,123 @@
+{
+  "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\sample0427",
+  "output_train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_train.csv",
+  "output_eval_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_eval.csv",
+  "output_feature_info_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_feature_info.json",
+  "total_rows": 79,
+  "train_rows": 63,
+  "eval_rows": 16,
+  "total_columns": 49,
+  "numeric_feature_count": 30,
+  "categorical_feature_count": 6,
+  "text_stat_feature_count": 4,
+  "wide_cross_feature_count": 4,
+  "excluded_all_null_cols": [
+    "sec_item_id",
+    "share_url",
+    "preview_title",
+    "item_title",
+    "shoot_way",
+    "short_id",
+    "custom_verify",
+    "enterprise_verify_reason",
+    "music_mid",
+    "music_owner_id",
+    "cover_uri",
+    "video_format",
+    "video_ratio",
+    "bit_rate_raw",
+    "big_thumbs_raw",
+    "video_meta_raw",
+    "chapter_cover_url",
+    "label_text",
+    "comment_user_sec_uid",
+    "comment_user_unique_id",
+    "related_author_sec_uid",
+    "related_music_title",
+    "related_text_extra_raw",
+    "related_chapter_abstract"
+  ],
+  "excluded_placeholder_cols": [
+    "cover_width",
+    "cover_height",
+    "dynamic_cover_width",
+    "dynamic_cover_height",
+    "video_width",
+    "video_height",
+    "is_h265",
+    "is_long_video",
+    "music_duration",
+    "music_shoot_duration",
+    "music_collect_count",
+    "caption_start",
+    "caption_end",
+    "can_comment",
+    "can_forward",
+    "can_share",
+    "can_show_comment",
+    "allow_download",
+    "allow_duet",
+    "allow_music",
+    "allow_record",
+    "allow_stitch",
+    "private_status",
+    "is_delete",
+    "is_prohibited",
+    "in_reviewing",
+    "review_status",
+    "comment_permission_status"
+  ],
+  "excluded_all_minus_one_cols": [
+    "favoriting_count",
+    "following_count"
+  ],
+  "label_summary": {
+    "method": "interaction_binary",
+    "threshold": 34301.99999999999,
+    "pos_count": 32,
+    "neg_count": 47,
+    "pos_ratio": 0.4051
+  },
+  "split_summary": {
+    "method": "random_by_video_id",
+    "seed": 2026,
+    "train_size": 63,
+    "eval_size": 16,
+    "has_independent_test": false,
+    "test_split_note": "当前仅使用 train/eval 切分，未设置独立 test 集。eval 用于流程验证和最小模型评估。正式实验阶段需启用 train/val/test 或交叉验证。"
+  },
+  "missing_summary": {
+    "music_title": {
+      "missing_count": 1,
+      "missing_rate": 0.0127
+    },
+    "music_author": {
+      "missing_count": 23,
+      "missing_rate": 0.2911
+    },
+    "hashtag_name_top": {
+      "missing_count": 11,
+      "missing_rate": 0.1392
+    },
+    "hashtag_count": {
+      "missing_count": 11,
+      "missing_rate": 0.1392
+    }
+  },
+  "warnings": [
+    "favoriting_count / following_count 在 sample0427 中全部为 -1，已从特征中排除",
+    "music_author 缺失 23/79，29.1%",
+    "hashtag_count 缺失 11/79 (13.9%) 的视频无 hashtag",
+    "样本量仅 79 条，train/eval split 结果不稳定，后续需扩大样本至 1000+",
+    "play_count 全部为 0（公开页面可能返回 0），无特征区分度"
+  ],
+  "generated_at": "2026-04-28 23:40:19",
+  "notes": [
+    "当前数据集基于 sample0427 样本数据构建，仅用于流程级验证。",
+    "标签为交互伪标签 (interaction_score 分位数)，不代表真实曝光/点击/转化目标。",
+    "5 张完全补齐表 (raw_video_tag/raw_video_status_control/raw_chapter/raw_comment/raw_related_video) 的数据不代表真实分布。",
+    "约 27 个全空字段已被排除。",
+    "status_control 全部字段为固定默认值，已从特征中排除。",
+    "raw_crawl_log 不作为模型特征来源。"
+  ]
+}

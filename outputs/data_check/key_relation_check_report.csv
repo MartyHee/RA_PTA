@@ -1,0 +1,10 @@
+﻿source_table,source_key,target_table,target_key,source_non_null_count,matched_count,unmatched_count,match_rate,relation_status,notes
+raw_video_detail,author_id,raw_author,author_id,79,79,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_music,video_id,raw_video_detail,video_id,79,79,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_hashtag,video_id,raw_video_detail,video_id,264,264,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_video_tag,video_id,raw_video_detail,video_id,162,162,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_video_media,video_id,raw_video_detail,video_id,79,79,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_video_status_control,video_id,raw_video_detail,video_id,79,79,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_chapter,video_id,raw_video_detail,video_id,169,169,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_comment,video_id,raw_video_detail,video_id,250,250,0,1.0,pass,关联正常（匹配率 100.00%）
+raw_related_video,source_video_id,raw_video_detail,video_id,474,474,0,1.0,pass,关联正常（匹配率 100.00%）

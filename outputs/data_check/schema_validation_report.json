@@ -1,0 +1,311 @@
+{
+  "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\sample0427",
+  "schema_config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\configs\\common\\schema_sample0427.yaml",
+  "generated_at": "2026-04-28 22:34:31",
+  "expected_table_count": 11,
+  "actual_loaded_table_count": 11,
+  "missing_tables": [],
+  "failed_tables": [],
+  "tables_with_missing_columns": [],
+  "tables_with_extra_columns": [],
+  "tables_with_all_null_columns": [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_video_media",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video",
+    "raw_crawl_log"
+  ],
+  "overall_status": "warning",
+  "relation_check_summary": {
+    "total_relations": 9,
+    "passed": 9,
+    "warning": 0,
+    "failed": 0,
+    "results": [
+      {
+        "source_table": "raw_video_detail",
+        "source_key": "author_id",
+        "target_table": "raw_author",
+        "target_key": "author_id",
+        "source_non_null_count": 79,
+        "matched_count": 79,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_music",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 79,
+        "matched_count": 79,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_hashtag",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 264,
+        "matched_count": 264,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_video_tag",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 162,
+        "matched_count": 162,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_video_media",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 79,
+        "matched_count": 79,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_video_status_control",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 79,
+        "matched_count": 79,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_chapter",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 169,
+        "matched_count": 169,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_comment",
+        "source_key": "video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 250,
+        "matched_count": 250,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      },
+      {
+        "source_table": "raw_related_video",
+        "source_key": "source_video_id",
+        "target_table": "raw_video_detail",
+        "target_key": "video_id",
+        "source_non_null_count": 474,
+        "matched_count": 474,
+        "unmatched_count": 0,
+        "match_rate": 1.0,
+        "relation_status": "pass",
+        "notes": "关联正常（匹配率 100.00%）"
+      }
+    ]
+  },
+  "generated_or_placeholder_field_summary": {
+    "total_tables_with_generated_fields": 11,
+    "details": [
+      {
+        "table_name": "raw_video_detail",
+        "generated_or_placeholder_count": 1,
+        "columns": [
+          "author_id"
+        ]
+      },
+      {
+        "table_name": "raw_author",
+        "generated_or_placeholder_count": 4,
+        "columns": [
+          "sec_uid",
+          "unique_id",
+          "avatar_thumb_url_list",
+          "cover_url_list"
+        ]
+      },
+      {
+        "table_name": "raw_music",
+        "generated_or_placeholder_count": 6,
+        "columns": [
+          "music_id",
+          "music_duration",
+          "music_shoot_duration",
+          "music_collect_count",
+          "music_cover_url_list",
+          "music_play_url_list"
+        ]
+      },
+      {
+        "table_name": "raw_hashtag",
+        "generated_or_placeholder_count": 3,
+        "columns": [
+          "hashtag_id",
+          "caption_start",
+          "caption_end"
+        ]
+      },
+      {
+        "table_name": "raw_video_tag",
+        "generated_or_placeholder_count": 3,
+        "columns": [
+          "tag_id",
+          "tag_name",
+          "tag_level"
+        ]
+      },
+      {
+        "table_name": "raw_video_media",
+        "generated_or_placeholder_count": 8,
+        "columns": [
+          "cover_width",
+          "cover_height",
+          "dynamic_cover_width",
+          "dynamic_cover_height",
+          "video_width",
+          "video_height",
+          "is_h265",
+          "is_long_video"
+        ]
+      },
+      {
+        "table_name": "raw_video_status_control",
+        "generated_or_placeholder_count": 15,
+        "columns": [
+          "can_comment",
+          "can_forward",
+          "can_share",
+          "can_show_comment",
+          "allow_download",
+          "allow_duet",
+          "allow_music",
+          "allow_record",
+          "allow_stitch",
+          "private_status",
+          "is_delete",
+          "is_prohibited",
+          "in_reviewing",
+          "review_status",
+          "comment_permission_status"
+        ]
+      },
+      {
+        "table_name": "raw_chapter",
+        "generated_or_placeholder_count": 6,
+        "columns": [
+          "chapter_desc",
+          "chapter_detail",
+          "chapter_timestamp",
+          "chapter_abstract",
+          "chapter_review_status",
+          "chapter_recommend_type"
+        ]
+      },
+      {
+        "table_name": "raw_comment",
+        "generated_or_placeholder_count": 19,
+        "columns": [
+          "comment_id",
+          "comment_text",
+          "comment_create_time",
+          "comment_digg_count",
+          "comment_status",
+          "comment_reply_total",
+          "reply_id",
+          "reply_to_reply_id",
+          "is_hot",
+          "is_author_digged",
+          "stick_position",
+          "label_type",
+          "comment_user_id",
+          "comment_user_nickname",
+          "comment_user_region",
+          "comment_cursor",
+          "comment_has_more",
+          "comment_total",
+          "comment_user_avatar_url_list"
+        ]
+      },
+      {
+        "table_name": "raw_related_video",
+        "generated_or_placeholder_count": 16,
+        "columns": [
+          "related_video_id",
+          "related_rank_position",
+          "related_author_id",
+          "related_author_nickname",
+          "related_caption",
+          "related_create_time",
+          "related_duration_ms",
+          "related_media_type",
+          "related_digg_count",
+          "related_comment_count",
+          "related_share_count",
+          "related_collect_count",
+          "related_play_count",
+          "related_cover_url_list",
+          "related_music_id",
+          "related_video_tag_raw"
+        ]
+      },
+      {
+        "table_name": "raw_crawl_log",
+        "generated_or_placeholder_count": 2,
+        "columns": [
+          "network_response_count",
+          "runtime_objects_count"
+        ]
+      }
+    ]
+  },
+  "extra_checks": {
+    "raw_related_video": {
+      "table": "raw_related_video",
+      "has_source_video_id": true,
+      "has_related_video_id": true,
+      "can_serve_as_edge_source": true,
+      "source_non_null": 474,
+      "related_non_null": 474,
+      "notes": "可用于 GraphSAGE video-video 边构建（流程验证级别）"
+    }
+  },
+  "overall_notes": [
+    "当前校验基于 sample0427 样本数据，所有结果为流程级验证。",
+    "5 张完全补齐表（raw_video_tag / raw_video_status_control / raw_chapter / raw_comment / raw_related_video）的所有数据为样本补齐值。",
+    "约 30 个字段整列全空，已在 field_missing_report.csv 中详细列出。",
+    "部分 ID 字段为规则生成（sec_uid / unique_id / music_id / hashtag_id / related_video_id / tag_id），不可用于外部关联。",
+    "关键关联检查验证了 9 组表间关联的覆盖度。",
+    "overall_status=warning 不完全代表数据不可用，而是提示部分字段为占位值或全空。"
+  ]
+}

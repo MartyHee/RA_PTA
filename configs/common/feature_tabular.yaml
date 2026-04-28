@@ -1,0 +1,213 @@
+# =============================================================================
+# Tabular 数据集构建配置
+# =============================================================================
+# 用于 build_tabular_dataset.py 的特征列选择、聚合方式、标签构造和输出路径
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# 源表定义
+# ---------------------------------------------------------------------------
+source_tables:
+  - raw_video_detail      # 主表，79 行，一行一个视频
+  - raw_author            # 作者信息，LEFT JOIN
+  - raw_music             # 音乐信息，LEFT JOIN
+  - raw_video_media       # 媒体信息，LEFT JOIN
+  - raw_video_status_control  # 状态控制（全部常量，仅流程验证）
+  - raw_hashtag           # 话题标签，聚合到 video_id
+  - raw_video_tag         # 视频标签，聚合到 video_id
+  - raw_comment           # 评论，聚合到 video_id
+  - raw_chapter           # 章节，聚合到 video_id
+  - raw_related_video     # 相关推荐，聚合到 source_video_id
+  # raw_crawl_log 不进入训练特征
+
+# ---------------------------------------------------------------------------
+# Join 计划
+# ---------------------------------------------------------------------------
+join_plan:
+  raw_author:
+    type: left
+    left_on: author_id
+    right_on: author_id
+    note: "79 视频 × 78 作者，预计 1 行作者信息为空"
+  raw_music:
+    type: left
+    left_on: video_id
+    right_on: video_id
+    note: "video_id 关联，不使用不存在的 music_id"
+  raw_video_media:
+    type: left
+    left_on: video_id
+    right_on: video_id
+  raw_video_status_control:
+    type: left
+    left_on: video_id
+    right_on: video_id
+    note: "全部字段为固定默认值，后续特征阶段排除"
+  raw_hashtag:
+    type: left_aggregated
+    group_col: video_id
+    note: "聚合到 video_id 粒度"
+  raw_video_tag:
+    type: left_aggregated
+    group_col: video_id
+    note: "完全补齐表，仅流程跑通"
+  raw_comment:
+    type: left_aggregated
+    group_col: video_id
+    note: "完全补齐表，仅流程跑通"
+  raw_chapter:
+    type: left_aggregated
+    group_col: video_id
+    note: "完全补齐表，从 caption 派生"
+  raw_related_video:
+    type: left_aggregated
+    group_col: source_video_id
+    note: "聚合到 source_video_id 后 merge 到 video_id"
+
+# ---------------------------------------------------------------------------
+# 数值特征候选列
+# ---------------------------------------------------------------------------
+numeric_feature_candidates:
+  raw_video_detail:
+    - duration_ms        # 真实毫秒值
+    - digg_count         # 真实值（也用于标签构造）
+    - comment_count      # 真实值（也用于标签构造）
+    - share_count        # 真实值（也用于标签构造）
+    - collect_count      # 真实值（也用于标签构造）
+    - play_count         # 全为 0（保留供流程验证）
+    - recommend_count    # 推荐计数
+    - admire_count       # 赞赏计数
+    - is_top             # 是否置顶 0/1
+    - is_ads             # 是否广告 bool
+    - is_life_item       # 是否生活服务 bool
+    - original           # 是否原创 0/1
+    - aweme_type         # 内容类型编码
+    - media_type         # 媒体类型编码
+    - create_time        # 发布时间戳（数值化）
+  raw_author:
+    - follower_count     # 粉丝数（真实值）
+    - total_favorited    # 总获赞（真实值）
+    - favoriting_count   # 喜欢计数（部分 -1 占位）
+    - following_count    # 关注数（部分 -1 占位）
+    - verification_type  # 认证类型
+    - author_status      # 账号状态
+    - author_secret      # 私密状态
+    - author_prevent_download  # 是否限制下载 bool
+  raw_video_media:
+    - origin_cover_width   # 封面宽度（真实值）
+    - origin_cover_height  # 封面高度（真实值）
+    - has_watermark        # 是否有水印 bool
+
+# 数值特征中排除的全 -1 占位字段（在代码中自动排除）
+placeholder_excluded_numeric:
+  - cover_width
+  - cover_height
+  - dynamic_cover_width
+  - dynamic_cover_height
+  - video_width
+  - video_height
+  - is_h265
+  - is_long_video
+  - music_duration
+  - music_shoot_duration
+  - music_collect_count
+  - caption_start
+  - caption_end
+
+# ---------------------------------------------------------------------------
+# 类别特征候选
+# ---------------------------------------------------------------------------
+categorical_feature_candidates:
+  - author_id            # 作者 ID（流程特征）
+  - region               # 地区（真实值）
+  - music_title          # 音乐名称（78/79 非空）
+  - music_author         # 音乐作者（56/79 非空）
+  - hashtag_name_top     # 首个话题名称（聚合派生）
+  - video_tag_list_str   # 标签名称拼接（聚合派生）
+
+# ---------------------------------------------------------------------------
+# 文本统计特征
+# ---------------------------------------------------------------------------
+text_stat_features:
+  - desc_length          # 描述文本字符长度
+  - desc_word_count      # 描述文本非空格字符数
+  - signature_length     # 作者签名长度（来自 raw_author）
+  - avg_comment_text_length  # 平均评论文本长度（聚合）
+
+# ---------------------------------------------------------------------------
+# 聚合特征（按 video_id 聚合）
+# ---------------------------------------------------------------------------
+aggregation_features:
+  raw_hashtag:
+    - {name: hashtag_count, method: count, column: hashtag_name}
+    - {name: hashtag_name_joined, method: join_unique, column: hashtag_name, sep: " | "}
+  raw_video_tag:
+    - {name: video_tag_count, method: count, column: tag_name}
+    - {name: video_tag_list_str, method: join_unique, column: tag_name, sep: " | "}
+  raw_comment:
+    - {name: comment_table_count, method: count, column: comment_text}
+    - {name: avg_comment_text_length, method: mean_str_len, column: comment_text}
+    - {name: max_comment_digg_count, method: max, column: comment_digg_count}
+    - {name: comment_text_joined, method: join_all, column: comment_text, sep: " | "}
+  raw_chapter:
+    - {name: chapter_count, method: count, column: chapter_desc}
+    - {name: chapter_text_joined, method: join_unique, column: chapter_desc, sep: " | "}
+  raw_related_video:
+    - {name: related_video_count, method: count, column: related_video_id}
+
+# ---------------------------------------------------------------------------
+# Wide & Deep 交叉特征候选
+# ---------------------------------------------------------------------------
+wide_cross_features:
+  - {name: author_id_x_top_hashtag, left: author_id, right: hashtag_name_top}
+  - {name: author_id_x_music_title, left: author_id, right: music_title}
+  - {name: duration_bucket_x_top_hashtag, left: duration_bucket, right: hashtag_name_top}
+  - {name: has_watermark_x_duration_bucket, left: has_watermark, right: duration_bucket}
+
+# ---------------------------------------------------------------------------
+# 全空字段排除策略
+# ---------------------------------------------------------------------------
+all_null_exclusion_policy:
+  enabled: true
+  fields:
+    raw_video_detail: [sec_item_id, share_url, preview_title, item_title, shoot_way]
+    raw_author: [short_id, custom_verify, enterprise_verify_reason]
+    raw_music: [music_mid, music_owner_id]
+    raw_video_media: [cover_uri, video_format, video_ratio, bit_rate_raw, big_thumbs_raw, video_meta_raw]
+    raw_chapter: [chapter_cover_url]
+    raw_comment: [label_text, comment_user_sec_uid, comment_user_unique_id]
+    raw_related_video: [related_author_sec_uid, related_music_title, related_text_extra_raw, related_chapter_abstract]
+
+# ---------------------------------------------------------------------------
+# 占位字段排除策略
+# ---------------------------------------------------------------------------
+placeholder_exclusion_policy:
+  enabled: true
+  note: "全 -1 占位数值字段自动排除；生成 ID 类字段不进入数值特征但保留为类别特征（标注 generated_or_placeholder）"
+  also_note: "favoriting_count / following_count 在 sample0427 中全部为 -1，已排除"
+
+# ---------------------------------------------------------------------------
+# 标签配置
+# ---------------------------------------------------------------------------
+label_config:
+  method: interaction_binary
+  interaction_components:
+    - digg_count
+    - comment_count
+    - share_count
+    - collect_count
+  default_quantile: 0.60
+  fallback_quantile: 0.50
+  imbalance_threshold: 0.20  # 若 minority class < 20%，回退到中位数
+  label_col: label
+  score_col: interaction_score
+
+# ---------------------------------------------------------------------------
+# 输出路径（相对于项目根目录）
+# ---------------------------------------------------------------------------
+output_paths:
+  train_csv: "data/features/tabular_train.csv"
+  eval_csv: "data/features/tabular_eval.csv"
+  feature_info_json: "data/features/tabular_feature_info.json"
+  dataset_report_json: "outputs/data_check/tabular_dataset_report.json"
+  dataset_preview_csv: "outputs/data_check/tabular_dataset_preview.csv"

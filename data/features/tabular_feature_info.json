@@ -1,0 +1,170 @@
+{
+  "label_col": "label",
+  "label_definition": "流程验证伪标签: interaction_score >= threshold",
+  "label_threshold": 34301.99999999999,
+  "id_cols": [
+    "sample_id",
+    "video_id",
+    "author_id"
+  ],
+  "numeric_cols": [
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "play_count",
+    "recommend_count",
+    "admire_count",
+    "is_top",
+    "is_ads",
+    "is_life_item",
+    "original",
+    "aweme_type",
+    "media_type",
+    "create_time",
+    "follower_count",
+    "total_favorited",
+    "verification_type",
+    "author_status",
+    "author_secret",
+    "author_prevent_download",
+    "origin_cover_width",
+    "origin_cover_height",
+    "has_watermark",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "max_comment_digg_count",
+    "chapter_count",
+    "related_video_count"
+  ],
+  "categorical_cols": [
+    "author_id",
+    "region",
+    "music_title",
+    "music_author",
+    "hashtag_name_top",
+    "video_tag_list_str"
+  ],
+  "text_stat_cols": [
+    "desc_length",
+    "desc_word_count",
+    "signature_length",
+    "avg_comment_text_length"
+  ],
+  "wide_cross_cols": [
+    "author_id_x_top_hashtag",
+    "author_id_x_music_title",
+    "duration_bucket_x_top_hashtag",
+    "has_watermark_x_duration_bucket"
+  ],
+  "excluded_all_minus_one_cols": [
+    "favoriting_count",
+    "following_count"
+  ],
+  "excluded_all_null_cols": [
+    "sec_item_id",
+    "share_url",
+    "preview_title",
+    "item_title",
+    "shoot_way",
+    "short_id",
+    "custom_verify",
+    "enterprise_verify_reason",
+    "music_mid",
+    "music_owner_id",
+    "cover_uri",
+    "video_format",
+    "video_ratio",
+    "bit_rate_raw",
+    "big_thumbs_raw",
+    "video_meta_raw",
+    "chapter_cover_url",
+    "label_text",
+    "comment_user_sec_uid",
+    "comment_user_unique_id",
+    "related_author_sec_uid",
+    "related_music_title",
+    "related_text_extra_raw",
+    "related_chapter_abstract"
+  ],
+  "excluded_placeholder_cols": [
+    "cover_width",
+    "cover_height",
+    "dynamic_cover_width",
+    "dynamic_cover_height",
+    "video_width",
+    "video_height",
+    "is_h265",
+    "is_long_video",
+    "music_duration",
+    "music_shoot_duration",
+    "music_collect_count",
+    "caption_start",
+    "caption_end",
+    "can_comment",
+    "can_forward",
+    "can_share",
+    "can_show_comment",
+    "allow_download",
+    "allow_duet",
+    "allow_music",
+    "allow_record",
+    "allow_stitch",
+    "private_status",
+    "is_delete",
+    "is_prohibited",
+    "in_reviewing",
+    "review_status",
+    "comment_permission_status"
+  ],
+  "generated_or_placeholder_cols_used": [],
+  "train_size": 63,
+  "eval_size": 16,
+  "total_size": 79,
+  "label_distribution_total": {
+    "pos": 32,
+    "neg": 47,
+    "pos_ratio": 0.4051
+  },
+  "label_distribution_train": {
+    "pos": 26,
+    "neg": 37
+  },
+  "label_distribution_eval": {
+    "pos": 6,
+    "neg": 10
+  },
+  "source_tables_used": [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_hashtag",
+    "raw_video_tag",
+    "raw_video_media",
+    "raw_video_status_control",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video",
+    "raw_crawl_log"
+  ],
+  "join_keys_used": [
+    "video_id",
+    "author_id",
+    "source_video_id"
+  ],
+  "warnings": [
+    "favoriting_count / following_count 在 sample0427 中全部为 -1，已从特征中排除",
+    "music_author 缺失 23/79，29.1%",
+    "hashtag_count 缺失 11/79 (13.9%) 的视频无 hashtag",
+    "样本量仅 79 条，train/eval split 结果不稳定，后续需扩大样本至 1000+",
+    "play_count 全部为 0（公开页面可能返回 0），无特征区分度"
+  ],
+  "notes": [
+    "当前标签为流程验证伪标签，基于 interaction_score (digg+comment+share+collect) 构造。",
+    "不代表真实曝光/点击/转化目标。当前不能用于正式效果结论。",
+    "部分类别特征（如 tag_id, hashtag_id, music_id）为规则生成ID，已在数值特征中排除。",
+    "status_control 全部字段为固定默认值，已从特征中排除。"
+  ]
+}

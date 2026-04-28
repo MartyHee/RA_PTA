@@ -1,0 +1,697 @@
+# =============================================================================
+# sample0427 Schema 校验配置
+# =============================================================================
+# 基于 sample_data_dictionary.md 整理，用于 validate_schema.py 的字段级校验
+# =============================================================================
+
+# 全局配置
+global:
+  high_missing_threshold: 0.8   # 高缺失率阈值
+  key_relation_match_threshold: 0.5  # 关联匹配最低阈值（低于此值报 fail）
+
+# =============================================================================
+# 表级定义
+# =============================================================================
+tables:
+
+  # ---------------------------------------------------------------------------
+  # raw_video_detail — 核心视频表
+  # ---------------------------------------------------------------------------
+  raw_video_detail:
+    description: "视频核心信息表，79 条真实抓取高置信度样本，含 1 个额外补充字段 author_id"
+    data_source: "真实抓取 + 字段补齐"
+    expected_columns:
+      - video_id
+      - sec_item_id
+      - group_id
+      - comment_gid
+      - page_url
+      - share_url
+      - caption
+      - desc
+      - preview_title
+      - item_title
+      - create_time
+      - duration_ms
+      - aweme_type
+      - media_type
+      - region
+      - is_top
+      - is_ads
+      - is_life_item
+      - original
+      - shoot_way
+      - digg_count
+      - comment_count
+      - share_count
+      - collect_count
+      - play_count
+      - recommend_count
+      - admire_count
+      - crawl_time
+      - primary_source_key
+      - author_id
+    primary_key_candidates:
+      - video_id
+    foreign_key_candidates:
+      - {column: author_id, ref_table: raw_author, ref_column: author_id}
+      - {column: group_id, ref_table: null, ref_column: null}
+    important_columns:
+      - video_id          # 主键
+      - author_id         # 关联作者（额外补充字段）
+      - group_id          # 分组 ID
+      - caption           # 视频描述（文本特征）
+      - desc              # 视频描述（文本特征，同 caption）
+      - create_time       # 发布时间（时序特征）
+      - duration_ms       # 时长（真实毫秒值）
+      - aweme_type        # 内容类型
+      - media_type        # 媒体类型
+      - region            # 地区
+      - is_top            # 是否置顶
+      - is_ads            # 是否广告
+      - is_life_item      # 是否生活服务
+      - original          # 是否原创
+      - digg_count        # 点赞数（真实值）
+      - comment_count     # 评论数（真实值）
+      - share_count       # 分享数（真实值）
+      - collect_count     # 收藏数（真实值）
+      - play_count        # 播放数（全 0，可能为真实 API 返回）
+      - recommend_count   # 推荐计数
+      - admire_count      # 赞赏计数
+    generated_or_placeholder_columns:
+      - author_id         # 额外补充字段，为方便关联从源 CSV 映射补充
+    raw_columns: []
+    list_like_columns: []
+    json_like_columns: []
+    suggested_usage: "W4 核心表。作为 DNN / Wide & Deep 的标签源和特征源，GraphSAGE 的种子节点，多模态的文本与数值特征来源"
+    notes: "author_id 为额外补充字段，非正式 schema 字段。sec_item_id / share_url / preview_title / item_title / shoot_way 整列全空。"
+
+  # ---------------------------------------------------------------------------
+  # raw_author — 作者信息表
+  # ---------------------------------------------------------------------------
+  raw_author:
+    description: "作者信息表，78 条，从视频表拆出去重，sec_uid/unique_id 为规则补齐"
+    data_source: "真实派生 + 字段补齐"
+    expected_columns:
+      - author_id
+      - author_user_id
+      - sec_uid
+      - unique_id
+      - short_id
+      - nickname
+      - signature
+      - follower_count
+      - total_favorited
+      - favoriting_count
+      - following_count
+      - verification_type
+      - custom_verify
+      - enterprise_verify_reason
+      - avatar_thumb_url_list
+      - cover_url_list
+      - author_status
+      - author_secret
+      - author_prevent_download
+      - crawl_time
+    primary_key_candidates:
+      - author_id
+    foreign_key_candidates: []
+    important_columns:
+      - author_id          # 主键，用于关联
+      - nickname           # 作者昵称（真实值）
+      - signature          # 签名（真实值，74/78 行有数据）
+      - follower_count     # 粉丝数（真实值）
+      - total_favorited    # 总获赞（真实值）
+      - following_count    # 关注数（真实值，部分 -1）
+      - favoriting_count   # 喜欢计数（真实值，部分 -1）
+      - verification_type  # 认证类型（真实值）
+      - author_status      # 账号状态
+      - author_secret      # 私密状态
+      - author_prevent_download # 是否限制下载
+    generated_or_placeholder_columns:
+      - sec_uid            # SHA256 规则生成，非真实 API 值
+      - unique_id          # MD5 规则生成，非真实 API 值
+      - avatar_thumb_url_list  # 占位值，CSV 中为空列表 '[]'
+      - cover_url_list         # 占位值，CSV 中为空列表 '[]'
+    raw_columns: []
+    list_like_columns:
+      - avatar_thumb_url_list
+      - cover_url_list
+    json_like_columns: []
+    suggested_usage: "GraphSAGE 作者节点特征，DNN/Wide&Deep 的作者侧特征拼接"
+    notes: "short_id / custom_verify / enterprise_verify_reason 整列全空。favoriting_count / following_count 有真实值但部分为 -1 占位。"
+
+  # ---------------------------------------------------------------------------
+  # raw_music — 音乐信息表
+  # ---------------------------------------------------------------------------
+  raw_music:
+    description: "音乐表，79 条，从视频表派生，music_id 为规则补齐"
+    data_source: "真实派生 + 字段补齐"
+    expected_columns:
+      - video_id
+      - music_title
+      - music_author
+      - music_id
+      - music_mid
+      - music_owner_id
+      - music_owner_nickname
+      - music_duration
+      - music_shoot_duration
+      - is_original_sound
+      - is_commerce_music
+      - music_status
+      - music_collect_count
+      - music_cover_url_list
+      - music_play_url_list
+      - crawl_time
+    primary_key_candidates:
+      - music_id
+      - video_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - music_title        # 音乐名称（真实值，78/79 行有数据）
+      - music_author       # 音乐作者（56/79 行有数据）
+      - music_owner_nickname # 音乐归属作者昵称（56/79 行）
+      - is_original_sound  # 是否原创声音
+      - is_commerce_music  # 是否商业音乐
+      - music_status       # 音乐状态（均为 1）
+    generated_or_placeholder_columns:
+      - music_id           # MD5 规则生成 ID，非真实 API 值
+      - music_duration     # 全部为 -1 占位值
+      - music_shoot_duration # 全部为 -1 占位值
+      - music_collect_count # 全部为 -1 占位值
+      - music_cover_url_list  # 占位值，CSV 中为空列表 '[]'
+      - music_play_url_list   # 占位值，CSV 中为空列表 '[]'
+    raw_columns: []
+    list_like_columns:
+      - music_cover_url_list
+      - music_play_url_list
+    json_like_columns: []
+    suggested_usage: "GraphSAGE 音乐节点特征，DNN/Wide&Deep 的音乐侧特征拼接"
+    notes: "music_mid / music_owner_id 整列全空。music_id 值为规则生成，不能用于去重或外部关联。"
+
+  # ---------------------------------------------------------------------------
+  # raw_hashtag — 话题标签表
+  # ---------------------------------------------------------------------------
+  raw_hashtag:
+    description: "话题标签表，264 条，hashtag_id 为规则补齐"
+    data_source: "真实派生 + 字段补齐"
+    expected_columns:
+      - video_id
+      - hashtag_id
+      - hashtag_name
+      - hashtag_type
+      - is_commerce
+      - caption_start
+      - caption_end
+      - start
+      - end
+      - crawl_time
+    primary_key_candidates:
+      - hashtag_id
+      - video_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - hashtag_name       # 话题名称（真实值）
+      - hashtag_type       # 话题类型（真实值）
+      - is_commerce        # 是否商业话题
+      - start              # 起始位置
+      - end                # 结束位置
+    generated_or_placeholder_columns:
+      - hashtag_id         # MD5 规则生成 ID，非真实 API 值
+      - caption_start      # 全部为 -1 占位值
+      - caption_end        # 全部为 -1 占位值
+    raw_columns: []
+    list_like_columns: []
+    json_like_columns: []
+    suggested_usage: "GraphSAGE hashtag 节点和 video-hashtag 边"
+    notes: "hashtag_id 为规则生成，建议使用 hashtag_name 作为实际标签标识。"
+
+  # ---------------------------------------------------------------------------
+  # raw_video_tag — 视频标签表（完全补齐）
+  # ---------------------------------------------------------------------------
+  raw_video_tag:
+    description: "视频标签表，162 条，所有字段均为样本补齐值。完全补齐表。"
+    data_source: "完全补齐"
+    expected_columns:
+      - video_id
+      - tag_id
+      - tag_name
+      - tag_level
+      - crawl_time
+    primary_key_candidates:
+      - video_id
+      - tag_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - tag_id             # 标签 ID（可用于流程验证，但值为规则生成）
+      - tag_name           # 标签名称（12 种预定义类别）
+      - tag_level          # 标签层级
+    generated_or_placeholder_columns:
+      - tag_id             # 样本补齐值，TAG_LIFESTYLE 风格字符串，完全规则生成
+      - tag_name           # 样本补齐值，12 种预定义标签类别
+      - tag_level          # 样本补齐值，规则生成
+    raw_columns: []
+    list_like_columns: []
+    json_like_columns: []
+    suggested_usage: "GraphSAGE tag 节点和 video-tag 边。注意：所有数据均为样本补齐，仅可用于流程跑通"
+    notes: "整张表为完全补齐，所有字段数据不代表真实分布。tag_id 类型为字符串而非 int。"
+
+  # ---------------------------------------------------------------------------
+  # raw_video_media — 视频媒体信息表
+  # ---------------------------------------------------------------------------
+  raw_video_media:
+    description: "视频媒体信息表，79 条，部分字段有真实 URL，部分为占位值"
+    data_source: "真实派生"
+    expected_columns:
+      - video_id
+      - cover_uri
+      - cover_url_list
+      - cover_width
+      - cover_height
+      - origin_cover_uri
+      - origin_cover_url_list
+      - origin_cover_width
+      - origin_cover_height
+      - dynamic_cover_uri
+      - dynamic_cover_url_list
+      - dynamic_cover_width
+      - dynamic_cover_height
+      - video_width
+      - video_height
+      - video_format
+      - video_ratio
+      - is_h265
+      - is_long_video
+      - has_watermark
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+      - crawl_time
+    primary_key_candidates:
+      - video_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - origin_cover_uri   # 原始封面 URI（78/79 行有真实值）
+      - origin_cover_url_list # 原始封面 URL（以 JSON 字符串存储）
+      - origin_cover_width # 原始封面宽度（真实值）
+      - origin_cover_height # 原始封面高度（真实值）
+      - dynamic_cover_uri  # 动态封面 URI（77/79 行有数据）
+      - has_watermark      # 是否有水印
+      - cover_url_list     # 视频封面 URL（单条 URL 字符串，非列表格式）
+    generated_or_placeholder_columns:
+      - cover_width        # 全部为 -1 占位值
+      - cover_height       # 全部为 -1 占位值
+      - dynamic_cover_width  # 全部为 -1 占位值
+      - dynamic_cover_height # 全部为 -1 占位值
+      - video_width        # 全部为 -1 占位值
+      - video_height       # 全部为 -1 占位值
+      - is_h265            # 全部为 -1 占位值
+      - is_long_video      # 全部为 -1 占位值
+    raw_columns:
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+    list_like_columns:
+      - origin_cover_url_list
+      - dynamic_cover_url_list
+    json_like_columns:
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+    suggested_usage: "多模态模型的媒体元信息特征源，GraphSAGE media 节点。cover_url_list 存储格式特殊"
+    notes: |
+      cover_uri / video_format / video_ratio / bit_rate_raw / big_thumbs_raw / video_meta_raw 整列全空。
+      cover_url_list 仅为单条 URL 字符串（非 JSON 数组），与正式 schema 的 ARRAY<STRING> 不符。
+
+  # ---------------------------------------------------------------------------
+  # raw_video_status_control — 视频状态控制表（完全补齐）
+  # ---------------------------------------------------------------------------
+  raw_video_status_control:
+    description: "视频状态控制表，79 条，所有字段为合理默认补齐值。完全补齐表。"
+    data_source: "完全补齐"
+    expected_columns:
+      - video_id
+      - can_comment
+      - can_forward
+      - can_share
+      - can_show_comment
+      - allow_download
+      - allow_duet
+      - allow_music
+      - allow_record
+      - allow_stitch
+      - private_status
+      - is_delete
+      - is_prohibited
+      - in_reviewing
+      - review_status
+      - comment_permission_status
+      - crawl_time
+    primary_key_candidates:
+      - video_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video（唯一有区分度的字段）
+    generated_or_placeholder_columns:
+      - can_comment           # 全部为 True（合理默认值）
+      - can_forward           # 全部为 True
+      - can_share             # 全部为 True
+      - can_show_comment      # 全部为 True
+      - allow_download        # 全部为 False
+      - allow_duet            # 全部为 False
+      - allow_music           # 全部为 True
+      - allow_record          # 全部为 True
+      - allow_stitch          # 全部为 False
+      - private_status        # 全部为 0
+      - is_delete             # 全部为 False
+      - is_prohibited         # 全部为 False
+      - in_reviewing          # 全部为 False
+      - review_status         # 全部为 1
+      - comment_permission_status # 全部为 1
+    raw_columns: []
+    list_like_columns: []
+    json_like_columns: []
+    suggested_usage: "流程跑通验证。所有布尔/状态字段均为固定默认值，无特征区分度，不建议作为特征输入"
+    notes: "整张表为完全补齐，所有字段均为固定默认值。video_id 以外字段无区分度。"
+
+  # ---------------------------------------------------------------------------
+  # raw_chapter — 章节信息表（完全补齐）
+  # ---------------------------------------------------------------------------
+  raw_chapter:
+    description: "章节表，169 条，从 caption 派生的章节模拟数据。完全补齐表。"
+    data_source: "完全补齐（从 caption 派生）"
+    expected_columns:
+      - video_id
+      - chapter_index
+      - chapter_desc
+      - chapter_detail
+      - chapter_timestamp
+      - chapter_cover_url
+      - chapter_abstract
+      - chapter_review_status
+      - chapter_recommend_type
+      - crawl_time
+    primary_key_candidates:
+      - video_id
+      - chapter_index
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - chapter_index      # 章节序号
+      - chapter_desc       # 章节标题（从 caption 派生，可用于文本特征）
+      - chapter_detail     # 章节详情（从 caption 派生）
+      - chapter_abstract   # 视频智能摘要（165/169 行有数据）
+    generated_or_placeholder_columns:
+      - chapter_desc          # 从 caption 派生（"章节1", "章节2"）
+      - chapter_detail        # 从 caption 派生
+      - chapter_timestamp     # 从 caption 派生，非真实 API 返回
+      - chapter_abstract      # 从 caption 派生
+      - chapter_review_status # 全部为 1（样本补齐值）
+      - chapter_recommend_type # 全部为 'default'（类型不一致 + 样本补齐值）
+    raw_columns: []
+    list_like_columns: []
+    json_like_columns: []
+    suggested_usage: "多模态模型的文本特征源（章节文本）。注意：数据从 caption 派生，文本多样性有限"
+    notes: |
+      chapter_cover_url 整列全空。
+      chapter_recommend_type 正式定义可为 int，样本中全部为 'default' 字符串。
+      整张表数据从 caption 派生，文本多样性有限。
+
+  # ---------------------------------------------------------------------------
+  # raw_comment — 评论表（完全补齐）
+  # ---------------------------------------------------------------------------
+  raw_comment:
+    description: "评论表，250 条，所有字段为模拟评论数据。完全补齐表。"
+    data_source: "完全补齐"
+    expected_columns:
+      - video_id
+      - comment_id
+      - comment_text
+      - comment_create_time
+      - comment_digg_count
+      - comment_status
+      - comment_reply_total
+      - reply_id
+      - reply_to_reply_id
+      - is_hot
+      - is_author_digged
+      - stick_position
+      - label_text
+      - label_type
+      - comment_user_id
+      - comment_user_sec_uid
+      - comment_user_nickname
+      - comment_user_unique_id
+      - comment_user_avatar_url_list
+      - comment_user_region
+      - comment_cursor
+      - comment_has_more
+      - comment_total
+      - crawl_time
+    primary_key_candidates:
+      - comment_id
+    foreign_key_candidates:
+      - {column: video_id, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - video_id           # 关联 video
+      - comment_text       # 评论文本（模板生成，但可用于文本特征流程验证）
+      - comment_create_time # 评论时间
+      - comment_user_id    # 评论用户 ID
+      - comment_user_nickname # 评论用户昵称
+    generated_or_placeholder_columns:
+      - comment_id                # 规则生成 ID，非真实 API 值
+      - comment_text              # 模板生成文本
+      - comment_create_time       # 规则生成时间戳
+      - comment_digg_count        # 随机生成
+      - comment_status            # 全部为 1
+      - comment_reply_total       # 随机生成
+      - reply_id                  # 全部为 0
+      - reply_to_reply_id         # 全部为 0
+      - is_hot                    # 全部为 False
+      - is_author_digged          # 全部为 False
+      - stick_position            # 全部为 -1
+      - label_type                # 全部为 -1
+      - comment_user_id           # 规则生成
+      - comment_user_nickname     # 模板生成
+      - comment_user_region       # 全部为 'CN'
+      - comment_cursor            # 全部为 0
+      - comment_has_more          # 全部为 False
+      - comment_total             # 每视频 2 条
+      - comment_user_avatar_url_list # 占位值，CSV 中为空列表 '[]'
+    raw_columns: []
+    list_like_columns:
+      - comment_user_avatar_url_list
+    json_like_columns: []
+    suggested_usage: "多模态模型的文本特征源（评论）。注意：所有数据均为模板/规则生成，不代表真实评论分布"
+    notes: |
+      label_text / comment_user_sec_uid / comment_user_unique_id 整列全空。
+      整张表为完全补齐，所有有数据的字段均为样本补齐值。
+      comment_text 为模板生成（"学到了，谢谢分享"等），非真实评论。
+
+  # ---------------------------------------------------------------------------
+  # raw_related_video — 相关推荐视频表（完全补齐）
+  # ---------------------------------------------------------------------------
+  raw_related_video:
+    description: "相关推荐视频表，474 条，所有字段为模拟推荐数据。完全补齐表。"
+    data_source: "完全补齐"
+    expected_columns:
+      - source_video_id
+      - related_video_id
+      - related_rank_position
+      - related_author_id
+      - related_author_sec_uid
+      - related_author_nickname
+      - related_caption
+      - related_create_time
+      - related_duration_ms
+      - related_media_type
+      - related_digg_count
+      - related_comment_count
+      - related_share_count
+      - related_collect_count
+      - related_play_count
+      - related_cover_url_list
+      - related_music_id
+      - related_music_title
+      - related_text_extra_raw
+      - related_video_tag_raw
+      - related_chapter_abstract
+      - crawl_time
+    primary_key_candidates:
+      - source_video_id
+      - related_video_id
+    foreign_key_candidates:
+      - {column: source_video_id, ref_table: raw_video_detail, ref_column: video_id}
+      - {column: related_author_id, ref_table: raw_author, ref_column: author_id}
+      - {column: related_music_id, ref_table: raw_music, ref_column: music_id}
+    important_columns:
+      - source_video_id    # 源视频 ID，关联 raw_video_detail
+      - related_video_id   # 推荐视频 ID（可用于 GraphSAGE 边构建）
+      - related_rank_position # 推荐位置
+      - related_duration_ms   # 推荐视频时长（全部为 1000 固定值）
+      - related_media_type    # 推荐媒体类型（全部为 4）
+    generated_or_placeholder_columns:
+      - related_video_id         # 规则生成 ID（REL...），非真实 API 值
+      - related_rank_position    # 规则生成
+      - related_author_id        # 规则生成
+      - related_author_nickname  # 模板生成
+      - related_caption          # 模板生成
+      - related_create_time      # 规则生成时间戳
+      - related_duration_ms      # 全部为 1000（固定占位值）
+      - related_media_type       # 全部为 4（固定占位值）
+      - related_digg_count       # 随机生成
+      - related_comment_count    # 随机生成
+      - related_share_count      # 随机生成
+      - related_collect_count    # 随机生成
+      - related_play_count       # 随机生成
+      - related_cover_url_list   # 占位值，CSV 中为空列表 '[]'
+      - related_music_id         # 从 video_id→music_id 映射规则补齐
+      - related_video_tag_raw    # 规则生成 JSON 字符串
+    raw_columns:
+      - related_text_extra_raw
+      - related_video_tag_raw
+    list_like_columns:
+      - related_cover_url_list
+      - related_video_tag_raw    # 虽为 JSON 字符串但以 [ 开头
+    json_like_columns:
+      - related_text_extra_raw
+      - related_video_tag_raw
+    suggested_usage: "GraphSAGE 的 video-video 关联边来源（source_video_id → related_video_id），Wide&Deep 的 wide 侧交叉特征来源"
+    notes: |
+      related_author_sec_uid / related_music_title / related_text_extra_raw / related_chapter_abstract 整列全空。
+      source_video_id 可关联 raw_video_detail.video_id。
+      整张表为完全补齐，所有有数据的字段均为样本补齐值。
+      related_duration_ms 固定为 1000，与 raw_video_detail.duration_ms 的分布完全不同。
+
+  # ---------------------------------------------------------------------------
+  # raw_crawl_log — 采集日志表
+  # ---------------------------------------------------------------------------
+  raw_crawl_log:
+    description: "采集日志表，79 条，从源 CSV 入口字段映射，部分字段为占位值"
+    data_source: "映射补齐"
+    expected_columns:
+      - crawl_batch_id
+      - crawl_time
+      - target_url
+      - source_page_type
+      - request_url
+      - request_cursor
+      - response_status
+      - response_timestamp
+      - response_headers_raw
+      - primary_source_key
+      - match_type
+      - confidence
+      - network_response_count
+      - runtime_objects_count
+    primary_key_candidates:
+      - crawl_batch_id
+    foreign_key_candidates:
+      - {column: primary_source_key, ref_table: raw_video_detail, ref_column: video_id}
+    important_columns:
+      - crawl_batch_id       # 主键
+      - target_url           # 原始采集 URL
+      - source_page_type     # 来源页面类型（全部为 'manual_url'）
+      - response_status      # HTTP 状态码（全部为 200）
+      - response_timestamp   # 响应采集时间
+      - primary_source_key   # 主数据来源键（关联 video_id）
+      - match_type           # 主对象匹配类型
+      - confidence           # 选择置信度
+    generated_or_placeholder_columns:
+      - network_response_count  # 全部为 -1 占位值
+      - runtime_objects_count   # 全部为 -1 占位值
+    raw_columns:
+      - response_headers_raw
+    list_like_columns: []
+    json_like_columns:
+      - response_headers_raw
+    suggested_usage: "数据溯源与质量检查。W4 模型阶段主要作为元数据参考，不作为模型特征输入"
+    notes: |
+      request_url / request_cursor / response_headers_raw 整列全空。
+      source_page_type 全部为 'manual_url'（固定值）。
+      response_status 全部为 200。
+      整张表主要用于溯源与质量检查。
+
+# =============================================================================
+# 关键关联检查配置
+# =============================================================================
+key_relations:
+  - source_table: raw_video_detail
+    source_key: author_id
+    target_table: raw_author
+    target_key: author_id
+    description: "视频 → 作者关联"
+
+  - source_table: raw_music
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "音乐 → 视频关联（raw_video_detail 不含 music_id，改为 music.video_id 关联 video_detail.video_id）"
+
+  - source_table: raw_hashtag
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "话题 → 视频关联"
+
+  - source_table: raw_video_tag
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "标签 → 视频关联"
+
+  - source_table: raw_video_media
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "媒体 → 视频关联"
+
+  - source_table: raw_video_status_control
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "状态控制 → 视频关联"
+
+  - source_table: raw_chapter
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "章节 → 视频关联"
+
+  - source_table: raw_comment
+    source_key: video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "评论 → 视频关联"
+
+  - source_table: raw_related_video
+    source_key: source_video_id
+    target_table: raw_video_detail
+    target_key: video_id
+    description: "相关推荐 → 视频关联（注意 source 键为 source_video_id）"
+
+# =============================================================================
+# 额外检查项
+# =============================================================================
+extra_checks:
+  raw_related_video:
+    description: "GraphSAGE 的 video-video 边来源可用性"
+    required_columns:
+      - source_video_id
+      - related_video_id
+    checks:
+      - has_source_video_id: true
+      - has_related_video_id: true
+      - can_serve_as_edge_source: true
+    notes: "source_video_id 可匹配 raw_video_detail.video_id，related_video_id 可作为目标节点标识。即使全部为规则生成，仍可用于 GraphSAGE 流程跑通。"

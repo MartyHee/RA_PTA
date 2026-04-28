@@ -1,0 +1,44 @@
+{
+  "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\sample0427",
+  "expected_tables": [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_hashtag",
+    "raw_video_tag",
+    "raw_video_media",
+    "raw_video_status_control",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video",
+    "raw_crawl_log"
+  ],
+  "expected_file_count": 11,
+  "loaded_tables": [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_hashtag",
+    "raw_video_tag",
+    "raw_video_media",
+    "raw_video_status_control",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video",
+    "raw_crawl_log"
+  ],
+  "loaded_count": 11,
+  "missing_files": [],
+  "missing_count": 0,
+  "failed_tables": [],
+  "failed_count": 0,
+  "total_rows": 1792,
+  "total_columns": 192,
+  "generated_at": "2026-04-28 21:42:28",
+  "notes": [
+    "当前结果仅反映 sample0427 样本数据的读取状态。",
+    "list_like_columns 和 json_like_columns 基于采样检测，非严格类型判定。",
+    "所有原始字段保留不变，未做类型转换或覆盖。",
+    "未做 schema 严格校验，仅做读取层可用性验证。"
+  ]
+}

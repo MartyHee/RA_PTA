@@ -1,0 +1,254 @@
+{
+  "dataset_info": {
+    "total_rows": 79,
+    "total_columns": 49,
+    "train_rows": 63,
+    "eval_rows": 16,
+    "columns": [
+      "admire_count",
+      "author_id",
+      "author_id_x_music_title",
+      "author_id_x_top_hashtag",
+      "author_prevent_download",
+      "author_secret",
+      "author_status",
+      "avg_comment_text_length",
+      "aweme_type",
+      "chapter_count",
+      "collect_count",
+      "comment_count",
+      "comment_table_count",
+      "create_time",
+      "desc_length",
+      "desc_word_count",
+      "digg_count",
+      "duration_bucket_x_top_hashtag",
+      "duration_ms",
+      "follower_count",
+      "has_watermark",
+      "has_watermark_x_duration_bucket",
+      "hashtag_count",
+      "hashtag_name_top",
+      "interaction_score",
+      "is_ads",
+      "is_life_item",
+      "is_top",
+      "label",
+      "max_comment_digg_count",
+      "media_type",
+      "music_author",
+      "music_title",
+      "origin_cover_height",
+      "origin_cover_width",
+      "original",
+      "play_count",
+      "recommend_count",
+      "region",
+      "related_video_count",
+      "sample_id",
+      "share_count",
+      "signature_length",
+      "split",
+      "total_favorited",
+      "verification_type",
+      "video_id",
+      "video_tag_count",
+      "video_tag_list_str"
+    ]
+  },
+  "label_distribution": {
+    "total_pos": 32,
+    "total_neg": 47,
+    "pos_ratio": 0.4051,
+    "train_pos": 26,
+    "train_neg": 37,
+    "eval_pos": 6,
+    "eval_neg": 10
+  },
+  "excluded_fields": {
+    "excluded_all_null_cols": [
+      "big_thumbs_raw",
+      "bit_rate_raw",
+      "chapter_cover_url",
+      "comment_user_sec_uid",
+      "comment_user_unique_id",
+      "cover_uri",
+      "custom_verify",
+      "enterprise_verify_reason",
+      "item_title",
+      "label_text",
+      "music_mid",
+      "music_owner_id",
+      "preview_title",
+      "related_author_sec_uid",
+      "related_chapter_abstract",
+      "related_music_title",
+      "related_text_extra_raw",
+      "sec_item_id",
+      "share_url",
+      "shoot_way",
+      "short_id",
+      "video_format",
+      "video_meta_raw",
+      "video_ratio"
+    ],
+    "excluded_placeholder_cols": [
+      "allow_download",
+      "allow_duet",
+      "allow_music",
+      "allow_record",
+      "allow_stitch",
+      "can_comment",
+      "can_forward",
+      "can_share",
+      "can_show_comment",
+      "caption_end",
+      "caption_start",
+      "comment_permission_status",
+      "cover_height",
+      "cover_width",
+      "dynamic_cover_height",
+      "dynamic_cover_width",
+      "in_reviewing",
+      "is_delete",
+      "is_h265",
+      "is_long_video",
+      "is_prohibited",
+      "music_collect_count",
+      "music_duration",
+      "music_shoot_duration",
+      "private_status",
+      "review_status",
+      "video_height",
+      "video_width"
+    ],
+    "excluded_all_minus_one_cols": [
+      "favoriting_count",
+      "following_count"
+    ]
+  },
+  "flagged_fields": {
+    "all_zero_cols": [
+      "admire_count",
+      "author_prevent_download",
+      "original",
+      "is_life_item",
+      "aweme_type",
+      "recommend_count",
+      "is_ads",
+      "has_watermark",
+      "is_top",
+      "author_secret",
+      "play_count"
+    ],
+    "constant_cols": [
+      {
+        "col": "admire_count",
+        "value": "0"
+      },
+      {
+        "col": "author_prevent_download",
+        "value": "False"
+      },
+      {
+        "col": "original",
+        "value": "0"
+      },
+      {
+        "col": "is_life_item",
+        "value": "False"
+      },
+      {
+        "col": "related_video_count",
+        "value": "6"
+      },
+      {
+        "col": "region",
+        "value": "CN"
+      },
+      {
+        "col": "aweme_type",
+        "value": "0"
+      },
+      {
+        "col": "recommend_count",
+        "value": "0"
+      },
+      {
+        "col": "is_ads",
+        "value": "False"
+      },
+      {
+        "col": "has_watermark",
+        "value": "False"
+      },
+      {
+        "col": "author_status",
+        "value": "1"
+      },
+      {
+        "col": "media_type",
+        "value": "4"
+      },
+      {
+        "col": "is_top",
+        "value": "0"
+      },
+      {
+        "col": "author_secret",
+        "value": "0"
+      },
+      {
+        "col": "play_count",
+        "value": "0"
+      }
+    ],
+    "high_missing_cols": [
+      {
+        "col": "music_author",
+        "missing_rate": 0.2911
+      },
+      {
+        "col": "hashtag_name_top",
+        "missing_rate": 0.1392
+      },
+      {
+        "col": "hashtag_count",
+        "missing_rate": 0.1392
+      }
+    ]
+  },
+  "split_check": {
+    "method": "random_by_video_id",
+    "seed": 2026,
+    "train_size": 63,
+    "eval_size": 16,
+    "train_eval_overlap": 0,
+    "has_independent_test": false,
+    "note": "当前仅使用 train/eval 切分，未设置独立 test 集。eval 用于流程验证和最小模型评估。正式实验阶段需启用 train/val/test 或交叉验证。"
+  },
+  "missing_summary": {
+    "music_title": {
+      "missing_count": 1,
+      "missing_rate": 0.0127
+    },
+    "music_author": {
+      "missing_count": 23,
+      "missing_rate": 0.2911
+    },
+    "hashtag_name_top": {
+      "missing_count": 11,
+      "missing_rate": 0.1392
+    },
+    "hashtag_count": {
+      "missing_count": 11,
+      "missing_rate": 0.1392
+    }
+  },
+  "data_quality_notes": [
+    "已排除无效字段共 54 个（全空 24 + 占位 28 + 全-1 2）",
+    "当前特征列中有 11 个全零列（无区分度，当前未排除）: admire_count, author_prevent_download, original, is_life_item, aweme_type, recommend_count, is_ads, has_watermark, is_top, author_secret, play_count",
+    "当前特征列中有 4 个布尔列全为 False（无区分度）: author_prevent_download, is_life_item, is_ads, has_watermark",
+    "存在高缺失率特征列，请在模型训练中注意缺失值处理。"
+  ]
+}

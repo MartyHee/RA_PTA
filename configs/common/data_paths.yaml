@@ -36,6 +36,9 @@ multimodal_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/multimodal"
 # 统一实验输入快照
 experiment_inputs_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/experiment_inputs"
 
+# 数据检查输出
+data_check_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/data_check"
+
 # 模型与实验输出
 outputs_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs"
 

@@ -1,0 +1,12 @@
+﻿table_name,file_name,read_success,encoding_used,row_count,column_count,missing_cells_total,missing_rate_overall,duplicate_rows,likely_id_columns,list_like_columns,json_like_columns,raw_columns,error_message
+raw_video_detail,sample0427_raw_video_detail.csv,True,utf-8-sig,79,30,399,0.168354,0,video_id; group_id; author_id,,,,
+raw_author,sample0427_raw_author.csv,True,utf-8-sig,78,20,238,0.152564,0,author_id,avatar_thumb_url_list; cover_url_list,,,
+raw_music,sample0427_raw_music.csv,True,utf-8-sig,79,16,205,0.162184,0,video_id; music_id,music_cover_url_list; music_play_url_list,,,
+raw_hashtag,sample0427_raw_hashtag.csv,True,utf-8-sig,264,10,0,0.0,0,video_id; hashtag_id,,,,
+raw_video_tag,sample0427_raw_video_tag.csv,True,utf-8-sig,162,5,0,0.0,0,video_id; tag_id,,,,
+raw_video_media,sample0427_raw_video_media.csv,True,utf-8-sig,79,24,478,0.25211,0,video_id,origin_cover_url_list; dynamic_cover_url_list,,bit_rate_raw; big_thumbs_raw; video_meta_raw,
+raw_video_status_control,sample0427_raw_video_status_control.csv,True,utf-8-sig,79,17,0,0.0,0,video_id,,,,
+raw_chapter,sample0427_raw_chapter.csv,True,utf-8-sig,169,10,173,0.102367,0,video_id,,,,
+raw_comment,sample0427_raw_comment.csv,True,utf-8-sig,250,24,750,0.125,0,video_id; comment_id,comment_user_avatar_url_list,,,
+raw_related_video,sample0427_raw_related_video.csv,True,utf-8-sig,474,22,1896,0.181818,0,source_video_id; related_video_id; related_author_id; related_music_id,related_cover_url_list; related_video_tag_raw,,related_text_extra_raw; related_video_tag_raw,
+raw_crawl_log,sample0427_raw_crawl_log.csv,True,utf-8-sig,79,14,237,0.214286,0,crawl_batch_id,,,response_headers_raw,

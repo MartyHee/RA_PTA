@@ -1,0 +1,12 @@
+﻿table_name,file_exists,row_count,column_count,expected_column_count,actual_column_count,missing_columns,extra_columns,missing_key_fields,all_null_columns,high_missing_columns,duplicate_rows,schema_status,notes
+raw_video_detail,True,79,30,30,30,,,,sec_item_id; share_url; preview_title; item_title; shoot_way,sec_item_id; share_url; preview_title; item_title; shoot_way,0,pass,1 个字段为规则生成/占位; 5 个字段全空
+raw_author,True,78,20,20,20,,,,short_id; custom_verify; enterprise_verify_reason,short_id; custom_verify; enterprise_verify_reason,0,pass,4 个字段为规则生成/占位; 3 个字段全空
+raw_music,True,79,16,16,16,,,,music_mid; music_owner_id,music_mid; music_owner_id,0,pass,6 个字段为规则生成/占位; 2 个字段全空
+raw_hashtag,True,264,10,10,10,,,,,,0,pass,3 个字段为规则生成/占位
+raw_video_tag,True,162,5,5,5,,,,,,0,pass,3 个字段为规则生成/占位
+raw_video_media,True,79,24,24,24,,,,cover_uri; video_format; video_ratio; bit_rate_raw; big_thumbs_raw; video_meta_raw,cover_uri; video_format; video_ratio; bit_rate_raw; big_thumbs_raw; video_meta_raw,0,pass,8 个字段为规则生成/占位; 6 个字段全空
+raw_video_status_control,True,79,17,17,17,,,,,,0,pass,15 个字段为规则生成/占位
+raw_chapter,True,169,10,10,10,,,,chapter_cover_url,chapter_cover_url,0,pass,6 个字段为规则生成/占位; 1 个字段全空
+raw_comment,True,250,24,24,24,,,,label_text; comment_user_sec_uid; comment_user_unique_id,label_text; comment_user_sec_uid; comment_user_unique_id,0,pass,19 个字段为规则生成/占位; 3 个字段全空
+raw_related_video,True,474,22,22,22,,,,related_author_sec_uid; related_music_title; related_text_extra_raw; related_chapter_abstract,related_author_sec_uid; related_music_title; related_text_extra_raw; related_chapter_abstract,0,pass,16 个字段为规则生成/占位; 4 个字段全空
+raw_crawl_log,True,79,14,14,14,,,,request_url; request_cursor; response_headers_raw,request_url; request_cursor; response_headers_raw,0,pass,2 个字段为规则生成/占位; 3 个字段全空
