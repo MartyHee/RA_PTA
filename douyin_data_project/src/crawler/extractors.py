@@ -132,12 +132,12 @@ class AuthorExtractor(BaseExtractor):
             content: HTML content or BeautifulSoup object.
 
         Returns:
-            Dictionary with author_id, author_name, author_profile_url.
+            Dictionary with author_id, author_name, author_page_url.
         """
         result = {
             'author_id': None,
             'author_name': None,
-            'author_profile_url': None
+            'author_page_url': None
         }
 
         soup = self._ensure_soup(content)
@@ -149,11 +149,11 @@ class AuthorExtractor(BaseExtractor):
         if author_links:
             link = author_links[0]
             result['author_name'] = link.get_text(strip=True)
-            result['author_profile_url'] = link.get('href', '')
+            result['author_page_url'] = link.get('href', '')
 
             # Extract author ID from URL
-            if result['author_profile_url']:
-                match = re.search(r'/user/([^/?]+)', result['author_profile_url'])
+            if result['author_page_url']:
+                match = re.search(r'/user/([^/?]+)', result['author_page_url'])
                 if match:
                     result['author_id'] = match.group(1)
 
@@ -201,7 +201,7 @@ class StatsExtractor(BaseExtractor):
             Dictionary with raw count strings.
         """
         result = {
-            'like_count_raw': None,
+            'digg_count': None,
             'comment_count_raw': None,
             'share_count_raw': None,
             'collect_count_raw': None
@@ -213,7 +213,7 @@ class StatsExtractor(BaseExtractor):
 
         # Look for stats in HTML elements
         stat_patterns = {
-            'like_count_raw': [r'like', r'digg', r'赞', r'点赞'],
+            'digg_count': [r'like', r'digg', r'赞', r'点赞'],
             'comment_count_raw': [r'comment', r'评论'],
             'share_count_raw': [r'share', r'分享'],
             'collect_count_raw': [r'collect', r'收藏']
@@ -249,7 +249,7 @@ class StatsExtractor(BaseExtractor):
                     if match:
                         count = match.group(1)
                         if 'diggCount' in pattern:
-                            result['like_count_raw'] = count
+                            result['digg_count'] = count
                         elif 'commentCount' in pattern:
                             result['comment_count_raw'] = count
                         elif 'shareCount' in pattern:
@@ -284,7 +284,7 @@ class PublishTimeExtractor(BaseExtractor):
             Dictionary with raw and standardized times.
         """
         result = {
-            'publish_time_raw': None,
+            'create_time': None,
             'publish_time_std': None
         }
 
@@ -295,7 +295,7 @@ class PublishTimeExtractor(BaseExtractor):
         # Look for time elements
         time_elements = soup.find_all(['span', 'div', 'time'], class_=re.compile(r'time|date|publish'))
         if time_elements:
-            result['publish_time_raw'] = time_elements[0].get_text(strip=True)
+            result['create_time'] = time_elements[0].get_text(strip=True)
 
         # Also try script data
         scripts = soup.find_all('script')
@@ -414,7 +414,7 @@ class ExtractorFactory:
             'stats': StatsExtractor(),
             'publish_time': PublishTimeExtractor(),
             'hashtags': HashtagExtractor(),
-            'cover_url': CoverUrlExtractor()
+            'origin_cover_url': CoverUrlExtractor()
         }
 
         # Map field names to extractors
@@ -422,17 +422,17 @@ class ExtractorFactory:
             'video_id': 'video_id',
             'author_id': 'author_info',
             'author_name': 'author_info',
-            'author_profile_url': 'author_info',
+            'author_page_url': 'author_info',
             'desc_text': 'desc_text',
-            'like_count_raw': 'stats',
+            'digg_count': 'stats',
             'comment_count_raw': 'stats',
             'share_count_raw': 'stats',
             'collect_count_raw': 'stats',
-            'publish_time_raw': 'publish_time',
+            'create_time': 'publish_time',
             'publish_time_std': 'publish_time',
             'hashtag_list': 'hashtags',
             'hashtag_count': 'hashtags',
-            'cover_url': 'cover_url'
+            'origin_cover_url': 'origin_cover_url'
         }
 
         extractor_key = field_to_extractor.get(field_name)
@@ -461,7 +461,7 @@ class ExtractorFactory:
             'stats': StatsExtractor(),
             'publish_time': PublishTimeExtractor(),
             'hashtags': HashtagExtractor(),
-            'cover_url': CoverUrlExtractor()
+            'origin_cover_url': CoverUrlExtractor()
         }
 
         # Run each extractor

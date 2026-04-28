@@ -35,6 +35,10 @@ def main():
     parser.add_argument('--workers', type=int, default=1, help='爬虫工作线程数')
     parser.add_argument('--sample', action='store_true', help='使用配置文件中的样本URL')
     parser.add_argument('--url-file', type=Path, help='从文件读取URL列表（每行一个URL）')
+    parser.add_argument('--restart-every', type=int, default=20,
+                        help='Browser模式下每处理N个URL后重启浏览器实例（默认20）')
+    parser.add_argument('--debug-mode', action='store_true',
+                        help='启用debug模式（输出详细调试文件/rendered HTML）')
 
     args = parser.parse_args()
 
@@ -119,10 +123,14 @@ def main():
     mode = 'Mock' if args.mock else ('浏览器模式' if args.browser else '真实抓取')
     print(f"模式: {mode}")
     print(f"工作线程: {args.workers}")
+    if args.browser:
+        print(f"浏览器重启间隔: {args.restart_every} URLs")
+        print(f"Debug模式: {'开启' if args.debug_mode else '关闭'}")
     print("-" * 60)
 
     # 创建调度器
-    scheduler = CrawlScheduler(config_path=args.config, use_mock=args.mock, use_browser=args.browser)
+    scheduler = CrawlScheduler(config_path=args.config, use_mock=args.mock, use_browser=args.browser,
+                               restart_every=args.restart_every, debug_mode=args.debug_mode)
 
     # 添加任务
     for url in urls_to_crawl:

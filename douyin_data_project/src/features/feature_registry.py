@@ -151,11 +151,11 @@ class FeatureRegistry:
         )
 
         self.register_feature(
-            name='publish_time_raw',
+            name='create_time',
             version='v1',
             description='原始发布时间文本',
             feature_type='string',
-            source_fields=['publish_time_raw'],
+            source_fields=['create_time'],
             default_value='',
         )
 
@@ -196,11 +196,11 @@ class FeatureRegistry:
         )
 
         self.register_feature(
-            name='duration_sec',
+            name='duration_ms',
             version='v1',
             description='视频时长（秒）',
             feature_type='numeric',
-            source_fields=['duration_sec'],
+            source_fields=['duration_ms'],
             default_value=0,
         )
 
@@ -219,7 +219,7 @@ class FeatureRegistry:
             version='v1',
             description='点赞数（数值化）',
             feature_type='numeric',
-            source_fields=['like_count_raw'],
+            source_fields=['digg_count'],
             default_value=0,
         )
 

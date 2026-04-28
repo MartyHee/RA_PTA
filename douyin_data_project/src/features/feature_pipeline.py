@@ -96,7 +96,7 @@ class FeaturePipeline:
         # 1. 处理时间字段
         df_transformed = self._process_time_fields(df_transformed)
 
-        # 2. 处理计数字段（like_count_raw等）
+        # 2. 处理计数字段（digg_count等）
         df_transformed = self._process_count_fields(df_transformed)
 
         # 3. 处理文本字段
@@ -119,7 +119,7 @@ class FeaturePipeline:
 
         时间特征生成优先级：
         1. 优先使用publish_time_std（标准化时间字符串）
-        2. 对于publish_time_std解析失败的行，回退使用publish_time_raw（时间戳）
+        2. 对于publish_time_std解析失败的行，回退使用create_time（时间戳）
         3. 两者都失败时使用默认值（-1）
 
         Args:
@@ -170,11 +170,11 @@ class FeaturePipeline:
                 parsed_by_std = publish_dt.notna().sum()
                 print(f"通过publish_time_std解析了 {parsed_by_std} 行")
 
-        # 对于仍未解析的行，尝试使用publish_time_raw（优先级2：时间戳回退）
-        if 'publish_time_raw' in df.columns and publish_dt.isna().any():
+        # 对于仍未解析的行，尝试使用create_time（优先级2：时间戳回退）
+        if 'create_time' in df.columns and publish_dt.isna().any():
             if self.verbose:
-                print(f"回退解析publish_time_raw，剩余未解析行数: {publish_dt.isna().sum()}")
-            time_raw = df['publish_time_raw'].astype(str)
+                print(f"回退解析create_time，剩余未解析行数: {publish_dt.isna().sum()}")
+            time_raw = df['create_time'].astype(str)
             # 尝试解析时间戳（秒级或毫秒级）
             for idx in df.index[publish_dt.isna()]:
                 val = time_raw[idx]
@@ -200,17 +200,17 @@ class FeaturePipeline:
             if self.verbose:
                 # 记录解析前的已解析数量
                 before_parse_count = publish_dt.notna().sum()
-                # 解析publish_time_raw后
+                # 解析create_time后
                 after_parse_count = publish_dt.notna().sum()
                 parsed_by_raw = after_parse_count - before_parse_count
-                print(f"通过publish_time_raw解析了 {parsed_by_raw} 行")
+                print(f"通过create_time解析了 {parsed_by_raw} 行")
 
-        # 处理publish_time_raw（保留原样）
-        if 'publish_time_raw' in df.columns:
+        # 处理create_time（保留原样）
+        if 'create_time' in df.columns:
             # 确保是字符串类型
-            df['publish_time_raw'] = df['publish_time_raw'].astype(str)
+            df['create_time'] = df['create_time'].astype(str)
         else:
-            df['publish_time_raw'] = ''
+            df['create_time'] = ''
 
         # 计算时间派生特征
         valid_mask = publish_dt.notna()
@@ -257,7 +257,7 @@ class FeaturePipeline:
         """
         # 原始计数字段映射（使用新的派生命名）
         count_fields = {
-            'like_count_raw': 'like_count_num',
+            'digg_count': 'like_count_num',
             'comment_count_raw': 'comment_count_num',
             'share_count_raw': 'share_count_num',
         }
@@ -274,7 +274,7 @@ class FeaturePipeline:
         numeric_fields = [
             'author_follower_count',
             'author_total_favorited',
-            'duration_sec',
+            'duration_ms',
             'collect_count',
             'hashtag_count',
         ]

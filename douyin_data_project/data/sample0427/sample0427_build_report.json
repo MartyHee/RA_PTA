@@ -1,0 +1,76 @@
+{
+  "build_time": "2026-04-27 18:13:26",
+  "source_run_id": "20260427_150329",
+  "source_file": "high_confidence_web_video_meta_20260427_150329.csv",
+  "source_rows": 79,
+  "tables": {
+    "raw_video_detail": {
+      "rows": 79,
+      "columns": 30
+    },
+    "raw_author": {
+      "rows": 78,
+      "columns": 20
+    },
+    "raw_music": {
+      "rows": 79,
+      "columns": 16
+    },
+    "raw_hashtag": {
+      "rows": 264,
+      "columns": 10
+    },
+    "raw_video_tag": {
+      "rows": 162,
+      "columns": 5
+    },
+    "raw_video_media": {
+      "rows": 79,
+      "columns": 24
+    },
+    "raw_video_status_control": {
+      "rows": 79,
+      "columns": 17
+    },
+    "raw_chapter": {
+      "rows": 169,
+      "columns": 10
+    },
+    "raw_related_video": {
+      "rows": 474,
+      "columns": 22
+    },
+    "raw_comment": {
+      "rows": 250,
+      "columns": 24
+    },
+    "raw_crawl_log": {
+      "rows": 79,
+      "columns": 14
+    }
+  },
+  "version": "1.1",
+  "purpose": "基于真实抓取结果 + schema补齐的样本数据（修复版 v1.1：补充author_id + 4张缺失表）",
+  "fix_notes": {
+    "raw_video_detail_fix": "补充了 author_id（从源CSV映射）和 primary_source_key",
+    "new_tables_added": [
+      "raw_video_tag",
+      "raw_video_status_control",
+      "raw_chapter",
+      "raw_crawl_log"
+    ],
+    "previous_notes": {
+      "raw_video_detail": "79条完全来自真实抓取高置信度样本",
+      "raw_author": "作者去重表，从视频表拆出",
+      "raw_music": "视频-音乐表，按视频粒度",
+      "raw_hashtag": "视频-话题表，每话题一行",
+      "raw_video_media": "视频媒体信息表",
+      "raw_related_video": "补齐样本（当前抓取无相关推荐数据），每源视频6条推荐",
+      "raw_comment": "补齐样本（当前抓取无评论数据），每视频2-4条模拟评论",
+      "raw_video_tag": "补齐样本（当前抓取无video_tag响应数据），每视频1-3条平台标签",
+      "raw_video_status_control": "补齐样本（当前抓取无status/control响应数据），使用合理默认值",
+      "raw_chapter": "补齐样本（当前抓取无chapter_list响应数据），每视频1-3章节，从caption派生",
+      "raw_crawl_log": "从源CSV匹配/入口字段映射，补齐采集批次日志"
+    }
+  }
+}

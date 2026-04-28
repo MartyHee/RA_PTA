@@ -22,12 +22,15 @@ logger = get_logger(__name__)
 class BrowserClient:
     """Browser client for Douyin using Playwright."""
 
-    def __init__(self, config_path: Optional[Path] = None, use_mock: bool = False):
+    def __init__(self, config_path: Optional[Path] = None, use_mock: bool = False,
+                 debug_mode: bool = False, restart_every: int = 20):
         """Initialize the browser client.
 
         Args:
             config_path: Path to config file. If None, loads default.
             use_mock: Whether to use mock mode (no actual browser).
+            debug_mode: Whether to enable debug mode (verbose debug output/files).
+            restart_every: Restart browser after processing this many URLs.
         """
         self.config = load_config(config_path) if config_path else load_config()
         sources_mock = get_config('sources.web.mock.enabled', False)
@@ -60,9 +63,17 @@ class BrowserClient:
         self._debug_output_dir = None
         self._network_listener_callback = None  # Deprecated, callbacks stored on page objects
 
+        # Batch crawl control
+        self.debug_mode = debug_mode
+        self.restart_every = restart_every
+        self._url_count = 0        # URLs processed since last browser restart
+        self._restart_count = 0    # Total number of browser restarts
+
         # Initialize only when needed
         self._initialized = False
         self._run_id = None  # Run ID for organizing debug output by run
+
+        logger.info(f"BrowserClient initialized: debug_mode={self.debug_mode}, restart_every={self.restart_every}")
 
     def _initialize_browser(self):
         """Initialize Playwright browser if not already initialized."""
@@ -140,6 +151,22 @@ class BrowserClient:
         except Exception as e:
             logger.warning(f"Error closing browser: {e}")
 
+    def restart_browser(self):
+        """Close current browser and create a fresh instance.
+
+        Closes the current page, context, browser, and Playwright instance,
+        then reinitializes everything from scratch. Resets the URL counter.
+        Call this periodically during long batch crawls to avoid resource
+        leaks and browser degradation.
+        """
+        self._restart_count += 1
+        logger.info(f"Browser restart #{self._restart_count} after {self._url_count} URLs — closing old instance...")
+        self._close_browser()
+        self._initialized = False
+        self._url_count = 0
+        self._initialize_browser()
+        logger.info(f"Browser restart #{self._restart_count} completed successfully")
+
     def set_run_id(self, run_id: str):
         """Set run ID for organizing debug output by run.
 
@@ -155,6 +182,9 @@ class BrowserClient:
         Args:
             url: Target URL for naming.
         """
+        if not self.debug_mode:
+            self._debug_output_dir = None
+            return
         try:
             # Create debug directory under raw data
             raw_data_dir = Path(get_config('settings.paths.raw_data', './data/raw'))
@@ -347,7 +377,7 @@ class BrowserClient:
             runtime_objects.clear()
 
     def _save_debug_data(self, url: str, network_responses: List[Dict], runtime_objects: Dict) -> Optional[Dict[str, Any]]:
-        """Save captured debug data to files.
+        """Analyze captured data and optionally save debug files.
 
         Args:
             url: Original URL for naming.
@@ -357,30 +387,26 @@ class BrowserClient:
         Returns:
             Summary dictionary with field_extraction if successful, None otherwise.
         """
-        if not self._debug_output_dir:
-            logger.warning("No debug output directory set, skipping debug data save")
-            return None
-
         try:
             # Create timestamp for file names
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             url_hash = hash(url) % 10000
 
-            # Save network responses
-            if network_responses:
-                network_file = self._debug_output_dir / f"network_json_{url_hash}_{timestamp}.json"
-                with open(network_file, 'w', encoding='utf-8') as f:
-                    json.dump(network_responses, f, indent=2, ensure_ascii=False)
-                logger.info(f"Saved {len(network_responses)} network responses to {network_file}")
+            # Save raw network responses and runtime objects only in debug mode
+            if self.debug_mode and self._debug_output_dir:
+                if network_responses:
+                    network_file = self._debug_output_dir / f"network_json_{url_hash}_{timestamp}.json"
+                    with open(network_file, 'w', encoding='utf-8') as f:
+                        json.dump(network_responses, f, indent=2, ensure_ascii=False)
+                    logger.info(f"Saved {len(network_responses)} network responses to {network_file}")
 
-            # Save runtime objects
-            if runtime_objects:
-                runtime_file = self._debug_output_dir / f"runtime_objects_{url_hash}_{timestamp}.json"
-                with open(runtime_file, 'w', encoding='utf-8') as f:
-                    json.dump(runtime_objects, f, indent=2, ensure_ascii=False)
-                logger.info(f"Saved {len(runtime_objects)} runtime objects to {runtime_file}")
+                if runtime_objects:
+                    runtime_file = self._debug_output_dir / f"runtime_objects_{url_hash}_{timestamp}.json"
+                    with open(runtime_file, 'w', encoding='utf-8') as f:
+                        json.dump(runtime_objects, f, indent=2, ensure_ascii=False)
+                    logger.info(f"Saved {len(runtime_objects)} runtime objects to {runtime_file}")
 
-            # Also save combined analysis summary and return it
+            # Always run analysis (needed for field extraction), skip file saves if not debug mode
             return self._analyze_and_save_summary(url, timestamp, url_hash, network_responses, runtime_objects)
 
         except Exception as e:
@@ -641,8 +667,8 @@ class BrowserClient:
             logger.info(f"  Confidence: {primary_selection_log['confidence']}")
             logger.info(f"  Matched object ID: {primary_selection_log['matched_object_id']}")
 
-            # Save primary selection log to file
-            if self._debug_output_dir:
+            # Save primary selection log to file (debug mode only)
+            if self.debug_mode and self._debug_output_dir:
                 selection_log_file = self._debug_output_dir / f"primary_selection_{url_hash}_{timestamp}.json"
                 with open(selection_log_file, 'w', encoding='utf-8') as f:
                     json.dump(primary_selection_log, f, indent=2, ensure_ascii=False)
@@ -655,23 +681,23 @@ class BrowserClient:
                 'video_id': {'value': None, 'path': None},
                 'author_id': {'value': None, 'path': None},
                 'author_name': {'value': None, 'path': None},
-                'author_profile_url': {'value': None, 'path': None},
+                'author_page_url': {'value': None, 'path': None},
                 'desc_text': {'value': None, 'path': None},
-                'publish_time_raw': {'value': None, 'path': None},
-                'like_count_raw': {'value': None, 'path': None},
+                'create_time': {'value': None, 'path': None},
+                'digg_count': {'value': None, 'path': None},
                 'comment_count_raw': {'value': None, 'path': None},
                 'share_count_raw': {'value': None, 'path': None},
                 'collect_count': {'value': None, 'path': None},
                 'hashtag_list': {'value': None, 'path': None},
-                'cover_url': {'value': None, 'path': None},
+                'origin_cover_url': {'value': None, 'path': None},
                 'music_name': {'value': None, 'path': None},
-                'duration_sec': {'value': None, 'path': None},
+                'duration_ms': {'value': None, 'path': None},
                 # 新增主表字段
                 'author_follower_count': {'value': None, 'path': None},
                 'author_total_favorited': {'value': None, 'path': None},
                 'author_signature': {'value': None, 'path': None},
                 'author_verification_type': {'value': None, 'path': None},
-                'video_cover_url': {'value': None, 'path': None},
+                'cover_url_list': {'value': None, 'path': None},
                 'dynamic_cover_url': {'value': None, 'path': None},
                 'origin_cover_url': {'value': None, 'path': None}
             }
@@ -755,12 +781,12 @@ class BrowserClient:
                 field_sources[field_name] = selected['source']
                 field_selection_reasons[field_name] = selection_reason
 
-            # Post-process author_profile_url: construct from sec_uid if not found or is sec_uid
-            author_profile_url_value = merged_fields['author_profile_url']['value']
-            author_profile_url_path = merged_fields['author_profile_url'].get('path', '')
+            # Post-process author_page_url: construct from sec_uid if not found or is sec_uid
+            author_page_url_value = merged_fields['author_page_url']['value']
+            author_page_url_path = merged_fields['author_page_url'].get('path', '')
 
             # Check if we need to construct URL from sec_uid
-            if author_profile_url_value is None or ('sec_uid' in author_profile_url_path and not isinstance(author_profile_url_value, str)):
+            if author_page_url_value is None or ('sec_uid' in author_page_url_path and not isinstance(author_page_url_value, str)):
                 # Try to find sec_uid in the data sources
                 sec_uid = None
                 for source in all_data_sources:
@@ -783,28 +809,28 @@ class BrowserClient:
                     if sec_uid is not None:
                         # Construct profile URL
                         profile_url = f"https://www.douyin.com/user/{sec_uid}"
-                        merged_fields['author_profile_url'] = {'value': profile_url, 'path': 'constructed_from_sec_uid'}
-                        field_sources['author_profile_url'] = 'constructed'
-                        field_selection_reasons['author_profile_url'] = 'constructed_from_sec_uid'
-                        logger.info(f"Constructed author_profile_url from sec_uid: {profile_url}")
+                        merged_fields['author_page_url'] = {'value': profile_url, 'path': 'constructed_from_sec_uid'}
+                        field_sources['author_page_url'] = 'constructed'
+                        field_selection_reasons['author_page_url'] = 'constructed_from_sec_uid'
+                        logger.info(f"Constructed author_page_url from sec_uid: {profile_url}")
                         break
-            elif author_profile_url_value is not None and isinstance(author_profile_url_value, str):
+            elif author_page_url_value is not None and isinstance(author_page_url_value, str):
                 # If value exists but looks like a sec_uid (not a URL and not a numeric ID)
-                if not author_profile_url_value.startswith(('http://', 'https://', 'www.', '/')) and len(author_profile_url_value) > 10:
+                if not author_page_url_value.startswith(('http://', 'https://', 'www.', '/')) and len(author_page_url_value) > 10:
                     # Check if path indicates it's a sec_uid
-                    if 'sec_uid' in author_profile_url_path.lower():
-                        profile_url = f"https://www.douyin.com/user/{author_profile_url_value}"
-                        merged_fields['author_profile_url'] = {'value': profile_url, 'path': f"{author_profile_url_path}_constructed"}
-                        field_sources['author_profile_url'] = f"{field_sources.get('author_profile_url', 'unknown')}_constructed"
-                        field_selection_reasons['author_profile_url'] = 'constructed_from_sec_uid_value'
-                        logger.info(f"Constructed author_profile_url from sec_uid value: {profile_url}")
+                    if 'sec_uid' in author_page_url_path.lower():
+                        profile_url = f"https://www.douyin.com/user/{author_page_url_value}"
+                        merged_fields['author_page_url'] = {'value': profile_url, 'path': f"{author_page_url_path}_constructed"}
+                        field_sources['author_page_url'] = f"{field_sources.get('author_page_url', 'unknown')}_constructed"
+                        field_selection_reasons['author_page_url'] = 'constructed_from_sec_uid_value'
+                        logger.info(f"Constructed author_page_url from sec_uid value: {profile_url}")
 
-            # Post-process publish_time_raw: try to find aweme_detail.create_time if current value is from author.create_time
-            publish_time_value = merged_fields['publish_time_raw']['value']
-            publish_time_path = merged_fields['publish_time_raw'].get('path', '')
+            # Post-process create_time: try to find aweme_detail.create_time if current value is from author.create_time
+            create_time_value = merged_fields['create_time']['value']
+            create_time_path = merged_fields['create_time'].get('path', '')
 
-            if publish_time_value == 0 and 'author.create_time' in publish_time_path:
-                logger.info(f"publish_time_raw is 0 from author.create_time, searching for aweme_detail.create_time")
+            if create_time_value == 0 and 'author.create_time' in create_time_path:
+                logger.info(f"create_time is 0 from author.create_time, searching for aweme_detail.create_time")
                 # Search for aweme_detail.create_time in all data sources
                 aweme_create_time = None
                 aweme_create_path = None
@@ -830,17 +856,17 @@ class BrowserClient:
                         break
 
                 if aweme_create_time is not None and aweme_create_time != 0:
-                    merged_fields['publish_time_raw'] = {'value': aweme_create_time, 'path': aweme_create_path}
-                    field_sources['publish_time_raw'] = field_sources.get('publish_time_raw', 'unknown') + '_corrected'
-                    field_selection_reasons['publish_time_raw'] = 'corrected_from_aweme_detail'
-                    logger.info(f"Corrected publish_time_raw from aweme_detail.create_time: {aweme_create_time}")
+                    merged_fields['create_time'] = {'value': aweme_create_time, 'path': aweme_create_path}
+                    field_sources['create_time'] = field_sources.get('create_time', 'unknown') + '_corrected'
+                    field_selection_reasons['create_time'] = 'corrected_from_aweme_detail'
+                    logger.info(f"Corrected create_time from aweme_detail.create_time: {aweme_create_time}")
 
-            # Post-process cover_url: try to find video.cover if current value is from author.cover_url
-            cover_url_value = merged_fields['cover_url']['value']
-            cover_url_path = merged_fields['cover_url'].get('path', '')
+            # Post-process origin_cover_url: try to find video.cover if current value is from author.cover_url
+            origin_cover_url_value = merged_fields['origin_cover_url']['value']
+            origin_cover_url_path = merged_fields['origin_cover_url'].get('path', '')
 
-            if cover_url_value is not None and 'author.cover_url' in cover_url_path:
-                logger.info(f"cover_url is from author.cover_url, searching for video.cover")
+            if origin_cover_url_value is not None and 'author.cover_url' in origin_cover_url_path:
+                logger.info(f"origin_cover_url is from author.cover_url, searching for video.cover")
                 # Search for video.cover in all data sources
                 video_cover = None
                 video_cover_path = None
@@ -875,25 +901,21 @@ class BrowserClient:
                         elif 'cover' in video_cover:
                             video_cover = video_cover['cover']
 
-                    merged_fields['cover_url'] = {'value': video_cover, 'path': video_cover_path}
-                    field_sources['cover_url'] = field_sources.get('cover_url', 'unknown') + '_corrected'
-                    field_selection_reasons['cover_url'] = 'corrected_from_video_cover'
-                    logger.info(f"Corrected cover_url from video.cover: {video_cover}")
+                    merged_fields['origin_cover_url'] = {'value': video_cover, 'path': video_cover_path}
+                    field_sources['origin_cover_url'] = field_sources.get('origin_cover_url', 'unknown') + '_corrected'
+                    field_selection_reasons['origin_cover_url'] = 'corrected_from_video_cover'
+                    logger.info(f"Corrected origin_cover_url from video.cover: {video_cover}")
 
-            # Post-process duration_sec: convert milliseconds to seconds if needed
-            duration_value = merged_fields['duration_sec']['value']
+            # Post-process duration_ms: ensure it stays as milliseconds
+            duration_value = merged_fields['duration_ms']['value']
             if duration_value is not None and isinstance(duration_value, (int, float)):
-                # If value is larger than 360000 (6 minutes in milliseconds), assume it's in milliseconds
-                if duration_value > 360000:
-                    duration_value = int(duration_value / 1000)
-                    merged_fields['duration_sec']['value'] = duration_value
-                    logger.info(f"Converted duration_sec from milliseconds to seconds: {duration_value}")
+                logger.debug(f"duration_ms value: {duration_value}")
 
-            # Post-process publish_time_raw: ensure it's a string for schema compatibility
-            publish_time_value = merged_fields['publish_time_raw']['value']
-            if publish_time_value is not None and not isinstance(publish_time_value, str):
-                merged_fields['publish_time_raw']['value'] = str(publish_time_value)
-                logger.debug(f"Converted publish_time_raw to string: {publish_time_value}")
+            # Post-process create_time: ensure it's a string for schema compatibility
+            create_time_value = merged_fields['create_time']['value']
+            if create_time_value is not None and not isinstance(create_time_value, str):
+                merged_fields['create_time']['value'] = str(create_time_value)
+                logger.debug(f"Converted create_time to string: {create_time_value}")
 
             # Log field selection summary
             logger.info("Field selection summary:")
@@ -931,14 +953,13 @@ class BrowserClient:
             extracted_count = sum(1 for field in merged_fields.values() if field['value'] is not None)
             summary['extracted_field_count'] = extracted_count
 
-            # Save summary
-            summary_file = self._debug_output_dir / f"video_analysis_{url_hash}_{timestamp}.json"
-            with open(summary_file, 'w', encoding='utf-8') as f:
-                json.dump(summary, f, indent=2, ensure_ascii=False)
-            logger.info(f"Saved video analysis summary to {summary_file}")
-
-            # Also save a human-readable summary
-            self._save_human_readable_summary(url, timestamp, url_hash, summary)
+            # Save summary and human-readable file (debug mode only)
+            if self.debug_mode and self._debug_output_dir:
+                summary_file = self._debug_output_dir / f"video_analysis_{url_hash}_{timestamp}.json"
+                with open(summary_file, 'w', encoding='utf-8') as f:
+                    json.dump(summary, f, indent=2, ensure_ascii=False)
+                logger.info(f"Saved video analysis summary to {summary_file}")
+                self._save_human_readable_summary(url, timestamp, url_hash, summary)
 
             return summary
 
@@ -955,17 +976,17 @@ class BrowserClient:
                     'video_id': {'value': None, 'path': None},
                     'author_id': {'value': None, 'path': None},
                     'author_name': {'value': None, 'path': None},
-                    'author_profile_url': {'value': None, 'path': None},
+                    'author_page_url': {'value': None, 'path': None},
                     'desc_text': {'value': None, 'path': None},
-                    'publish_time_raw': {'value': None, 'path': None},
-                    'like_count_raw': {'value': None, 'path': None},
+                    'create_time': {'value': None, 'path': None},
+                    'digg_count': {'value': None, 'path': None},
                     'comment_count_raw': {'value': None, 'path': None},
                     'share_count_raw': {'value': None, 'path': None},
                     'collect_count': {'value': None, 'path': None},
                     'hashtag_list': {'value': None, 'path': None},
-                    'cover_url': {'value': None, 'path': None},
+                    'origin_cover_url': {'value': None, 'path': None},
                     'music_name': {'value': None, 'path': None},
-                    'duration_sec': {'value': None, 'path': None}
+                    'duration_ms': {'value': None, 'path': None}
                 },
                 'field_sources': {},
                 'extracted_field_count': 0
@@ -1217,12 +1238,12 @@ class BrowserClient:
             'author_id': {'value': None, 'path': None},
             'author_name': {'value': None, 'path': None},
             'desc_text': {'value': None, 'path': None},
-            'publish_time_raw': {'value': None, 'path': None},
-            'like_count_raw': {'value': None, 'path': None},
+            'create_time': {'value': None, 'path': None},
+            'digg_count': {'value': None, 'path': None},
             'comment_count_raw': {'value': None, 'path': None},
             'share_count_raw': {'value': None, 'path': None},
             'hashtag_list': {'value': None, 'path': None},
-            'cover_url': {'value': None, 'path': None}
+            'origin_cover_url': {'value': None, 'path': None}
         }
 
     def _extract_fields_from_data(self, data, base_path=""):
@@ -1239,23 +1260,23 @@ class BrowserClient:
             'video_id': {'value': None, 'path': None},
             'author_id': {'value': None, 'path': None},
             'author_name': {'value': None, 'path': None},
-            'author_profile_url': {'value': None, 'path': None},
+            'author_page_url': {'value': None, 'path': None},
             'desc_text': {'value': None, 'path': None},
-            'publish_time_raw': {'value': None, 'path': None},
-            'like_count_raw': {'value': None, 'path': None},
+            'create_time': {'value': None, 'path': None},
+            'digg_count': {'value': None, 'path': None},
             'comment_count_raw': {'value': None, 'path': None},
             'share_count_raw': {'value': None, 'path': None},
             'collect_count': {'value': None, 'path': None},
             'hashtag_list': {'value': None, 'path': None},
-            'cover_url': {'value': None, 'path': None},
+            'origin_cover_url': {'value': None, 'path': None},
             'music_name': {'value': None, 'path': None},
-            'duration_sec': {'value': None, 'path': None},
+            'duration_ms': {'value': None, 'path': None},
             # 新增主表字段
             'author_follower_count': {'value': None, 'path': None},
             'author_total_favorited': {'value': None, 'path': None},
             'author_signature': {'value': None, 'path': None},
             'author_verification_type': {'value': None, 'path': None},
-            'video_cover_url': {'value': None, 'path': None},
+            'cover_url_list': {'value': None, 'path': None},
             'dynamic_cover_url': {'value': None, 'path': None},
             'origin_cover_url': {'value': None, 'path': None}
         }
@@ -1265,23 +1286,23 @@ class BrowserClient:
             'video_id': ['id', 'video_id', 'aweme_id', 'itemId', 'videoId', 'awemeId', 'vid'],
             'author_id': ['author_id', 'authorId', 'uid', 'user_id', 'userId', 'author.uid', 'author.id'],
             'author_name': ['author_name', 'nickname', 'author_name', 'authorName', 'author.nickname', 'user.nickname'],
-            'author_profile_url': ['profile_url', 'author.profile_url', 'homepage', 'author.homepage', 'sec_uid', 'author.sec_uid', 'unique_id', 'author.unique_id'],
+            'author_page_url': ['profile_url', 'author.profile_url', 'homepage', 'author.homepage', 'sec_uid', 'author.sec_uid', 'unique_id', 'author.unique_id'],
             'desc_text': ['desc', 'description', 'title', 'content', 'desc_text', 'caption'],
-            'publish_time_raw': ['aweme_detail.create_time', 'aweme_detail.createTime', 'create_time', 'publish_time', 'timestamp', 'createTime', 'publishTime', 'time'],
-            'like_count_raw': ['like_count', 'digg_count', 'likeCount', 'diggCount', 'statistics.digg_count', 'stats.digg_count'],
+            'create_time': ['aweme_detail.create_time', 'aweme_detail.createTime', 'create_time', 'publish_time', 'timestamp', 'createTime', 'publishTime', 'time'],
+            'digg_count': ['like_count', 'digg_count', 'likeCount', 'diggCount', 'statistics.digg_count', 'stats.digg_count'],
             'comment_count_raw': ['comment_count', 'commentCount', 'statistics.comment_count', 'stats.comment_count'],
             'share_count_raw': ['share_count', 'shareCount', 'statistics.share_count', 'stats.share_count'],
             'collect_count': ['collect_count', 'collectCount', 'statistics.collect_count', 'stats.collect_count'],
             'hashtag_list': ['hashtags', 'tag_list', 'hashtag_list', 'challenges', 'text_extra'],
-            'cover_url': ['video.cover', 'video.origin_cover', 'video.dynamic_cover', 'cover', 'cover_url', 'coverUrl', 'thumbnail', 'cover_image'],
+            'origin_cover_url': ['video.cover', 'video.origin_cover', 'video.dynamic_cover', 'cover', 'cover_url', 'coverUrl', 'thumbnail', 'cover_image'],
             'music_name': ['music.title', 'music_name', 'musicName', 'title', 'music.name'],
-            'duration_sec': ['duration', 'video.duration', 'duration_sec', 'durationSec', 'video.duration_sec'],
+            'duration_ms': ['duration', 'video.duration', 'duration_ms', 'durationSec', 'video.duration_ms'],
             # 新增主表字段
             'author_follower_count': ['author.follower_count', 'author.followerCount', 'follower_count', 'author_follower_count'],
             'author_total_favorited': ['author.total_favorited', 'author.totalFavorited', 'total_favorited', 'author_total_favorited'],
             'author_signature': ['author.signature', 'signature', 'author_signature'],
             'author_verification_type': ['author.verification_type', 'author.verificationType', 'verification_type', 'author_verification_type'],
-            'video_cover_url': ['video.cover', 'video.cover_url', 'cover_url'],
+            'cover_url_list': ['video.cover', 'video.cover_url', 'cover_url'],
             'dynamic_cover_url': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url'],
             'origin_cover_url': ['video.origin_cover', 'origin_cover', 'origin_cover_url'],
             # 候选字段（暂不进入主表）
@@ -1476,7 +1497,8 @@ class BrowserClient:
                            f"primary_source={primary_source}, "
                            f"match_type={match_type}")
 
-                return {
+                # Build result before browser restart
+                result = {
                     'html': html_content,
                     'url': final_url,
                     'status': response.status if response else 200,
@@ -1485,6 +1507,15 @@ class BrowserClient:
                     'extracted_fields': extracted_fields,
                     'extraction_summary': summary
                 }
+
+                # Check if browser restart is needed (batch crawl control)
+                self._url_count += 1
+                logger.info(f"URL processed: {self._url_count}/{self.restart_every} (browser #{self._restart_count + 1})")
+                if self._url_count >= self.restart_every:
+                    logger.info(f"Restart threshold ({self.restart_every}) reached, restarting browser...")
+                    self.restart_browser()
+
+                return result
 
             except Exception as e:
                 logger.warning(f"Browser navigation to {url} failed (attempt {attempt + 1}): {e}")
@@ -1626,12 +1657,12 @@ class BrowserClient:
             'author_id': 'author123',
             'author_name': '测试用户',
             'desc_text': '这是一个测试视频描述 #美食 #旅行',
-            'publish_time_raw': 1672531200,
-            'like_count_raw': 12000,
+            'create_time': 1672531200,
+            'digg_count': 12000,
             'comment_count_raw': 450,
             'share_count_raw': 120,
             'hashtag_list': ['美食', '旅行'],
-            'cover_url': 'https://example.com/cover.jpg'
+            'origin_cover_url': 'https://example.com/cover.jpg'
         }
 
         mock_summary = {

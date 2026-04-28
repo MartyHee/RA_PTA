@@ -150,14 +150,14 @@ class FeatureStorage:
 
             # A. 保留字段（用于追溯，不默认入模）
             retention_fields = {
-                'video_id', 'page_url', 'author_id', 'publish_time_raw', 'crawl_time',
+                'video_id', 'page_url', 'author_id', 'create_time', 'crawl_time',
                 'source_entry', 'match_type', 'confidence'
             }
 
             # B. 可入模字段（第一版候选）
             model_fields = {
                 'author_follower_count', 'author_total_favorited', 'hashtag_count',
-                'duration_sec', 'publish_hour', 'publish_weekday', 'is_weekend',
+                'duration_ms', 'publish_hour', 'publish_weekday', 'is_weekend',
                 'days_since_publish', 'author_verification_type', 'desc_text_length',
                 'has_desc_text', 'has_hashtag'
             }

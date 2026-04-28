@@ -18,16 +18,16 @@ class FeatureSchema:
         'video_id': {'dtype': 'string', 'required': True, 'description': '视频唯一标识'},
         'page_url': {'dtype': 'string', 'required': True, 'description': '页面URL'},
         'author_id': {'dtype': 'string', 'required': False, 'description': '作者ID'},
-        'publish_time_raw': {'dtype': 'string', 'required': False, 'description': '原始发布时间文本'},
+        'create_time': {'dtype': 'string', 'required': False, 'description': '原始发布时间文本'},
         'crawl_time': {'dtype': 'datetime', 'required': True, 'description': '抓取时间'},
 
         # 关键数值特征
         'author_follower_count': {'dtype': 'int', 'required': False, 'description': '作者粉丝数', 'default': -1},
         'author_total_favorited': {'dtype': 'int', 'required': False, 'description': '作者总获赞数', 'default': -1},
         'hashtag_count': {'dtype': 'int', 'required': False, 'description': '话题标签数量', 'default': 0},
-        'duration_sec': {'dtype': 'int', 'required': False, 'description': '视频时长（秒）', 'default': 0},
+        'duration_ms': {'dtype': 'int', 'required': False, 'description': '视频时长（毫秒）', 'default': 0},
         'collect_count': {'dtype': 'int', 'required': False, 'description': '收藏数', 'default': 0},
-        'like_count_num': {'dtype': 'int', 'required': False, 'description': '点赞数（数值化）', 'default': 0},
+        'digg_count_num': {'dtype': 'int', 'required': False, 'description': '点赞数（数值化）', 'default': 0},
         'comment_count_num': {'dtype': 'int', 'required': False, 'description': '评论数（数值化）', 'default': 0},
         'share_count_num': {'dtype': 'int', 'required': False, 'description': '分享数（数值化）', 'default': 0},
 

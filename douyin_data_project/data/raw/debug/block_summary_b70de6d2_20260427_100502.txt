@@ -1,0 +1,31 @@
+Block Analysis Summary - 20260427_100502
+Crawl ID: b70de6d2
+================================================================================
+
+BLOCKS FOUND:
+----------------------------------------
+Index: 0
+Type: unknown
+Content length: 71725
+Decoded: False
+Contains video keywords: False
+
+Index: 1
+Type: unknown
+Content length: 1090
+Decoded: False
+Contains video keywords: False
+
+
+VIDEO OBJECT PATHS:
+----------------------------------------
+
+FIELD MAPPINGS:
+----------------------------------------
+
+STATISTICS:
+----------------------------------------
+Total blocks found: 2
+Blocks decoded: 0
+Video objects found: 0
+Fields extracted: 0

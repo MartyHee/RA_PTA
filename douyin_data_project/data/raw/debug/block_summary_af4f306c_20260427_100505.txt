@@ -1,0 +1,31 @@
+Block Analysis Summary - 20260427_100505
+Crawl ID: af4f306c
+================================================================================
+
+BLOCKS FOUND:
+----------------------------------------
+Index: 0
+Type: unknown
+Content length: 0
+Decoded: False
+Contains video keywords: False
+
+Index: 1
+Type: unknown
+Content length: 2294
+Decoded: False
+Contains video keywords: False
+
+
+VIDEO OBJECT PATHS:
+----------------------------------------
+
+FIELD MAPPINGS:
+----------------------------------------
+
+STATISTICS:
+----------------------------------------
+Total blocks found: 2
+Blocks decoded: 0
+Video objects found: 0
+Fields extracted: 0

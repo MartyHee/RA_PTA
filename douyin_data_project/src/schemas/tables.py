@@ -118,28 +118,27 @@ class WebVideoMeta(BaseModel):
     page_url: str = Field(..., description="视频页面URL")
     author_id: Optional[str] = Field(None, description="作者ID，若页面可提取")
     author_name: Optional[str] = Field(None, description="作者昵称")
-    author_profile_url: Optional[str] = Field(None, description="作者主页URL")
+    author_page_url: Optional[str] = Field(None, description="作者主页URL")
     desc_text: Optional[str] = Field(None, description="视频文案/标题文本，统一为单字段")
-    publish_time_raw: Optional[str] = Field(None, description="页面显示的原始发布时间文本")
+    create_time: Optional[Union[int, float, str]] = Field(None, description="页面显示的原始发布时间文本")
     publish_time_std: Optional[datetime] = Field(None, description="标准化后的发布时间")
-    like_count_raw: Optional[str] = Field(None, description="页面原始点赞数文本，如 '1.2w'")
+    digg_count: Optional[str] = Field(None, description="页面原始点赞数文本，如 '1.2w'")
     comment_count_raw: Optional[str] = Field(None, description="页面原始评论数文本")
     share_count_raw: Optional[str] = Field(None, description="页面原始分享数文本")
     collect_count: Optional[int] = Field(None, description="收藏数，网页端不稳定，仅作为可选字段")
     hashtag_list: Optional[List[str]] = Field(default_factory=list, description="从文案中抽取的 #话题 列表")
     hashtag_count: int = Field(0, description="话题数量，无则为0")
-    cover_url: Optional[str] = Field(None, description="封面图片链接")
+    origin_cover_url: Optional[str] = Field(None, description="封面图片链接/原始封面URL")
     music_name: Optional[str] = Field(None, description="关联音乐名称，若页面可提取")
-    duration_sec: Optional[int] = Field(None, description="视频时长（秒），若页面可提取")
+    duration_ms: Optional[int] = Field(None, description="视频时长（毫秒），若页面可提取")
     # 作者侧补充字段
     author_follower_count: Optional[int] = Field(None, description="作者粉丝数")
     author_total_favorited: Optional[int] = Field(None, description="作者总获赞数")
     author_signature: Optional[str] = Field(None, description="作者签名/简介")
     author_verification_type: Optional[int] = Field(None, description="作者认证类型")
     # 内容结构侧补充字段
-    video_cover_url: Optional[str] = Field(None, description="视频封面URL")
+    cover_url_list: Optional[str] = Field(None, description="视频封面URL列表")
     dynamic_cover_url: Optional[str] = Field(None, description="动态封面URL")
-    origin_cover_url: Optional[str] = Field(None, description="原始封面URL")
     source_entry: str = Field(..., description="采样来源")
     # Match metadata for browser mode data quality assessment
     match_type: Optional[str] = Field(None, description="主对象匹配类型: exact/partial/none")
@@ -159,11 +158,11 @@ class WebVideoMeta(BaseModel):
 
     @validator('publish_time_std', pre=True, always=True)
     def set_publish_time_std(cls, v, values):
-        """Convert publish_time_raw to datetime."""
+        """Convert create_time to datetime."""
         if v is not None:
             return v
-        if 'publish_time_raw' in values and values['publish_time_raw'] is not None:
-            raw = values['publish_time_raw']
+        if 'create_time' in values and values['create_time'] is not None:
+            raw = values['create_time']
             # raw could be int, float, or str
             try:
                 if isinstance(raw, (int, float)):
@@ -180,8 +179,8 @@ class WebVideoMeta(BaseModel):
         return None
 
 
-    @validator('duration_sec', pre=True)
-    def normalize_duration_sec(cls, v, values):
+    @validator('duration_ms', pre=True)
+    def normalize_duration_ms(cls, v, values):
         """Convert duration from milliseconds to seconds if needed."""
         if v is None:
             return None
@@ -253,7 +252,7 @@ class AuthorDim(BaseModel):
     """
     author_id: str = Field(..., description="作者唯一标识")
     author_name_latest: Optional[str] = Field(None, description="最近一次采集到的昵称")
-    author_profile_url: Optional[str] = Field(None, description="作者主页URL")
+    author_page_url: Optional[str] = Field(None, description="作者主页URL")
     sampled_video_count: int = Field(..., description="当前样本中该作者的视频数量", ge=1)
     first_seen: datetime = Field(..., description="首次出现时间")
     last_seen: datetime = Field(..., description="最后一次出现时间")

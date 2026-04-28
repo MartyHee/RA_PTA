@@ -67,17 +67,22 @@ class CrawlTask:
 class CrawlScheduler:
     """Manages crawl tasks with rate limiting."""
 
-    def __init__(self, config_path: Optional[Path] = None, use_mock: bool = False, use_browser: bool = False):
+    def __init__(self, config_path: Optional[Path] = None, use_mock: bool = False, use_browser: bool = False,
+                 restart_every: int = 20, debug_mode: bool = False):
         """Initialize scheduler.
 
         Args:
             config_path: Path to config file.
             use_mock: Whether to use mock mode.
             use_browser: Whether to use browser mode for JavaScript-rendered pages.
+            restart_every: Browser模式下每处理N个URL后重启浏览器实例（默认20）。
+            debug_mode: 是否启用debug模式（输出详细调试文件/rendered HTML）。
         """
         self.config = load_config(config_path) if config_path else load_config()
         self.use_mock = use_mock
         self.use_browser = use_browser
+        self.restart_every = restart_every
+        self.debug_mode = debug_mode
 
         self.task_queue = Queue()
         self.completed_tasks = []
@@ -101,7 +106,8 @@ class CrawlScheduler:
         elif use_browser:
             # Browser mode uses BrowserClient for JavaScript rendering
             self.client = None
-            self.browser_client = BrowserClient(config_path, use_mock=False)
+            self.browser_client = BrowserClient(config_path, use_mock=False,
+                                                debug_mode=debug_mode, restart_every=restart_every)
             # Set run ID for organizing debug output
             self.browser_client.set_run_id(self.run_id)
         else:
@@ -148,6 +154,11 @@ class CrawlScheduler:
         elif not self.use_mock:
             html_dir = self.output_dir / "html" / self.run_id
             logger.info(f"HTML output directory: {html_dir}")
+
+        # Log batch configuration
+        if self.use_browser:
+            logger.info(f"Browser restart interval: {self.restart_every} URLs")
+            logger.info(f"Debug mode: {'enabled' if self.debug_mode else 'disabled'}")
 
     def add_task(self, url: str, source_entry: str = 'manual_url', priority: int = 0):
         """Add a task to the queue.
@@ -330,23 +341,23 @@ class CrawlScheduler:
                         'video_id': 'video_id',
                         'author_id': 'author_id',
                         'author_name': 'author_name',
-                        'author_profile_url': 'author_profile_url',
+                        'author_page_url': 'author_page_url',
                         'desc_text': 'desc_text',
-                        'publish_time_raw': 'publish_time_raw',
-                        'like_count_raw': 'like_count_raw',
+                        'create_time': 'create_time',
+                        'digg_count': 'digg_count',
                         'comment_count_raw': 'comment_count_raw',
                         'share_count_raw': 'share_count_raw',
                         'collect_count': 'collect_count',
                         'hashtag_list': 'hashtag_list',
-                        'cover_url': 'cover_url',
+                        'origin_cover_url': 'origin_cover_url',
                         'music_name': 'music_name',
-                        'duration_sec': 'duration_sec',
+                        'duration_ms': 'duration_ms',
                         # 新增主表字段
                         'author_follower_count': 'author_follower_count',
                         'author_total_favorited': 'author_total_favorited',
                         'author_signature': 'author_signature',
                         'author_verification_type': 'author_verification_type',
-                        'video_cover_url': 'video_cover_url',
+                        'cover_url_list': 'cover_url_list',
                         'dynamic_cover_url': 'dynamic_cover_url',
                         'origin_cover_url': 'origin_cover_url'
                     }
@@ -362,7 +373,7 @@ class CrawlScheduler:
                                         value = str(value)
                                         logger.debug(f"Converted {parsed_field} to string")
 
-                                elif parsed_field == 'cover_url':
+                                elif parsed_field == 'origin_cover_url':
                                     # Ensure string URL
                                     if isinstance(value, list):
                                         # List of dicts, try to extract URL from first item
@@ -377,10 +388,10 @@ class CrawlScheduler:
                                             elif 'cover' in first:
                                                 value = first['cover']
                                             else:
-                                                logger.warning(f"cover_url list item doesn't contain url key: {first}")
+                                                logger.warning(f"origin_cover_url list item doesn't contain url key: {first}")
                                                 value = str(value)
                                         else:
-                                            logger.warning(f"cover_url list doesn't contain dicts: {value}")
+                                            logger.warning(f"origin_cover_url list doesn't contain dicts: {value}")
                                             value = str(value)
                                     elif isinstance(value, dict):
                                         # Try to extract URL from common keys
@@ -391,13 +402,13 @@ class CrawlScheduler:
                                         elif 'cover' in value:
                                             value = value['cover']
                                         else:
-                                            logger.warning(f"cover_url dict doesn't contain url key: {value}")
+                                            logger.warning(f"origin_cover_url dict doesn't contain url key: {value}")
                                             value = str(value)
                                     if not isinstance(value, str):
                                         value = str(value)
-                                    logger.debug(f"Processed cover_url: {value[:100]}")
+                                    logger.debug(f"Processed origin_cover_url: {value[:100]}")
 
-                                elif parsed_field in ['publish_time_raw', 'like_count_raw', 'comment_count_raw', 'share_count_raw']:
+                                elif parsed_field in ['create_time', 'digg_count', 'comment_count_raw', 'share_count_raw']:
                                     # Convert to string (raw counts and timestamps should be strings)
                                     if not isinstance(value, str):
                                         value = str(value)
@@ -443,11 +454,11 @@ class CrawlScheduler:
                                         logger.warning(f"Unhandled type for hashtag_list: {type(value)}, converting to empty list")
                                         value = []
 
-                                elif parsed_field == 'author_profile_url':
+                                elif parsed_field == 'author_page_url':
                                     # Convert to string
                                     if not isinstance(value, str):
                                         value = str(value)
-                                    logger.debug(f"Processed author_profile_url: {value[:100]}")
+                                    logger.debug(f"Processed author_page_url: {value[:100]}")
 
                                 elif parsed_field == 'collect_count':
                                     # Convert to integer if possible
@@ -470,7 +481,7 @@ class CrawlScheduler:
                                         value = str(value)
                                     logger.debug(f"Processed music_name: {value[:100]}")
 
-                                elif parsed_field == 'duration_sec':
+                                elif parsed_field == 'duration_ms':
                                     # Convert to integer if possible
                                     if isinstance(value, (int, float)):
                                         value = int(value)
@@ -478,12 +489,12 @@ class CrawlScheduler:
                                         try:
                                             value = int(value)
                                         except ValueError:
-                                            logger.warning(f"duration_sec string cannot be converted to int: {value}")
+                                            logger.warning(f"duration_ms string cannot be converted to int: {value}")
                                             value = None
                                     else:
-                                        logger.warning(f"Unhandled type for duration_sec: {type(value)}, setting to None")
+                                        logger.warning(f"Unhandled type for duration_ms: {type(value)}, setting to None")
                                         value = None
-                                    logger.debug(f"Processed duration_sec: {value}")
+                                    logger.debug(f"Processed duration_ms: {value}")
 
                                 # 新增字段类型转换
                                 elif parsed_field in ['author_follower_count', 'author_total_favorited', 'author_verification_type']:
@@ -507,8 +518,8 @@ class CrawlScheduler:
                                         value = str(value)
                                     logger.debug(f"Processed {parsed_field}: {value[:100]}")
 
-                                elif parsed_field in ['video_cover_url', 'dynamic_cover_url', 'origin_cover_url']:
-                                    # Similar processing as cover_url
+                                elif parsed_field in ['cover_url_list', 'dynamic_cover_url', 'origin_cover_url']:
+                                    # Similar processing as origin_cover_url
                                     if isinstance(value, list):
                                         # List of dicts, try to extract URL from first item
                                         if value and isinstance(value[0], dict):
@@ -566,10 +577,10 @@ class CrawlScheduler:
 
                     # Log detailed field information after merging browser data
                     logger.info("Field details after merging browser data:")
-                    target_fields = ['video_id', 'author_id', 'author_name', 'author_profile_url', 'desc_text',
-                                    'publish_time_raw', 'like_count_raw', 'comment_count_raw',
-                                    'share_count_raw', 'collect_count', 'hashtag_list', 'cover_url',
-                                    'music_name', 'duration_sec']
+                    target_fields = ['video_id', 'author_id', 'author_name', 'author_page_url', 'desc_text',
+                                    'create_time', 'digg_count', 'comment_count_raw',
+                                    'share_count_raw', 'collect_count', 'hashtag_list', 'origin_cover_url',
+                                    'music_name', 'duration_ms']
                     for field in target_fields:
                         if field in parsed_data:
                             value = parsed_data[field]
@@ -661,13 +672,16 @@ class CrawlScheduler:
             rendered_html_path = None
             if self.save_raw_html and html_to_save:
                 if self.use_browser and not self.use_mock:
-                    # Save rendered HTML for browser mode
-                    rendered_dir = self.output_dir / "rendered_html" / self.run_id
-                    rendered_dir.mkdir(parents=True, exist_ok=True)
-                    rendered_file = rendered_dir / f"{crawl_id}.html"
-                    rendered_file.write_text(html_to_save, encoding='utf-8')
-                    rendered_html_path = rendered_file
-                    logger.info(f"Rendered HTML saved to: {rendered_file}")
+                    # Save rendered HTML for browser mode (only in debug mode)
+                    if self.debug_mode:
+                        rendered_dir = self.output_dir / "rendered_html" / self.run_id
+                        rendered_dir.mkdir(parents=True, exist_ok=True)
+                        rendered_file = rendered_dir / f"{crawl_id}.html"
+                        rendered_file.write_text(html_to_save, encoding='utf-8')
+                        rendered_html_path = rendered_file
+                        logger.info(f"Rendered HTML saved to: {rendered_file}")
+                    else:
+                        logger.debug(f"Rendered HTML save skipped (debug mode off)")
                 else:
                     # Save raw HTML for regular mode
                     html_dir = self.output_dir / "html" / self.run_id
@@ -805,8 +819,8 @@ class CrawlScheduler:
         # Fields requested by user for evidence
         evidence_fields = [
             'video_id', 'page_url', 'desc_text', 'author_name',
-            'publish_time_raw', 'like_count_raw', 'comment_count_raw',
-            'share_count_raw', 'hashtag_list', 'cover_url'
+            'create_time', 'digg_count', 'comment_count_raw',
+            'share_count_raw', 'hashtag_list', 'origin_cover_url'
         ]
 
         summary_lines = [f"Parsing summary for {url}:"]
