@@ -1,0 +1,26 @@
+# =============================================================================
+# DNN 模型基础配置
+# =============================================================================
+
+model_name: dnn
+
+# 训练超参数
+batch_size: 64
+learning_rate: 0.001
+epochs: 20
+
+# 网络结构
+hidden_units: [256, 128, 64]
+dropout: 0.3
+
+# 激活函数
+activation: relu
+
+# 优化器
+optimizer: adam
+
+# 损失函数
+loss: bce
+
+# 输出目录
+output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/dnn"

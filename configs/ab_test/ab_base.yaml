@@ -1,0 +1,33 @@
+# =============================================================================
+# A/B 测试模拟基础配置
+# =============================================================================
+
+# 分组方式：random / stratified
+group_method: random
+
+# 分组键（用于分层抽样）
+group_key: null
+
+# 实验组比例
+treatment_ratio: 0.5
+
+# 随机种子
+random_seed: 42
+
+# 对照组与实验组名称
+control_group_name: control
+treatment_group_name: treatment
+
+# 评估指标
+metrics:
+  - avg_score
+  - avg_label
+  - precision_at_k
+  - recall_at_k
+  - lift
+
+# Top-K
+k_values: [5, 10, 20]
+
+# 输出目录
+output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/ab_test"

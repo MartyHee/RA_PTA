@@ -1,0 +1,43 @@
+# =============================================================================
+# W4 公共数据路径配置
+# =============================================================================
+# 所有路径使用绝对路径，避免工作目录依赖
+# =============================================================================
+
+project_root: "D:/CodeData/Program Coding/ByteDance/RA_PTA"
+
+# sample0427 数据目录（原始 CSV，只读）
+sample0427_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project/data/sample0427"
+
+# sample0427 数据字典
+sample_data_dictionary: "D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project/data/sample0427/sample_data_dictionary.md"
+
+# 数据中间产物目录
+data_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data"
+
+# 外部资源（当前阶段默认不使用）
+external_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/external"
+
+# 中间处理结果
+interim_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/interim"
+
+# 清洗后可直接训练的数据
+processed_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/processed"
+
+# 表格特征输出
+features_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features"
+
+# 图数据集输出
+graph_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/graph"
+
+# 多模态数据集输出
+multimodal_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/multimodal"
+
+# 统一实验输入快照
+experiment_inputs_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/experiment_inputs"
+
+# 模型与实验输出
+outputs_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs"
+
+# 报告目录
+reports_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/reports"

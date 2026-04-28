@@ -1,0 +1,28 @@
+# =============================================================================
+# Wide & Deep 模型基础配置
+# =============================================================================
+
+model_name: wide_deep
+
+# 训练超参数
+batch_size: 64
+learning_rate: 0.001
+epochs: 20
+
+# Wide 部分
+wide_cross_features: []
+wide_activation: relu
+
+# Deep 部分
+deep_hidden_units: [256, 128, 64]
+dropout: 0.3
+deep_activation: relu
+
+# 优化器
+optimizer: adam
+
+# 损失函数
+loss: bce
+
+# 输出目录
+output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/wide_deep"

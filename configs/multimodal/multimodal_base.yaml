@@ -1,0 +1,43 @@
+# =============================================================================
+# 多模态模型基础配置
+# =============================================================================
+# 当前阶段默认：
+#   - 不联网下载图片
+#   - 不调用外部 API
+#   - 不引入大型预训练模型依赖
+#   - 仅使用本地已有字段和轻量特征
+# =============================================================================
+
+model_name: multimodal
+
+# 训练超参数
+batch_size: 64
+learning_rate: 0.001
+epochs: 20
+
+# 文本特征方法：stats / tfidf / lite_embedding
+# 当前阶段仅使用轻量统计特征
+text_feature_method: stats
+
+# 视觉/媒体元信息特征方法：meta_only / none
+# 当前阶段仅使用媒体元信息，不下载图片
+visual_feature_method: meta_only
+
+# 融合层参数
+fusion_hidden_units: [128, 64]
+fusion_activation: relu
+fusion_method: concat  # concat / attention / gated
+
+# 各模态输入维度（占位，后续由 build_multimodal_dataset.py 确定）
+text_input_dim: null
+visual_input_dim: null
+tabular_input_dim: null
+
+# 优化器
+optimizer: adam
+
+# 损失函数
+loss: bce
+
+# 输出目录
+output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/multimodal"
