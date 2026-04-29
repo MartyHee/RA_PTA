@@ -110,6 +110,12 @@ def main() -> None:
     )
     logger.info(f"图数据加载完成: {graph_data.num_nodes} 节点, {graph_data.edge_index.shape[1]} 边")
 
+    # ── 4a. 应用特征标准化 ─────────────────────────────────
+    if feature_config.get("feature_normalization_enabled", False):
+        logger.info("应用已保存的标准化参数...")
+        graph_data.apply_normalization_from_meta(feature_config)
+        logger.info("标准化已应用")
+
     # ── 5. 设备 ──────────────────────────────────────────────
     device_str = config.get("device", "auto")
     if device_str == "auto":
@@ -211,6 +217,8 @@ def main() -> None:
             "不表示正式推荐系统效果结论。",
             "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
             "eval 仅在 eval_mask=True 且 label in {0,1} 的节点上计算指标。",
+            "本次 run 与 202604291703 的区别仅为 GraphSAGE 输入特征标准化。",
+            "当前指标仍只用于流程验证，不代表正式模型效果。",
         ],
     }
 

@@ -1,0 +1,47 @@
+{
+  "model_name": "graphsage",
+  "run_id": "202604291958",
+  "split": "eval",
+  "sample_count": 16,
+  "positive_count": 6,
+  "negative_count": 10,
+  "auc": 0.85,
+  "accuracy": 0.8125,
+  "precision": 0.8,
+  "recall": 0.6666666666666666,
+  "f1": 0.7272727272727273,
+  "precision_at_k": {
+    "precision_at_5": 0.800000011920929,
+    "precision_at_10": 0.5,
+    "precision_at_20": 0.375
+  },
+  "recall_at_k": {
+    "recall_at_5": 0.6666666666666666,
+    "recall_at_10": 0.8333333333333334,
+    "recall_at_20": 1.0
+  },
+  "eval_loss": 0.48705440759658813,
+  "label_definition": "流程验证伪标签: interaction_score >= threshold (继承自 tabular)",
+  "graph_summary": {
+    "num_nodes": 950,
+    "num_edges": 2116,
+    "feature_dim": 18,
+    "train_labeled": 63,
+    "eval_labeled": 16,
+    "unlabeled": 871
+  },
+  "graph_backend": "torch_geometric",
+  "torch_geometric_available": true,
+  "fallback_used": false,
+  "threshold": 0.5,
+  "warnings": [],
+  "generated_at": "2026-04-29 19:58:57",
+  "notes": [
+    "当前指标仅基于 sample0427 样本数据计算，仅用于流程级验证。",
+    "不表示正式推荐系统效果结论。",
+    "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
+    "eval 仅在 eval_mask=True 且 label in {0,1} 的节点上计算指标。",
+    "本次 run 与 202604291703 的区别仅为 GraphSAGE 输入特征标准化。",
+    "当前指标仍只用于流程验证，不代表正式模型效果。"
+  ]
+}

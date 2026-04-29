@@ -93,6 +93,29 @@ def main() -> None:
         f"eval_labeled={int(graph_data.eval_labeled_mask.sum().item())}"
     )
 
+    # ── 6a. 特征标准化（可选） ──────────────────────────────────
+    norm_config = config.get("feature_normalization", {})
+    normalization_applied = False
+    if norm_config.get("enabled", False):
+        logger.info("对节点数值特征进行 z-score 标准化...")
+        norm_meta = graph_data.normalize_features(
+            exclude_prefixes=norm_config.get("exclude_prefixes", ["node_type_"]),
+        )
+        logger.info(
+            f"标准化列 ({len(norm_meta['normalized_feature_columns'])}): "
+            f"{norm_meta['normalized_feature_columns']}"
+        )
+        logger.info(
+            f"未标准化列 ({len(norm_meta['non_normalized_feature_columns'])}): "
+            f"{norm_meta['non_normalized_feature_columns']}"
+        )
+        if norm_meta.get("constant_feature_columns"):
+            logger.warning(f"常数列: {norm_meta['constant_feature_columns']}")
+        normalization_applied = True
+    else:
+        logger.info("特征标准化未启用")
+        norm_meta = None
+
     train_data = graph_data.get_train_data()
     eval_data = graph_data.get_eval_data()
 
@@ -220,6 +243,18 @@ def main() -> None:
         "非主视频节点（label=-1）仅作为图上下文节点参与消息传递。",
     ]
 
+    if normalization_applied:
+        feature_config["feature_normalization_enabled"] = norm_meta["feature_normalization_enabled"]
+        feature_config["feature_normalization_method"] = norm_meta["feature_normalization_method"]
+        feature_config["normalization_fit_on"] = norm_meta["normalization_fit_on"]
+        feature_config["normalized_feature_columns"] = norm_meta["normalized_feature_columns"]
+        feature_config["normalized_feature_indices"] = norm_meta["normalized_feature_indices"]
+        feature_config["non_normalized_feature_columns"] = norm_meta["non_normalized_feature_columns"]
+        feature_config["normalization_mean"] = norm_meta["normalization_mean"]
+        feature_config["normalization_std"] = norm_meta["normalization_std"]
+        feature_config["constant_feature_columns"] = norm_meta["constant_feature_columns"]
+        feature_config["device"] = str(device)
+
     with open(output_dir / "feature_config_used.json", "w", encoding="utf-8") as f:
         json.dump(feature_config, f, ensure_ascii=False, indent=2)
     logger.info(f"特征配置已保存: {output_dir / 'feature_config_used.json'}")
@@ -239,10 +274,15 @@ def main() -> None:
         "best_epoch": best_epoch,
         "best_eval_loss": round(best_eval_loss, 6),
         "device": str(device),
+        "feature_normalization_enabled": normalization_applied,
         "notes": [
             "当前 GraphSAGE 基于 sample0427 图数据训练，仅用于流程级验证。",
         ],
     }
+    if normalization_applied:
+        run_meta["previous_run_id"] = "202604291703"
+        run_meta["reason_for_rerun"] = "feature normalization for numeric stability"
+
     with open(output_dir / "run_meta.json", "w", encoding="utf-8") as f:
         json.dump(run_meta, f, ensure_ascii=False, indent=2)
 

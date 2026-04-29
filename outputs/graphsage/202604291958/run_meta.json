@@ -1,0 +1,21 @@
+{
+  "model_name": "graphsage",
+  "run_id": "202604291958",
+  "output_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\202604291958",
+  "train_started_at": "2026-04-29 19:58:02",
+  "train_finished_at": "2026-04-29 19:58:03",
+  "config_path": "configs/graphsage/graphsage_base.yaml",
+  "graph_data_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\graph",
+  "graph_backend": "torch_geometric",
+  "torch_geometric_available": true,
+  "fallback_used": false,
+  "best_epoch": 20,
+  "best_eval_loss": 0.487054,
+  "device": "cuda",
+  "feature_normalization_enabled": true,
+  "notes": [
+    "当前 GraphSAGE 基于 sample0427 图数据训练，仅用于流程级验证。"
+  ],
+  "previous_run_id": "202604291703",
+  "reason_for_rerun": "feature normalization for numeric stability"
+}

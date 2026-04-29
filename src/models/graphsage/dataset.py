@@ -152,3 +152,96 @@ class GraphData:
             train_mask=self.train_mask,
             eval_mask=self.eval_mask,
         )
+
+    # ------------------------------------------------------------------
+    # 特征标准化（z-score）
+    # ------------------------------------------------------------------
+    def normalize_features(self, exclude_prefixes=None):
+        """Z-score 标准化数值特征，基于 train_labeled_mask 拟合，应用于所有节点。
+
+        Args:
+            exclude_prefixes: 不参与标准化的列名前缀列表。
+
+        Returns:
+            dict: 标准化元信息（可用于保存到 feature_config_used.json）。
+        """
+        if exclude_prefixes is None:
+            exclude_prefixes = ["node_type_"]
+
+        feature_columns = (self.graph_meta or {}).get("feature_columns", [])
+
+        if not feature_columns:
+            # 回退：假设前 5 列为 node_type one-hot
+            n_type = min(5, self.node_features.shape[1])
+            normalize_indices = list(range(n_type, self.node_features.shape[1]))
+            normalize_names = [f"col_{i}" for i in normalize_indices]
+            non_normalize_names = [f"col_{i}" for i in range(n_type)]
+        else:
+            name_to_idx = {}
+            normalize_names = []
+            non_normalize_names = []
+            for i, col in enumerate(feature_columns):
+                name_to_idx[col] = i
+                if any(col.startswith(p) for p in exclude_prefixes):
+                    non_normalize_names.append(col)
+                else:
+                    normalize_names.append(col)
+            normalize_indices = [name_to_idx[n] for n in normalize_names]
+
+        # ---- 拟合 mean / std（仅 train_labeled_mask 节点） ----
+        labeled = self.node_features[self.train_labeled_mask]
+        labeled_norm = labeled[:, normalize_indices]
+        mean = labeled_norm.mean(dim=0)
+        std = labeled_norm.std(dim=0)
+
+        # 常数列保护
+        zero_std = std < 1e-8
+        constant_names = []
+        if zero_std.any():
+            std = std.clone()
+            std[zero_std] = 1.0
+            constant_names = [
+                normalize_names[i]
+                for i in range(len(normalize_names))
+                if zero_std[i].item()
+            ]
+
+        # ---- 应用于所有节点 ----
+        all_norm = self.node_features[:, normalize_indices]
+        normalized = (all_norm - mean.unsqueeze(0)) / std.unsqueeze(0)
+        self.node_features[:, normalize_indices] = normalized
+
+        meta = {
+            "feature_normalization_enabled": True,
+            "feature_normalization_method": "zscore",
+            "normalization_fit_on": "train_labeled_nodes",
+            "normalized_feature_columns": normalize_names,
+            "normalized_feature_indices": normalize_indices,
+            "non_normalized_feature_columns": non_normalize_names,
+            "normalization_mean": [round(v, 8) for v in mean.tolist()],
+            "normalization_std": [round(v, 8) for v in std.tolist()],
+            "constant_feature_columns": constant_names,
+        }
+        self._normalization_meta = meta
+        return meta
+
+    def apply_normalization_from_meta(self, meta):
+        """使用已保存的标准化参数对 node_features 原地标准化（评估时使用）。"""
+        if not meta.get("feature_normalization_enabled", False):
+            self._normalization_meta = None
+            return
+
+        indices = meta.get("normalized_feature_indices")
+        if not indices:
+            # 回退到列名映射
+            fcols = (self.graph_meta or {}).get("feature_columns", [])
+            name2idx = {c: i for i, c in enumerate(fcols)}
+            names = meta.get("normalized_feature_columns", [])
+            indices = [name2idx[n] for n in names]
+
+        mean = torch.tensor(meta["normalization_mean"], dtype=torch.float32)
+        std = torch.tensor(meta["normalization_std"], dtype=torch.float32)
+        all_norm = self.node_features[:, indices]
+        normalized = (all_norm - mean.unsqueeze(0)) / std.unsqueeze(0)
+        self.node_features[:, indices] = normalized
+        self._normalization_meta = meta
