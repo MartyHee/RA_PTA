@@ -1,0 +1,63 @@
+{
+  "graph_data_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\graph",
+  "num_nodes": 950,
+  "num_edges": 2116,
+  "feature_dim": 18,
+  "feature_columns": [
+    "node_type_video",
+    "node_type_author",
+    "node_type_music",
+    "node_type_hashtag",
+    "node_type_tag",
+    "total_degree",
+    "in_degree",
+    "out_degree",
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "chapter_count"
+  ],
+  "node_type_counts": {
+    "video": 553,
+    "author": 78,
+    "music": 78,
+    "hashtag": 229,
+    "tag": 12
+  },
+  "edge_type_counts": {
+    "video_author": 79,
+    "video_music": 79,
+    "video_hashtag": 264,
+    "video_tag": 162,
+    "video_related_video": 474
+  },
+  "train_node_count": 63,
+  "eval_node_count": 16,
+  "labeled_node_count": 79,
+  "unlabeled_node_count": 871,
+  "train_mask_count": 63,
+  "eval_mask_count": 16,
+  "model_input_dim": 18,
+  "hidden_dim": 64,
+  "num_layers": 2,
+  "graph_backend": "torch_geometric",
+  "torch_geometric_available": true,
+  "fallback_used": false,
+  "excluded_label_value": -1,
+  "label_col": "label",
+  "warnings": [
+    "当前图数据基于 sample0427 构建，仅用于流程级验证。",
+    "标签为 interaction_score 伪标签，不代表真实业务目标。"
+  ],
+  "notes": [
+    "GraphSAGE 使用全图训练（无 mini-batch neighbor sampling）。",
+    "loss 仅在 train_mask=True 且 label in {0,1} 的节点上计算。",
+    "非主视频节点（label=-1）仅作为图上下文节点参与消息传递。"
+  ]
+}

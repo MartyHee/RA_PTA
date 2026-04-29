@@ -1,0 +1,18 @@
+{
+  "model_name": "graphsage",
+  "run_id": "202604291703",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\202604291703",
+  "train_started_at": "2026-04-29 17:03:22",
+  "train_finished_at": "2026-04-29 17:03:23",
+  "config_path": "configs/graphsage/graphsage_base.yaml",
+  "graph_data_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\graph",
+  "graph_backend": "torch_geometric",
+  "torch_geometric_available": true,
+  "fallback_used": false,
+  "best_epoch": 20,
+  "best_eval_loss": 1400.167114,
+  "device": "cuda",
+  "notes": [
+    "当前 GraphSAGE 基于 sample0427 图数据训练，仅用于流程级验证。"
+  ]
+}

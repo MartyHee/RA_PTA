@@ -1,0 +1,81 @@
+{
+  "num_nodes": 950,
+  "num_edges_forward": 1058,
+  "num_edges_bidirectional": 2116,
+  "feature_dim": 18,
+  "node_type_counts": {
+    "video": 553,
+    "author": 78,
+    "music": 78,
+    "hashtag": 229,
+    "tag": 12
+  },
+  "edge_type_counts": {
+    "video_author": 79,
+    "video_music": 79,
+    "video_hashtag": 264,
+    "video_tag": 162,
+    "video_related_video": 474
+  },
+  "main_video_count": 79,
+  "related_only_video_count": 474,
+  "labeled_node_count": 79,
+  "train_node_count": 63,
+  "eval_node_count": 16,
+  "unlabeled_node_count": 871,
+  "feature_columns": [
+    "node_type_video",
+    "node_type_author",
+    "node_type_music",
+    "node_type_hashtag",
+    "node_type_tag",
+    "total_degree",
+    "in_degree",
+    "out_degree",
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "chapter_count"
+  ],
+  "label_definition": "流程验证伪标签: interaction_score >= threshold (继承自 tabular)",
+  "label_source": "data/features/tabular_train.csv + tabular_eval.csv",
+  "split_definition": "train/eval 切分继承自 tabular (random_by_video_id, seed=2026, 80/20)",
+  "edge_direction": "bidirectional: 每条边同时输出正向 (is_reverse=False) 和反向 (is_reverse=True)",
+  "graph_type": "simplified homogeneous (all node types in single node_id space)",
+  "source_tables_used": [
+    "sample0427_raw_video_detail",
+    "sample0427_raw_author",
+    "sample0427_raw_music",
+    "sample0427_raw_hashtag",
+    "sample0427_raw_video_tag",
+    "sample0427_raw_related_video"
+  ],
+  "tabular_data_used": [
+    "data/features/tabular_train.csv",
+    "data/features/tabular_eval.csv"
+  ],
+  "edge_definitions": {
+    "video_author": "raw_video_detail.video_id -> author_id",
+    "video_music": "raw_music.video_id -> music_id (or fallback music_title / derived from video_id)",
+    "video_hashtag": "raw_hashtag.video_id -> hashtag_id (or fallback hashtag_name)",
+    "video_tag": "raw_video_tag.video_id -> tag_id",
+    "video_related_video": "raw_related_video.source_video_id -> related_video_id"
+  },
+  "warnings": [],
+  "notes": [
+    "当前图数据基于 sample0427 样本数据构建，仅用于流程级验证。",
+    "related_video_id 为规则生成 ID (REL...)，不代表真实推荐关系。",
+    "hashtag_id, music_id 为规则生成 ID，仅用于流程跑通。",
+    "raw_video_tag 为完全补齐表，所有 tag 数据为样本补齐值。",
+    "raw_related_video 为完全补齐表，所有 related_video 数据为样本补齐值。",
+    "所有边已输出双向 (bidirectional)，GraphSAGE 训练时可使用无向邻居采样。",
+    "非主视频节点 (author/music/hashtag/tag/related_only_video) label=-1, mask=False。"
+  ],
+  "generated_at": "2026-04-29 15:42:12"
+}

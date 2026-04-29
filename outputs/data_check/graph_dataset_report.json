@@ -1,0 +1,66 @@
+{
+  "build_success": true,
+  "num_nodes": 950,
+  "num_edges_forward": 1058,
+  "num_edges_bidirectional": 2116,
+  "node_type_counts": {
+    "video": 553,
+    "author": 78,
+    "music": 78,
+    "hashtag": 229,
+    "tag": 12
+  },
+  "edge_type_counts": {
+    "video_author": 79,
+    "video_music": 79,
+    "video_hashtag": 264,
+    "video_tag": 162,
+    "video_related_video": 474
+  },
+  "labeled_node_count": 79,
+  "train_node_count": 63,
+  "eval_node_count": 16,
+  "unlabeled_node_count": 871,
+  "label_distribution": {
+    "positive": 32,
+    "negative": 47,
+    "unlabeled": 871
+  },
+  "mask_check": {
+    "train_true": 63,
+    "eval_true": 16,
+    "both_true": 0,
+    "neither_true": 871
+  },
+  "isolated_node_count": 0,
+  "isolated_node_ids": [],
+  "has_unmapped_edges": false,
+  "unmapped_edge_summary": {},
+  "feature_dim": 18,
+  "feature_columns": [
+    "node_type_video",
+    "node_type_author",
+    "node_type_music",
+    "node_type_hashtag",
+    "node_type_tag",
+    "total_degree",
+    "in_degree",
+    "out_degree",
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "chapter_count"
+  ],
+  "warnings": [],
+  "notes": [
+    "当前图数据检查报告仅用于流程验证。",
+    "孤立节点是预期行为（无关联边的节点不影响主视频监督训练）。"
+  ],
+  "generated_at": "2026-04-29 15:42:12"
+}
