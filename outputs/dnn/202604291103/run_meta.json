@@ -1,0 +1,8 @@
+{
+  "run_id": "202604291103",
+  "generated_at": "2026-04-29 11:03:27",
+  "model_name": "dnn",
+  "script": "train.py",
+  "config": "configs/dnn/dnn_base.yaml",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\202604291103"
+}

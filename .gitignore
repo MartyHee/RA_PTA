@@ -209,6 +209,7 @@ __marimo__/
 # 技术文档
 docs/
 CLAUDE.md
+development_lod.md
 
 .vscode/
 .claude/

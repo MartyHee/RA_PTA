@@ -567,3 +567,171 @@ D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe scripts/check_tabular
 
 ### 下一步建议
 确认上述报告补充无误后，建议进入下一阶段：DNN 最小训练、评估、预测闭环（`src/models/dnn/model.py` + `src/models/dnn/train.py` + `src/models/dnn/evaluate.py`）。
+
+---
+
+## 2026-04-29 DNN 最小训练、评估、预测闭环
+
+### 任务目标
+实现并跑通 DNN 模型的最小训练、评估和预测输出闭环。基于已生成的 tabular_train.csv / tabular_eval.csv，实现 DNN 的数据加载、模型定义、训练、评估和输出保存。
+
+### 修改或新增文件列表
+
+**新增文件（8 个）：**
+- `src/utils/seed.py` — 随机种子工具
+- `src/utils/logger.py` — 日志工具
+- `src/evaluation/metrics.py` — 分类指标计算（AUC, Accuracy, Precision, Recall, F1）
+- `src/evaluation/ranking_metrics.py` — 排序指标计算（Precision@K, Recall@K）
+- `src/models/dnn/dataset.py` — DNN 数据处理器（DNNDataProcessor + TabularDataset + 排除字段逻辑）
+- `src/models/dnn/model.py` — DNN 二分类模型（数值分支 + 类别 Embedding + MLP）
+- `src/models/dnn/train.py` — DNN 训练主程序（含 run_id 生成、最佳模型保存、训练日志）
+- `src/models/dnn/evaluate.py` — DNN 评估主程序（加载模型、推理、计算指标、输出 predictions/metrics）
+
+**修改文件（1 个）：**
+- `configs/dnn/dnn_base.yaml` — 新增 quality_check_path、output_root，调整 hidden_units 为 [64, 32]，移除硬编码路径
+
+**输出文件（5 个）：**
+- `outputs/dnn/202604291103/model.pt` — 最佳模型权重
+- `outputs/dnn/202604291103/metrics.json` — eval 评估指标
+- `outputs/dnn/202604291103/predictions.csv` — 预测结果（含 sample_id, video_id, author_id, label, score, pred, split, model_name）
+- `outputs/dnn/202604291103/train_log.csv` — 20 个 epoch 的训练日志
+- `outputs/dnn/202604291103/feature_config_used.json` — 使用的特征列、vocab、scaler 参数
+
+### 实际运行命令
+```text
+# 安装 PyTorch GPU 版（CUDA 12.4）
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+
+# 训练
+D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/dnn/train.py --config configs/dnn/dnn_base.yaml
+
+# 评估
+D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/dnn/evaluate.py --config configs/dnn/dnn_base.yaml --run_id 202604291103
+```
+
+### 输入数据路径
+- `data/features/tabular_train.csv`（63 条）
+- `data/features/tabular_eval.csv`（16 条）
+- `data/features/tabular_feature_info.json`（特征列定义）
+- `outputs/data_check/tabular_dataset_quality_check.json`（排除字段定义）
+
+### 输出文件路径
+- `outputs/dnn/202604291103/model.pt`
+- `outputs/dnn/202604291103/metrics.json`
+- `outputs/dnn/202604291103/predictions.csv`
+- `outputs/dnn/202604291103/train_log.csv`
+- `outputs/dnn/202604291103/feature_config_used.json`
+
+### 使用的特征列数量与概况
+
+**原始候选特征：**
+- 数值特征候选：30（numeric_cols）+ 4（text_stat_cols）= 34 列
+- 类别特征候选：6（categorical_cols）列
+
+**排除字段（共 69 列，含 tabular 构建时已排除的 54 列）：**
+- excluded_all_null_cols：24 列（全空）
+- excluded_placeholder_cols：28 列（占位/常量）
+- excluded_all_minus_one_cols：2 列（全-1）
+- all_zero_cols（flagged）：11 列（无区分度的全零列）
+- constant_cols 中非零唯一列：related_video_count、region、author_status、media_type 共 4 列
+
+**DNN 实际使用的特征（25 列）：**
+- 数值特征（20 列）：duration_ms, digg_count, comment_count, share_count, collect_count, create_time, follower_count, total_favorited, verification_type, origin_cover_width, origin_cover_height, hashtag_count, video_tag_count, comment_table_count, max_comment_digg_count, chapter_count, desc_length, desc_word_count, signature_length, avg_comment_text_length
+- 类别特征（5 列）：author_id, music_title, music_author, hashtag_name_top, video_tag_list_str
+
+### 模型结构说明
+
+```
+DNNModel(
+  (cat_embeddings): ModuleList(
+    (0-4): 5个 Embedding 层（vocab_size 范围 44~63，dim 范围 7~8）
+  )
+  (mlp): Sequential(
+    (0): Linear(20 + 39 = 59 → 64)
+    (1): ReLU()
+    (2): Dropout(0.3)
+    (3): Linear(64 → 32)
+    (4): ReLU()
+    (5): Dropout(0.3)
+  )
+  (output_layer): Linear(32 → 1)
+)
+总参数量：8141
+训练设备：CUDA (NVIDIA GPU, CUDA 12.4)
+```
+
+### 训练结果概况
+- Run ID：202604291103（由 train.py 在 2026-04-29 11:03 生成）
+- Epochs：20
+- Batch size：64（训练集 63 条 → 1 batch/epoch）
+- 优化器：Adam（lr=0.001, weight_decay=0.0001）
+- 损失函数：BCEWithLogitsLoss
+- 最佳模型保存依据：eval_loss 最低
+
+**训练曲线：**
+- train_loss 从 0.7161 降至 0.6380
+- eval_loss 从 0.7243 降至 0.6427
+- eval AUC 从 0.6 提升至 0.9667
+
+### Eval 指标
+
+| 指标 | 值 |
+|---|---|
+| Sample Count | 16 |
+| Positive / Negative | 6 / 10 |
+| AUC | 0.9667 |
+| Accuracy | 0.6875 |
+| Precision | 0.5455 |
+| Recall | 1.0 |
+| F1 | 0.7059 |
+| Precision@5 | 0.8000 |
+| Recall@5 | 0.6667 |
+| Precision@10 | 0.6000 |
+| Recall@10 | 1.0 |
+| Precision@20 | 0.3750 |
+| Recall@20 | 1.0 |
+
+**注意：上述指标仅基于 sample0427 样本数据（16 条 eval），仅用于流程验证，不表示正式推荐系统效果。**
+
+### Predictions.csv 字段说明
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| sample_id | int | 样本标识 |
+| video_id | int | 视频标识 |
+| author_id | int | 作者标识（同时作为类别特征） |
+| label | float | 伪标签（0/1） |
+| score | float | 预测概率（sigmoid(logit)） |
+| pred | int | 预测类别（阈值 0.5） |
+| split | str | 数据划分（eval） |
+| model_name | str | 模型名称（dnn） |
+
+### 是否跑通
+✅ 全部跑通。DNN 最小训练、评估、预测闭环完整实现。
+
+### 未做事项确认
+1. ✅ 未修改 douyin_data_project 下的抓取逻辑
+2. ✅ 未修改 sample0427 下的任何原始 CSV 文件
+3. ✅ 未重构 tabular 数据集
+4. ✅ 未重新切分 train/eval
+5. ✅ 未新增 test split
+6. ✅ 未实现 Wide & Deep
+7. ✅ 未实现 GraphSAGE
+8. ✅ 未实现多模态模型
+9. ✅ 未做统一模型对比实验
+10. ✅ 未做 A/B 模拟
+11. ✅ 未下载图片
+12. ✅ 未调用外部 API
+13. ✅ 未新增大型依赖（仅新增 PyTorch GPU 版，为 DNN 必需依赖）
+14. ✅ 未把当前 DNN 指标表述成正式模型效果结论
+
+### 存在的问题
+1. 样本量仅 63 条 train / 16 条 eval，指标波动大，AUC 0.9667 不代表真实泛化能力。
+2. Precision 较低（0.5455）而 Recall 为 1.0，说明模型倾向预测为正类（阈值 0.5 时 16 条中 11 条 pred=1）。
+3. 数值特征中有 11 个全零列和 4 个常量列已被排除，剩余 20 个数值特征中有部分（如 verification_type, author_status 等）区分度有限。
+4. category embedding 维度统一使用 floor(sqrt(vocab_size)) + 1 规则计算，对于小样本可能仍偏大。
+5. 当前仅有 train/eval 切分，无独立 test 集，无法做最终泛化评估。
+6. 标签为交互伪标签（interaction_score 分位数），不代表真实 CTR/CVR/完播等业务指标。
+
+### 下一步建议
+建议进入下一阶段：Wide & Deep 最小训练、评估、预测闭环（`src/models/wide_deep/model.py` + `src/models/wide_deep/train.py` + `src/models/wide_deep/evaluate.py`）。

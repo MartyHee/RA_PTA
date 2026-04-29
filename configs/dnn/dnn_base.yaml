@@ -4,13 +4,19 @@
 
 model_name: dnn
 
+# 数据输入路径（相对于项目根目录）
+train_data_path: data/features/tabular_train.csv
+eval_data_path: data/features/tabular_eval.csv
+feature_info_path: data/features/tabular_feature_info.json
+quality_check_path: outputs/data_check/tabular_dataset_quality_check.json
+
 # 训练超参数
 batch_size: 64
 learning_rate: 0.001
 epochs: 20
 
 # 网络结构
-hidden_units: [256, 128, 64]
+hidden_units: [64, 32]
 dropout: 0.3
 
 # 激活函数
@@ -18,14 +24,19 @@ activation: relu
 
 # 优化器
 optimizer: adam
+weight_decay: 0.0001
 
 # 损失函数
 loss: bce
 
-# 数据输入路径
-train_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_train.csv"
-eval_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_eval.csv"
-feature_info_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_feature_info.json"
+# 随机种子
+random_seed: 2026
 
-# 输出目录
-output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/dnn"
+# 二分类阈值
+threshold: 0.5
+
+# 设备（cuda / cpu，程序会自动检测 CUDA 可用性）
+device: cuda
+
+# 输出根目录（相对于项目根目录）
+output_root: outputs/dnn
