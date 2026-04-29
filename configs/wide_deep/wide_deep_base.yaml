@@ -9,29 +9,37 @@ batch_size: 64
 learning_rate: 0.001
 epochs: 20
 
-# Wide 部分
-wide_cross_features:
-  - author_id_x_top_hashtag
-  - author_id_x_music_title
-  - duration_bucket_x_top_hashtag
-  - has_watermark_x_duration_bucket
-wide_activation: relu
-
 # Deep 部分
-deep_hidden_units: [256, 128, 64]
+deep_hidden_units: [64, 32]
 dropout: 0.3
 deep_activation: relu
 
-# 数据输入路径
-train_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_train.csv"
-eval_data_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_eval.csv"
-feature_info_path: "D:/CodeData/Program Coding/ByteDance/RA_PTA/data/features/tabular_feature_info.json"
+# Wide 部分
+# wide_cross_features 从 tabular_feature_info.json 的 wide_cross_cols 读取
+wide_embedding_dim: 1
+
+# 数据输入路径（相对于项目根目录）
+train_data_path: data/features/tabular_train.csv
+eval_data_path: data/features/tabular_eval.csv
+feature_info_path: data/features/tabular_feature_info.json
+quality_check_path: outputs/data_check/tabular_dataset_quality_check.json
+metrics_config_path: configs/common/metrics.yaml
 
 # 优化器
 optimizer: adam
+weight_decay: 0.0001
 
 # 损失函数
 loss: bce
 
-# 输出目录
-output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/wide_deep"
+# 随机种子
+random_seed: 2026
+
+# 阈值
+threshold: 0.5
+
+# 设备（auto = 优先 CUDA，否则 CPU）
+device: auto
+
+# 输出目录（相对于项目根目录）
+output_root: outputs/wide_deep

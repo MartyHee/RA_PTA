@@ -1,0 +1,17 @@
+{
+  "model_name": "wide_deep",
+  "run_id": "202604291505",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\202604291505",
+  "train_started_at": "2026-04-29 15:05:34",
+  "train_finished_at": "2026-04-29 15:05:35",
+  "config_path": "configs/wide_deep/wide_deep_base.yaml",
+  "train_data_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_train.csv",
+  "eval_data_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_eval.csv",
+  "best_epoch": 20,
+  "best_eval_loss": 0.652113,
+  "device": "cuda",
+  "total_params": 8329,
+  "notes": [
+    "当前 Wide & Deep 基于 sample0427 样本数据训练，仅用于流程级验证。"
+  ]
+}
