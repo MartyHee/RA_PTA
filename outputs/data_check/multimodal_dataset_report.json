@@ -1,0 +1,64 @@
+{
+  "input_paths": {
+    "sample0427_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\sample0427",
+    "tabular_train": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_train.csv",
+    "tabular_eval": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_eval.csv",
+    "tabular_feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\tabular_feature_info.json",
+    "quality_check": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\data_check\\tabular_dataset_quality_check.json"
+  },
+  "output_paths": {
+    "train_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_train.npz",
+    "eval_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_eval.npz",
+    "feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_feature_info.json"
+  },
+  "train_size": 63,
+  "eval_size": 16,
+  "label_distribution_train": {
+    "pos": 26,
+    "neg": 37
+  },
+  "label_distribution_eval": {
+    "pos": 6,
+    "neg": 10
+  },
+  "text_feature_shape_train": [
+    63,
+    32
+  ],
+  "text_feature_shape_eval": [
+    16,
+    32
+  ],
+  "visual_feature_shape_train": [
+    63,
+    10
+  ],
+  "visual_feature_shape_eval": [
+    16,
+    10
+  ],
+  "structured_feature_shape_train": [
+    63,
+    20
+  ],
+  "structured_feature_shape_eval": [
+    16,
+    20
+  ],
+  "missing_text_count_train": 0,
+  "missing_text_count_eval": 0,
+  "missing_visual_count_train": 0,
+  "missing_visual_count_eval": 0,
+  "used_fallback_method": false,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "generated_at": "2026-04-29 20:33:08",
+  "warnings": [],
+  "notes": [
+    "当前多模态数据集仅用于流程级验证，不表示正式推荐系统效果。",
+    "text_features 基于 combined_text（caption + desc + chapter + comment + hashtag + music + signature）。",
+    "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
+    "structured_features 从 tabular 数值特征筛选，经 z-score 标准化。"
+  ]
+}

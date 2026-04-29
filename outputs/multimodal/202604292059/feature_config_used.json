@@ -1,0 +1,31 @@
+{
+  "train_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_train.npz",
+  "eval_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_eval.npz",
+  "text_dim": 32,
+  "visual_dim": 10,
+  "structured_dim": 20,
+  "text_feature_method": "tfidf_svd",
+  "visual_feature_method": "media_metadata_only",
+  "structured_feature_method": "tabular_numeric_scaled",
+  "branch_hidden_dims": {
+    "text": 32,
+    "visual": 16,
+    "structured": 32
+  },
+  "fusion_hidden_dim": 64,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "label_col": "label",
+  "warnings": [
+    "当前数据集仅 79 条样本，所有指标仅用于流程验证",
+    "标签为 interaction_score 伪标签，不代表真实业务目标",
+    "visual_features 仅包含媒体元信息，不包含图像语义特征"
+  ],
+  "notes": [
+    "当前多模态模型基于 sample0427 样本数据训练，仅用于流程级验证。",
+    "未下载图片。",
+    "未调用外部 API。",
+    "未使用大型预训练模型。"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "model_name": "multimodal",
+  "run_id": "202604292059",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\202604292059",
+  "train_started_at": "2026-04-29 20:59:40",
+  "train_finished_at": "2026-04-29 20:59:40",
+  "config_path": "configs/multimodal/multimodal_base.yaml",
+  "train_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_train.npz",
+  "eval_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\multimodal_eval.npz",
+  "best_epoch": 10,
+  "best_eval_loss": 0.600257,
+  "device": "cuda",
+  "notes": [
+    "当前多模态模型基于 sample0427 样本数据训练，仅用于流程级验证。",
+    "未下载图片。",
+    "未调用外部 API。",
+    "未使用大型预训练模型。"
+  ]
+}

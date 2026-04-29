@@ -1,0 +1,45 @@
+{
+  "model_name": "multimodal",
+  "run_id": "202604292059",
+  "split": "eval",
+  "sample_count": 16,
+  "positive_count": 6,
+  "negative_count": 10,
+  "auc": 0.85,
+  "accuracy": 0.75,
+  "precision": 0.75,
+  "recall": 0.5,
+  "f1": 0.6,
+  "precision_at_k": {
+    "precision_at_5": 0.6,
+    "precision_at_10": 0.6,
+    "precision_at_20": 0.375
+  },
+  "recall_at_k": {
+    "recall_at_5": 0.5,
+    "recall_at_10": 1.0,
+    "recall_at_20": 1.0
+  },
+  "eval_loss": null,
+  "threshold": 0.5,
+  "label_definition": "流程验证伪标签: interaction_score >= threshold",
+  "feature_shapes": {
+    "text_dim": 32,
+    "visual_dim": 10,
+    "structured_dim": 20
+  },
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "warnings": [],
+  "generated_at": "2026-04-29 21:00:31",
+  "notes": [
+    "当前指标仅基于 sample0427 样本数据计算，仅用于流程级验证。",
+    "不表示正式推荐系统效果结论。",
+    "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
+    "visual_features 仅包含媒体元信息，不包含图像语义特征。",
+    "未下载图片。",
+    "未调用外部 API。",
+    "未使用大型预训练模型。"
+  ]
+}

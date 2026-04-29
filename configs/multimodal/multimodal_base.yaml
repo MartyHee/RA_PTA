@@ -10,34 +10,45 @@
 
 model_name: multimodal
 
+# ---------------------------------------------------------------------------
+# 数据路径
+# ---------------------------------------------------------------------------
+train_npz_path: data/multimodal/multimodal_train.npz
+eval_npz_path: data/multimodal/multimodal_eval.npz
+feature_info_path: data/multimodal/multimodal_feature_info.json
+
+metrics_config_path: configs/common/metrics.yaml
+output_root: outputs/multimodal
+
+# ---------------------------------------------------------------------------
+# 各分支隐层维度
+# ---------------------------------------------------------------------------
+text_hidden_dim: 32
+visual_hidden_dim: 16
+structured_hidden_dim: 32
+fusion_hidden_dim: 64
+
+# ---------------------------------------------------------------------------
 # 训练超参数
+# ---------------------------------------------------------------------------
+dropout: 0.3
 batch_size: 64
 learning_rate: 0.001
+weight_decay: 0.0001
 epochs: 20
+random_seed: 2026
+threshold: 0.5
+device: cuda
 
-# 文本特征方法：stats / tfidf / lite_embedding
-# 当前阶段仅使用轻量统计特征
-text_feature_method: stats
-
-# 视觉/媒体元信息特征方法：meta_only / none
-# 当前阶段仅使用媒体元信息，不下载图片
-visual_feature_method: meta_only
-
-# 融合层参数
-fusion_hidden_units: [128, 64]
-fusion_activation: relu
-fusion_method: concat  # concat / attention / gated
-
-# 各模态输入维度（占位，后续由 build_multimodal_dataset.py 确定）
-text_input_dim: null
-visual_input_dim: null
-tabular_input_dim: null
-
-# 优化器
+# ---------------------------------------------------------------------------
+# 优化器 / 损失函数
+# ---------------------------------------------------------------------------
 optimizer: adam
-
-# 损失函数
 loss: bce
 
-# 输出目录
-output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/multimodal"
+# ---------------------------------------------------------------------------
+# 当前阶段约束（代码中确认）
+# ---------------------------------------------------------------------------
+no_image_download: true
+no_external_api: true
+no_large_pretrained_model: true
