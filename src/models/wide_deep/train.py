@@ -56,6 +56,7 @@ def main() -> None:
     # ── 2. 生成 run_id ──────────────────────────────────────
     run_id = datetime.now().strftime("%Y%m%d%H%M")
     logger.info(f"Run ID: {run_id}")
+    train_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # ── 3. 随机种子 ─────────────────────────────────────────
     set_seed(config.get("random_seed", 2026))
@@ -157,11 +158,11 @@ def main() -> None:
     )
 
     # ── 9. 初始化模型 ──────────────────────────────────────
-    device = config.get("device", "auto")
-    if device == "auto":
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-    elif device == "cuda" and not torch.cuda.is_available():
+    device = config.get("device", "cuda")
+    device_fallback_reason = None
+    if device == "cuda" and not torch.cuda.is_available():
         logger.warning("CUDA 不可用，回退到 CPU")
+        device_fallback_reason = "CUDA not available, fallback to CPU"
         device = "cpu"
 
     model = WideDeepModel(
@@ -248,21 +249,24 @@ def main() -> None:
             f"AUC: {cls_metrics.get('auc', 'N/A')}"
         )
 
+        is_best = avg_eval_loss < best_eval_loss
+
         train_log.append(
             {
                 "epoch": epoch + 1,
                 "train_loss": round(avg_train_loss, 6),
                 "eval_loss": round(avg_eval_loss, 6),
-                "eval_auc": cls_metrics.get("auc"),
-                "eval_accuracy": cls_metrics.get("accuracy"),
-                "eval_precision": cls_metrics.get("precision"),
-                "eval_recall": cls_metrics.get("recall"),
-                "eval_f1": cls_metrics.get("f1"),
+                "auc": cls_metrics.get("auc"),
+                "accuracy": cls_metrics.get("accuracy"),
+                "precision": cls_metrics.get("precision"),
+                "recall": cls_metrics.get("recall"),
+                "f1": cls_metrics.get("f1"),
+                "is_best": is_best,
             }
         )
 
         # --- 保存最佳模型 ---
-        if avg_eval_loss < best_eval_loss:
+        if is_best:
             best_eval_loss = avg_eval_loss
             best_epoch = epoch + 1
             torch.save(model.state_dict(), str(output_dir / "model.pt"))
@@ -274,6 +278,9 @@ def main() -> None:
     train_log_df = pd.DataFrame(train_log)
     train_log_df.to_csv(output_dir / "train_log.csv", index=False)
     logger.info(f"训练日志已保存: {output_dir / 'train_log.csv'}")
+
+    final_train_loss = train_log[-1]["train_loss"]
+    final_eval_loss = train_log[-1]["eval_loss"]
 
     # ── 13. 保存特征配置 ──────────────────────────────────
     feature_config = processor.get_config()
@@ -308,12 +315,16 @@ def main() -> None:
         "eval_data_path": str(eval_path),
         "best_epoch": best_epoch,
         "best_eval_loss": round(best_eval_loss, 6),
+        "final_train_loss": final_train_loss,
+        "final_eval_loss": final_eval_loss,
         "device": device,
-        "total_params": total_params,
         "notes": [
             "当前 Wide & Deep 基于 sample0427 样本数据训练，仅用于流程级验证。",
         ],
+        "warnings": [],
     }
+    if device_fallback_reason:
+        run_meta["warnings"].append(device_fallback_reason)
     with open(output_dir / "run_meta.json", "w", encoding="utf-8") as f:
         json.dump(run_meta, f, ensure_ascii=False, indent=2)
 

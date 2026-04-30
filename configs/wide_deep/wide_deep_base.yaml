@@ -38,8 +38,8 @@ random_seed: 2026
 # 阈值
 threshold: 0.5
 
-# 设备（auto = 优先 CUDA，否则 CPU）
-device: auto
+# 设备（cuda = CUDA，否则 CPU 回退）
+device: cuda
 
 # 输出目录（相对于项目根目录）
 output_root: outputs/wide_deep

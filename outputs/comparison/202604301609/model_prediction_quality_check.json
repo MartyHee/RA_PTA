@@ -1,0 +1,126 @@
+[
+  {
+    "file_exists": true,
+    "model_name": "dnn",
+    "expected_run_id": "202604301440",
+    "n_rows": 16,
+    "required_cols_present": true,
+    "missing_required_cols": [],
+    "score_in_range": true,
+    "score_min": 0.48441574,
+    "score_max": 0.69953454,
+    "pred_is_01": true,
+    "label_is_01": true,
+    "split_is_eval": true,
+    "split_values": [
+      "eval"
+    ],
+    "model_name_match": true,
+    "model_name_values": [
+      "dnn"
+    ],
+    "run_id_match": true,
+    "run_id_values": [
+      "202604301440"
+    ],
+    "has_nan": false,
+    "has_inf": false,
+    "duplicate_sample_id": 0,
+    "duplicate_video_id": 0,
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "file_exists": true,
+    "model_name": "wide_deep",
+    "expected_run_id": "202604301557",
+    "n_rows": 16,
+    "required_cols_present": true,
+    "missing_required_cols": [],
+    "score_in_range": true,
+    "score_min": 0.38693216,
+    "score_max": 0.7833792,
+    "pred_is_01": true,
+    "label_is_01": true,
+    "split_is_eval": true,
+    "split_values": [
+      "eval"
+    ],
+    "model_name_match": true,
+    "model_name_values": [
+      "wide_deep"
+    ],
+    "run_id_match": true,
+    "run_id_values": [
+      "202604301557"
+    ],
+    "has_nan": false,
+    "has_inf": false,
+    "duplicate_sample_id": 0,
+    "duplicate_video_id": 0,
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "file_exists": true,
+    "model_name": "graphsage",
+    "expected_run_id": "202604291958",
+    "n_rows": 16,
+    "required_cols_present": true,
+    "missing_required_cols": [],
+    "score_in_range": true,
+    "score_min": 0.30517367,
+    "score_max": 0.99679285,
+    "pred_is_01": true,
+    "label_is_01": true,
+    "split_is_eval": true,
+    "split_values": [
+      "eval"
+    ],
+    "model_name_match": true,
+    "model_name_values": [
+      "graphsage"
+    ],
+    "run_id_match": true,
+    "run_id_values": [
+      "202604291958"
+    ],
+    "has_nan": false,
+    "has_inf": false,
+    "duplicate_sample_id": 0,
+    "duplicate_video_id": 0,
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "file_exists": true,
+    "model_name": "multimodal",
+    "expected_run_id": "202604301557",
+    "n_rows": 16,
+    "required_cols_present": true,
+    "missing_required_cols": [],
+    "score_in_range": true,
+    "score_min": 0.235173225402832,
+    "score_max": 0.6588623523712158,
+    "pred_is_01": true,
+    "label_is_01": true,
+    "split_is_eval": true,
+    "split_values": [
+      "eval"
+    ],
+    "model_name_match": true,
+    "model_name_values": [
+      "multimodal"
+    ],
+    "run_id_match": true,
+    "run_id_values": [
+      "202604301557"
+    ],
+    "has_nan": false,
+    "has_inf": false,
+    "duplicate_sample_id": 0,
+    "duplicate_video_id": 0,
+    "warnings": [],
+    "errors": []
+  }
+]

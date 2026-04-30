@@ -1,0 +1,55 @@
+# =============================================================================
+# 统一模型对比实验配置
+# =============================================================================
+# 用于汇总 DNN、Wide & Deep、GraphSAGE、Multimodal 四个模型的 eval 指标
+# 当前对比仅基于 sample0427 样本数据，仅用于流程级验证
+# =============================================================================
+
+# 模型运行配置（固定本次比较的 run）
+model_runs:
+  dnn:
+    model_name: dnn
+    run_id: "202604301440"
+    output_dir: outputs/dnn/202604301440
+  wide_deep:
+    model_name: wide_deep
+    run_id: "202604301557"
+    output_dir: outputs/wide_deep/202604301557
+  graphsage:
+    model_name: graphsage
+    run_id: "202604291958"
+    output_dir: outputs/graphsage/202604291958
+  multimodal:
+    model_name: multimodal
+    run_id: "202604301557"
+    output_dir: outputs/multimodal/202604301557
+
+# 公共评估指标配置路径
+metrics_config_path: configs/common/metrics.yaml
+
+# 输出根目录（运行时自动生成的时间戳子目录将创建于此）
+output_root: outputs/comparison
+
+# 预测文件检查必需的列
+required_prediction_columns:
+  - sample_id
+  - video_id
+  - label
+  - score
+  - pred
+  - split
+  - model_name
+
+# Top-K K 值列表（若 metrics.yaml 中存在则覆盖）
+k_values: [5, 10, 20]
+
+# 报告标题
+report_title: "多模型离线对比报告（sample0427 流程验证）"
+
+# 报告说明
+notes:
+  - "当前对比仅基于 sample0427 样本数据，仅用于流程级验证。"
+  - "不表示正式推荐系统效果结论。"
+  - "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。"
+  - "当前无独立 test 集，eval 仅用于流程验证和最小模型评估。"
+  - "eval 只有 16 条样本，所有指标波动大，不可用于正式泛化评估。"

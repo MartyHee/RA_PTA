@@ -1,0 +1,5 @@
+model_name,file_exists,n_rows,required_cols_present,score_min,score_max,score_in_range,pred_is_01,label_is_01,split_is_eval,model_name_match,run_id_match,has_nan,has_inf,duplicate_sample_id,duplicate_video_id,warnings,errors
+dnn,True,16,True,0.48441574,0.69953454,True,True,True,True,True,True,False,False,0,0,[],[]
+wide_deep,True,16,True,0.38693216,0.7833792,True,True,True,True,True,True,False,False,0,0,[],[]
+graphsage,True,16,True,0.30517367,0.99679285,True,True,True,True,True,True,False,False,0,0,[],[]
+multimodal,True,16,True,0.235173225402832,0.6588623523712158,True,True,True,True,True,True,False,False,0,0,[],[]

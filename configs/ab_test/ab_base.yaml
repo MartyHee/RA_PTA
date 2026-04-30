@@ -1,33 +1,66 @@
 # =============================================================================
-# A/B 测试模拟基础配置
+# 离线 A/B 模拟基础配置
+# =============================================================================
+# 用于基于模型 predictions.csv 模拟简单 A/B 分组逻辑和指标统计
+# 当前为 sample0427 流程验证，不是真实线上实验
 # =============================================================================
 
-# 分组方式：random / stratified
-group_method: random
+# 输入 predictions 路径
+input_predictions_path: outputs/graphsage/202604291958/predictions.csv
 
-# 分组键（用于分层抽样）
-group_key: null
+# 模型名称与 run_id
+model_name: graphsage
+model_run_id: "202604291958"
+
+# 关联的 comparison run
+comparison_run_id: "202604301609"
+comparison_output_dir: outputs/comparison/202604301609
+
+# 输出根目录（运行时自动生成时间戳子目录）
+output_root: outputs/ab_test
+
+# 分组方式：hash / random
+group_method: hash
+
+# 分组键（hash 模式下用于稳定分组的字段）
+group_key: video_id
 
 # 实验组比例
 treatment_ratio: 0.5
 
-# 随机种子
-random_seed: 42
+# 随机种子（random 模式下使用）
+random_seed: 2026
 
-# 对照组与实验组名称
-control_group_name: control
-treatment_group_name: treatment
+# 分组标签
+group_labels:
+  control: A
+  treatment: B
 
-# 评估指标
-metrics:
-  - avg_score
-  - avg_label
-  - precision_at_k
-  - recall_at_k
-  - lift
+# Top-K K 值列表
+k_values: [5, 10]
 
-# Top-K
-k_values: [5, 10, 20]
+# 列名映射
+score_col: score
+label_col: label
+pred_col: pred
 
-# 输出目录
-output_dir: "D:/CodeData/Program Coding/ByteDance/RA_PTA/outputs/ab_test"
+# 标识列
+id_cols:
+  - sample_id
+  - video_id
+
+# 预测必需列
+required_prediction_columns:
+  - sample_id
+  - video_id
+  - label
+  - score
+  - pred
+  - split
+  - model_name
+
+# 说明
+notes:
+  - "当前为离线 A/B 模拟，不是真实线上实验"
+  - "基于 sample0427 样本数据，仅用于流程级验证"
+  - "分组在同一批 predictions 上进行，不代表真实策略差异"

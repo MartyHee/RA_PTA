@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader
 
 # ── 路径设置 ──────────────────────────────────────────────
@@ -90,6 +91,10 @@ def main() -> None:
 
     logger.info(f"评估目录: {run_dir}")
 
+    # ── 确定 run_id ────────────────────────────────────────
+    run_id = run_dir.name
+    logger.info(f"Run ID: {run_id}")
+
     # ── 3. 加载特征配置 ─────────────────────────────────────
     feature_config_path = run_dir / "feature_config_used.json"
     if not feature_config_path.exists():
@@ -143,6 +148,8 @@ def main() -> None:
     logger.info(f"模型加载完成: {model_path}")
 
     # ── 7. 推理 ─────────────────────────────────────────────
+    criterion = nn.BCEWithLogitsLoss()
+    all_logits: list[float] = []
     all_scores: list[float] = []
     all_labels: list[float] = []
 
@@ -153,11 +160,19 @@ def main() -> None:
             wide_b = batch["wide"].to(device)
             logits = model(numeric_b, cat_b, wide_b)
             scores = torch.sigmoid(logits)
+            all_logits.extend(logits.cpu().numpy())
             all_scores.extend(scores.cpu().numpy())
             all_labels.extend(batch["label"].cpu().numpy())
 
+    all_logits_arr = np.array(all_logits)
     all_scores_arr = np.array(all_scores)
     all_labels_arr = np.array(all_labels)
+
+    # 计算 eval_loss（加载最佳模型后在 eval 集上重新计算）
+    eval_loss = criterion(
+        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
+    ).item()
+    logger.info(f"Eval loss (BCEWithLogitsLoss): {eval_loss:.6f}")
     threshold = config.get("threshold", 0.5)
     all_preds_arr = (all_scores_arr >= threshold).astype(int)
 
@@ -180,6 +195,7 @@ def main() -> None:
 
     metrics = {
         "model_name": "wide_deep",
+        "run_id": run_id,
         "split": "eval",
         "sample_count": len(all_labels_arr),
         "positive_count": n_pos,
@@ -191,6 +207,7 @@ def main() -> None:
         "f1": cls_metrics.get("f1"),
         "precision_at_k": pk_metrics,
         "recall_at_k": rk_metrics,
+        "eval_loss": eval_loss,
         "threshold": threshold,
         "label_definition": "流程验证伪标签: interaction_score >= threshold",
         "warnings": all_warnings,
@@ -218,6 +235,7 @@ def main() -> None:
             "pred": all_preds_arr,
             "split": "eval",
             "model_name": "wide_deep",
+            "run_id": run_id,
         }
     )
     if ids_df is not None:

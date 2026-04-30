@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn as nn
 
 # ── 路径设置 ──────────────────────────────────────────────
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -137,7 +138,9 @@ def main() -> None:
     logger.info(f"模型加载完成: {model_path}")
 
     # ── 8. 推理 ─────────────────────────────────────────────
+    criterion = nn.BCEWithLogitsLoss()
     threshold = config.get("threshold", 0.5)
+    all_logits: list[float] = []
     all_scores: list[float] = []
     all_labels: list[float] = []
     all_sample_ids: list[int] = []
@@ -154,14 +157,22 @@ def main() -> None:
             logit = model(text_t, visual_t, struct_t)
             score = torch.sigmoid(logit)
 
+            all_logits.append(logit.cpu().item())
             all_scores.append(score.cpu().item())
             all_labels.append(item["label"].item())
             all_sample_ids.append(int(item["sample_id"]))
             all_video_ids.append(int(item["video_id"]))
             all_author_ids.append(str(item["author_id"]))
 
+    all_logits_arr = np.array(all_logits)
     all_scores_arr = np.array(all_scores)
     all_labels_arr = np.array(all_labels)
+
+    # 计算 eval_loss（加载最佳模型后在 eval 集上重新计算）
+    eval_loss = criterion(
+        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
+    ).item()
+    logger.info(f"Eval loss (BCEWithLogitsLoss): {eval_loss:.6f}")
     all_preds_arr = (all_scores_arr >= threshold).astype(int)
 
     # ── 9. 计算指标 ─────────────────────────────────────────
@@ -195,7 +206,7 @@ def main() -> None:
         "f1": cls_metrics.get("f1"),
         "precision_at_k": pk_metrics,
         "recall_at_k": rk_metrics,
-        "eval_loss": None,
+        "eval_loss": eval_loss,
         "threshold": threshold,
         "label_definition": feature_info.get(
             "label_definition", "流程验证伪标签: interaction_score >= threshold"
