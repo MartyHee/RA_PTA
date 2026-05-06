@@ -136,7 +136,7 @@ class AuthorExtractor(BaseExtractor):
         """
         result = {
             'author_id': None,
-            'author_name': None,
+            'nickname': None,
             'author_page_url': None
         }
 
@@ -148,7 +148,7 @@ class AuthorExtractor(BaseExtractor):
         author_links = soup.find_all('a', href=re.compile(r'/user/'))
         if author_links:
             link = author_links[0]
-            result['author_name'] = link.get_text(strip=True)
+            result['nickname'] = link.get_text(strip=True)
             result['author_page_url'] = link.get('href', '')
 
             # Extract author ID from URL
@@ -172,7 +172,7 @@ class AuthorExtractor(BaseExtractor):
                         if 'id' in pattern or 'uid' in pattern:
                             result['author_id'] = match.group(1)
                         elif 'nickname' in pattern:
-                            result['author_name'] = match.group(1)
+                            result['nickname'] = match.group(1)
 
         return result
 
@@ -202,9 +202,10 @@ class StatsExtractor(BaseExtractor):
         """
         result = {
             'digg_count': None,
-            'comment_count_raw': None,
-            'share_count_raw': None,
-            'collect_count_raw': None
+            'comment_count': None,
+            'share_count': None,
+            'collect_count': None,
+            'play_count': None
         }
 
         soup = self._ensure_soup(content)
@@ -214,9 +215,9 @@ class StatsExtractor(BaseExtractor):
         # Look for stats in HTML elements
         stat_patterns = {
             'digg_count': [r'like', r'digg', r'赞', r'点赞'],
-            'comment_count_raw': [r'comment', r'评论'],
-            'share_count_raw': [r'share', r'分享'],
-            'collect_count_raw': [r'collect', r'收藏']
+            'comment_count': [r'comment', r'评论'],
+            'share_count': [r'share', r'分享'],
+            'collect_count': [r'collect', r'收藏']
         }
 
         for field, patterns in stat_patterns.items():
@@ -251,11 +252,11 @@ class StatsExtractor(BaseExtractor):
                         if 'diggCount' in pattern:
                             result['digg_count'] = count
                         elif 'commentCount' in pattern:
-                            result['comment_count_raw'] = count
+                            result['comment_count'] = count
                         elif 'shareCount' in pattern:
-                            result['share_count_raw'] = count
+                            result['share_count'] = count
                         elif 'collectCount' in pattern:
-                            result['collect_count_raw'] = count
+                            result['collect_count'] = count
 
         return result
 
@@ -421,18 +422,21 @@ class ExtractorFactory:
         field_to_extractor = {
             'video_id': 'video_id',
             'author_id': 'author_info',
-            'author_name': 'author_info',
+            'nickname': 'author_info',
             'author_page_url': 'author_info',
             'desc_text': 'desc_text',
             'digg_count': 'stats',
-            'comment_count_raw': 'stats',
-            'share_count_raw': 'stats',
-            'collect_count_raw': 'stats',
+            'comment_count': 'stats',
+            'share_count': 'stats',
+            'collect_count': 'stats',
+            'play_count': 'stats',
             'create_time': 'publish_time',
             'publish_time_std': 'publish_time',
             'hashtag_list': 'hashtags',
             'hashtag_count': 'hashtags',
-            'origin_cover_url': 'origin_cover_url'
+            'origin_cover_url_list': 'origin_cover_url',
+            'cover_url_list': 'origin_cover_url',
+            'dynamic_cover_url_list': 'origin_cover_url'
         }
 
         extractor_key = field_to_extractor.get(field_name)

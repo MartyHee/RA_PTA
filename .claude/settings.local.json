@@ -48,7 +48,17 @@
       "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/wide_deep/evaluate.py --config configs/wide_deep/wide_deep_base.yaml --run_id 202604301557)",
       "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/multimodal/evaluate.py --config configs/multimodal/multimodal_base.yaml --run_id 202604301557)",
       "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" src/experiment/run_comparison.py --config configs/common/comparison.yaml)",
-      "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" src/experiment/run_ab_simulation.py --config configs/ab_test/ab_base.yaml)"
+      "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" src/experiment/run_ab_simulation.py --config configs/ab_test/ab_base.yaml)",
+      "Bash(cd d:\\\\CodeData\\\\Program Coding\\\\ByteDance\\\\RA_PTA\\\\douyin_data_project)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --help)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs\\\\discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/crawler/scheduler.py --mode mock --url-file data/test/test_urls.txt --output-dir data/interim)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -m src.crawler.scheduler --mode mock --url-file data/test/test_urls.txt --output-dir data/interim)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --mock --url-file data/test/test_urls.txt)",
+      "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --help)",
+      "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
+      "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -c ' *)"
     ]
   }
 }

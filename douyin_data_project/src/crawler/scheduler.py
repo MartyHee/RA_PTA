@@ -340,26 +340,63 @@ class CrawlScheduler:
                     field_mapping = {
                         'video_id': 'video_id',
                         'author_id': 'author_id',
-                        'author_name': 'author_name',
+                        'nickname': 'nickname',
                         'author_page_url': 'author_page_url',
                         'desc_text': 'desc_text',
                         'create_time': 'create_time',
                         'digg_count': 'digg_count',
-                        'comment_count_raw': 'comment_count_raw',
-                        'share_count_raw': 'share_count_raw',
                         'collect_count': 'collect_count',
                         'hashtag_list': 'hashtag_list',
-                        'origin_cover_url': 'origin_cover_url',
-                        'music_name': 'music_name',
                         'duration_ms': 'duration_ms',
-                        # 新增主表字段
-                        'author_follower_count': 'author_follower_count',
-                        'author_total_favorited': 'author_total_favorited',
-                        'author_signature': 'author_signature',
+                        'follower_count': 'follower_count',
+                        'total_favorited': 'total_favorited',
+                        'signature': 'signature',
                         'author_verification_type': 'author_verification_type',
                         'cover_url_list': 'cover_url_list',
-                        'dynamic_cover_url': 'dynamic_cover_url',
-                        'origin_cover_url': 'origin_cover_url'
+                        # ====== 2026-05-06 扩充字段 ======
+                        'sec_item_id': 'sec_item_id',
+                        'group_id': 'group_id',
+                        'comment_gid': 'comment_gid',
+                        'share_url': 'share_url',
+                        'caption': 'caption',
+                        'desc': 'desc',
+                        'preview_title': 'preview_title',
+                        'item_title': 'item_title',
+                        'aweme_type': 'aweme_type',
+                        'media_type': 'media_type',
+                        'region': 'region',
+                        'is_top': 'is_top',
+                        'is_ads': 'is_ads',
+                        'is_life_item': 'is_life_item',
+                        'original': 'original',
+                        'play_count': 'play_count',
+                        'recommend_count': 'recommend_count',
+                        'admire_count': 'admire_count',
+                        'comment_count': 'comment_count',
+                        'share_count': 'share_count',
+                        'sec_uid': 'sec_uid',
+                        'unique_id': 'unique_id',
+                        'short_id': 'short_id',
+                        'custom_verify': 'custom_verify',
+                        'enterprise_verify_reason': 'enterprise_verify_reason',
+                        'music_id': 'music_id',
+                        'music_title': 'music_title',
+                        'music_author': 'music_author',
+                        'music_duration': 'music_duration',
+                        'music_owner_id': 'music_owner_id',
+                        'music_owner_nickname': 'music_owner_nickname',
+                        'is_original_sound': 'is_original_sound',
+                        'cover_uri': 'cover_uri',
+                        'origin_cover_uri': 'origin_cover_uri',
+                        'dynamic_cover_uri': 'dynamic_cover_uri',
+                        'origin_cover_width': 'origin_cover_width',
+                        'origin_cover_height': 'origin_cover_height',
+                        'dynamic_cover_width': 'dynamic_cover_width',
+                        'dynamic_cover_height': 'dynamic_cover_height',
+                        'video_width': 'video_width',
+                        'video_height': 'video_height',
+                        'origin_cover_url_list': 'origin_cover_url_list',
+                        'dynamic_cover_url_list': 'dynamic_cover_url_list'
                     }
 
                     for browser_field, parsed_field in field_mapping.items():
@@ -367,48 +404,14 @@ class CrawlScheduler:
                             value = browser_extracted_fields[browser_field]
                             if value is not None:
                                 # Type conversion for WebVideoMeta schema compatibility
-                                if parsed_field in ['video_id', 'author_id', 'author_name', 'desc_text']:
+                                if parsed_field in ['video_id', 'author_id', 'nickname', 'desc_text']:
                                     # Convert to string
                                     if not isinstance(value, str):
                                         value = str(value)
                                         logger.debug(f"Converted {parsed_field} to string")
 
-                                elif parsed_field == 'origin_cover_url':
-                                    # Ensure string URL
-                                    if isinstance(value, list):
-                                        # List of dicts, try to extract URL from first item
-                                        if value and isinstance(value[0], dict):
-                                            first = value[0]
-                                            if 'url_list' in first and isinstance(first['url_list'], list) and first['url_list']:
-                                                value = first['url_list'][0]
-                                            elif 'url' in first:
-                                                value = first['url']
-                                            elif 'cover_url' in first:
-                                                value = first['cover_url']
-                                            elif 'cover' in first:
-                                                value = first['cover']
-                                            else:
-                                                logger.warning(f"origin_cover_url list item doesn't contain url key: {first}")
-                                                value = str(value)
-                                        else:
-                                            logger.warning(f"origin_cover_url list doesn't contain dicts: {value}")
-                                            value = str(value)
-                                    elif isinstance(value, dict):
-                                        # Try to extract URL from common keys
-                                        if 'url' in value:
-                                            value = value['url']
-                                        elif 'cover_url' in value:
-                                            value = value['cover_url']
-                                        elif 'cover' in value:
-                                            value = value['cover']
-                                        else:
-                                            logger.warning(f"origin_cover_url dict doesn't contain url key: {value}")
-                                            value = str(value)
-                                    if not isinstance(value, str):
-                                        value = str(value)
-                                    logger.debug(f"Processed origin_cover_url: {value[:100]}")
 
-                                elif parsed_field in ['create_time', 'digg_count', 'comment_count_raw', 'share_count_raw']:
+                                elif parsed_field in ['create_time', 'digg_count']:
                                     # Convert to string (raw counts and timestamps should be strings)
                                     if not isinstance(value, str):
                                         value = str(value)
@@ -475,11 +478,6 @@ class CrawlScheduler:
                                         value = None
                                     logger.debug(f"Processed collect_count: {value}")
 
-                                elif parsed_field == 'music_name':
-                                    # Convert to string
-                                    if not isinstance(value, str):
-                                        value = str(value)
-                                    logger.debug(f"Processed music_name: {value[:100]}")
 
                                 elif parsed_field == 'duration_ms':
                                     # Convert to integer if possible
@@ -497,7 +495,7 @@ class CrawlScheduler:
                                     logger.debug(f"Processed duration_ms: {value}")
 
                                 # 新增字段类型转换
-                                elif parsed_field in ['author_follower_count', 'author_total_favorited', 'author_verification_type']:
+                                elif parsed_field in ['follower_count', 'total_favorited', 'author_verification_type']:
                                     # Convert to integer if possible
                                     if isinstance(value, (int, float)):
                                         value = int(value)
@@ -512,13 +510,13 @@ class CrawlScheduler:
                                         value = None
                                     logger.debug(f"Processed {parsed_field}: {value}")
 
-                                elif parsed_field in ['author_signature']:
+                                elif parsed_field in ['signature']:
                                     # Convert to string
                                     if not isinstance(value, str):
                                         value = str(value)
                                     logger.debug(f"Processed {parsed_field}: {value[:100]}")
 
-                                elif parsed_field in ['cover_url_list', 'dynamic_cover_url', 'origin_cover_url']:
+                                elif parsed_field in ['cover_url_list']:
                                     # Similar processing as origin_cover_url
                                     if isinstance(value, list):
                                         # List of dicts, try to extract URL from first item
@@ -561,6 +559,105 @@ class CrawlScheduler:
                                         value = str(value)
                                     logger.debug(f"Processed {parsed_field}: {value[:100]}")
 
+                                # ====== 2026-05-06 新字段类型转换 ======
+                                elif parsed_field in ['is_ads', 'is_life_item', 'is_original_sound']:
+                                    # Convert to bool if possible
+                                    if isinstance(value, str):
+                                        value = value.lower() in ('true', '1', 'yes')
+                                    elif isinstance(value, int):
+                                        value = bool(value)
+                                    elif not isinstance(value, bool):
+                                        logger.warning(f"Unhandled type for {parsed_field}: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed {parsed_field}: {value}")
+
+                                elif parsed_field in ['aweme_type', 'media_type', 'is_top', 'original',
+                                                       'play_count', 'recommend_count', 'admire_count',
+                                                       'comment_count', 'share_count',
+                                                       'music_duration', 'origin_cover_width',
+                                                       'origin_cover_height', 'dynamic_cover_width',
+                                                       'dynamic_cover_height', 'video_width', 'video_height',
+                                                       'favoriting_count', 'following_count',
+                                                       'music_owner_id']:
+                                    # Convert to integer if possible
+                                    if isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"{parsed_field} string cannot be converted to int: {value}")
+                                            value = None
+                                    else:
+                                        logger.warning(f"Unhandled type for {parsed_field}: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed {parsed_field}: {value}")
+
+                                elif parsed_field in ['sec_item_id', 'group_id', 'comment_gid', 'share_url',
+                                                       'caption', 'desc', 'preview_title', 'item_title',
+                                                       'region', 'sec_uid', 'unique_id', 'short_id',
+                                                       'custom_verify', 'enterprise_verify_reason',
+                                                       'music_id', 'music_title', 'music_author',
+                                                       'cover_uri', 'origin_cover_uri', 'dynamic_cover_uri',
+                                                       'shoot_way']:
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed {parsed_field}: {value[:100]}")
+
+                                elif parsed_field in ['origin_cover_url_list', 'dynamic_cover_url_list']:
+                                    # Same URL list processing as cover_url_list etc.
+                                    if isinstance(value, list):
+                                        if value and isinstance(value[0], dict):
+                                            first = value[0]
+                                            if 'url_list' in first and isinstance(first['url_list'], list) and first['url_list']:
+                                                value = first['url_list'][0]
+                                            elif 'url' in first:
+                                                value = first['url']
+                                            elif 'cover_url' in first:
+                                                value = first['cover_url']
+                                            elif 'cover' in first:
+                                                value = first['cover']
+                                            else:
+                                                logger.warning(f"{parsed_field} list item doesn't contain url key: {first}")
+                                                value = str(value)
+                                        else:
+                                            logger.warning(f"{parsed_field} list doesn't contain dicts: {value}")
+                                            value = str(value)
+                                    elif isinstance(value, dict):
+                                        if 'url' in value:
+                                            value = value['url']
+                                        elif 'cover_url' in value:
+                                            value = value['cover_url']
+                                        elif 'cover' in value:
+                                            value = value['cover']
+                                        elif 'uri' in value:
+                                            value = value['uri']
+                                        elif 'url_list' in value and isinstance(value['url_list'], list) and value['url_list']:
+                                            value = value['url_list'][0]
+                                        else:
+                                            logger.warning(f"{parsed_field} dict doesn't contain url key: {value}")
+                                            value = str(value)
+                                    if not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed {parsed_field}: {value[:100]}")
+
+                                elif parsed_field in ['music_cover_url_list', 'music_play_url_list']:
+                                    # Keep as JSON string for list fields
+                                    if isinstance(value, list):
+                                        try:
+                                            value = json.dumps(value, ensure_ascii=False)
+                                        except:
+                                            value = str(value)
+                                    elif isinstance(value, dict):
+                                        try:
+                                            value = json.dumps(value, ensure_ascii=False)
+                                        except:
+                                            value = str(value)
+                                    elif not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed {parsed_field}: {value[:100]}")
+
                                 parsed_data[parsed_field] = value
                                 logger.debug(f"Updated {parsed_field} from browser runtime data: {str(value)[:100]}")
 
@@ -577,10 +674,16 @@ class CrawlScheduler:
 
                     # Log detailed field information after merging browser data
                     logger.info("Field details after merging browser data:")
-                    target_fields = ['video_id', 'author_id', 'author_name', 'author_page_url', 'desc_text',
-                                    'create_time', 'digg_count', 'comment_count_raw',
-                                    'share_count_raw', 'collect_count', 'hashtag_list', 'origin_cover_url',
-                                    'music_name', 'duration_ms']
+                    target_fields = ['video_id', 'author_id', 'nickname', 'author_page_url', 'desc_text',
+                                    'create_time', 'digg_count', 'comment_count',
+                                    'share_count', 'collect_count', 'hashtag_list',
+                                    'origin_cover_url_list',
+                                    'music_title', 'duration_ms',
+                                    'sec_item_id', 'group_id', 'play_count',
+                                    'sec_uid', 'follower_count', 'total_favorited',
+                                    'music_id', 'music_author', 'music_duration',
+                                    'cover_url_list', 'dynamic_cover_url_list',
+                                    'video_width', 'video_height']
                     for field in target_fields:
                         if field in parsed_data:
                             value = parsed_data[field]

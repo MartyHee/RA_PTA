@@ -579,14 +579,38 @@ class DouyinParser:
         field_rules = {
             'video_id': ['id', 'video_id', 'item_id', 'aweme_id'],
             'author_id': ['author.uid', 'author.id', 'author_user_id', 'uid'],
-            'author_name': ['author.nickname', 'author.name', 'nickname', 'author_name'],
+            'nickname': ['author.nickname', 'author.name', 'nickname', 'author_name'],
             'desc_text': ['desc', 'title', 'description', 'content'],
             'create_time': ['create_time', 'createTime', 'publish_time', 'timestamp'],
             'digg_count': ['stats.digg_count', 'statistics.digg_count', 'digg_count', 'like_count'],
-            'comment_count_raw': ['stats.comment_count', 'statistics.comment_count', 'comment_count'],
-            'share_count_raw': ['stats.share_count', 'statistics.share_count', 'share_count'],
+            'comment_count': ['stats.comment_count', 'statistics.comment_count', 'comment_count'],
+            'share_count': ['stats.share_count', 'statistics.share_count', 'share_count'],
             'hashtag_list': ['hashtags', 'text_extra', 'topics'],
-            'origin_cover_url': ['video.cover', 'cover.url', 'cover_url', 'video_cover']
+            'origin_cover_url_list': ['video.cover', 'cover.url', 'cover_url', 'video_cover'],
+            # 2026-05-06 扩充字段
+            'sec_item_id': ['sec_item_id', 'secItemId'],
+            'group_id': ['group_id', 'groupId'],
+            'share_url': ['share_url', 'shareUrl'],
+            'caption': ['caption'],
+            'desc': ['desc'],
+            'duration_ms': ['duration', 'video.duration', 'duration_ms'],
+            'aweme_type': ['aweme_type', 'awemeType'],
+            'media_type': ['media_type', 'mediaType'],
+            'region': ['region'],
+            'play_count': ['play_count', 'playCount', 'statistics.play_count'],
+            'comment_count': ['comment_count', 'commentCount', 'statistics.comment_count'],
+            'share_count': ['share_count', 'shareCount', 'statistics.share_count'],
+            'sec_uid': ['sec_uid', 'secUid', 'author.sec_uid'],
+            'unique_id': ['unique_id', 'uniqueId', 'author.unique_id'],
+            'music_id': ['music.id_str', 'music.id', 'id_str'],
+            'music_title': ['music.title', 'music_title', 'musicName'],
+            'music_author': ['music.author', 'music_author'],
+            'music_duration': ['music.duration', 'music_duration'],
+            'cover_url_list': ['video.cover', 'cover.url', 'cover_url', 'video_cover_url'],
+            'origin_cover_url_list': ['video.origin_cover', 'origin_cover', 'origin_cover_url'],
+            'dynamic_cover_url_list': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url'],
+            'video_width': ['video.width', 'width'],
+            'video_height': ['video.height', 'height']
         }
 
         def get_value(obj, path):
@@ -842,7 +866,13 @@ class DouyinParser:
                 'stats': 'stats_data',
                 'music': 'music_data',
                 'duration': 'duration_ms',
-                'cover': 'origin_cover_url'
+                'cover': 'origin_cover_url_list',
+                'sec_item_id': 'sec_item_id',
+                'group_id': 'group_id',
+                'share_url': 'share_url',
+                'caption': 'caption',
+                'media_type': 'media_type',
+                'region': 'region'
             }
 
             for src_key, dest_key in field_mapping.items():
@@ -854,7 +884,7 @@ class DouyinParser:
                 author = result.pop('author_data')
                 if isinstance(author, dict):
                     result['author_id'] = author.get('id') or author.get('uid')
-                    result['author_name'] = author.get('nickname')
+                    result['nickname'] = author.get('nickname')
                     result['author_page_url'] = author.get('profile_url')
 
             # Extract stats
@@ -862,15 +892,15 @@ class DouyinParser:
                 stats = result.pop('stats_data')
                 if isinstance(stats, dict):
                     result['digg_count'] = str(stats.get('diggCount', ''))
-                    result['comment_count_raw'] = str(stats.get('commentCount', ''))
-                    result['share_count_raw'] = str(stats.get('shareCount', ''))
+                    result['comment_count'] = str(stats.get('commentCount', ''))
+                    result['share_count'] = str(stats.get('shareCount', ''))
                     result['collect_count'] = stats.get('collectCount')
 
             # Extract music
             if 'music_data' in result:
                 music = result.pop('music_data')
                 if isinstance(music, dict):
-                    result['music_name'] = music.get('title')
+                    result['music_title'] = music.get('title')
 
         return result
 
@@ -893,7 +923,7 @@ class DouyinParser:
         # Extract author info
         author_elements = soup.find_all('a', href=re.compile(r'/user/'))
         if author_elements:
-            result['author_name'] = author_elements[0].get_text(strip=True)
+            result['nickname'] = author_elements[0].get_text(strip=True)
             result['author_page_url'] = author_elements[0].get('href', '')
             # Extract author ID from URL
             if result['author_page_url']:
@@ -904,8 +934,8 @@ class DouyinParser:
         # Extract stats
         stats_patterns = {
             'digg_count': r'like|digg|赞',
-            'comment_count_raw': r'comment|评论',
-            'share_count_raw': r'share|分享'
+            'comment_count': r'comment|评论',
+            'share_count': r'share|分享'
         }
 
         for field, pattern in stats_patterns.items():
@@ -921,7 +951,7 @@ class DouyinParser:
         # Extract cover image
         img_elements = soup.find_all('img', src=re.compile(r'\.(jpg|jpeg|png|webp)'))
         if img_elements:
-            result['origin_cover_url'] = img_elements[0].get('src', '')
+            result['origin_cover_url_list'] = img_elements[0].get('src', '')
 
         # Extract publish time
         time_elements = soup.find_all(['span', 'div'], class_=re.compile(r'time|date'))
@@ -1014,7 +1044,7 @@ class DouyinParser:
         """
         result = {}
 
-        count_fields = ['digg_count', 'comment_count_raw', 'share_count_raw']
+        count_fields = ['digg_count', 'comment_count', 'share_count']
         for raw_field in count_fields:
             if raw_field in data and data[raw_field]:
                 normalized = self._normalize_count_string(data[raw_field])
@@ -1071,10 +1101,16 @@ class DouyinParser:
             # Log detailed field information before creating WebVideoMeta
             logger.info("Field details before creating WebVideoMeta:")
             target_fields = [
-                'video_id', 'page_url', 'author_id', 'author_name', 'author_page_url',
+                'video_id', 'page_url', 'author_id', 'nickname', 'author_page_url',
                 'desc_text', 'create_time', 'publish_time_std', 'digg_count',
-                'comment_count_raw', 'share_count_raw', 'collect_count', 'hashtag_list', 'hashtag_count',
-                'origin_cover_url', 'music_name', 'duration_ms', 'source_entry', 'crawl_time'
+                'comment_count', 'share_count', 'collect_count', 'hashtag_list', 'hashtag_count',
+                'origin_cover_url_list', 'music_title', 'duration_ms',
+                'sec_item_id', 'group_id', 'play_count',
+                'sec_uid', 'follower_count', 'total_favorited',
+                'music_id', 'music_author', 'music_duration',
+                'cover_url_list', 'dynamic_cover_url_list',
+                'video_width', 'video_height',
+                'source_entry', 'crawl_time'
             ]
             for field in target_fields:
                 if field in parsed_data:
@@ -1113,22 +1149,19 @@ class DouyinParser:
             video_id=video_id,
             page_url=url,
             author_id="author_mock_001",
-            author_name="测试用户",
+            nickname="测试用户",
             author_page_url=f"https://www.douyin.com/user/author_mock_001",
             desc_text="这是一个测试视频描述 #美食 #旅行",
             create_time="2023-01-01 12:00:00",
             publish_time_std=datetime(2023, 1, 1, 12, 0, 0),
             digg_count="1.2w",
-            comment_count_raw="450",
-            share_count_raw="120",
             like_count=12000,
             comment_count=450,
             share_count=120,
             collect_count=56,
             hashtag_list=["美食", "旅行"],
             hashtag_count=2,
-            origin_cover_url="https://example.com/cover.jpg",
-            music_name="测试音乐",
+            music_title="测试音乐",
             duration_ms=15,
             source_entry=source_entry,
             crawl_time=now

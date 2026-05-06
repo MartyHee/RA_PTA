@@ -76,7 +76,7 @@ web_video_meta:
       required: false
       description: "作者ID，若页面可提取"
 
-    author_name:
+    nickname:
       type: "string"
       required: false
       description: "作者昵称"
@@ -102,51 +102,11 @@ web_video_meta:
         selector: "//div[contains(@class, 'desc')]"
         attr: "text"
 
-    publish_time_raw:
-      type: "string"
-      required: false
-      description: "【已废弃】页面显示的原始发布时间文本，请改用 create_time"
-      deprecated: true
-      mapped_to: "create_time"
-      extraction:
-        selector: "//span[contains(@class, 'time')]"
-        attr: "text"
-
     publish_time_std:
       type: "timestamp"
       required: false
       description: "标准化后的发布时间"
       format: "%Y-%m-%d %H:%M:%S"
-
-    like_count_raw:
-      type: "string"
-      required: false
-      description: "【已废弃】页面原始点赞数文本，请改用 digg_count"
-      deprecated: true
-      mapped_to: "digg_count"
-      extraction:
-        selector: "//span[contains(@class, 'like')]"
-        attr: "text"
-
-    comment_count_raw:
-      type: "string"
-      required: false
-      description: "【已废弃】页面原始评论数文本，请改用 comment_count"
-      deprecated: true
-      mapped_to: "comment_count"
-      extraction:
-        selector: "//span[contains(@class, 'comment')]"
-        attr: "text"
-
-    share_count_raw:
-      type: "string"
-      required: false
-      description: "【已废弃】页面原始分享数文本，请改用 share_count"
-      deprecated: true
-      mapped_to: "share_count"
-      extraction:
-        selector: "//span[contains(@class, 'share')]"
-        attr: "text"
 
     like_count:
       type: "bigint"
@@ -186,27 +146,11 @@ web_video_meta:
       description: "话题数量，无则为0"
       default: 0
 
-    cover_url:
-      type: "string"
-      required: false
-      description: "【已废弃】封面图片链接，请改用 cover_url_list"
-      deprecated: true
-      mapped_to: "cover_url_list"
-      extraction:
-        selector: "//img[contains(@class, 'cover')]"
-        attr: "src"
-
-    music_name:
+    music_title:
       type: "string"
       required: false
       description: "关联音乐名称，若页面可提取"
 
-    duration_sec:
-      type: "integer"
-      required: false
-      description: "【已废弃】视频时长（秒），请改用 duration_ms"
-      deprecated: true
-      mapped_to: "duration_ms"
 
     source_entry:
       type: "string"
@@ -319,7 +263,7 @@ availability:
     - video_id
     - page_url
     - desc_text
-    - publish_time_raw
+    - create_time
     - publish_time_std
     - like_count
     - comment_count
@@ -329,18 +273,18 @@ availability:
 
   web_medium:
     - author_id
-    - author_name
+    - nickname
     - author_profile_url
-    - cover_url
-    - music_name
-    - duration_sec
+    - cover_url_list
+    - music_title
+    - duration_ms
     - collect_count
     - hashtag_list
 
   web_low:
     - view_count
     - video_url
-    - author_follower_count
+    - follower_count
     - verification
     - signature
     - like_rate

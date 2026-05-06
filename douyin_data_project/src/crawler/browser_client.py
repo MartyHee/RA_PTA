@@ -680,26 +680,67 @@ class BrowserClient:
             merged_fields = {
                 'video_id': {'value': None, 'path': None},
                 'author_id': {'value': None, 'path': None},
-                'author_name': {'value': None, 'path': None},
+                'nickname': {'value': None, 'path': None},
                 'author_page_url': {'value': None, 'path': None},
                 'desc_text': {'value': None, 'path': None},
                 'create_time': {'value': None, 'path': None},
                 'digg_count': {'value': None, 'path': None},
-                'comment_count_raw': {'value': None, 'path': None},
-                'share_count_raw': {'value': None, 'path': None},
                 'collect_count': {'value': None, 'path': None},
                 'hashtag_list': {'value': None, 'path': None},
-                'origin_cover_url': {'value': None, 'path': None},
-                'music_name': {'value': None, 'path': None},
                 'duration_ms': {'value': None, 'path': None},
-                # 新增主表字段
-                'author_follower_count': {'value': None, 'path': None},
-                'author_total_favorited': {'value': None, 'path': None},
-                'author_signature': {'value': None, 'path': None},
+                # 作者侧补充字段
+                'follower_count': {'value': None, 'path': None},
+                'total_favorited': {'value': None, 'path': None},
+                'signature': {'value': None, 'path': None},
                 'author_verification_type': {'value': None, 'path': None},
                 'cover_url_list': {'value': None, 'path': None},
-                'dynamic_cover_url': {'value': None, 'path': None},
-                'origin_cover_url': {'value': None, 'path': None}
+                # ====== 2026-05-06 新增 raw_video_detail P0/P1 ======
+                'sec_item_id': {'value': None, 'path': None},
+                'group_id': {'value': None, 'path': None},
+                'comment_gid': {'value': None, 'path': None},
+                'share_url': {'value': None, 'path': None},
+                'caption': {'value': None, 'path': None},
+                'desc': {'value': None, 'path': None},
+                'preview_title': {'value': None, 'path': None},
+                'item_title': {'value': None, 'path': None},
+                'aweme_type': {'value': None, 'path': None},
+                'media_type': {'value': None, 'path': None},
+                'region': {'value': None, 'path': None},
+                'is_top': {'value': None, 'path': None},
+                'is_ads': {'value': None, 'path': None},
+                'is_life_item': {'value': None, 'path': None},
+                'original': {'value': None, 'path': None},
+                'play_count': {'value': None, 'path': None},
+                'recommend_count': {'value': None, 'path': None},
+                'admire_count': {'value': None, 'path': None},
+                'comment_count': {'value': None, 'path': None},
+                'share_count': {'value': None, 'path': None},
+                # ====== 2026-05-06 新增 raw_author P1 ======
+                'sec_uid': {'value': None, 'path': None},
+                'unique_id': {'value': None, 'path': None},
+                'short_id': {'value': None, 'path': None},
+                'custom_verify': {'value': None, 'path': None},
+                'enterprise_verify_reason': {'value': None, 'path': None},
+                # ====== 2026-05-06 新增 raw_music P1 ======
+                'music_id': {'value': None, 'path': None},
+                'music_title': {'value': None, 'path': None},
+                'music_author': {'value': None, 'path': None},
+                'music_duration': {'value': None, 'path': None},
+                'music_owner_id': {'value': None, 'path': None},
+                'music_owner_nickname': {'value': None, 'path': None},
+                'is_original_sound': {'value': None, 'path': None},
+                # ====== 2026-05-06 新增 raw_video_media P1 ======
+                'cover_uri': {'value': None, 'path': None},
+                'origin_cover_uri': {'value': None, 'path': None},
+                'dynamic_cover_uri': {'value': None, 'path': None},
+                'origin_cover_width': {'value': None, 'path': None},
+                'origin_cover_height': {'value': None, 'path': None},
+                'dynamic_cover_width': {'value': None, 'path': None},
+                'dynamic_cover_height': {'value': None, 'path': None},
+                'video_width': {'value': None, 'path': None},
+                'video_height': {'value': None, 'path': None},
+                'origin_cover_url_list': {'value': None, 'path': None},
+                'dynamic_cover_url_list': {'value': None, 'path': None}
             }
 
             field_sources = {}
@@ -861,12 +902,12 @@ class BrowserClient:
                     field_selection_reasons['create_time'] = 'corrected_from_aweme_detail'
                     logger.info(f"Corrected create_time from aweme_detail.create_time: {aweme_create_time}")
 
-            # Post-process origin_cover_url: try to find video.cover if current value is from author.cover_url
-            origin_cover_url_value = merged_fields['origin_cover_url']['value']
-            origin_cover_url_path = merged_fields['origin_cover_url'].get('path', '')
+            # Post-process origin_cover_url_list: try to find video.cover if current value is from author.cover_url
+            origin_cover_url_value = merged_fields['origin_cover_url_list']['value']
+            origin_cover_url_path = merged_fields['origin_cover_url_list'].get('path', '')
 
             if origin_cover_url_value is not None and 'author.cover_url' in origin_cover_url_path:
-                logger.info(f"origin_cover_url is from author.cover_url, searching for video.cover")
+                logger.info(f"origin_cover_url_list is from author.cover_url, searching for video.cover")
                 # Search for video.cover in all data sources
                 video_cover = None
                 video_cover_path = None
@@ -901,10 +942,10 @@ class BrowserClient:
                         elif 'cover' in video_cover:
                             video_cover = video_cover['cover']
 
-                    merged_fields['origin_cover_url'] = {'value': video_cover, 'path': video_cover_path}
-                    field_sources['origin_cover_url'] = field_sources.get('origin_cover_url', 'unknown') + '_corrected'
-                    field_selection_reasons['origin_cover_url'] = 'corrected_from_video_cover'
-                    logger.info(f"Corrected origin_cover_url from video.cover: {video_cover}")
+                    merged_fields['origin_cover_url_list'] = {'value': video_cover, 'path': video_cover_path}
+                    field_sources['origin_cover_url_list'] = field_sources.get('origin_cover_url_list', 'unknown') + '_corrected'
+                    field_selection_reasons['origin_cover_url_list'] = 'corrected_from_video_cover'
+                    logger.info(f"Corrected origin_cover_url_list from video.cover: {video_cover}")
 
             # Post-process duration_ms: ensure it stays as milliseconds
             duration_value = merged_fields['duration_ms']['value']
@@ -975,18 +1016,44 @@ class BrowserClient:
                 'field_extraction': {
                     'video_id': {'value': None, 'path': None},
                     'author_id': {'value': None, 'path': None},
-                    'author_name': {'value': None, 'path': None},
+                    'nickname': {'value': None, 'path': None},
                     'author_page_url': {'value': None, 'path': None},
                     'desc_text': {'value': None, 'path': None},
                     'create_time': {'value': None, 'path': None},
                     'digg_count': {'value': None, 'path': None},
-                    'comment_count_raw': {'value': None, 'path': None},
-                    'share_count_raw': {'value': None, 'path': None},
                     'collect_count': {'value': None, 'path': None},
                     'hashtag_list': {'value': None, 'path': None},
-                    'origin_cover_url': {'value': None, 'path': None},
-                    'music_name': {'value': None, 'path': None},
-                    'duration_ms': {'value': None, 'path': None}
+                    'duration_ms': {'value': None, 'path': None},
+                    'follower_count': {'value': None, 'path': None},
+                    'total_favorited': {'value': None, 'path': None},
+                    'signature': {'value': None, 'path': None},
+                    'author_verification_type': {'value': None, 'path': None},
+                    'cover_url_list': {'value': None, 'path': None},
+                    'sec_item_id': {'value': None, 'path': None},
+                    'group_id': {'value': None, 'path': None},
+                    'comment_gid': {'value': None, 'path': None},
+                    'share_url': {'value': None, 'path': None},
+                    'caption': {'value': None, 'path': None},
+                    'desc': {'value': None, 'path': None},
+                    'aweme_type': {'value': None, 'path': None},
+                    'media_type': {'value': None, 'path': None},
+                    'region': {'value': None, 'path': None},
+                    'play_count': {'value': None, 'path': None},
+                    'comment_count': {'value': None, 'path': None},
+                    'share_count': {'value': None, 'path': None},
+                    'sec_uid': {'value': None, 'path': None},
+                    'unique_id': {'value': None, 'path': None},
+                    'custom_verify': {'value': None, 'path': None},
+                    'enterprise_verify_reason': {'value': None, 'path': None},
+                    'music_id': {'value': None, 'path': None},
+                    'music_title': {'value': None, 'path': None},
+                    'music_author': {'value': None, 'path': None},
+                    'music_duration': {'value': None, 'path': None},
+                    'cover_uri': {'value': None, 'path': None},
+                    'origin_cover_url_list': {'value': None, 'path': None},
+                    'dynamic_cover_url_list': {'value': None, 'path': None},
+                    'video_width': {'value': None, 'path': None},
+                    'video_height': {'value': None, 'path': None}
                 },
                 'field_sources': {},
                 'extracted_field_count': 0
@@ -1029,7 +1096,7 @@ class BrowserClient:
                     lines.append(f"  {field_name}: NOT FOUND")
             lines.append("")
 
-            lines.append(f"Extracted {summary['extracted_field_count']} out of 14 target fields")
+            lines.append(f"Extracted {summary['extracted_field_count']} out of {len(summary.get('field_extraction', {}))} target fields")
             lines.append("=" * 80)
 
             summary_text = "\n".join(lines)
@@ -1236,14 +1303,14 @@ class BrowserClient:
         return {
             'video_id': {'value': None, 'path': None},
             'author_id': {'value': None, 'path': None},
-            'author_name': {'value': None, 'path': None},
+            'nickname': {'value': None, 'path': None},
             'desc_text': {'value': None, 'path': None},
             'create_time': {'value': None, 'path': None},
             'digg_count': {'value': None, 'path': None},
-            'comment_count_raw': {'value': None, 'path': None},
-            'share_count_raw': {'value': None, 'path': None},
+            'comment_count': {'value': None, 'path': None},
+            'share_count': {'value': None, 'path': None},
             'hashtag_list': {'value': None, 'path': None},
-            'origin_cover_url': {'value': None, 'path': None}
+            'origin_cover_url_list': {'value': None, 'path': None}
         }
 
     def _extract_fields_from_data(self, data, base_path=""):
@@ -1259,61 +1326,173 @@ class BrowserClient:
         field_mappings = {
             'video_id': {'value': None, 'path': None},
             'author_id': {'value': None, 'path': None},
-            'author_name': {'value': None, 'path': None},
+            'nickname': {'value': None, 'path': None},
             'author_page_url': {'value': None, 'path': None},
             'desc_text': {'value': None, 'path': None},
             'create_time': {'value': None, 'path': None},
             'digg_count': {'value': None, 'path': None},
-            'comment_count_raw': {'value': None, 'path': None},
-            'share_count_raw': {'value': None, 'path': None},
             'collect_count': {'value': None, 'path': None},
             'hashtag_list': {'value': None, 'path': None},
-            'origin_cover_url': {'value': None, 'path': None},
-            'music_name': {'value': None, 'path': None},
             'duration_ms': {'value': None, 'path': None},
-            # 新增主表字段
-            'author_follower_count': {'value': None, 'path': None},
-            'author_total_favorited': {'value': None, 'path': None},
-            'author_signature': {'value': None, 'path': None},
+            'follower_count': {'value': None, 'path': None},
+            'total_favorited': {'value': None, 'path': None},
+            'signature': {'value': None, 'path': None},
             'author_verification_type': {'value': None, 'path': None},
             'cover_url_list': {'value': None, 'path': None},
-            'dynamic_cover_url': {'value': None, 'path': None},
-            'origin_cover_url': {'value': None, 'path': None}
+            # ====== raw_video_detail P0/P1 ======
+            'sec_item_id': {'value': None, 'path': None},
+            'group_id': {'value': None, 'path': None},
+            'comment_gid': {'value': None, 'path': None},
+            'share_url': {'value': None, 'path': None},
+            'caption': {'value': None, 'path': None},
+            'desc': {'value': None, 'path': None},
+            'preview_title': {'value': None, 'path': None},
+            'item_title': {'value': None, 'path': None},
+            'aweme_type': {'value': None, 'path': None},
+            'media_type': {'value': None, 'path': None},
+            'region': {'value': None, 'path': None},
+            'is_top': {'value': None, 'path': None},
+            'is_ads': {'value': None, 'path': None},
+            'is_life_item': {'value': None, 'path': None},
+            'original': {'value': None, 'path': None},
+            'play_count': {'value': None, 'path': None},
+            'recommend_count': {'value': None, 'path': None},
+            'admire_count': {'value': None, 'path': None},
+            'comment_count': {'value': None, 'path': None},
+            'share_count': {'value': None, 'path': None},
+            # ====== raw_author P1 ======
+            'sec_uid': {'value': None, 'path': None},
+            'unique_id': {'value': None, 'path': None},
+            'short_id': {'value': None, 'path': None},
+            'custom_verify': {'value': None, 'path': None},
+            'enterprise_verify_reason': {'value': None, 'path': None},
+            'favoriting_count': {'value': None, 'path': None},
+            'following_count': {'value': None, 'path': None},
+            # ====== raw_music P1 ======
+            'music_id': {'value': None, 'path': None},
+            'music_title': {'value': None, 'path': None},
+            'music_author': {'value': None, 'path': None},
+            'music_duration': {'value': None, 'path': None},
+            'music_owner_id': {'value': None, 'path': None},
+            'music_owner_nickname': {'value': None, 'path': None},
+            'is_original_sound': {'value': None, 'path': None},
+            'is_commerce_music': {'value': None, 'path': None},
+            'music_collect_count': {'value': None, 'path': None},
+            # ====== raw_video_media P1 ======
+            'cover_uri': {'value': None, 'path': None},
+            'origin_cover_uri': {'value': None, 'path': None},
+            'dynamic_cover_uri': {'value': None, 'path': None},
+            'origin_cover_width': {'value': None, 'path': None},
+            'origin_cover_height': {'value': None, 'path': None},
+            'dynamic_cover_width': {'value': None, 'path': None},
+            'dynamic_cover_height': {'value': None, 'path': None},
+            'video_width': {'value': None, 'path': None},
+            'video_height': {'value': None, 'path': None},
+            'video_format': {'value': None, 'path': None},
+            'video_ratio': {'value': None, 'path': None},
+            'is_h265': {'value': None, 'path': None},
+            'is_long_video': {'value': None, 'path': None},
+            'has_watermark': {'value': None, 'path': None},
+            'origin_cover_url_list': {'value': None, 'path': None},
+            'dynamic_cover_url_list': {'value': None, 'path': None},
+            # 候选字段
+            'shoot_way': {'value': None, 'path': None},
+            'can_show_comment': {'value': None, 'path': None},
+            'comment_permission_status': {'value': None, 'path': None},
+            'co_creator_count': {'value': None, 'path': None},
+            'has_co_creator': {'value': None, 'path': None},
+            'product_genre_type': {'value': None, 'path': None},
+            'material_genre_sub_type_set': {'value': None, 'path': None},
+            'rate': {'value': None, 'path': None}
         }
 
         # Field mapping configurations: field_name -> list of possible keys
         field_configs = {
             'video_id': ['id', 'video_id', 'aweme_id', 'itemId', 'videoId', 'awemeId', 'vid'],
             'author_id': ['author_id', 'authorId', 'uid', 'user_id', 'userId', 'author.uid', 'author.id'],
-            'author_name': ['author_name', 'nickname', 'author_name', 'authorName', 'author.nickname', 'user.nickname'],
+            'nickname': ['author_name', 'nickname', 'authorName', 'author.nickname', 'user.nickname'],
             'author_page_url': ['profile_url', 'author.profile_url', 'homepage', 'author.homepage', 'sec_uid', 'author.sec_uid', 'unique_id', 'author.unique_id'],
             'desc_text': ['desc', 'description', 'title', 'content', 'desc_text', 'caption'],
             'create_time': ['aweme_detail.create_time', 'aweme_detail.createTime', 'create_time', 'publish_time', 'timestamp', 'createTime', 'publishTime', 'time'],
             'digg_count': ['like_count', 'digg_count', 'likeCount', 'diggCount', 'statistics.digg_count', 'stats.digg_count'],
-            'comment_count_raw': ['comment_count', 'commentCount', 'statistics.comment_count', 'stats.comment_count'],
-            'share_count_raw': ['share_count', 'shareCount', 'statistics.share_count', 'stats.share_count'],
             'collect_count': ['collect_count', 'collectCount', 'statistics.collect_count', 'stats.collect_count'],
             'hashtag_list': ['hashtags', 'tag_list', 'hashtag_list', 'challenges', 'text_extra'],
-            'origin_cover_url': ['video.cover', 'video.origin_cover', 'video.dynamic_cover', 'cover', 'cover_url', 'coverUrl', 'thumbnail', 'cover_image'],
-            'music_name': ['music.title', 'music_name', 'musicName', 'title', 'music.name'],
             'duration_ms': ['duration', 'video.duration', 'duration_ms', 'durationSec', 'video.duration_ms'],
-            # 新增主表字段
-            'author_follower_count': ['author.follower_count', 'author.followerCount', 'follower_count', 'author_follower_count'],
-            'author_total_favorited': ['author.total_favorited', 'author.totalFavorited', 'total_favorited', 'author_total_favorited'],
-            'author_signature': ['author.signature', 'signature', 'author_signature'],
+            # raw_author 字段
+            'follower_count': ['author.follower_count', 'author.followerCount', 'follower_count', 'author_follower_count'],
+            'total_favorited': ['author.total_favorited', 'author.totalFavorited', 'total_favorited', 'author_total_favorited'],
+            'signature': ['author.signature', 'signature', 'author_signature'],
             'author_verification_type': ['author.verification_type', 'author.verificationType', 'verification_type', 'author_verification_type'],
-            'cover_url_list': ['video.cover', 'video.cover_url', 'cover_url'],
-            'dynamic_cover_url': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url'],
-            'origin_cover_url': ['video.origin_cover', 'origin_cover', 'origin_cover_url'],
-            # 候选字段（暂不进入主表）
+            'cover_url_list': ['video.cover', 'video.cover_url', 'cover_url', 'thumbnail', 'cover_image'],
+            # ====== 2026-05-06 字段扩充: raw_video_detail P0/P1 ======
+            'sec_item_id': ['sec_item_id', 'secItemId'],
+            'group_id': ['group_id', 'groupId'],
+            'comment_gid': ['comment_gid', 'commentGid'],
+            'share_url': ['share_url', 'shareUrl'],
+            'caption': ['caption'],
+            'desc': ['desc'],
+            'preview_title': ['preview_title', 'previewTitle'],
+            'item_title': ['item_title', 'itemTitle'],
+            'aweme_type': ['aweme_type', 'awemeType'],
+            'media_type': ['media_type', 'mediaType'],
+            'region': ['region'],
+            'is_top': ['is_top', 'isTop'],
+            'is_ads': ['is_ads', 'isAds'],
+            'is_life_item': ['is_life_item', 'isLifeItem'],
+            'original': ['original'],
+            'play_count': ['play_count', 'playCount', 'statistics.play_count', 'stats.play_count'],
+            'recommend_count': ['recommend_count', 'recommendCount'],
+            'admire_count': ['admire_count', 'admireCount'],
+            # 正确命名字段别名
+            'comment_count': ['comment_count', 'commentCount', 'statistics.comment_count', 'stats.comment_count'],
+            'share_count': ['share_count', 'shareCount', 'statistics.share_count', 'stats.share_count'],
+            # ====== 2026-05-06 字段扩充: raw_author P1 ======
+            'sec_uid': ['sec_uid', 'secUid', 'author.sec_uid'],
+            'unique_id': ['unique_id', 'uniqueId', 'author.unique_id'],
+            'short_id': ['short_id', 'shortId'],
+            'custom_verify': ['custom_verify', 'customVerify'],
+            'enterprise_verify_reason': ['enterprise_verify_reason', 'enterpriseVerifyReason'],
+            'favoriting_count': ['favoriting_count', 'favoritingCount', 'author.favoriting_count'],
+            'following_count': ['following_count', 'followingCount', 'author.following_count'],
+            # ====== 2026-05-06 字段扩充: raw_music P1 ======
+            'music_id': ['music.id_str', 'music.id', 'id_str', 'music.mid', 'mid'],
+            'music_title': ['music.title', 'music_title', 'musicName', 'title', 'music.name'],
+            'music_author': ['music.author', 'music_author'],
+            'music_duration': ['music.duration', 'music_duration'],
+            'music_owner_id': ['music.owner_id', 'owner_id', 'music.ownerId'],
+            'music_owner_nickname': ['music.owner_nickname', 'owner_nickname'],
+            'is_original_sound': ['music.is_original_sound', 'is_original_sound', 'music.is_original'],
+            'is_commerce_music': ['music.is_commerce_music', 'is_commerce_music'],
+            'music_collect_count': ['music.music_collect_count', 'music_collect_count'],
+            # ====== 2026-05-06 字段扩充: raw_video_media P1 ======
+            'cover_uri': ['video.cover.uri', 'cover.uri'],
+            'cover_width': ['video.cover.width', 'cover.width'],
+            'cover_height': ['video.cover.height', 'cover.height'],
+            'origin_cover_uri': ['video.origin_cover.uri', 'origin_cover.uri'],
+            'origin_cover_width': ['video.origin_cover.width', 'origin_cover.width'],
+            'origin_cover_height': ['video.origin_cover.height', 'origin_cover.height'],
+            'dynamic_cover_uri': ['video.dynamic_cover.uri', 'dynamic_cover.uri'],
+            'dynamic_cover_width': ['video.dynamic_cover.width', 'dynamic_cover.width'],
+            'dynamic_cover_height': ['video.dynamic_cover.height', 'dynamic_cover.height'],
+            'video_width': ['video.width', 'width'],
+            'video_height': ['video.height', 'height'],
+            'video_format': ['video.format', 'format'],
+            'video_ratio': ['video.ratio', 'ratio'],
+            'is_h265': ['video.is_h265', 'is_h265'],
+            'is_long_video': ['video.is_long_video', 'is_long_video'],
+            'has_watermark': ['video.has_watermark', 'has_watermark'],
+            # 正确命名的 URL list 字段
+            'origin_cover_url_list': ['video.origin_cover', 'origin_cover', 'origin_cover_url', 'video.origin_cover.url_list'],
+            'dynamic_cover_url_list': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url', 'video.dynamic_cover.url_list'],
+            # 候选字段
             'co_creator_count': ['co_creator_count', 'coCreatorCount'],
             'has_co_creator': ['has_co_creator', 'hasCoCreator'],
             'product_genre_type': ['product_genre_type', 'productGenreType'],
             'material_genre_sub_type_set': ['material_genre_sub_type_set', 'materialGenreSubTypeSet'],
             'rate': ['rate', 'rate_level'],
-            'comment_gid': ['comment_gid', 'commentGid'],
             'can_show_comment': ['can_show_comment', 'canShowComment'],
-            'comment_permission_status': ['comment_permission_status', 'commentPermissionStatus']
+            'comment_permission_status': ['comment_permission_status', 'commentPermissionStatus'],
+            'shoot_way': ['shoot_way', 'shootWay']
         }
 
         def search_in_dict(d, current_path):
@@ -1655,14 +1834,41 @@ class BrowserClient:
         mock_extracted_fields = {
             'video_id': video_id,
             'author_id': 'author123',
-            'author_name': '测试用户',
+            'nickname': '测试用户',
             'desc_text': '这是一个测试视频描述 #美食 #旅行',
             'create_time': 1672531200,
             'digg_count': 12000,
-            'comment_count_raw': 450,
-            'share_count_raw': 120,
             'hashtag_list': ['美食', '旅行'],
-            'origin_cover_url': 'https://example.com/cover.jpg'
+            # 2026-05-06 新增 mock 字段
+            'group_id': video_id,
+            'sec_item_id': 'MS4wLjABAAA',
+            'caption': '这是一个测试视频描述 #美食 #旅行',
+            'desc': '这是一个测试视频描述 #美食 #旅行',
+            'duration_ms': 15000,
+            'play_count': 0,
+            'comment_count': 450,
+            'share_count': 120,
+            'collect_count': 56,
+            'follower_count': 5274,
+            'total_favorited': 410215,
+            'signature': '测试用户签名',
+            'author_verification_type': 1,
+            'cover_url_list': 'https://example.com/cover.jpg',
+            'dynamic_cover_url_list': 'https://example.com/dynamic_cover.jpg',
+            'origin_cover_url_list': 'https://example.com/origin_cover.jpg',
+            'sec_uid': 'MS4wLjABAAA',
+            'music_id': '123456789',
+            'music_title': '测试音乐',
+            'music_author': '测试用户',
+            'music_duration': 233,
+            'video_width': 2160,
+            'video_height': 2880,
+            'aweme_type': 0,
+            'media_type': 4,
+            'region': 'CN',
+            'is_top': 0,
+            'is_ads': False,
+            'original': 0
         }
 
         mock_summary = {

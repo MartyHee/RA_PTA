@@ -1,0 +1,14 @@
+old_field,new_field,status,notes
+duration_sec,duration_ms,verified,CSV has duration_ms only
+publish_time_raw,create_time,verified,CSV has create_time only
+like_count_raw,digg_count,verified,CSV has digg_count only
+comment_count_raw,comment_count,verified,CSV has comment_count only
+share_count_raw,share_count,verified,CSV has share_count only
+cover_url,cover_url_list,verified,CSV has cover_url_list only
+origin_cover_url,origin_cover_url_list,verified,CSV has origin_cover_url_list only
+dynamic_cover_url,dynamic_cover_url_list,verified,CSV has dynamic_cover_url_list only
+author_name,nickname,verified,CSV has nickname only
+author_signature,signature,verified,CSV has signature only
+author_follower_count,follower_count,verified,CSV has follower_count only
+author_total_favorited,total_favorited,verified,CSV has total_favorited only
+music_name,music_title,verified,CSV has music_title only
