@@ -1,0 +1,170 @@
+================================================================================
+Video Data Analysis Summary
+================================================================================
+URL: https://www.douyin.com/video/7622473264698314036
+Timestamp: 20260506_204506
+Network responses: 32
+Runtime objects: 0
+Video object candidates: 229
+
+Field Extraction Results:
+----------------------------------------
+  video_id: 7622473264698314036
+    Path: url_extraction
+  author_id: 105103838174
+    Path: network_response_25.aweme_detail.author.uid
+  nickname: 二次元大东
+    Path: network_response_25.aweme_detail.author.nickname
+  author_page_url: https://www.douyin.com/user/MS4wLjABAAAAYokhxSv-FEBNnpiWOnybAXVU3DYt6-WrpmX7i4jntY4
+    Path: network_response_25.aweme_detail.author.sec_uid_constructed
+  desc_text: 超好看的丧尸题材动漫，值得收藏#动漫推荐 #动漫解说 #二次元 #动漫充能计划 #我在抖音看动漫
+    Path: network_response_25.aweme_detail.caption
+  create_time: 1774753080
+    Path: aweme_detail
+  digg_count: 22125
+    Path: network_response_25.aweme_detail.statistics.digg_count
+  collect_count: 8554
+    Path: network_response_25.aweme_detail.statistics.collect_count
+  hashtag_list: [{'caption_end': 20, 'caption_start': 15, 'end': 33, 'hashtag_id': '1587194314661901', 'hashtag_name...
+    Path: network_response_25.aweme_detail.text_extra
+  duration_ms: 986662
+    Path: network_response_25.aweme_detail.duration
+  follower_count: 895473
+    Path: network_response_25.aweme_detail.author.follower_count
+  total_favorited: 20340128
+    Path: network_response_25.aweme_detail.author.total_favorited
+  signature: 👉一个老二次元了
+👉没了动漫怎么能行
+👉不定期更新好看的番剧
+👉举报我的替我挡灾
+👉谢谢你们的厚爱
+    Path: network_response_25.aweme_detail.author.signature
+  author_verification_type: 1
+    Path: network_response_25.aweme_detail.author.verification_type
+  cover_url_list: [{'height': 720, 'uri': 'c8510002be9a3a61aad2', 'url_list': ['https://p3-pc-sign.douyinpic.com/obj/c...
+    Path: network_response_25.aweme_detail.author.cover_url
+  sec_item_id: MS4wLjAAAAAA6Mquy3BmLEG5-pXrqm-oV_i5tLp-PXduyyiVI4XoctU1v2Q-n-cFA4FQUW6y08IT
+    Path: network_response_25.aweme_detail.sec_item_id
+  group_id: 7616065445984062755
+    Path: network_response_25.aweme_detail.group_id
+  comment_gid: 7622473264698314036
+    Path: network_response_25.aweme_detail.comment_gid
+  share_url: 
+    Path: network_response_25.aweme_detail.author.share_info.share_url
+  caption: 超好看的丧尸题材动漫，值得收藏#动漫推荐 #动漫解说 #二次元 #动漫充能计划 #我在抖音看动漫
+    Path: network_response_25.aweme_detail.caption
+  desc: 结语
+    Path: network_response_25.aweme_detail.chapter_list.[0].desc
+  preview_title: 只要胆子大，僵尸放产假！ 超好看的丧尸题材动漫，值得收藏#动漫推荐 #动漫解说 #二次元 #动漫充能计划 #我在抖音看动漫
+    Path: network_response_25.aweme_detail.preview_title
+  item_title: 只要胆子大，僵尸放产假！
+    Path: network_response_25.aweme_detail.item_title
+  aweme_type: 0
+    Path: network_response_25.aweme_detail.aweme_type
+  media_type: 4
+    Path: network_response_25.aweme_detail.media_type
+  region: 
+    Path: network_response_25.aweme_detail.region
+  is_top: 0
+    Path: network_response_25.aweme_detail.is_top
+  is_ads: False
+    Path: network_response_25.aweme_detail.is_ads
+  is_life_item: False
+    Path: network_response_25.aweme_detail.is_life_item
+  original: 0
+    Path: network_response_25.aweme_detail.original
+  play_count: 0
+    Path: network_response_25.aweme_detail.statistics.play_count
+  recommend_count: 1637
+    Path: network_response_25.aweme_detail.statistics.recommend_count
+  admire_count: 0
+    Path: network_response_25.aweme_detail.statistics.admire_count
+  comment_count: 495
+    Path: network_response_25.aweme_detail.statistics.comment_count
+  share_count: 821
+    Path: network_response_25.aweme_detail.statistics.share_count
+  sec_uid: MS4wLjABAAAAYokhxSv-FEBNnpiWOnybAXVU3DYt6-WrpmX7i4jntY4
+    Path: network_response_25.aweme_detail.author.sec_uid
+  unique_id: dong158960
+    Path: network_response_25.aweme_detail.author.unique_id
+  short_id: 1706519806
+    Path: network_response_25.aweme_detail.author.short_id
+  custom_verify: 
+    Path: network_response_25.aweme_detail.author.custom_verify
+  enterprise_verify_reason: 
+    Path: network_response_25.aweme_detail.author.enterprise_verify_reason
+  music_id: 7622473545662073654
+    Path: network_response_25.aweme_detail.music.id
+  music_title: @二次元大东创作的原声
+    Path: network_response_25.aweme_detail.music.title
+  music_author: 二次元大东
+    Path: network_response_25.aweme_detail.music.author
+  music_duration: 986
+    Path: network_response_25.aweme_detail.music.duration
+  music_owner_id: 105103838174
+    Path: network_response_25.aweme_detail.music.owner_id
+  music_owner_nickname: 二次元大东
+    Path: network_response_25.aweme_detail.music.owner_nickname
+  is_original_sound: False
+    Path: network_response_25.aweme_detail.music.is_original
+  cover_uri: image-cut-tos-priv/1e7a84a69e9fedbeed8e9634d2c5fdbf
+    Path: network_response_25.aweme_detail.video.cover.uri
+  origin_cover_uri: tos-cn-p-0015/ogkYINiz2DAydvzRXHFeA9pADAKgCByyI7faIE
+    Path: network_response_25.aweme_detail.video.origin_cover.uri
+  dynamic_cover_uri: tos-cn-i-dy/f511f50be3ef44ee954be3c643082223
+    Path: network_response_25.aweme_detail.video.dynamic_cover.uri
+  origin_cover_width: 640
+    Path: network_response_25.aweme_detail.video.origin_cover.width
+  origin_cover_height: 360
+    Path: network_response_25.aweme_detail.video.origin_cover.height
+  dynamic_cover_width: 720
+    Path: network_response_25.aweme_detail.video.dynamic_cover.width
+  dynamic_cover_height: 720
+    Path: network_response_25.aweme_detail.video.dynamic_cover.height
+  video_width: 720
+    Path: network_response_25.aweme_detail.author.avatar_thumb.width
+  video_height: 720
+    Path: network_response_25.aweme_detail.author.avatar_thumb.height
+  origin_cover_url_list: {'height': 360, 'uri': 'tos-cn-p-0015/ogkYINiz2DAydvzRXHFeA9pADAKgCByyI7faIE', 'url_list': ['https:/...
+    Path: network_response_25.aweme_detail.video.origin_cover
+  dynamic_cover_url_list: {'height': 720, 'uri': 'tos-cn-i-dy/f511f50be3ef44ee954be3c643082223', 'url_list': ['https://p3-pc-s...
+    Path: network_response_25.aweme_detail.video.dynamic_cover
+  can_comment: True
+    Path: network_response_25.aweme_detail.aweme_control.can_comment
+  can_forward: True
+    Path: network_response_25.aweme_detail.aweme_control.can_forward
+  can_share: True
+    Path: network_response_25.aweme_detail.aweme_control.can_share
+  can_show_comment: True
+    Path: network_response_25.aweme_detail.aweme_control.can_show_comment
+  allow_download: False
+    Path: network_response_25.aweme_detail.author.prevent_download
+  allow_duet: True
+    Path: network_response_25.aweme_detail.video_control.allow_duet
+  allow_music: False
+    Path: network_response_25.aweme_detail.video_control.allow_music
+  allow_record: True
+    Path: network_response_25.aweme_detail.video_control.allow_record
+  allow_stitch: False
+    Path: network_response_25.aweme_detail.video_control.allow_stitch
+  private_status: 0
+    Path: network_response_25.aweme_detail.status.private_status
+  is_delete: False
+    Path: network_response_25.aweme_detail.status.is_delete
+  is_prohibited: False
+    Path: network_response_25.aweme_detail.status.is_prohibited
+  in_reviewing: False
+    Path: network_response_25.aweme_detail.status.in_reviewing
+  review_status: 0
+    Path: network_response_25.aweme_detail.status.review_result.review_status
+  comment_permission_status: 0
+    Path: network_response_25.aweme_detail.comment_permission_info.comment_permission_status
+  video_tag: NOT FOUND
+  chapter_list: NOT FOUND
+  chapter_abstract: NOT FOUND
+  chapter_review_status: NOT FOUND
+  chapter_recommend_type: NOT FOUND
+  comment_list_response: NOT FOUND
+
+Extracted 73 out of 79 target fields
+================================================================================

@@ -1,0 +1,11 @@
+video_id,crawl_time,can_comment,can_forward,can_share,can_show_comment,allow_download,allow_duet,allow_music,allow_record,allow_stitch,private_status,is_delete,is_prohibited,in_reviewing,review_status,comment_permission_status
+7622473264698314036,2026-05-06 22:27:51.440174,True,True,True,True,False,True,False,True,False,0,False,False,False,0,0
+7622305689017351906,2026-05-06 22:28:01.155449,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7619990977893339510,2026-05-06 22:28:13.647715,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7622236469284850970,2026-05-06 22:28:26.332811,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7625943440111941754,2026-05-06 22:28:40.149038,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7613388807098143194,2026-05-06 22:28:55.065752,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7628946780247428378,2026-05-06 22:29:09.842175,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7621066610589142322,2026-05-06 22:29:23.397712,,,,,,,,,,,,,,,
+7604806816416927022,2026-05-06 22:29:30.655959,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
+7598118255686283761,2026-05-06 22:29:39.908766,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0

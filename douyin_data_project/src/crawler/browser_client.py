@@ -740,7 +740,34 @@ class BrowserClient:
                 'video_width': {'value': None, 'path': None},
                 'video_height': {'value': None, 'path': None},
                 'origin_cover_url_list': {'value': None, 'path': None},
-                'dynamic_cover_url_list': {'value': None, 'path': None}
+                'dynamic_cover_url_list': {'value': None, 'path': None},
+                # ====== raw_video_status_control P2 ======
+                'can_comment': {'value': None, 'path': None},
+                'can_forward': {'value': None, 'path': None},
+                'can_share': {'value': None, 'path': None},
+                'can_show_comment': {'value': None, 'path': None},
+                'allow_download': {'value': None, 'path': None},
+                'allow_duet': {'value': None, 'path': None},
+                'allow_music': {'value': None, 'path': None},
+                'allow_record': {'value': None, 'path': None},
+                'allow_stitch': {'value': None, 'path': None},
+                'private_status': {'value': None, 'path': None},
+                'is_delete': {'value': None, 'path': None},
+                'is_prohibited': {'value': None, 'path': None},
+                'in_reviewing': {'value': None, 'path': None},
+                'review_status': {'value': None, 'path': None},
+                'comment_permission_status': {'value': None, 'path': None},
+                # ====== raw_video_tag P3 ======
+                'video_tag': {'value': None, 'path': None},
+                # ====== raw_chapter P3 ======
+                'chapter_list': {'value': None, 'path': None},
+                'chapter_abstract': {'value': None, 'path': None},
+                'chapter_review_status': {'value': None, 'path': None},
+                'chapter_recommend_type': {'value': None, 'path': None},
+                # ====== raw_comment ======
+                'comment_list_response': {'value': None, 'path': None},
+                # ====== raw_related_video ======
+                'related_response': {'value': None, 'path': None},
             }
 
             field_sources = {}
@@ -977,6 +1004,34 @@ class BrowserClient:
                 # No need to change again, already set above
                 pass
 
+            # Capture comment list response from network responses
+            for resp in network_responses:
+                resp_url = resp.get('url', '')
+                if '/aweme/v1/web/comment/list/' in resp_url:
+                    comment_body = resp.get('body', '')
+                    if comment_body:
+                        merged_fields['comment_list_response'] = {
+                            'value': comment_body,
+                            'path': f"network_response:{resp_url}"
+                        }
+                        logger.info(f"Captured comment list response from {resp_url} "
+                                   f"(body length: {len(comment_body)} chars)")
+                        break
+
+            # Capture related / recommended response from network responses
+            for resp in network_responses:
+                resp_url = resp.get('url', '')
+                if '/aweme/v1/web/aweme/related/' in resp_url:
+                    related_body = resp.get('body', '')
+                    if related_body:
+                        merged_fields['related_response'] = {
+                            'value': related_body,
+                            'path': f"network_response:{resp_url}"
+                        }
+                        logger.info(f"Captured related response from {resp_url} "
+                                   f"(body length: {len(related_body)} chars)")
+                        break
+
             # Add match metadata to summary for downstream processing
             summary['match_type'] = match_type
             summary['confidence'] = primary_selection_log['confidence']
@@ -1053,7 +1108,25 @@ class BrowserClient:
                     'origin_cover_url_list': {'value': None, 'path': None},
                     'dynamic_cover_url_list': {'value': None, 'path': None},
                     'video_width': {'value': None, 'path': None},
-                    'video_height': {'value': None, 'path': None}
+                    'video_height': {'value': None, 'path': None},
+                    # status_control fields
+                    'can_comment': {'value': None, 'path': None},
+                    'can_forward': {'value': None, 'path': None},
+                    'can_share': {'value': None, 'path': None},
+                    'can_show_comment': {'value': None, 'path': None},
+                    'allow_download': {'value': None, 'path': None},
+                    'allow_duet': {'value': None, 'path': None},
+                    'allow_music': {'value': None, 'path': None},
+                    'allow_record': {'value': None, 'path': None},
+                    'allow_stitch': {'value': None, 'path': None},
+                    'private_status': {'value': None, 'path': None},
+                    'is_delete': {'value': None, 'path': None},
+                    'is_prohibited': {'value': None, 'path': None},
+                    'in_reviewing': {'value': None, 'path': None},
+                    'review_status': {'value': None, 'path': None},
+                    'comment_permission_status': {'value': None, 'path': None},
+                    'comment_list_response': {'value': None, 'path': None},
+                    'related_response': {'value': None, 'path': None}
                 },
                 'field_sources': {},
                 'extracted_field_count': 0
@@ -1395,10 +1468,24 @@ class BrowserClient:
             'has_watermark': {'value': None, 'path': None},
             'origin_cover_url_list': {'value': None, 'path': None},
             'dynamic_cover_url_list': {'value': None, 'path': None},
+            # ====== raw_video_status_control P2 ======
+            'can_comment': {'value': None, 'path': None},
+            'can_forward': {'value': None, 'path': None},
+            'can_share': {'value': None, 'path': None},
+            'can_show_comment': {'value': None, 'path': None},
+            'allow_download': {'value': None, 'path': None},
+            'allow_duet': {'value': None, 'path': None},
+            'allow_music': {'value': None, 'path': None},
+            'allow_record': {'value': None, 'path': None},
+            'allow_stitch': {'value': None, 'path': None},
+            'private_status': {'value': None, 'path': None},
+            'is_delete': {'value': None, 'path': None},
+            'is_prohibited': {'value': None, 'path': None},
+            'in_reviewing': {'value': None, 'path': None},
+            'review_status': {'value': None, 'path': None},
+            'comment_permission_status': {'value': None, 'path': None},
             # 候选字段
             'shoot_way': {'value': None, 'path': None},
-            'can_show_comment': {'value': None, 'path': None},
-            'comment_permission_status': {'value': None, 'path': None},
             'co_creator_count': {'value': None, 'path': None},
             'has_co_creator': {'value': None, 'path': None},
             'product_genre_type': {'value': None, 'path': None},
@@ -1484,14 +1571,57 @@ class BrowserClient:
             # 正确命名的 URL list 字段
             'origin_cover_url_list': ['video.origin_cover', 'origin_cover', 'origin_cover_url', 'video.origin_cover.url_list'],
             'dynamic_cover_url_list': ['video.dynamic_cover', 'dynamic_cover', 'dynamic_cover_url', 'video.dynamic_cover.url_list'],
+            # ====== raw_video_status_control P2 ======
+            'can_comment': ['can_comment', 'aweme_control.can_comment',
+                            'comment_permission_info.can_comment', 'allow_comment',
+                            'comment_permission_info.allow_comment'],
+            'can_forward': ['can_forward', 'aweme_control.can_forward',
+                            'status.can_forward'],
+            'can_share': ['can_share', 'aweme_control.can_share', 'status.allow_share',
+                          'allow_share', 'status.can_share'],
+            'can_show_comment': ['can_show_comment', 'aweme_control.can_show_comment',
+                                 'canShowComment'],
+            'allow_download': ['allow_download', 'video_control.allow_download',
+                               'download_setting', 'prevent_download',
+                               'video_control.download_setting',
+                               'author.prevent_download'],
+            'allow_duet': ['allow_duet', 'video_control.allow_duet', 'duet_permission',
+                           'video_control.duet_permission'],
+            'allow_music': ['allow_music', 'video_control.allow_music',
+                            'status.allow_music'],
+            'allow_record': ['allow_record', 'video_control.allow_record',
+                             'status.allow_record'],
+            'allow_stitch': ['allow_stitch', 'video_control.allow_stitch',
+                             'stitch_permission', 'video_control.stitch_permission'],
+            'private_status': ['private_status', 'status.private_status', 'is_private',
+                               'status.is_private', 'private'],
+            'is_delete': ['is_delete', 'status.is_delete'],
+            'is_prohibited': ['is_prohibited', 'status.is_prohibited',
+                              'status.review_result.is_prohibited'],
+            'in_reviewing': ['in_reviewing', 'status.in_reviewing',
+                             'status.review_result.in_reviewing'],
+            'review_status': ['review_status', 'status.review_result.review_status',
+                              'status.review_status'],
+            'comment_permission_status': ['comment_permission_status',
+                                          'comment_permission_info.comment_permission_status',
+                                          'commentPermissionStatus',
+                                          'comment_permission_info.comment_permission',
+                                          'comment_permission',
+                                          'share_permission_info.share_permission',
+                                          'share_permission'],
+            # ====== raw_video_tag P3 ======
+            'video_tag': ['video_tag', 'videoTag', 'aweme_detail.video_tag'],
+            # ====== raw_chapter P3 ======
+            'chapter_list': ['chapter_list', 'chapterList', 'aweme_detail.chapter_list'],
+            'chapter_abstract': ['chapter_abstract', 'chapterAbstract', 'aweme_detail.chapter_abstract'],
+            'chapter_review_status': ['chapter_review_status', 'chapterReviewStatus', 'aweme_detail.chapter_review_status'],
+            'chapter_recommend_type': ['chapter_recommend_type', 'chapterRecommendType', 'aweme_detail.chapter_recommend_type', 'chapter_data.recommend_type'],
             # 候选字段
             'co_creator_count': ['co_creator_count', 'coCreatorCount'],
             'has_co_creator': ['has_co_creator', 'hasCoCreator'],
             'product_genre_type': ['product_genre_type', 'productGenreType'],
             'material_genre_sub_type_set': ['material_genre_sub_type_set', 'materialGenreSubTypeSet'],
             'rate': ['rate', 'rate_level'],
-            'can_show_comment': ['can_show_comment', 'canShowComment'],
-            'comment_permission_status': ['comment_permission_status', 'commentPermissionStatus'],
             'shoot_way': ['shoot_way', 'shootWay']
         }
 

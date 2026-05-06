@@ -18,9 +18,11 @@ from .client import DouyinClient
 from .browser_client import BrowserClient
 from .parser import DouyinParser
 from ..schemas.tables import RawWebVideoData, WebVideoMeta
+from ..processing.raw_table_builder import build_raw_tables
 from ..utils.config_loader import load_config, get_config
 from ..utils.logger import get_logger
 from ..utils.io_utils import write_jsonl, write_parquet, write_csv
+from ..schemas.raw_schema import get_table_columns
 
 logger = get_logger(__name__)
 
@@ -396,7 +398,34 @@ class CrawlScheduler:
                         'video_width': 'video_width',
                         'video_height': 'video_height',
                         'origin_cover_url_list': 'origin_cover_url_list',
-                        'dynamic_cover_url_list': 'dynamic_cover_url_list'
+                        'dynamic_cover_url_list': 'dynamic_cover_url_list',
+                        # ====== 2026-05-06 第二批 raw 表: raw_video_status_control ======
+                        'can_comment': 'can_comment',
+                        'can_forward': 'can_forward',
+                        'can_share': 'can_share',
+                        'can_show_comment': 'can_show_comment',
+                        'allow_download': 'allow_download',
+                        'allow_duet': 'allow_duet',
+                        'allow_music': 'allow_music',
+                        'allow_record': 'allow_record',
+                        'allow_stitch': 'allow_stitch',
+                        'private_status': 'private_status',
+                        'is_delete': 'is_delete',
+                        'is_prohibited': 'is_prohibited',
+                        'in_reviewing': 'in_reviewing',
+                        'review_status': 'review_status',
+                        'comment_permission_status': 'comment_permission_status',
+                        # ====== raw_video_tag P3 ======
+                        'video_tag': 'video_tag',
+                        # ====== raw_chapter P3 ======
+                        'chapter_list': 'chapter_list',
+                        'chapter_abstract': 'chapter_abstract',
+                        'chapter_review_status': 'chapter_review_status',
+                        'chapter_recommend_type': 'chapter_recommend_type',
+                        # ====== raw_comment ======
+                        'comment_list_response': 'comment_response_raw',
+                        # ====== raw_related_video ======
+                        'related_response': 'related_response_raw',
                     }
 
                     for browser_field, parsed_field in field_mapping.items():
@@ -418,6 +447,20 @@ class CrawlScheduler:
                                         logger.debug(f"Converted {parsed_field} to string")
 
                                 elif parsed_field == 'hashtag_list':
+                                    # Save raw text_extra data for raw_hashtag table building
+                                    if isinstance(value, list):
+                                        if value and isinstance(value[0], dict) and 'hashtag_name' in value[0]:
+                                            parsed_data['text_extra_raw'] = value
+                                            logger.debug(f"Saved raw text_extra data for raw_hashtag: {len(value)} items")
+                                    elif isinstance(value, str):
+                                        try:
+                                            parsed_list = json.loads(value)
+                                            if isinstance(parsed_list, list) and parsed_list and isinstance(parsed_list[0], dict):
+                                                parsed_data['text_extra_raw'] = parsed_list
+                                                logger.debug(f"Saved raw text_extra from JSON string for raw_hashtag: {len(parsed_list)} items")
+                                        except json.JSONDecodeError:
+                                            pass
+
                                     # Ensure list of strings
                                     if isinstance(value, str):
                                         # Try to parse JSON string
@@ -456,6 +499,93 @@ class CrawlScheduler:
                                     else:
                                         logger.warning(f"Unhandled type for hashtag_list: {type(value)}, converting to empty list")
                                         value = []
+
+                                elif parsed_field == 'video_tag':
+                                    # Save raw video_tag data for raw_video_tag table building
+                                    if isinstance(value, list):
+                                        if value and isinstance(value[0], dict) and ('tag_id' in value[0] or 'tag_name' in value[0]):
+                                            parsed_data['video_tag_raw'] = value
+                                            logger.debug(f"Saved raw video_tag data: {len(value)} items")
+                                    # Store as JSON string for flat metadata
+                                    if isinstance(value, list):
+                                        try:
+                                            value = json.dumps(value, ensure_ascii=False)
+                                        except:
+                                            value = str(value)
+                                    elif not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed video_tag: {str(value)[:100]}")
+
+                                elif parsed_field == 'chapter_list':
+                                    # Save raw chapter_list data for raw_chapter table building
+                                    if isinstance(value, list):
+                                        if value and isinstance(value[0], dict):
+                                            parsed_data['chapter_list_raw'] = value
+                                            logger.debug(f"Saved raw chapter_list data: {len(value)} items")
+                                    # Store as JSON string for flat metadata
+                                    if isinstance(value, list):
+                                        try:
+                                            value = json.dumps(value, ensure_ascii=False)
+                                        except:
+                                            value = str(value)
+                                    elif not isinstance(value, str):
+                                        value = str(value)
+                                    logger.debug(f"Processed chapter_list: {str(value)[:100]}")
+
+                                elif parsed_field == 'chapter_abstract':
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value) if value is not None else None
+                                    if value:
+                                        logger.debug(f"Processed chapter_abstract: {str(value)[:100]}")
+
+                                elif parsed_field == 'chapter_review_status':
+                                    # Convert to int if possible
+                                    if isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"chapter_review_status string cannot be converted to int: {value}")
+                                            value = None
+                                    elif isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif not isinstance(value, int):
+                                        logger.warning(f"Unhandled type for chapter_review_status: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed chapter_review_status: {value}")
+
+                                elif parsed_field == 'chapter_recommend_type':
+                                    # Convert to string
+                                    if not isinstance(value, str):
+                                        value = str(value) if value is not None else None
+                                    if value is not None:
+                                        logger.debug(f"Processed chapter_recommend_type: {str(value)[:100]}")
+
+                                elif parsed_field == 'comment_response_raw':
+                                    # Store raw comment response JSON string
+                                    if isinstance(value, str):
+                                        try:
+                                            json.loads(value)  # validate it's JSON
+                                            parsed_data['comment_response_raw'] = value
+                                            logger.debug(f"Saved raw comment response (length: {len(value)} chars)")
+                                        except json.JSONDecodeError:
+                                            logger.debug(f"comment_response_raw is not valid JSON, storing raw string anyway")
+                                            parsed_data['comment_response_raw'] = value
+                                    else:
+                                        parsed_data['comment_response_raw'] = str(value) if value is not None else None
+
+                                elif parsed_field == 'related_response_raw':
+                                    # Store raw related response JSON string
+                                    if isinstance(value, str):
+                                        try:
+                                            json.loads(value)  # validate it's JSON
+                                            parsed_data['related_response_raw'] = value
+                                            logger.debug(f"Saved raw related response (length: {len(value)} chars)")
+                                        except json.JSONDecodeError:
+                                            logger.debug(f"related_response_raw is not valid JSON, storing raw string anyway")
+                                            parsed_data['related_response_raw'] = value
+                                    else:
+                                        parsed_data['related_response_raw'] = str(value) if value is not None else None
 
                                 elif parsed_field == 'author_page_url':
                                     # Convert to string
@@ -605,6 +735,38 @@ class CrawlScheduler:
                                         value = str(value)
                                     logger.debug(f"Processed {parsed_field}: {value[:100]}")
 
+                                # ====== raw_video_status_control P2 字段类型转换 ======
+                                elif parsed_field in ['can_comment', 'can_forward', 'can_share',
+                                                       'can_show_comment', 'allow_download',
+                                                       'allow_duet', 'allow_music', 'allow_record',
+                                                       'allow_stitch', 'is_delete', 'is_prohibited',
+                                                       'in_reviewing']:
+                                    # Convert to bool if possible
+                                    if isinstance(value, str):
+                                        value = value.lower() in ('true', '1', 'yes')
+                                    elif isinstance(value, int):
+                                        value = bool(value)
+                                    elif not isinstance(value, bool):
+                                        logger.warning(f"Unhandled type for {parsed_field}: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed {parsed_field}: {value}")
+
+                                elif parsed_field in ['private_status', 'review_status',
+                                                       'comment_permission_status']:
+                                    # Convert to int if possible
+                                    if isinstance(value, str):
+                                        try:
+                                            value = int(value)
+                                        except ValueError:
+                                            logger.warning(f"{parsed_field} string cannot be converted to int: {value}")
+                                            value = None
+                                    elif isinstance(value, (int, float)):
+                                        value = int(value)
+                                    elif not isinstance(value, int):
+                                        logger.warning(f"Unhandled type for {parsed_field}: {type(value)}, setting to None")
+                                        value = None
+                                    logger.debug(f"Processed {parsed_field}: {value}")
+
                                 elif parsed_field in ['origin_cover_url_list', 'dynamic_cover_url_list']:
                                     # Same URL list processing as cover_url_list etc.
                                     if isinstance(value, list):
@@ -715,6 +877,26 @@ class CrawlScheduler:
 
                 if meta_record:
                     self._save_metadata(meta_record)
+
+                # Build and save raw tables (video_detail, author, music, media,
+                # hashtag, status_control, crawl_log)
+                crawl_context = {
+                    'run_id': self.run_id,
+                    'target_url': task.original_url or task.url,
+                    'source_page_type': task.page_type or task.source_entry,
+                    'request_url': fetched_url,
+                    'response_status': http_status,
+                }
+                if browser_extraction_summary:
+                    crawl_context['primary_source_key'] = browser_extraction_summary.get('primary_source_key')
+                    crawl_context['match_type'] = browser_extraction_summary.get('match_type')
+                    crawl_context['confidence'] = browser_extraction_summary.get('confidence')
+                    crawl_context['network_response_count'] = browser_extraction_summary.get('network_responses_count')
+                    crawl_context['runtime_objects_count'] = browser_extraction_summary.get('runtime_objects_count')
+
+                raw_tables = build_raw_tables(parsed_data, crawl_context=crawl_context)
+                self._save_raw_tables(raw_tables)
+                logger.info(f"Saved {len(raw_tables)} raw table records for {task.url}")
 
                 # Log parsing summary for evidence (regardless of meta_record creation)
                 self._log_parsing_summary(task.url, parsed_data, meta_record)
@@ -853,6 +1035,45 @@ class CrawlScheduler:
             # write_parquet(parquet_file, [metadata.dict()], mode='a')
         except Exception as e:
             logger.error(f"Failed to save metadata: {e}")
+
+    def _save_raw_tables(self, raw_tables: dict[str, Any]):
+        """Save raw table records to interim CSV files.
+
+        Each table is saved as a separate CSV in the run-specific interim directory.
+        Column order follows src/schemas/raw_schema.py.
+        Supports both single-record dicts and multi-record lists (e.g. raw_hashtag).
+
+        Args:
+            raw_tables: dict of {table_name: {column: value} or [{column: value}, ...]}
+        """
+        for table_name, record_or_list in raw_tables.items():
+            # Normalize to list of records
+            if isinstance(record_or_list, dict):
+                records = [record_or_list]
+            elif isinstance(record_or_list, list):
+                records = record_or_list
+            else:
+                logger.warning(f"Unexpected type for raw table {table_name}: {type(record_or_list)}")
+                continue
+
+            csv_filename = f"{table_name}_{self.file_suffix}.csv"
+            csv_path = self.interim_run_dir / csv_filename
+            try:
+                if not records:
+                    if not csv_path.exists():
+                        # Write header-only CSV only if file doesn't exist yet
+                        import pandas as pd
+                        cols = get_table_columns(table_name)
+                        df = pd.DataFrame(columns=cols)
+                        df.to_csv(csv_path, index=False)
+                        logger.debug(f"Raw table {table_name} created with header only ({len(cols)} cols, 0 rows)")
+                    else:
+                        logger.debug(f"Raw table {table_name} already has data, skipping empty append")
+                else:
+                    write_csv(csv_path, records, mode='a', index=False)
+                    logger.debug(f"Raw table {table_name} appended {len(records)} row(s) to {csv_path}")
+            except Exception as e:
+                logger.error(f"Failed to save raw table {table_name}: {e}")
 
     def start(self, num_workers: Optional[int] = None):
         """Start crawling with specified number of workers.

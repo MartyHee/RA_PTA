@@ -1,0 +1,3 @@
+video_id,crawl_time,can_comment,can_forward,can_share,can_show_comment,allow_download,allow_duet,allow_music,allow_record,allow_stitch,private_status,is_delete,is_prohibited,in_reviewing,review_status,comment_permission_status
+7622473264698314036,2026-05-06 20:44:58.169591,True,True,True,True,False,True,False,True,False,0,False,False,False,0,0
+7622305689017351906,2026-05-06 20:45:08.043350,True,True,True,True,False,True,True,True,False,0,False,False,False,0,0
