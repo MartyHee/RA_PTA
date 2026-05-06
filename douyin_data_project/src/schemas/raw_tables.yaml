@@ -1,0 +1,688 @@
+# =============================================================================
+# 11 张 raw 表目标 Schema 定义
+# 依据: docs/data_dictionary.md §10 (建议最终 raw schema)
+# 创建日期: 2026-05-06
+# 用途: 为后续 parser / scheduler 多表输出提供统一的 schema 来源
+# =============================================================================
+
+tables:
+
+  # ---------------------------------------------------------------------------
+  # 1. raw_video_detail
+  # ---------------------------------------------------------------------------
+  raw_video_detail:
+    table_name: raw_video_detail
+    grain: "每条视频一行"
+    description: "视频详情页主对象的原生字段，是训练样本、内容图和多模态数据的主索引表"
+    primary_key_candidates: [video_id]
+    foreign_key_candidates: []
+    required_fields:
+      - video_id
+      - page_url
+      - crawl_time
+    optional_fields:
+      - sec_item_id
+      - group_id
+      - comment_gid
+      - share_url
+      - caption
+      - desc
+      - preview_title
+      - item_title
+      - create_time
+      - duration_ms
+      - aweme_type
+      - media_type
+      - region
+      - is_top
+      - is_ads
+      - is_life_item
+      - original
+      - shoot_way
+      - digg_count
+      - comment_count
+      - share_count
+      - collect_count
+      - play_count
+      - recommend_count
+      - admire_count
+      - primary_source_key
+    quality_fields: []
+    list_like_fields: []
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - create_time
+      - duration_ms
+      - aweme_type
+      - media_type
+      - is_top
+      - original
+      - digg_count
+      - comment_count
+      - share_count
+      - collect_count
+      - play_count
+      - recommend_count
+      - admire_count
+    text_fields:
+      - video_id
+      - sec_item_id
+      - group_id
+      - comment_gid
+      - page_url
+      - share_url
+      - caption
+      - desc
+      - preview_title
+      - item_title
+      - region
+      - shoot_way
+      - primary_source_key
+    bool_fields: [is_ads, is_life_item]
+    source_response_types:
+      - video_detail_response
+      - constructed    # page_url 由采集入口 URL 构造
+      - crawler_runtime  # crawl_time 由采集程序生成
+    notes: >
+      video_id 优先来自 URL 或 aweme_detail.aweme_id。
+      page_url 由采集入口 URL 直接记录，不是响应中的字段。
+      play_count 网页端经常返回 0，应原样保存。
+
+  # ---------------------------------------------------------------------------
+  # 2. raw_author
+  # ---------------------------------------------------------------------------
+  raw_author:
+    table_name: raw_author
+    grain: "每个作者一行或多快照"
+    description: "作者在页面响应中直接出现的原生字段"
+    primary_key_candidates: [author_id]
+    foreign_key_candidates: []
+    required_fields:
+      - author_id
+      - crawl_time
+    optional_fields:
+      - author_user_id
+      - sec_uid
+      - unique_id
+      - short_id
+      - nickname
+      - signature
+      - follower_count
+      - total_favorited
+      - favoriting_count
+      - following_count
+      - verification_type
+      - custom_verify
+      - enterprise_verify_reason
+      - avatar_thumb_url_list
+      - cover_url_list
+      - author_status
+      - author_secret
+      - author_prevent_download
+    quality_fields: []
+    list_like_fields:
+      - avatar_thumb_url_list
+      - cover_url_list
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - author_user_id
+      - follower_count
+      - total_favorited
+      - favoriting_count
+      - following_count
+      - verification_type
+      - author_status
+      - author_secret
+    text_fields:
+      - author_id
+      - sec_uid
+      - unique_id
+      - short_id
+      - nickname
+      - signature
+      - custom_verify
+      - enterprise_verify_reason
+    bool_fields:
+      - author_prevent_download
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      作者信息嵌入在 aweme_detail.author 中，与视频详情同响应。
+      不同采集批次间作者信息可能变化（昵称、签名等），应保留多快照。
+      sec_uid 是构造作者主页 URL 的关键字段，但主页 URL 本身不是响应原生字段。
+
+  # ---------------------------------------------------------------------------
+  # 3. raw_music
+  # ---------------------------------------------------------------------------
+  raw_music:
+    table_name: raw_music
+    grain: "每个 video_id 一行（每视频最多关联一首音乐）"
+    description: "视频所使用的音乐信息，用于 Wide & Deep 稀疏特征和 GraphSAGE 音乐节点"
+    primary_key_candidates: [video_id]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - crawl_time
+    optional_fields:
+      - music_id
+      - music_mid
+      - music_title
+      - music_author
+      - music_owner_id
+      - music_owner_nickname
+      - music_duration
+      - music_shoot_duration
+      - is_original_sound
+      - is_commerce_music
+      - music_status
+      - music_collect_count
+      - music_cover_url_list
+      - music_play_url_list
+    quality_fields: []
+    list_like_fields:
+      - music_cover_url_list
+      - music_play_url_list
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - music_duration
+      - music_shoot_duration
+      - music_status
+      - music_collect_count
+    text_fields:
+      - video_id
+      - music_id
+      - music_mid
+      - music_title
+      - music_author
+      - music_owner_id
+      - music_owner_nickname
+    bool_fields:
+      - is_original_sound
+      - is_commerce_music
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      music_id 优先使用 aweme_detail.music.id_str (string)。
+      video_id 作为外键关联 raw_video_detail。
+      music_duration 单位通常为秒（非毫秒）。
+      music_play_url_list 只保存 URL 元信息，注意合规使用。
+
+  # ---------------------------------------------------------------------------
+  # 4. raw_hashtag
+  # ---------------------------------------------------------------------------
+  raw_hashtag:
+    table_name: raw_hashtag
+    grain: "每个 video_id-hashtag_id 一行"
+    description: "视频文案中的话题实体，用于 video-hashtag 图边"
+    primary_key_candidates: [video_id, hashtag_name]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - hashtag_name
+      - crawl_time
+    optional_fields:
+      - hashtag_id
+      - hashtag_type
+      - is_commerce
+      - caption_start
+      - caption_end
+      - start
+      - end
+    quality_fields: []
+    list_like_fields: []
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - hashtag_type
+      - caption_start
+      - caption_end
+      - start
+      - end
+    text_fields:
+      - video_id
+      - hashtag_id
+      - hashtag_name
+    bool_fields:
+      - is_commerce
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      来自 aweme_detail.text_extra[] 数组，每行一个话题。
+      hashtag_id 在响应中可能不存在（仅 hashtag_name），此时用 hashtag_name 联合标识。
+      caption_start/caption_end 表示话题在 caption 文本中的位置。
+      start/end 是响应中可能存在的另一组位置字段。
+
+  # ---------------------------------------------------------------------------
+  # 5. raw_video_tag
+  # ---------------------------------------------------------------------------
+  raw_video_tag:
+    table_name: raw_video_tag
+    grain: "每个 video_id-tag_id 一行"
+    description: "平台识别的视频内容分类标签，用于类别特征和 video-video_tag 图边"
+    primary_key_candidates: [video_id, tag_id]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - tag_id
+      - tag_name
+      - crawl_time
+    optional_fields:
+      - tag_level
+    quality_fields: []
+    list_like_fields: []
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - tag_level
+    text_fields:
+      - video_id
+      - tag_id
+      - tag_name
+    bool_fields: []
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      来自 aweme_detail.video_tag[] 数组。
+      当前 crawler 完全无提取逻辑（sample0427 中为完全补齐值）。
+      tag_id 为整数类型（data_dictionary 标记为 int）。
+      tag_level 表示标签层级（如一级标签、二级标签）。
+
+  # ---------------------------------------------------------------------------
+  # 6. raw_video_media
+  # ---------------------------------------------------------------------------
+  raw_video_media:
+    table_name: raw_video_media
+    grain: "每条视频一行"
+    description: "视频封面、动态封面、原始封面和媒体结构字段"
+    primary_key_candidates: [video_id]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - crawl_time
+    optional_fields:
+      - cover_uri
+      - cover_url_list
+      - cover_width
+      - cover_height
+      - origin_cover_uri
+      - origin_cover_url_list
+      - origin_cover_width
+      - origin_cover_height
+      - dynamic_cover_uri
+      - dynamic_cover_url_list
+      - dynamic_cover_width
+      - dynamic_cover_height
+      - video_width
+      - video_height
+      - video_format
+      - video_ratio
+      - is_h265
+      - is_long_video
+      - has_watermark
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+    quality_fields: []
+    list_like_fields:
+      - cover_url_list
+      - origin_cover_url_list
+      - dynamic_cover_url_list
+    json_like_fields:
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - cover_width
+      - cover_height
+      - origin_cover_width
+      - origin_cover_height
+      - dynamic_cover_width
+      - dynamic_cover_height
+      - video_width
+      - video_height
+      - is_h265
+      - is_long_video
+    text_fields:
+      - video_id
+      - cover_uri
+      - origin_cover_uri
+      - dynamic_cover_uri
+      - video_format
+      - video_ratio
+    bool_fields:
+      - has_watermark
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      封面 URL 列表字段（cover_url_list / origin_cover_url_list / dynamic_cover_url_list）
+      在 JSON 响应中为数组，CSV 存储时应保持字符串化 JSON。
+      bit_rate_raw / big_thumbs_raw / video_meta_raw 为复杂 JSON 结构，保留原始文本。
+      -1 占位值常见于宽度/高度/is_h265/is_long_video 等字段。
+
+  # ---------------------------------------------------------------------------
+  # 7. raw_video_status_control
+  # ---------------------------------------------------------------------------
+  raw_video_status_control:
+    table_name: raw_video_status_control
+    grain: "每条视频一行"
+    description: "状态、审核、互动权限和内容可见性字段"
+    primary_key_candidates: [video_id]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - crawl_time
+    optional_fields:
+      - can_comment
+      - can_forward
+      - can_share
+      - can_show_comment
+      - allow_download
+      - allow_duet
+      - allow_music
+      - allow_record
+      - allow_stitch
+      - private_status
+      - is_delete
+      - is_prohibited
+      - in_reviewing
+      - review_status
+      - comment_permission_status
+    quality_fields: []
+    list_like_fields: []
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - private_status
+      - review_status
+      - comment_permission_status
+    text_fields:
+      - video_id
+    bool_fields:
+      - can_comment
+      - can_forward
+      - can_share
+      - can_show_comment
+      - allow_download
+      - allow_duet
+      - allow_music
+      - allow_record
+      - allow_stitch
+      - is_delete
+      - is_prohibited
+      - in_reviewing
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      字段分布在 aweme_detail.status, aweme_detail.aweme_control,
+      aweme_detail.video_control, aweme_detail.comment_permission_info 等多个子对象中。
+      当前 crawler 完全无提取逻辑（sample0427 中为完全补齐值）。
+      离线实验前应使用 is_delete / is_prohibited / private_status 过滤异常样本。
+
+  # ---------------------------------------------------------------------------
+  # 8. raw_chapter
+  # ---------------------------------------------------------------------------
+  raw_chapter:
+    table_name: raw_chapter
+    grain: "每个 video_id-chapter_index 一行"
+    description: "章节、摘要和智能结构字段"
+    primary_key_candidates: [video_id, chapter_index]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - chapter_index
+      - crawl_time
+    optional_fields:
+      - chapter_desc
+      - chapter_detail
+      - chapter_timestamp
+      - chapter_cover_url
+      - chapter_abstract
+      - chapter_review_status
+      - chapter_recommend_type
+    quality_fields: []
+    list_like_fields: []
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - chapter_index
+      - chapter_timestamp
+      - chapter_review_status
+    text_fields:
+      - video_id
+      - chapter_desc
+      - chapter_detail
+      - chapter_cover_url
+      - chapter_abstract
+      - chapter_recommend_type
+    bool_fields: []
+    source_response_types:
+      - video_detail_response
+      - crawler_runtime
+    notes: >
+      来自 aweme_detail.chapter_list[] 数组和 aweme_detail.chapter_abstract 单字段。
+      chapter_index 为章节序号，由数组索引派生。
+      chapter_abstract 是视频级别智能摘要（非数组）。
+      chapter_timestamp 通常为毫秒。
+      当前 crawler 完全无提取逻辑（sample0427 中为完全补齐值）。
+
+  # ---------------------------------------------------------------------------
+  # 9. raw_comment
+  # ---------------------------------------------------------------------------
+  raw_comment:
+    table_name: raw_comment
+    grain: "每条评论一行"
+    description: "公开评论区可见的评论字段，用于文本增强和 video-comment 图边"
+    primary_key_candidates: [comment_id]
+    foreign_key_candidates: [video_id]
+    required_fields:
+      - video_id
+      - comment_id
+      - crawl_time
+    optional_fields:
+      - comment_text
+      - comment_create_time
+      - comment_digg_count
+      - comment_status
+      - comment_reply_total
+      - reply_id
+      - reply_to_reply_id
+      - is_hot
+      - is_author_digged
+      - stick_position
+      - label_text
+      - label_type
+      - comment_user_id
+      - comment_user_sec_uid
+      - comment_user_nickname
+      - comment_user_unique_id
+      - comment_user_avatar_url_list
+      - comment_user_region
+      - comment_cursor
+      - comment_has_more
+      - comment_total
+    quality_fields: []
+    list_like_fields:
+      - comment_user_avatar_url_list
+    json_like_fields: []
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - comment_create_time
+      - comment_digg_count
+      - comment_status
+      - comment_reply_total
+      - reply_id
+      - reply_to_reply_id
+      - stick_position
+      - label_type
+      - comment_user_id
+      - comment_cursor
+      - comment_total
+    text_fields:
+      - video_id
+      - comment_id
+      - comment_text
+      - comment_user_sec_uid
+      - comment_user_nickname
+      - comment_user_unique_id
+      - comment_user_region
+      - label_text
+    bool_fields:
+      - is_hot
+      - is_author_digged
+      - comment_has_more
+    source_response_types:
+      - comment_response
+      - crawler_runtime
+    notes: >
+      来自评论列表 API /aweme/v1/web/comment/list/ 响应。
+      video_id 来自请求参数 aweme_id（不是响应字段）。
+      comment_user_id / comment_user_sec_uid / comment_user_region 等用户信息
+      谨慎保存，不建议用于用户画像建模，只用于去重或聚合分析。
+      当前 crawler 完全无提取逻辑（sample0427 中为完全补齐值）。
+
+  # ---------------------------------------------------------------------------
+  # 10. raw_related_video
+  # ---------------------------------------------------------------------------
+  raw_related_video:
+    table_name: raw_related_video
+    grain: "每个 source_video_id-related_video_id 一行"
+    description: "相关推荐列表，用于内容图边和候选集"
+    primary_key_candidates: [source_video_id, related_video_id]
+    foreign_key_candidates: [source_video_id]
+    required_fields:
+      - source_video_id
+      - related_video_id
+      - related_rank_position
+      - crawl_time
+    optional_fields:
+      - related_author_id
+      - related_author_sec_uid
+      - related_author_nickname
+      - related_caption
+      - related_create_time
+      - related_duration_ms
+      - related_media_type
+      - related_digg_count
+      - related_comment_count
+      - related_share_count
+      - related_collect_count
+      - related_play_count
+      - related_cover_url_list
+      - related_music_id
+      - related_music_title
+      - related_text_extra_raw
+      - related_video_tag_raw
+      - related_chapter_abstract
+    quality_fields: []
+    list_like_fields:
+      - related_cover_url_list
+    json_like_fields:
+      - related_text_extra_raw
+      - related_video_tag_raw
+    timestamp_fields:
+      - crawl_time
+    numeric_fields:
+      - related_rank_position
+      - related_create_time
+      - related_duration_ms
+      - related_media_type
+      - related_digg_count
+      - related_comment_count
+      - related_share_count
+      - related_collect_count
+      - related_play_count
+    text_fields:
+      - source_video_id
+      - related_video_id
+      - related_author_id
+      - related_author_sec_uid
+      - related_author_nickname
+      - related_caption
+      - related_music_id
+      - related_music_title
+      - related_chapter_abstract
+    bool_fields: []
+    source_response_types:
+      - related_video_response
+      - crawler_runtime
+    notes: >
+      来自相关推荐 API /aweme/v1/web/aweme/related/ 响应。
+      source_video_id 来自请求参数 aweme_id（不是响应字段）。
+      related_rank_position 为推荐列表中的原始位置（0-based）。
+      对 GraphSAGE 和 A/B 模拟很重要，可提供内容图边和候选集来源。
+      related_text_extra_raw / related_video_tag_raw 保留原始 JSON 结构。
+      当前 crawler 完全无提取逻辑（sample0427 中为完全补齐值）。
+
+  # ---------------------------------------------------------------------------
+  # 11. raw_crawl_log
+  # ---------------------------------------------------------------------------
+  raw_crawl_log:
+    table_name: raw_crawl_log
+    grain: "每次采集请求一行"
+    description: "采集过程日志和匹配质量信息，用于数据追溯、异常排查和样本过滤"
+    primary_key_candidates: [crawl_batch_id, target_url]
+    foreign_key_candidates: []
+    required_fields:
+      - crawl_batch_id
+      - crawl_time
+      - target_url
+      - source_page_type
+    optional_fields:
+      - request_url
+      - request_cursor
+      - response_status
+      - response_timestamp
+      - response_headers_raw
+      - network_response_count
+      - runtime_objects_count
+    quality_fields:
+      - primary_source_key
+      - match_type
+      - confidence
+    list_like_fields: []
+    json_like_fields:
+      - response_headers_raw
+    timestamp_fields:
+      - crawl_time
+      - response_timestamp
+    numeric_fields:
+      - request_cursor
+      - response_status
+      - network_response_count
+      - runtime_objects_count
+    text_fields:
+      - crawl_batch_id
+      - target_url
+      - source_page_type
+      - request_url
+      - primary_source_key
+      - match_type
+      - confidence
+    bool_fields: []
+    source_response_types:
+      - crawler_runtime
+      - constructed_quality_field
+    notes: >
+      crawl_batch_id 由采集程序生成（如 run_id）。
+      match_type / confidence 是浏览器模式的匹配质量字段。
+      不用于模型输入，但用于数据质量评估和样本过滤。
+      response_headers_raw 保留原始响应头 JSON。

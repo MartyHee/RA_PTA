@@ -1,0 +1,1961 @@
+# =============================================================================
+# 逐字段字段来源与采集策略
+# 依据: docs/data_dictionary.md
+# 创建日期: 2026-05-06
+# =============================================================================
+
+# source_type:
+#   - video_detail_response : aweme_detail 主响应
+#   - comment_response      : 评论列表 API 响应
+#   - related_video_response: 相关推荐 API 响应
+#   - constructed           : 由采集程序构造
+#   - constructed_quality_field : 匹配质量字段（crawler 生成）
+#   - crawler_runtime       : 采集程序运行时生成
+#   - unknown               : 来源不确定
+
+# priority: P0(必填) / P1(高) / P2(中) / P3(低)
+
+fields:
+
+  # ===========================================================================
+  # raw_video_detail
+  # ===========================================================================
+  - table_name: raw_video_detail
+    field_name: video_id
+    source_type: video_detail_response
+    source_path_or_hint: url_extraction / aweme_detail.aweme_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 主键字段，优先来自 URL 提取，其次来自 aweme_detail.aweme_id
+
+  - table_name: raw_video_detail
+    field_name: sec_item_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.sec_item_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 安全化视频 ID，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: group_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.group_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 视频分组 ID，通常与 video_id 相同或相关，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: comment_gid
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.comment_gid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论关联视频 ID，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: page_url
+    source_type: constructed
+    source_path_or_hint: 采集入口 URL（run_crawl 输入）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 由原始输入 URL 直接记录，不是响应字段
+
+  - table_name: raw_video_detail
+    field_name: share_url
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.share_url / share_info.share_url
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 网页端可能为空
+
+  - table_name: raw_video_detail
+    field_name: caption
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.caption
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 视频 caption 文本，当前已提取为 desc_text
+
+  - table_name: raw_video_detail
+    field_name: desc
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.desc
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 视频 desc 文本，可能与 caption 相同，当前已提取为 desc_text
+
+  - table_name: raw_video_detail
+    field_name: preview_title
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.preview_title
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 页面预览标题，样本中全空
+
+  - table_name: raw_video_detail
+    field_name: item_title
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.item_title
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 视频标题，样本中全空
+
+  - table_name: raw_video_detail
+    field_name: create_time
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.create_time
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P0
+    notes: Unix 秒级时间戳，当前已正确提取
+
+  - table_name: raw_video_detail
+    field_name: duration_ms
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.duration / aweme_detail.video.duration
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 视频时长毫秒，当前已正确提取
+
+  - table_name: raw_video_detail
+    field_name: aweme_type
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.aweme_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 内容类型编码，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: media_type
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.media_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 媒体类型编码，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: region
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.region
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 内容地区，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: is_top
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.is_top
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否置顶，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: is_ads
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.is_ads
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否广告内容，当前 merged_fields 未包含
+
+  - table_name: raw_video_detail
+    field_name: is_life_item
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.is_life_item
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否生活服务内容
+
+  - table_name: raw_video_detail
+    field_name: original
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.original
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否原创标记
+
+  - table_name: raw_video_detail
+    field_name: shoot_way
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.shoot_way
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 拍摄/发布方式，样本中全空
+
+  - table_name: raw_video_detail
+    field_name: digg_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.digg_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 点赞数，当前已正确提取
+
+  - table_name: raw_video_detail
+    field_name: comment_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.comment_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 评论数，当前代码中仍为 comment_count_raw
+
+  - table_name: raw_video_detail
+    field_name: share_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.share_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 分享数，当前代码中仍为 share_count_raw
+
+  - table_name: raw_video_detail
+    field_name: collect_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.collect_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 收藏数，当前已正确提取
+
+  - table_name: raw_video_detail
+    field_name: play_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.play_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 播放数，网页端经常返回 0，应原样保存
+
+  - table_name: raw_video_detail
+    field_name: recommend_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.recommend_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐计数字段
+
+  - table_name: raw_video_detail
+    field_name: admire_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.statistics.admire_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 赞赏计数字段
+
+  - table_name: raw_video_detail
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间，由采集程序自动生成
+
+  - table_name: raw_video_detail
+    field_name: primary_source_key
+    source_type: constructed_quality_field
+    source_path_or_hint: browser_client 数据来源键（_merge_analysis）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: true
+    priority: P2
+    notes: 被选为主视频对象的响应来源
+
+  # ===========================================================================
+  # raw_author
+  # ===========================================================================
+  - table_name: raw_author
+    field_name: author_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.user_id / aweme_detail.author.uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 作者 UID，当前已正确提取
+
+  - table_name: raw_author
+    field_name: author_user_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author_user_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 作者用户 ID，可能与 author_id 相同，当前 merged_fields 未包含
+
+  - table_name: raw_author
+    field_name: sec_uid
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.sec_uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 作者安全 ID，构造主页链接的关键，当前 merged_fields 未包含
+
+  - table_name: raw_author
+    field_name: unique_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.unique_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 作者抖音号唯一标识，当前 merged_fields 未包含
+
+  - table_name: raw_author
+    field_name: short_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.short_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 作者短 ID，样本中全空
+
+  - table_name: raw_author
+    field_name: nickname
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.nickname
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 作者昵称，当前已提取为 author_name
+
+  - table_name: raw_author
+    field_name: signature
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.signature
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 作者签名，当前已提取为 author_signature
+
+  - table_name: raw_author
+    field_name: follower_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.follower_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 粉丝数，当前已提取为 author_follower_count
+
+  - table_name: raw_author
+    field_name: total_favorited
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.total_favorited
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 总获赞数，当前已提取为 author_total_favorited
+
+  - table_name: raw_author
+    field_name: favoriting_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.favoriting_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 喜欢计数，部分 -1 占位，当前 merged_fields 未包含
+
+  - table_name: raw_author
+    field_name: following_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.following_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 关注数，可能受页面限制，当前 merged_fields 未包含
+
+  - table_name: raw_author
+    field_name: verification_type
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.verification_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 认证类型，当前已提取
+
+  - table_name: raw_author
+    field_name: custom_verify
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.custom_verify
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 个人认证文本，样本中全空
+
+  - table_name: raw_author
+    field_name: enterprise_verify_reason
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.enterprise_verify_reason
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 企业认证文本，样本中全空
+
+  - table_name: raw_author
+    field_name: avatar_thumb_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.avatar_thumb.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 作者头像 URL 列表，ARRAY 类型，样本中为空数组
+
+  - table_name: raw_author
+    field_name: cover_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.cover_url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 作者主页封面 URL 列表，ARRAY 类型，样本中为空数组
+
+  - table_name: raw_author
+    field_name: author_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 作者账号状态
+
+  - table_name: raw_author
+    field_name: author_secret
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.secret
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否私密相关
+
+  - table_name: raw_author
+    field_name: author_prevent_download
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.prevent_download
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 作者是否限制下载
+
+  - table_name: raw_author
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_music
+  # ===========================================================================
+  - table_name: raw_music
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文而非音乐响应
+
+  - table_name: raw_music
+    field_name: music_title
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.title
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 音乐名称，当前已提取为 music_name
+
+  - table_name: raw_music
+    field_name: music_author
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.author
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 音乐作者，当前 merged_fields 未包含
+
+  - table_name: raw_music
+    field_name: music_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.id_str / aweme_detail.music.id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 音乐 ID，优先使用 id_str (string)，当前 merged_fields 未包含
+
+  - table_name: raw_music
+    field_name: music_mid
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.mid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 音乐 MID，样本中全空
+
+  - table_name: raw_music
+    field_name: music_owner_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.owner_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 音乐归属作者 ID，样本中全空
+
+  - table_name: raw_music
+    field_name: music_owner_nickname
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.owner_nickname
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 音乐归属作者昵称
+
+  - table_name: raw_music
+    field_name: music_duration
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.duration
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 音乐时长（秒），样本中为 -1 占位
+
+  - table_name: raw_music
+    field_name: music_shoot_duration
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.shoot_duration
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 拍摄时长，样本中为 -1 占位
+
+  - table_name: raw_music
+    field_name: is_original_sound
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.is_original_sound
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否原创声音
+
+  - table_name: raw_music
+    field_name: is_commerce_music
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.is_commerce_music
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否商业音乐
+
+  - table_name: raw_music
+    field_name: music_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 音乐状态
+
+  - table_name: raw_music
+    field_name: music_collect_count
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.collect_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 音乐收藏计数，样本中为 -1 占位
+
+  - table_name: raw_music
+    field_name: music_cover_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.cover_thumb.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 音乐封面 URL 列表，ARRAY 类型
+
+  - table_name: raw_music
+    field_name: music_play_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.music.play_url.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 音频播放 URL，注意合规使用
+
+  - table_name: raw_music
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_hashtag
+  # ===========================================================================
+  - table_name: raw_hashtag
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文而非 text_extra 响应
+
+  - table_name: raw_hashtag
+    field_name: hashtag_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].hashtag_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 话题 ID，响应中可能不存在（仅 hashtag_name），当前 merged_fields 未包含
+
+  - table_name: raw_hashtag
+    field_name: hashtag_name
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].hashtag_name
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 话题名称，当前在 hashtag_list 列表中未拆行
+
+  - table_name: raw_hashtag
+    field_name: hashtag_type
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 文本附加实体类型
+
+  - table_name: raw_hashtag
+    field_name: is_commerce
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].is_commerce
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否商业话题
+
+  - table_name: raw_hashtag
+    field_name: caption_start
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].start  # first occurrence
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 话题在 caption 中的开始位置，样本中为 -1
+
+  - table_name: raw_hashtag
+    field_name: caption_end
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].end  # first occurrence
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 话题在 caption 中的结束位置，样本中为 -1
+
+  - table_name: raw_hashtag
+    field_name: start
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].start
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 响应中的起始位置字段
+
+  - table_name: raw_hashtag
+    field_name: end
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.text_extra[].end
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 响应中的结束位置字段
+
+  - table_name: raw_hashtag
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_video_tag
+  # ===========================================================================
+  - table_name: raw_video_tag
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文
+
+  - table_name: raw_video_tag
+    field_name: tag_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_tag[].tag_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P1
+    notes: 平台内容标签 ID，当前完全无提取逻辑
+
+  - table_name: raw_video_tag
+    field_name: tag_name
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_tag[].tag_name
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P1
+    notes: 平台内容标签名称，当前完全无提取逻辑
+
+  - table_name: raw_video_tag
+    field_name: tag_level
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_tag[].level
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 标签层级，当前完全无提取逻辑
+
+  - table_name: raw_video_tag
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_video_media
+  # ===========================================================================
+  - table_name: raw_video_media
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文
+
+  - table_name: raw_video_media
+    field_name: cover_uri
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.cover.uri
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 封面资源 URI，样本中全空
+
+  - table_name: raw_video_media
+    field_name: cover_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.cover.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 视频封面 URL 列表，当前已提取
+
+  - table_name: raw_video_media
+    field_name: cover_width
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.cover.width
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 封面宽度，样本中为 -1 占位
+
+  - table_name: raw_video_media
+    field_name: cover_height
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.cover.height
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 封面高度，样本中为 -1 占位
+
+  - table_name: raw_video_media
+    field_name: origin_cover_uri
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.origin_cover.uri
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 原始封面 URI
+
+  - table_name: raw_video_media
+    field_name: origin_cover_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.origin_cover.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 原始封面 URL 列表，当前代码中仍为 origin_cover_url
+
+  - table_name: raw_video_media
+    field_name: origin_cover_width
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.origin_cover.width
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 原始封面宽度
+
+  - table_name: raw_video_media
+    field_name: origin_cover_height
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.origin_cover.height
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 原始封面高度
+
+  - table_name: raw_video_media
+    field_name: dynamic_cover_uri
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.dynamic_cover.uri
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 动态封面 URI
+
+  - table_name: raw_video_media
+    field_name: dynamic_cover_url_list
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.dynamic_cover.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 动态封面 URL 列表，当前代码中仍为 dynamic_cover_url
+
+  - table_name: raw_video_media
+    field_name: dynamic_cover_width
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.dynamic_cover.width
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 动态封面宽度
+
+  - table_name: raw_video_media
+    field_name: dynamic_cover_height
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.dynamic_cover.height
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 动态封面高度
+
+  - table_name: raw_video_media
+    field_name: video_width
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.width
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 视频宽度
+
+  - table_name: raw_video_media
+    field_name: video_height
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.height
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 视频高度
+
+  - table_name: raw_video_media
+    field_name: video_format
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.format
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 视频格式，如 dash
+
+  - table_name: raw_video_media
+    field_name: video_ratio
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.ratio
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 视频比例，样本中全空
+
+  - table_name: raw_video_media
+    field_name: is_h265
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.is_h265
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否 H.265 编码
+
+  - table_name: raw_video_media
+    field_name: is_long_video
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.is_long_video
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否长视频标识
+
+  - table_name: raw_video_media
+    field_name: has_watermark
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.has_watermark
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否有水印
+
+  - table_name: raw_video_media
+    field_name: bit_rate_raw
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.bit_rate
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 多码率原始 JSON，样本中全空
+
+  - table_name: raw_video_media
+    field_name: big_thumbs_raw
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.big_thumbs
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 缩略图原始 JSON，样本中全空
+
+  - table_name: raw_video_media
+    field_name: video_meta_raw
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video.meta
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 视频 meta 原始 JSON，样本中全空
+
+  - table_name: raw_video_media
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_video_status_control
+  # ===========================================================================
+  - table_name: raw_video_status_control
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文
+
+  - table_name: raw_video_status_control
+    field_name: can_comment
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.aweme_control.can_comment / aweme_detail.comment_permission_info.can_comment
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 是否允许评论，当前完全无提取逻辑
+
+  - table_name: raw_video_status_control
+    field_name: can_forward
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.aweme_control.can_forward / aweme_detail.status.forward_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否允许转发
+
+  - table_name: raw_video_status_control
+    field_name: can_share
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.aweme_control.can_share / aweme_detail.status.allow_share
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否允许分享
+
+  - table_name: raw_video_status_control
+    field_name: can_show_comment
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.aweme_control.can_show_comment
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否展示评论
+
+  - table_name: raw_video_status_control
+    field_name: allow_download
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_control.allow_download / aweme_detail.download_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否允许下载
+
+  - table_name: raw_video_status_control
+    field_name: allow_duet
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_control.allow_duet / aweme_detail.duet_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否允许合拍
+
+  - table_name: raw_video_status_control
+    field_name: allow_music
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_control.allow_music / aweme_detail.music_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否允许使用音乐
+
+  - table_name: raw_video_status_control
+    field_name: allow_record
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_control.allow_record / aweme_detail.prevent_download
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否允许录制
+
+  - table_name: raw_video_status_control
+    field_name: allow_stitch
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.video_control.allow_stitch / aweme_detail.stitch_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否允许拼接
+
+  - table_name: raw_video_status_control
+    field_name: private_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.status.private_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 私密状态
+
+  - table_name: raw_video_status_control
+    field_name: is_delete
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.status.is_delete
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 是否删除
+
+  - table_name: raw_video_status_control
+    field_name: is_prohibited
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.status.is_prohibited
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否被禁止展示
+
+  - table_name: raw_video_status_control
+    field_name: in_reviewing
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.status.review_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 是否审核中
+
+  - table_name: raw_video_status_control
+    field_name: review_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.status.review_result.review_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 审核状态
+
+  - table_name: raw_video_status_control
+    field_name: comment_permission_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.comment_permission_info.comment_permission_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 评论权限状态
+
+  - table_name: raw_video_status_control
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_chapter
+  # ===========================================================================
+  - table_name: raw_chapter
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 关联字段（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自视频详情上下文
+
+  - table_name: raw_chapter
+    field_name: chapter_index
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_list[].chapter_index（由数组索引派生）
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P1
+    notes: 章节序号，由数组索引派生
+
+  - table_name: raw_chapter
+    field_name: chapter_desc
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_list[].desc
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 章节标题
+
+  - table_name: raw_chapter
+    field_name: chapter_detail
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_list[].detail
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 章节详情文本
+
+  - table_name: raw_chapter
+    field_name: chapter_timestamp
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_list[].start_time
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 章节时间戳（毫秒）
+
+  - table_name: raw_chapter
+    field_name: chapter_cover_url
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_list[].cover_url
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 章节封面 URL，样本中全空
+
+  - table_name: raw_chapter
+    field_name: chapter_abstract
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_abstract
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 视频级别智能摘要（非数组）
+
+  - table_name: raw_chapter
+    field_name: chapter_review_status
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_review_status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 章节审核状态
+
+  - table_name: raw_chapter
+    field_name: chapter_recommend_type
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.chapter_data.recommend_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 章节推荐类型
+
+  - table_name: raw_chapter
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_comment
+  # ===========================================================================
+  - table_name: raw_comment
+    field_name: video_id
+    source_type: constructed
+    source_path_or_hint: 请求参数 aweme_id
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 外键，来自评论 API 请求参数
+
+  - table_name: raw_comment
+    field_name: comment_id
+    source_type: comment_response
+    source_path_or_hint: comments[].cid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 评论 ID
+
+  - table_name: raw_comment
+    field_name: comment_text
+    source_type: comment_response
+    source_path_or_hint: comments[].text
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 评论文本
+
+  - table_name: raw_comment
+    field_name: comment_create_time
+    source_type: comment_response
+    source_path_or_hint: comments[].create_time
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 评论时间戳
+
+  - table_name: raw_comment
+    field_name: comment_digg_count
+    source_type: comment_response
+    source_path_or_hint: comments[].digg_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 评论点赞数
+
+  - table_name: raw_comment
+    field_name: comment_status
+    source_type: comment_response
+    source_path_or_hint: comments[].status
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论状态
+
+  - table_name: raw_comment
+    field_name: comment_reply_total
+    source_type: comment_response
+    source_path_or_hint: comments[].reply_comment_total
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 回复数
+
+  - table_name: raw_comment
+    field_name: reply_id
+    source_type: comment_response
+    source_path_or_hint: comments[].reply_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 回复 ID
+
+  - table_name: raw_comment
+    field_name: reply_to_reply_id
+    source_type: comment_response
+    source_path_or_hint: comments[].reply_to_reply_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 被回复的回复 ID
+
+  - table_name: raw_comment
+    field_name: is_hot
+    source_type: comment_response
+    source_path_or_hint: comments[].is_hot
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否热评
+
+  - table_name: raw_comment
+    field_name: is_author_digged
+    source_type: comment_response
+    source_path_or_hint: comments[].is_author_digged
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 作者是否点赞
+
+  - table_name: raw_comment
+    field_name: stick_position
+    source_type: comment_response
+    source_path_or_hint: comments[].stick_position
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 置顶位置
+
+  - table_name: raw_comment
+    field_name: label_text
+    source_type: comment_response
+    source_path_or_hint: comments[].label_text
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 标签文本，样本中全空
+
+  - table_name: raw_comment
+    field_name: label_type
+    source_type: comment_response
+    source_path_or_hint: comments[].label_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 标签类型
+
+  - table_name: raw_comment
+    field_name: comment_user_id
+    source_type: comment_response
+    source_path_or_hint: comments[].user.uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论用户 ID，不建议用于用户画像
+
+  - table_name: raw_comment
+    field_name: comment_user_sec_uid
+    source_type: comment_response
+    source_path_or_hint: comments[].user.sec_uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论用户安全 ID，样本中全空
+
+  - table_name: raw_comment
+    field_name: comment_user_nickname
+    source_type: comment_response
+    source_path_or_hint: comments[].user.nickname
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论用户昵称，不建议用于用户画像
+
+  - table_name: raw_comment
+    field_name: comment_user_unique_id
+    source_type: comment_response
+    source_path_or_hint: comments[].user.unique_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 评论用户唯一标识，样本中全空
+
+  - table_name: raw_comment
+    field_name: comment_user_avatar_url_list
+    source_type: comment_response
+    source_path_or_hint: comments[].user.avatar_thumb.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 评论用户头像 URL 列表，样本中为空数组
+
+  - table_name: raw_comment
+    field_name: comment_user_region
+    source_type: comment_response
+    source_path_or_hint: comments[].user.region
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 评论用户地区，谨慎保存
+
+  - table_name: raw_comment
+    field_name: comment_cursor
+    source_type: comment_response
+    source_path_or_hint: comment_list.cursor
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论分页游标
+
+  - table_name: raw_comment
+    field_name: comment_has_more
+    source_type: comment_response
+    source_path_or_hint: comment_list.has_more
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 是否还有更多评论
+
+  - table_name: raw_comment
+    field_name: comment_total
+    source_type: comment_response
+    source_path_or_hint: comment_list.total
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 评论总数
+
+  - table_name: raw_comment
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_related_video
+  # ===========================================================================
+  - table_name: raw_related_video
+    field_name: source_video_id
+    source_type: constructed
+    source_path_or_hint: 请求参数 aweme_id（来自视频详情上下文）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 源视频 ID，来自请求参数
+
+  - table_name: raw_related_video
+    field_name: related_video_id
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].aweme_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 推荐视频 ID
+
+  - table_name: raw_related_video
+    field_name: related_rank_position
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].rank（由列表索引派生）
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 推荐列表位置
+
+  - table_name: raw_related_video
+    field_name: related_author_id
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].author.uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 推荐视频作者 ID
+
+  - table_name: raw_related_video
+    field_name: related_author_sec_uid
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].author.sec_uid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频作者安全 ID
+
+  - table_name: raw_related_video
+    field_name: related_author_nickname
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].author.nickname
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 推荐视频作者昵称
+
+  - table_name: raw_related_video
+    field_name: related_caption
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].desc
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 推荐视频描述
+
+  - table_name: raw_related_video
+    field_name: related_create_time
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].create_time
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频发布时间
+
+  - table_name: raw_related_video
+    field_name: related_duration_ms
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].duration
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频时长（毫秒）
+
+  - table_name: raw_related_video
+    field_name: related_media_type
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].media_type
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频媒体类型
+
+  - table_name: raw_related_video
+    field_name: related_digg_count
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].statistics.digg_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 推荐视频点赞数
+
+  - table_name: raw_related_video
+    field_name: related_comment_count
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].statistics.comment_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频评论数
+
+  - table_name: raw_related_video
+    field_name: related_share_count
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].statistics.share_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频分享数
+
+  - table_name: raw_related_video
+    field_name: related_collect_count
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].statistics.collect_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频收藏数
+
+  - table_name: raw_related_video
+    field_name: related_play_count
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].statistics.play_count
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频播放数，可能为 0
+
+  - table_name: raw_related_video
+    field_name: related_cover_url_list
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].video.cover.url_list
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频封面 URL 列表
+
+  - table_name: raw_related_video
+    field_name: related_music_id
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].music.id_str / aweme_list[].music.mid
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 推荐视频音乐 ID
+
+  - table_name: raw_related_video
+    field_name: related_music_title
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].music.title
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频音乐标题，样本中全空
+
+  - table_name: raw_related_video
+    field_name: related_text_extra_raw
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].text_extra（JSON 序列化）
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频话题原始 JSON
+
+  - table_name: raw_related_video
+    field_name: related_video_tag_raw
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].video_tag（JSON 序列化）
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频平台标签原始 JSON
+
+  - table_name: raw_related_video
+    field_name: related_chapter_abstract
+    source_type: related_video_response
+    source_path_or_hint: aweme_list[].chapter_abstract
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 推荐视频章节摘要，样本中全空
+
+  - table_name: raw_related_video
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集时间
+
+  # ===========================================================================
+  # raw_crawl_log
+  # ===========================================================================
+  - table_name: raw_crawl_log
+    field_name: crawl_batch_id
+    source_type: crawler_runtime
+    source_path_or_hint: run_id（scheduler 生成）
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 采集批次 ID，由 scheduler 生成
+
+  - table_name: raw_crawl_log
+    field_name: crawl_time
+    source_type: crawler_runtime
+    source_path_or_hint: 采集程序 datetime.now()
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 抓取时间
+
+  - table_name: raw_crawl_log
+    field_name: target_url
+    source_type: constructed
+    source_path_or_hint: 原始输入 URL
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: false
+    priority: P0
+    notes: 目标页面 URL
+
+  - table_name: raw_crawl_log
+    field_name: source_page_type
+    source_type: crawler_runtime
+    source_path_or_hint: run_crawl --source-entry 参数
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: false
+    priority: P0
+    notes: 来源页面类型，如 video_detail / search / related
+
+  - table_name: raw_crawl_log
+    field_name: request_url
+    source_type: crawler_runtime
+    source_path_or_hint: network_json[].url（网络响应 URL）
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 完整请求 URL，样本中全空
+
+  - table_name: raw_crawl_log
+    field_name: request_cursor
+    source_type: crawler_runtime
+    source_path_or_hint: 请求参数 cursor
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P2
+    notes: 分页游标，样本中全空
+
+  - table_name: raw_crawl_log
+    field_name: response_status
+    source_type: crawler_runtime
+    source_path_or_hint: network_json[].status
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: HTTP 状态码
+
+  - table_name: raw_crawl_log
+    field_name: response_timestamp
+    source_type: crawler_runtime
+    source_path_or_hint: network_json[].timestamp
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P1
+    notes: 响应采集时间
+
+  - table_name: raw_crawl_log
+    field_name: response_headers_raw
+    source_type: crawler_runtime
+    source_path_or_hint: network_json[].headers
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 响应头原始 JSON，样本中全空
+
+  - table_name: raw_crawl_log
+    field_name: primary_source_key
+    source_type: constructed_quality_field
+    source_path_or_hint: browser_client _analyze_and_save_summary 输出
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: true
+    priority: P2
+    notes: 主视频对象来源响应键
+
+  - table_name: raw_crawl_log
+    field_name: match_type
+    source_type: constructed_quality_field
+    source_path_or_hint: 浏览器模式匹配类型（exact/partial/none）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: true
+    priority: P1
+    notes: 主对象匹配类型
+
+  - table_name: raw_crawl_log
+    field_name: confidence
+    source_type: constructed_quality_field
+    source_path_or_hint: 浏览器模式置信度（high/medium/low）
+    is_native_response_field: false
+    is_constructed_field: true
+    allow_null: true
+    priority: P1
+    notes: 主对象选择置信度
+
+  - table_name: raw_crawl_log
+    field_name: network_response_count
+    source_type: crawler_runtime
+    source_path_or_hint: 浏览器模式 network_responses 数量
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 网络响应数量
+
+  - table_name: raw_crawl_log
+    field_name: runtime_objects_count
+    source_type: crawler_runtime
+    source_path_or_hint: 浏览器模式 runtime_objects 数量
+    is_native_response_field: false
+    is_constructed_field: false
+    allow_null: true
+    priority: P3
+    notes: 运行时对象数量

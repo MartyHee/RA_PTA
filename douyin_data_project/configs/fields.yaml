@@ -87,7 +87,9 @@ web_video_meta:
     author_profile_url:
       type: "string"
       required: false
-      description: "作者主页URL"
+      description: "【已废弃】作者主页URL（构造字段），请改用 author_page_url"
+      deprecated: true
+      mapped_to: "author_page_url"
       extraction:
         selector: "//a[contains(@href, '/user/')]"
         attr: "href"
@@ -103,7 +105,9 @@ web_video_meta:
     publish_time_raw:
       type: "string"
       required: false
-      description: "页面显示的原始发布时间文本"
+      description: "【已废弃】页面显示的原始发布时间文本，请改用 create_time"
+      deprecated: true
+      mapped_to: "create_time"
       extraction:
         selector: "//span[contains(@class, 'time')]"
         attr: "text"
@@ -117,7 +121,9 @@ web_video_meta:
     like_count_raw:
       type: "string"
       required: false
-      description: "页面原始点赞数文本，如 '1.2w'"
+      description: "【已废弃】页面原始点赞数文本，请改用 digg_count"
+      deprecated: true
+      mapped_to: "digg_count"
       extraction:
         selector: "//span[contains(@class, 'like')]"
         attr: "text"
@@ -125,7 +131,9 @@ web_video_meta:
     comment_count_raw:
       type: "string"
       required: false
-      description: "页面原始评论数文本"
+      description: "【已废弃】页面原始评论数文本，请改用 comment_count"
+      deprecated: true
+      mapped_to: "comment_count"
       extraction:
         selector: "//span[contains(@class, 'comment')]"
         attr: "text"
@@ -133,7 +141,9 @@ web_video_meta:
     share_count_raw:
       type: "string"
       required: false
-      description: "页面原始分享数文本"
+      description: "【已废弃】页面原始分享数文本，请改用 share_count"
+      deprecated: true
+      mapped_to: "share_count"
       extraction:
         selector: "//span[contains(@class, 'share')]"
         attr: "text"
@@ -179,7 +189,9 @@ web_video_meta:
     cover_url:
       type: "string"
       required: false
-      description: "封面图片链接"
+      description: "【已废弃】封面图片链接，请改用 cover_url_list"
+      deprecated: true
+      mapped_to: "cover_url_list"
       extraction:
         selector: "//img[contains(@class, 'cover')]"
         attr: "src"
@@ -192,7 +204,9 @@ web_video_meta:
     duration_sec:
       type: "integer"
       required: false
-      description: "视频时长（秒），若页面可提取"
+      description: "【已废弃】视频时长（秒），请改用 duration_ms"
+      deprecated: true
+      mapped_to: "duration_ms"
 
     source_entry:
       type: "string"
@@ -340,3 +354,286 @@ availability:
     - comment_count
     - share_count
     - user_profile_info
+
+# =============================================================================
+# 字段命名迁移记录（旧 → 新）
+# 2026-05-06: 新增 11 张 raw 表 target schema，标记旧字段为 deprecated
+# =============================================================================
+field_deprecations:
+  duration_sec:
+    mapped_to: duration_ms
+    reason: "响应原值为毫秒（如 233334），duration_sec 命名错误"
+    deprecation_date: "2026-05-06"
+  publish_time_raw:
+    mapped_to: create_time
+    reason: "响应原字段名称为 create_time，原始表应保存原字段名"
+    deprecation_date: "2026-05-06"
+  like_count_raw:
+    mapped_to: digg_count
+    reason: "响应原字段名称为 statistics.digg_count"
+    deprecation_date: "2026-05-06"
+  comment_count_raw:
+    mapped_to: comment_count
+    reason: "统一命名，去除 _raw 后缀"
+    deprecation_date: "2026-05-06"
+  share_count_raw:
+    mapped_to: share_count
+    reason: "统一命名，去除 _raw 后缀"
+    deprecation_date: "2026-05-06"
+  cover_url:
+    mapped_to: cover_url_list
+    reason: "明确为 URL 列表字段"
+    deprecation_date: "2026-05-06"
+  origin_cover_url:
+    mapped_to: origin_cover_url_list
+    reason: "明确为 URL 列表字段"
+    deprecation_date: "2026-05-06"
+  dynamic_cover_url:
+    mapped_to: dynamic_cover_url_list
+    reason: "明确为 URL 列表字段"
+    deprecation_date: "2026-05-06"
+  author_profile_url:
+    mapped_to: author_page_url
+    reason: "统一命名，标记为构造字段"
+    deprecation_date: "2026-05-06"
+
+# =============================================================================
+# 11 张 raw 表目标字段清单
+# 参考: src/schemas/raw_tables.yaml 和 field_sources.yaml
+# 用途: 为后续 parser / scheduler 多表输出提供统一字段来源
+# =============================================================================
+raw_tables:
+  raw_video_detail:
+    description: "视频详情主表"
+    fields:
+      - video_id
+      - sec_item_id
+      - group_id
+      - comment_gid
+      - page_url
+      - share_url
+      - caption
+      - desc
+      - preview_title
+      - item_title
+      - create_time
+      - duration_ms
+      - aweme_type
+      - media_type
+      - region
+      - is_top
+      - is_ads
+      - is_life_item
+      - original
+      - shoot_way
+      - digg_count
+      - comment_count
+      - share_count
+      - collect_count
+      - play_count
+      - recommend_count
+      - admire_count
+      - crawl_time
+      - primary_source_key
+
+  raw_author:
+    description: "作者信息表"
+    fields:
+      - author_id
+      - author_user_id
+      - sec_uid
+      - unique_id
+      - short_id
+      - nickname
+      - signature
+      - follower_count
+      - total_favorited
+      - favoriting_count
+      - following_count
+      - verification_type
+      - custom_verify
+      - enterprise_verify_reason
+      - avatar_thumb_url_list
+      - cover_url_list
+      - author_status
+      - author_secret
+      - author_prevent_download
+      - crawl_time
+
+  raw_music:
+    description: "音乐信息表"
+    fields:
+      - video_id
+      - music_id
+      - music_mid
+      - music_title
+      - music_author
+      - music_owner_id
+      - music_owner_nickname
+      - music_duration
+      - music_shoot_duration
+      - is_original_sound
+      - is_commerce_music
+      - music_status
+      - music_collect_count
+      - music_cover_url_list
+      - music_play_url_list
+      - crawl_time
+
+  raw_hashtag:
+    description: "话题标签表（text_extra 拆行）"
+    fields:
+      - video_id
+      - hashtag_id
+      - hashtag_name
+      - hashtag_type
+      - is_commerce
+      - caption_start
+      - caption_end
+      - start
+      - end
+      - crawl_time
+
+  raw_video_tag:
+    description: "平台视频标签表（video_tag 拆行）"
+    fields:
+      - video_id
+      - tag_id
+      - tag_name
+      - tag_level
+      - crawl_time
+
+  raw_video_media:
+    description: "视频媒体信息表"
+    fields:
+      - video_id
+      - cover_uri
+      - cover_url_list
+      - cover_width
+      - cover_height
+      - origin_cover_uri
+      - origin_cover_url_list
+      - origin_cover_width
+      - origin_cover_height
+      - dynamic_cover_uri
+      - dynamic_cover_url_list
+      - dynamic_cover_width
+      - dynamic_cover_height
+      - video_width
+      - video_height
+      - video_format
+      - video_ratio
+      - is_h265
+      - is_long_video
+      - has_watermark
+      - bit_rate_raw
+      - big_thumbs_raw
+      - video_meta_raw
+      - crawl_time
+
+  raw_video_status_control:
+    description: "视频状态与权限控制表"
+    fields:
+      - video_id
+      - can_comment
+      - can_forward
+      - can_share
+      - can_show_comment
+      - allow_download
+      - allow_duet
+      - allow_music
+      - allow_record
+      - allow_stitch
+      - private_status
+      - is_delete
+      - is_prohibited
+      - in_reviewing
+      - review_status
+      - comment_permission_status
+      - crawl_time
+
+  raw_chapter:
+    description: "视频章节与摘要表"
+    fields:
+      - video_id
+      - chapter_index
+      - chapter_desc
+      - chapter_detail
+      - chapter_timestamp
+      - chapter_cover_url
+      - chapter_abstract
+      - chapter_review_status
+      - chapter_recommend_type
+      - crawl_time
+
+  raw_comment:
+    description: "评论明细表"
+    fields:
+      - video_id
+      - comment_id
+      - comment_text
+      - comment_create_time
+      - comment_digg_count
+      - comment_status
+      - comment_reply_total
+      - reply_id
+      - reply_to_reply_id
+      - is_hot
+      - is_author_digged
+      - stick_position
+      - label_text
+      - label_type
+      - comment_user_id
+      - comment_user_sec_uid
+      - comment_user_nickname
+      - comment_user_unique_id
+      - comment_user_avatar_url_list
+      - comment_user_region
+      - comment_cursor
+      - comment_has_more
+      - comment_total
+      - crawl_time
+
+  raw_related_video:
+    description: "相关推荐视频表（边表）"
+    fields:
+      - source_video_id
+      - related_video_id
+      - related_rank_position
+      - related_author_id
+      - related_author_sec_uid
+      - related_author_nickname
+      - related_caption
+      - related_create_time
+      - related_duration_ms
+      - related_media_type
+      - related_digg_count
+      - related_comment_count
+      - related_share_count
+      - related_collect_count
+      - related_play_count
+      - related_cover_url_list
+      - related_music_id
+      - related_music_title
+      - related_text_extra_raw
+      - related_video_tag_raw
+      - related_chapter_abstract
+      - crawl_time
+
+  raw_crawl_log:
+    description: "采集日志与质量表"
+    fields:
+      - crawl_batch_id
+      - crawl_time
+      - target_url
+      - source_page_type
+      - request_url
+      - request_cursor
+      - response_status
+      - response_timestamp
+      - response_headers_raw
+      - primary_source_key
+      - match_type
+      - confidence
+      - network_response_count
+      - runtime_objects_count

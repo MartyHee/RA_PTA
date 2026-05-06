@@ -1,0 +1,193 @@
+table_name,column_index,field_name,non_null_count,total_rows,fill_rate,data_dictionary_type,sample0427_type,alignment,notes
+raw_video_detail,0,video_id,79,79,100.0%,string,int64,type_mismatch,Pandas int64 inference
+raw_video_detail,1,sec_item_id,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_detail,2,group_id,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,3,comment_gid,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,4,page_url,79,79,100.0%,string,string,aligned,
+raw_video_detail,5,share_url,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_detail,6,caption,77,79,97.5%,string,string,aligned,
+raw_video_detail,7,desc,77,79,97.5%,string,string,aligned,
+raw_video_detail,8,preview_title,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_detail,9,item_title,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_detail,10,create_time,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,11,duration_ms,79,79,100.0%,int64,int64,aligned,correct ms values 381-351944
+raw_video_detail,12,aweme_type,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,13,media_type,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,14,region,79,79,100.0%,string,string,aligned,
+raw_video_detail,15,is_top,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,16,is_ads,79,79,100.0%,bool,bool,aligned,
+raw_video_detail,17,is_life_item,79,79,100.0%,bool,bool,aligned,
+raw_video_detail,18,original,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,19,shoot_way,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_detail,20,digg_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,21,comment_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,22,share_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,23,collect_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,24,play_count,79,79,100.0%,int64,int64,aligned,all 0 (web often returns 0)
+raw_video_detail,25,recommend_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,26,admire_count,79,79,100.0%,int64,int64,aligned,
+raw_video_detail,27,crawl_time,79,79,100.0%,string,string,aligned,
+raw_video_detail,28,primary_source_key,79,79,100.0%,string,int64,type_mismatch,Pandas int64 inference
+raw_video_detail,29,author_id,79,79,100.0%,NOT_IN_SCHEMA,int64,extra_field,not in data_dictionary.md
+raw_author,0,author_id,78,78,100.0%,string,int64,type_mismatch,Pandas int64 inference
+raw_author,1,author_user_id,78,78,100.0%,int64,int64,aligned,
+raw_author,2,sec_uid,78,78,100.0%,string,string,synthetic_value,rule-generated SHA256
+raw_author,3,unique_id,78,78,100.0%,string,string,synthetic_value,rule-generated MD5
+raw_author,4,short_id,0,78,0.0%,string,float64,empty_column,whole column empty
+raw_author,5,nickname,78,78,100.0%,string,string,aligned,
+raw_author,6,signature,74,78,94.9%,string,string,aligned,
+raw_author,7,follower_count,78,78,100.0%,int64,int64,aligned,
+raw_author,8,total_favorited,78,78,100.0%,int64,int64,aligned,
+raw_author,9,favoriting_count,78,78,100.0%,int64,int64,aligned,some -1 placeholder
+raw_author,10,following_count,78,78,100.0%,int64,int64,aligned,some -1 placeholder
+raw_author,11,verification_type,78,78,100.0%,int64,int64,aligned,
+raw_author,12,custom_verify,0,78,0.0%,string,float64,empty_column,whole column empty
+raw_author,13,enterprise_verify_reason,0,78,0.0%,string,float64,empty_column,whole column empty
+raw_author,14,avatar_thumb_url_list,0,78,0.0%,ARRAY<string>,string,empty_column,stored as empty string '[]'
+raw_author,15,cover_url_list,0,78,0.0%,ARRAY<string>,string,empty_column,stored as empty string '[]'
+raw_author,16,author_status,78,78,100.0%,int64,int64,aligned,
+raw_author,17,author_secret,78,78,100.0%,int64,int64,aligned,
+raw_author,18,author_prevent_download,78,78,100.0%,bool,bool,aligned,
+raw_author,19,crawl_time,78,78,100.0%,string,string,aligned,
+raw_music,0,video_id,79,79,100.0%,string,int64,type_mismatch,foreign key
+raw_music,1,music_title,78,79,98.7%,string,string,aligned,
+raw_music,2,music_author,56,79,70.9%,string,string,aligned,
+raw_music,3,music_id,79,79,100.0%,string/int,int64,synthetic_value,MD5 hashed
+raw_music,4,music_mid,0,79,0.0%,string/int,float64,empty_column,whole column empty
+raw_music,5,music_owner_id,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_music,6,music_owner_nickname,56,79,70.9%,string,string,aligned,
+raw_music,7,music_duration,79,79,100.0%,int64,int64,placeholder,all -1
+raw_music,8,music_shoot_duration,79,79,100.0%,int64,int64,placeholder,all -1
+raw_music,9,is_original_sound,79,79,100.0%,bool,bool,aligned,
+raw_music,10,is_commerce_music,79,79,100.0%,bool,bool,aligned,
+raw_music,11,music_status,79,79,100.0%,int64,int64,aligned,all 1
+raw_music,12,music_collect_count,79,79,100.0%,int64,int64,placeholder,all -1
+raw_music,13,music_cover_url_list,0,79,0.0%,ARRAY<string>,string,empty_column,empty string '[]'
+raw_music,14,music_play_url_list,0,79,0.0%,ARRAY<string>,string,empty_column,empty string '[]'
+raw_music,15,crawl_time,79,79,100.0%,string,string,aligned,
+raw_hashtag,0,video_id,264,264,100.0%,string,int64,type_mismatch,foreign key
+raw_hashtag,1,hashtag_id,264,264,100.0%,string,int64,synthetic_value,MD5 hashed
+raw_hashtag,2,hashtag_name,264,264,100.0%,string,string,aligned,
+raw_hashtag,3,hashtag_type,264,264,100.0%,int64,int64,aligned,
+raw_hashtag,4,is_commerce,264,264,100.0%,bool,bool,aligned,
+raw_hashtag,5,caption_start,264,264,100.0%,int64,int64,placeholder,all -1
+raw_hashtag,6,caption_end,264,264,100.0%,int64,int64,placeholder,all -1
+raw_hashtag,7,start,264,264,100.0%,int64,int64,aligned,
+raw_hashtag,8,end,264,264,100.0%,int64,int64,aligned,
+raw_hashtag,9,crawl_time,264,264,100.0%,string,string,aligned,
+raw_video_tag,0,video_id,162,162,100.0%,string,int64,type_mismatch,foreign key
+raw_video_tag,1,tag_id,162,162,100.0%,int,string,synthetic_value,TAG_LIFESTYLE style strings
+raw_video_tag,2,tag_name,162,162,100.0%,string,string,synthetic_value,12 predefined categories
+raw_video_tag,3,tag_level,162,162,100.0%,int64,int64,synthetic_value,rule-generated
+raw_video_tag,4,crawl_time,162,162,100.0%,string,string,aligned,
+raw_video_media,0,video_id,79,79,100.0%,string,int64,type_mismatch,foreign key
+raw_video_media,1,cover_uri,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_media,2,cover_url_list,79,79,100.0%,ARRAY<string>,string,format_mismatch,stored as single URL string not JSON array
+raw_video_media,3,cover_width,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,4,cover_height,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,5,origin_cover_uri,78,79,98.7%,string,string,aligned,
+raw_video_media,6,origin_cover_url_list,78,79,98.7%,ARRAY<string>,string,format_mismatch,stored as JSON string array
+raw_video_media,7,origin_cover_width,78,79,98.7%,int64,int64,aligned,
+raw_video_media,8,origin_cover_height,78,79,98.7%,int64,int64,aligned,
+raw_video_media,9,dynamic_cover_uri,77,79,97.5%,string,string,aligned,
+raw_video_media,10,dynamic_cover_url_list,77,79,97.5%,ARRAY<string>,string,format_mismatch,stored as JSON string array
+raw_video_media,11,dynamic_cover_width,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,12,dynamic_cover_height,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,13,video_width,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,14,video_height,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,15,video_format,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_media,16,video_ratio,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_video_media,17,is_h265,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,18,is_long_video,79,79,100.0%,int64,int64,placeholder,all -1
+raw_video_media,19,has_watermark,79,79,100.0%,bool,bool,aligned,
+raw_video_media,20,bit_rate_raw,0,79,0.0%,STRING/JSON,float64,empty_column,whole column empty
+raw_video_media,21,big_thumbs_raw,0,79,0.0%,STRING/JSON,float64,empty_column,whole column empty
+raw_video_media,22,video_meta_raw,0,79,0.0%,STRING/JSON,float64,empty_column,whole column empty
+raw_video_media,23,crawl_time,79,79,100.0%,string,string,aligned,
+raw_video_status_control,0,video_id,79,79,100.0%,string,int64,type_mismatch,foreign key
+raw_video_status_control,1,can_comment,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,2,can_forward,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,3,can_share,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,4,can_show_comment,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,5,allow_download,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,6,allow_duet,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,7,allow_music,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,8,allow_record,79,79,100.0%,bool,bool,synthetic_value,all True
+raw_video_status_control,9,allow_stitch,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,10,private_status,79,79,100.0%,int64,int64,synthetic_value,all 0
+raw_video_status_control,11,is_delete,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,12,is_prohibited,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,13,in_reviewing,79,79,100.0%,bool,bool,synthetic_value,all False
+raw_video_status_control,14,review_status,79,79,100.0%,int64,int64,synthetic_value,all 1
+raw_video_status_control,15,comment_permission_status,79,79,100.0%,int64,int64,synthetic_value,all 1
+raw_video_status_control,16,crawl_time,79,79,100.0%,string,string,aligned,
+raw_chapter,0,video_id,169,169,100.0%,string,int64,type_mismatch,foreign key
+raw_chapter,1,chapter_index,169,169,100.0%,int64,int64,synthetic_value,rule-generated
+raw_chapter,2,chapter_desc,169,169,100.0%,string,string,synthetic_value,derived from caption
+raw_chapter,3,chapter_detail,169,169,100.0%,string,string,synthetic_value,derived from caption
+raw_chapter,4,chapter_timestamp,169,169,100.0%,int64,int64,synthetic_value,derived from duration
+raw_chapter,5,chapter_cover_url,0,169,0.0%,string,float64,empty_column,whole column empty
+raw_chapter,6,chapter_abstract,165,169,97.6%,string,string,synthetic_value,derived from caption
+raw_chapter,7,chapter_review_status,169,169,100.0%,int64,int64,synthetic_value,all 1
+raw_chapter,8,chapter_recommend_type,169,169,100.0%,string/int,string,synthetic_value,all 'default'
+raw_chapter,9,crawl_time,169,169,100.0%,string,string,aligned,
+raw_comment,0,video_id,250,250,100.0%,string,int64,type_mismatch,foreign key
+raw_comment,1,comment_id,250,250,100.0%,string,string,synthetic_value,rule-generated ID
+raw_comment,2,comment_text,250,250,100.0%,string,string,synthetic_value,template-generated text
+raw_comment,3,comment_create_time,250,250,100.0%,int64,int64,synthetic_value,rule-generated timestamp
+raw_comment,4,comment_digg_count,250,250,100.0%,int64,int64,synthetic_value,random values
+raw_comment,5,comment_status,250,250,100.0%,int64,int64,synthetic_value,all 1
+raw_comment,6,comment_reply_total,250,250,100.0%,int64,int64,synthetic_value,random values
+raw_comment,7,reply_id,250,250,100.0%,int64,int64,synthetic_value,all 0
+raw_comment,8,reply_to_reply_id,250,250,100.0%,int64,int64,synthetic_value,all 0
+raw_comment,9,is_hot,250,250,100.0%,bool,bool,synthetic_value,all False
+raw_comment,10,is_author_digged,250,250,100.0%,bool,bool,synthetic_value,all False
+raw_comment,11,stick_position,250,250,100.0%,int64,int64,synthetic_value,all -1
+raw_comment,12,label_text,0,250,0.0%,string,float64,empty_column,whole column empty
+raw_comment,13,label_type,250,250,100.0%,int64,int64,synthetic_value,all -1
+raw_comment,14,comment_user_id,250,250,100.0%,int64,int64,synthetic_value,rule-generated
+raw_comment,15,comment_user_sec_uid,0,250,0.0%,string,float64,empty_column,whole column empty
+raw_comment,16,comment_user_nickname,250,250,100.0%,string,string,synthetic_value,template-generated
+raw_comment,17,comment_user_unique_id,0,250,0.0%,string,float64,empty_column,whole column empty
+raw_comment,18,comment_user_avatar_url_list,0,250,0.0%,ARRAY<string>,string,empty_column,empty string '[]'
+raw_comment,19,comment_user_region,250,250,100.0%,string,string,synthetic_value,all 'CN'
+raw_comment,20,comment_cursor,250,250,100.0%,int64,int64,synthetic_value,all 0
+raw_comment,21,comment_has_more,250,250,100.0%,bool,bool,synthetic_value,all False
+raw_comment,22,comment_total,250,250,100.0%,int64,int64,synthetic_value,2 per video
+raw_comment,23,crawl_time,250,250,100.0%,string,string,aligned,
+raw_related_video,0,source_video_id,474,474,100.0%,string,int64,type_mismatch,foreign key
+raw_related_video,1,related_video_id,474,474,100.0%,string,string,synthetic_value,REL-prefixed rule-generated
+raw_related_video,2,related_rank_position,474,474,100.0%,int64,int64,synthetic_value,rule-generated
+raw_related_video,3,related_author_id,474,474,100.0%,string,int64,synthetic_value,rule-generated
+raw_related_video,4,related_author_sec_uid,0,474,0.0%,string,float64,empty_column,whole column empty
+raw_related_video,5,related_author_nickname,474,474,100.0%,string,string,synthetic_value,template-generated
+raw_related_video,6,related_caption,474,474,100.0%,string,string,synthetic_value,template-generated
+raw_related_video,7,related_create_time,474,474,100.0%,int64,int64,synthetic_value,rule-generated timestamp
+raw_related_video,8,related_duration_ms,474,474,100.0%,int64,int64,synthetic_value,all 1000 fixed
+raw_related_video,9,related_media_type,474,474,100.0%,int64,int64,synthetic_value,all 4
+raw_related_video,10,related_digg_count,474,474,100.0%,int64,int64,synthetic_value,random values
+raw_related_video,11,related_comment_count,474,474,100.0%,int64,int64,synthetic_value,random values
+raw_related_video,12,related_share_count,474,474,100.0%,int64,int64,synthetic_value,random values
+raw_related_video,13,related_collect_count,474,474,100.0%,int64,int64,synthetic_value,random values
+raw_related_video,14,related_play_count,474,474,100.0%,int64,int64,synthetic_value,random values
+raw_related_video,15,related_cover_url_list,0,474,0.0%,ARRAY<string>,string,empty_column,empty string '[]'
+raw_related_video,16,related_music_id,474,474,100.0%,string/int,int64,synthetic_value,mapped from source_video_id
+raw_related_video,17,related_music_title,0,474,0.0%,string,float64,empty_column,whole column empty
+raw_related_video,18,related_text_extra_raw,0,474,0.0%,STRING/JSON,float64,empty_column,whole column empty
+raw_related_video,19,related_video_tag_raw,474,474,100.0%,STRING/JSON,string,synthetic_value,rule-generated JSON
+raw_related_video,20,related_chapter_abstract,0,474,0.0%,string,float64,empty_column,whole column empty
+raw_related_video,21,crawl_time,474,474,100.0%,string,string,aligned,
+raw_crawl_log,0,crawl_batch_id,79,79,100.0%,string,string,aligned,
+raw_crawl_log,1,crawl_time,79,79,100.0%,string,string,aligned,
+raw_crawl_log,2,target_url,79,79,100.0%,string,string,aligned,
+raw_crawl_log,3,source_page_type,79,79,100.0%,string,string,aligned,all 'manual_url'
+raw_crawl_log,4,request_url,0,79,0.0%,string,float64,empty_column,whole column empty
+raw_crawl_log,5,request_cursor,0,79,0.0%,int,float64,empty_column,whole column empty
+raw_crawl_log,6,response_status,79,79,100.0%,int64,int64,aligned,all 200
+raw_crawl_log,7,response_timestamp,79,79,100.0%,string,string,aligned,
+raw_crawl_log,8,response_headers_raw,0,79,0.0%,STRING/JSON,float64,empty_column,whole column empty
+raw_crawl_log,9,primary_source_key,79,79,100.0%,string,int64,type_mismatch,Pandas int64 inference
+raw_crawl_log,10,match_type,79,79,100.0%,string,string,aligned,
+raw_crawl_log,11,confidence,79,79,100.0%,string,string,aligned,
+raw_crawl_log,12,network_response_count,79,79,100.0%,int64,int64,placeholder,all -1
+raw_crawl_log,13,runtime_objects_count,79,79,100.0%,int64,int64,placeholder,all -1
