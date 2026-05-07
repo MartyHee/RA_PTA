@@ -31,6 +31,16 @@ fields:
     notes: 主键字段，优先来自 URL 提取，其次来自 aweme_detail.aweme_id
 
   - table_name: raw_video_detail
+    field_name: author_id
+    source_type: video_detail_response
+    source_path_or_hint: aweme_detail.author.uid / aweme_detail.author.user_id
+    is_native_response_field: true
+    is_constructed_field: false
+    allow_null: true
+    priority: P0
+    notes: 作者 UID，关联 raw_author.author_id，当前已正确提取
+
+  - table_name: raw_video_detail
     field_name: sec_item_id
     source_type: video_detail_response
     source_path_or_hint: aweme_detail.video.sec_item_id

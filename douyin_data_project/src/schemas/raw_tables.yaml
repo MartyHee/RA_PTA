@@ -15,12 +15,14 @@ tables:
     grain: "每条视频一行"
     description: "视频详情页主对象的原生字段，是训练样本、内容图和多模态数据的主索引表"
     primary_key_candidates: [video_id]
-    foreign_key_candidates: []
+    foreign_key_candidates:
+      - author_id
     required_fields:
       - video_id
       - page_url
       - crawl_time
     optional_fields:
+      - author_id
       - sec_item_id
       - group_id
       - comment_gid

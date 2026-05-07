@@ -351,6 +351,7 @@ raw_tables:
     description: "视频详情主表"
     fields:
       - video_id
+      - author_id
       - sec_item_id
       - group_id
       - comment_gid
