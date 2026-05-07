@@ -33,7 +33,11 @@ DEFAULT_SOURCES = [
     "https://www.douyin.com/jingxuan/food",
     "https://www.douyin.com/jingxuan/acg",
     "https://www.douyin.com/jingxuan/travel",
-    "https://www.douyin.com/jingxuan/fashion",
+    "https://www.douyin.com/jingxuan/game",
+    "https://www.douyin.com/jingxuan/animal",
+    "https://www.douyin.com/jingxuan/film",
+    "https://www.douyin.com/jingxuan/course",
+    "https://www.douyin.com/jingxuan/music",
 ]
 
 def extract_video_id_from_url(url: str) -> Optional[str]:
@@ -125,12 +129,15 @@ def discover_urls_from_page(
         html_length = len(page.content())
         logger.info(f"页面HTML长度: {html_length} 字符")
 
-        # 滚动页面以加载更多内容
+        # 滚动页面以加载更多内容（增量滚动，非一次性跳到底部）
+        prev_scroll_height = 0
+        stuck_count = 0  # 连续没有新内容加载的次数
+
         for scroll_idx in range(max_scrolls):
             logger.info(f"滚动 {scroll_idx + 1}/{max_scrolls}")
 
-            # 滚动到底部
-            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            # 增量滚动：每次滚动一个视口高度
+            page.evaluate("window.scrollBy(0, window.innerHeight)")
             time.sleep(scroll_delay)
 
             # 等待可能的懒加载
@@ -164,9 +171,25 @@ def discover_urls_from_page(
             current_height = page.evaluate("document.body.scrollHeight")
             scroll_position = page.evaluate("window.scrollY + window.innerHeight")
 
-            if scroll_position >= current_height - 100:  # 接近底部
-                logger.info(f"页面已滚动到底部")
+            # scrollHeight 没有增长 → 没有新内容加载到底部
+            if current_height <= prev_scroll_height:
+                stuck_count += 1
+            else:
+                stuck_count = 0  # scrollHeight 增长，重置计数
+
+            # 同时检查是否接近底部
+            at_bottom = (scroll_position >= current_height - 100)
+
+            if at_bottom and stuck_count >= 2:
+                logger.info(f"页面已滚动到底部，且连续 {stuck_count} 次无新内容加载")
                 break
+            elif at_bottom:
+                logger.debug(f"接近底部但 scrollHeight 仍在增长，继续滚动")
+            elif stuck_count >= 3:
+                logger.info(f"连续 {stuck_count} 次无新内容加载，停止滚动")
+                break
+
+            prev_scroll_height = current_height
 
         # 也检查页面HTML中可能嵌入的视频ID（如data-video-id属性）
         html_content = page.content()
