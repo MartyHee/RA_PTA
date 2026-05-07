@@ -76,8 +76,29 @@ class BrowserClient:
         logger.info(f"BrowserClient initialized: debug_mode={self.debug_mode}, restart_every={self.restart_every}")
 
     def _initialize_browser(self):
-        """Initialize Playwright browser if not already initialized."""
-        if self._initialized and self._browser and self._browser.is_connected():
+        """Initialize Playwright browser if not already initialized.
+
+        Includes health check: if the browser is marked as initialized but
+        is no longer connected (e.g. after a crash), it will be closed and
+        reinitialized from scratch.
+        """
+        # Health check: if initialized flag is set but browser is disconnected, reset
+        if self._initialized:
+            try:
+                if self._browser and not self._browser.is_connected():
+                    logger.warning("Browser is not connected (may have crashed), reinitializing...")
+                    self._close_browser()
+                    self._initialized = False
+                elif self._context is None:
+                    logger.warning("Browser context is None, reinitializing...")
+                    self._close_browser()
+                    self._initialized = False
+            except Exception as e:
+                logger.warning(f"Browser health check failed: {e}, reinitializing...")
+                self._close_browser()
+                self._initialized = False
+
+        if self._initialized:
             return
 
         try:
@@ -128,28 +149,52 @@ class BrowserClient:
         except Exception as e:
             logger.error(f"Failed to initialize browser: {e}")
             self._close_browser()
+            self._initialized = False
             raise
 
     def _close_browser(self):
-        """Close browser resources."""
-        try:
-            if self._page:
-                self._page.close()
-                self._page = None
-            if self._context:
+        """Close browser resources.
+
+        Each resource is closed independently so a failure on one does not
+        prevent cleanup of the others. All references are set to None after
+        closing to prevent use-after-close.
+        """
+        # Close page
+        if self._page:
+            try:
+                if not self._page.is_closed():
+                    self._page.close()
+            except Exception as e:
+                logger.debug(f"Error closing page: {e}")
+            self._page = None
+
+        # Close context
+        if self._context:
+            try:
                 self._context.close()
-                self._context = None
-            if self._browser:
-                self._browser.close()
-                self._browser = None
-            if self._playwright:
+            except Exception as e:
+                logger.debug(f"Error closing context: {e}")
+            self._context = None
+
+        # Close browser
+        if self._browser:
+            try:
+                if self._browser.is_connected():
+                    self._browser.close()
+            except Exception as e:
+                logger.debug(f"Error closing browser: {e}")
+            self._browser = None
+
+        # Stop Playwright
+        if self._playwright:
+            try:
                 self._playwright.stop()
-                self._playwright = None
-            self._initialized = False
-            # Note: network_listener_callback is now stored on page objects, not instance
-            logger.debug("Browser closed")
-        except Exception as e:
-            logger.warning(f"Error closing browser: {e}")
+            except Exception as e:
+                logger.debug(f"Error stopping playwright: {e}")
+            self._playwright = None
+
+        self._initialized = False
+        logger.debug("Browser closed")
 
     def restart_browser(self):
         """Close current browser and create a fresh instance.
@@ -158,14 +203,23 @@ class BrowserClient:
         then reinitializes everything from scratch. Resets the URL counter.
         Call this periodically during long batch crawls to avoid resource
         leaks and browser degradation.
+
+        If reinitialization fails, the browser is left in a clean closed state
+        so the next URL can trigger a fresh initialization attempt.
         """
         self._restart_count += 1
         logger.info(f"Browser restart #{self._restart_count} after {self._url_count} URLs — closing old instance...")
         self._close_browser()
         self._initialized = False
         self._url_count = 0
-        self._initialize_browser()
-        logger.info(f"Browser restart #{self._restart_count} completed successfully")
+        try:
+            self._initialize_browser()
+            logger.info(f"Browser restart #{self._restart_count} completed successfully")
+        except Exception as e:
+            logger.error(f"Browser restart #{self._restart_count} failed: {e}")
+            # Browser remains in clean closed state (no page/context/browser)
+            self._initialized = False
+            raise
 
     def set_run_id(self, run_id: str):
         """Set run ID for organizing debug output by run.
@@ -1726,9 +1780,8 @@ class BrowserClient:
         network_responses = []
         runtime_objects = {}
 
-        # Initialize browser if needed
-        if not self._initialized:
-            self._initialize_browser()
+        # Always verify browser health before use (includes crash detection)
+        self._initialize_browser()
 
         # Create isolated page for this URL
         try:
@@ -1834,37 +1887,65 @@ class BrowserClient:
                     time.sleep(delay)
                     # Refresh page or create new page if needed
                     try:
-                        isolated_page.reload()
+                        # Check if page is still usable
+                        if isolated_page and not isolated_page.is_closed():
+                            isolated_page.reload()
+                        else:
+                            raise Exception("Page is closed, need new page")
                     except:
                         # If page is broken, close it and create a new one
                         if isolated_page:
                             try:
-                                isolated_page.close()
+                                if not isolated_page.is_closed():
+                                    isolated_page.close()
                             except:
                                 pass
                         # Create new isolated page
                         try:
-                            isolated_page = self._context.new_page()
-                            page_id = id(isolated_page)
-                            logger.info(f"Created new isolated page after failure, page_id: {page_id}")
+                            if self._context:
+                                isolated_page = self._context.new_page()
+                                page_id = id(isolated_page)
+                                logger.info(f"Created new isolated page after failure, page_id: {page_id}")
+                            else:
+                                raise Exception("Context is None")
                         except:
+                            # Context/browser is likely dead, restart everything
+                            logger.warning("Failed to create new page, restarting entire browser...")
                             self._close_browser()
-                            self._initialize_browser()
+                            self._initialized = False
+                            try:
+                                self._initialize_browser()
+                                # After re-init, create a new isolated page
+                                isolated_page = self._context.new_page()
+                                page_id = id(isolated_page)
+                                logger.info(f"Created new isolated page after browser restart, page_id: {page_id}")
+                            except Exception as init_err:
+                                logger.error(f"Failed to reinitialize browser after crash: {init_err}")
+                                self._initialized = False
+                                # Cannot recover, mark as failed and return
+                                return None
                 else:
                     logger.error(f"Browser navigation to {url} failed after {self.max_retries + 1} attempts")
+                    # Force re-initialization on next call since browser might be dead
+                    self._initialized = False
                     return None
             finally:
                 # Ensure isolated page is closed after request completion (success or failure)
-                if isolated_page and not isolated_page.is_closed():
+                if isolated_page:
                     try:
-                        # Remove any listeners
-                        if hasattr(isolated_page, '_network_listener_callback') and isolated_page._network_listener_callback is not None:
-                            isolated_page.off('response', isolated_page._network_listener_callback)
-                            isolated_page._network_listener_callback = None
-                        isolated_page.close()
-                        logger.debug(f"Closed isolated page for URL: {url}")
+                        if not isolated_page.is_closed():
+                            try:
+                                # Remove any listeners
+                                if hasattr(isolated_page, '_network_listener_callback') and isolated_page._network_listener_callback is not None:
+                                    isolated_page.off('response', isolated_page._network_listener_callback)
+                                    isolated_page._network_listener_callback = None
+                            except Exception:
+                                pass
+                            isolated_page.close()
+                            logger.debug(f"Closed isolated page for URL: {url}")
                     except Exception as e:
                         logger.debug(f"Error closing isolated page: {e}")
+                isolated_page = None
 
     def _scroll_page_to_bottom(self, page=None):
         """Scroll page to bottom to trigger lazy loading.

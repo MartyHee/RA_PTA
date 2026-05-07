@@ -3,7 +3,8 @@
     "allow": [
       "Bash(\"D:\\\\CodeData\\\\software\\\\Anaconda\\\\Anaconda3\\\\envs\\\\ra\\\\python.exe\" -c \"import py_compile; py_compile.compile\\('src/crawler/browser_client.py', doraise=True\\); print\\('browser_client.py OK'\\)\")",
       "Bash(\"D:\\\\CodeData\\\\software\\\\Anaconda\\\\Anaconda3\\\\envs\\\\ra\\\\python.exe\" -c \"import py_compile; py_compile.compile\\('src/processing/raw_table_builder.py', doraise=True\\); print\\('raw_table_builder.py OK'\\)\")",
-      "Bash(\"D:\\\\CodeData\\\\software\\\\Anaconda\\\\Anaconda3\\\\envs\\\\ra\\\\python.exe\" run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)"
+      "Bash(\"D:\\\\CodeData\\\\software\\\\Anaconda\\\\Anaconda3\\\\envs\\\\ra\\\\python.exe\" run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/batch_urls_improved.txt --source-entry manual_url --workers 1 --restart-every 10)"
     ]
   }
 }

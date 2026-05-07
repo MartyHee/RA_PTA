@@ -143,6 +143,11 @@ class CrawlScheduler:
 
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
+        # Consecutive failure tracking for browser crash detection
+        self._consecutive_failures = 0
+        self._max_consecutive_failures = 3
+        # Total URLs added to queue (for accurate report denominator)
+        self._total_urls_added = 0
 
         # Log run information
         logger.info(f"Run ID: {self.run_id}")
@@ -188,6 +193,7 @@ class CrawlScheduler:
             page_type=page_type
         )
         self.task_queue.put(task)
+        self._total_urls_added += 1
         logger.debug(f"Added task: {original_url} -> {canonical_video_url} ({page_type}, {source_entry})")
 
     def add_tasks(self, urls: List[str], source_entry: str = 'manual_url', priority: int = 0):
@@ -219,7 +225,17 @@ class CrawlScheduler:
                 task.mark_in_progress()
                 logger.info(f"Worker {worker_id} processing: {task.url}")
 
-                # Crawl with priority: try canonical_video_url first, fallback to original_url
+                # Browser health check: if too many consecutive failures, restart browser
+                if self.use_browser and self.browser_client:
+                    if self._consecutive_failures >= self._max_consecutive_failures:
+                        logger.warning(f"Too many consecutive failures ({self._consecutive_failures}), restarting browser...")
+                        try:
+                            self.browser_client.restart_browser()
+                            logger.info("Browser restarted after consecutive failures")
+                        except Exception as restart_err:
+                            logger.error(f"Failed to restart browser after consecutive failures: {restart_err}")
+                        self._consecutive_failures = 0
+
                 crawl_time = datetime.now()
                 fetched_url = None
                 response = None
@@ -904,6 +920,8 @@ class CrawlScheduler:
                 task.mark_completed()
                 with self._lock:
                     self.completed_tasks.append(task)
+                # Reset consecutive failure counter on success
+                self._consecutive_failures = 0
 
                 logger.info(f"Worker {worker_id} completed: {task.url}")
 
@@ -912,6 +930,9 @@ class CrawlScheduler:
                 task.mark_failed()
                 with self._lock:
                     self.failed_tasks.append(task)
+                    self._consecutive_failures += 1
+                # Save failed URL immediately to file
+                self._save_failed_url(task, str(e))
             finally:
                 self.task_queue.task_done()
 
@@ -1075,6 +1096,35 @@ class CrawlScheduler:
             except Exception as e:
                 logger.error(f"Failed to save raw table {table_name}: {e}")
 
+    def _save_failed_url(self, task: CrawlTask, error_message: str):
+        """Save a failed URL immediately to the failed_urls CSV file.
+
+        This ensures failed URLs are persisted even if the crawl is interrupted.
+        Creates/Appends to failed_urls.csv in the run-specific interim directory.
+
+        Args:
+            task: The failed CrawlTask.
+            error_message: Error message describing the failure.
+        """
+        try:
+            failed_urls_file = self.interim_run_dir / f"failed_urls_{self.file_suffix}.csv"
+            import csv
+            file_exists = failed_urls_file.exists()
+            with open(failed_urls_file, 'a', encoding='utf-8', newline='') as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(['url', 'source_entry', 'page_type', 'error', 'timestamp'])
+                writer.writerow([
+                    task.original_url,
+                    task.source_entry,
+                    task.page_type or '',
+                    error_message[:500],  # Truncate long error messages
+                    datetime.now().isoformat()
+                ])
+            logger.info(f"Saved failed URL to {failed_urls_file}: {task.original_url}")
+        except Exception as e:
+            logger.warning(f"Failed to save failed URL: {e}")
+
     def start(self, num_workers: Optional[int] = None):
         """Start crawling with specified number of workers.
 
@@ -1097,20 +1147,37 @@ class CrawlScheduler:
             worker_thread.start()
             workers.append(worker_thread)
 
-        # Wait for queue to be empty
-        self.task_queue.join()
+        try:
+            # Wait for queue to be empty
+            self.task_queue.join()
+            logger.info("Scheduler finished - all tasks processed")
+        except KeyboardInterrupt:
+            logger.warning("Scheduler interrupted by user")
+            self.stop()
+        except Exception as e:
+            logger.error(f"Scheduler terminated with error: {e}")
+            self.stop()
+        finally:
+            # Stop workers
+            self._stop_event.set()
+            for worker in workers:
+                worker.join(timeout=5)
 
-        # Stop workers
-        self._stop_event.set()
-        for worker in workers:
-            worker.join(timeout=5)
+            # Print summary of results
+            self._print_summary()
 
-        logger.info("Scheduler finished")
-        self._print_summary()
-        # Filter high-confidence samples after crawl completion
-        self._filter_and_save_high_confidence_samples()
-        # Generate quality report
-        self._generate_quality_report()
+            # Save remaining failed tasks that weren't caught by worker exceptions
+            remaining = self.task_queue.qsize()
+            if remaining > 0:
+                logger.warning(f"{remaining} tasks remaining in queue (not processed)")
+
+            # Filter high-confidence samples and generate quality report
+            # using whatever data was collected so far
+            self._filter_and_save_high_confidence_samples()
+            self._generate_quality_report()
+
+            # Ensure all clients are properly closed
+            self.close()
 
     def stop(self):
         """Stop the scheduler."""
@@ -1369,7 +1436,7 @@ class CrawlScheduler:
             report_lines.append("=" * 80)
             report_lines.append(f"Quality Report for Run ID: {self.run_id}")
             report_lines.append("=" * 80)
-            report_lines.append(f"Total URL processed: {self.task_queue.qsize() + len(self.completed_tasks) + len(self.failed_tasks)}")
+            report_lines.append(f"Total URL processed: {self._total_urls_added}")
             report_lines.append(f"Successfully crawled: {len(self.completed_tasks)}")
             report_lines.append(f"Failed to crawl: {len(self.failed_tasks)}")
             report_lines.append(f"Records generated: {total_records}")
