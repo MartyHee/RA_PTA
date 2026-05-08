@@ -66,16 +66,23 @@ douyin_data_project/data/interim/20260507_230322/
 douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md
 ```
 
-### 2.3 当前下一步
+### 2.3 当前已完成：real_raw_1000 多模型对比实验
 
-当前即将从 sample0427 切换到 `real_raw_1000`：
+已完成基于 `real_raw_1000` 真实网页端 raw 数据的完整多模型对比实验：
 
-1. 新增真实 raw 数据读取配置。
-2. 实现 `real_raw_1000` 读取检查。
-3. 基于真实 raw 数据重新构建 tabular / graph / multimodal 输入。
-4. 重新训练 DNN / Wide & Deep / GraphSAGE / Multimodal。
-5. 重新进行多模型对比实验。
-6. 生成基于真实 raw 数据的多模型对比报告。
+1. ✅ real_raw_1000 数据读取与质量检查
+2. ✅ 基于真实 raw 数据的 tabular 输入构建（51 维特征）
+3. ✅ 基于真实 raw 数据的 graph 输入构建（8,257 节点 / 17,440 边）
+4. ✅ 基于真实 raw 数据的 multimodal 输入构建（text 32 + visual 18 + structured 38）
+5. ✅ DNN 重新训练与评估（run_id: 202605081636）
+6. ✅ Wide & Deep 重新训练与评估（run_id: 202605081746）
+7. ✅ GraphSAGE 重新训练与评估（run_id: 202605081828）
+8. ✅ Multimodal 重新训练与评估（run_id: 202605081927）
+9. ✅ 统一多模型对比（comparison run_id: 202605082029）
+10. ✅ 离线 A/B 模拟（ab_run_id: 202605082129）
+11. ✅ 多模型对比实验报告（`reports/model_comparison_report.md`）
+
+当前所有实验结果基于真实网页端 raw 数据，属于离线多模型对比，不代表线上推荐效果。
 
 ---
 
@@ -442,19 +449,25 @@ warnings
 
 ## 12. 下一步开发计划
 
-1. 新增 `real_raw_1000` 数据路径配置。
-2. 实现真实 raw 数据读取检查。
-3. 基于真实 raw 数据重新构建 tabular 数据集。
-4. 基于真实 raw 数据重新构建 graph 数据集。
-5. 基于真实 raw 数据重新构建 multimodal 数据集。
-6. 使用真实 raw 数据重新训练 DNN。
-7. 使用真实 raw 数据重新训练 Wide & Deep。
-8. 使用真实 raw 数据重新训练 GraphSAGE。
-9. 使用真实 raw 数据重新训练 Multimodal。
-10. 重新进行统一多模型对比实验。
-11. 生成真实 raw 数据上的多模型对比实验报告。
-12. 如需要更大样本，可继续采集剩余 1060 URL 或使用 URL 发现器扩充数据。
-13. 后续单独增强 raw_video_tag、raw_chapter、评论触发策略和相关推荐触发策略。
+### 12.1 已完成（real_raw_1000 多模型对比实验）
+
+- ✅ real_raw_1000 数据路径配置与读取检查
+- ✅ 基于真实 raw 数据的 tabular 数据集构建
+- ✅ 基于真实 raw 数据的 graph 数据集构建
+- ✅ 基于真实 raw 数据的 multimodal 数据集构建
+- ✅ 基于真实 raw 数据重新训练 DNN / Wide & Deep / GraphSAGE / Multimodal
+- ✅ 统一多模型对比实验与离线 A/B 模拟
+- ✅ 生成 real_raw_1000 多模型对比实验报告
+
+### 12.2 后续建议
+
+1. 增大数据规模：继续采集剩余 URL 或使用 URL 发现器扩充数据，提升指标区分度。
+2. 引入真实标签：获取真实曝光、点击、完播、转化标签，替代 interaction_score 伪标签。
+3. 增强 Multimodal 模态：引入封面图/视频帧/OCR/ASR 等真实语义特征。
+4. 优化 Wide & Deep 交叉特征：尝试 FM/FMFM 风格交互、hash trick 或更密集的交叉表示。
+5. 增强 GraphSAGE 边类型：增加用户行为边、共现边，减少元数据关联边占比。
+6. 增强分析：增加 calibration、PR 曲线、AUC 置信区间、特征重要性分析等。
+7. 后续线上或准线上实验：需重新定义实验单位、流量分配、核心指标和护栏指标。
 
 ---
 
@@ -482,17 +495,33 @@ warnings
 
 ```text
 1. README.md
-2. CLAUDE.md
-3. development_log.md
-4. douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md
-5. reports/model_comparison_report.md                 # sample0427 历史流程验证报告
-6. outputs/comparison/202604301609/model_comparison_report.md
-7. outputs/ab_test/202604301630/ab_simulation_report.md
+2. reports/model_comparison_report.md                           # real_raw_1000 多模型对比实验报告（主线）
+3. douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md
+4. outputs/comparison/202605082029/model_comparison_report.md    # 对比实验详细输出
+5. outputs/ab_test/real_raw_1000/202605082129/ab_simulation_report.md  # 离线 A/B 模拟报告
+6. CLAUDE.md
+7. development_log.md
 ```
+
+> 报告 `reports/model_comparison_report.md` 已更新为 real_raw_1000 多模型对比实验结果，sample0427 历史流程验证内容仅在第 15 章历史说明中保留。
 
 ---
 
 ## 15. 历史产物说明
+
+### 15.1 real_raw_1000 最新实验产物（当前主线）
+
+| 模块 | Run ID | 输出目录 |
+|---|---|---|
+| DNN | 202605081636 | `outputs/dnn/real_raw_1000/202605081636/` |
+| Wide & Deep | 202605081746 | `outputs/wide_deep/real_raw_1000/202605081746/` |
+| GraphSAGE | 202605081828 | `outputs/graphsage/real_raw_1000/202605081828/` |
+| Multimodal | 202605081927 | `outputs/multimodal/real_raw_1000/202605081927/` |
+| 统一对比实验 | 202605082029 | `outputs/comparison/202605082029/` |
+| 离线 A/B 模拟 | 202605082129 | `outputs/ab_test/real_raw_1000/202605082129/` |
+| 报告 | — | `reports/model_comparison_report.md` |
+
+### 15.2 sample0427 历史流程验证产物（已归档）
 
 历史 sample0427 流程验证产物保留在：
 

@@ -1,4 +1,4 @@
-"""GraphSAGE 评估主程序"""
+"""GraphSAGE 评估主程序（支持 val / test 评估）"""
 
 from __future__ import annotations
 
@@ -32,12 +32,54 @@ from utils.logger import get_logger  # noqa: E402
 logger = get_logger("graphsage_eval")
 
 
-def find_latest_run(output_root: Path) -> str | None:
-    latest_file = output_root / "latest_run.txt"
+def find_latest_run(output_root: Path, dataset_name: str | None = None) -> str | None:
+    if dataset_name:
+        search_dir = output_root / dataset_name
+    else:
+        search_dir = output_root
+
+    latest_file = search_dir / "latest_run.txt"
     if latest_file.exists():
         return latest_file.read_text().strip()
-    runs = sorted([d.name for d in output_root.iterdir() if d.is_dir() and d.name.isdigit()])
+    runs = sorted([d.name for d in search_dir.iterdir() if d.is_dir() and d.name.isdigit()])
     return runs[-1] if runs else None
+
+
+def evaluate_split(
+    model: nn.Module,
+    x: torch.Tensor,
+    edge_index: torch.Tensor,
+    y: torch.Tensor,
+    mask: torch.Tensor,
+    criterion: nn.Module,
+    threshold: float,
+    k_values: list[int],
+) -> dict:
+    """在指定 split 上计算 loss 和全部指标。"""
+    model.eval()
+    with torch.no_grad():
+        logits = model(x, edge_index)
+        loss = criterion(logits[mask], y[mask])
+        loss_value = loss.item()
+
+        scores = torch.sigmoid(logits[mask]).cpu().numpy()
+        labels = y[mask].cpu().numpy()
+        preds = (scores >= threshold).astype(int)
+
+    cls_metrics, cls_warnings = compute_classification_metrics(labels, scores, preds, threshold)
+    pk_metrics, pk_warnings = compute_precision_at_k(labels, scores, k_values)
+    rk_metrics, rk_warnings = compute_recall_at_k(labels, scores, k_values)
+
+    return {
+        "loss": loss_value,
+        "scores": scores,
+        "labels": labels,
+        "preds": preds,
+        "cls_metrics": cls_metrics,
+        "pk_metrics": pk_metrics,
+        "rk_metrics": rk_metrics,
+        "warnings": cls_warnings + pk_warnings + rk_warnings,
+    }
 
 
 def main() -> None:
@@ -66,19 +108,26 @@ def main() -> None:
     config = load_config(args.config)
     project_root = Path(_project_root)
     output_root = project_root / config["output_root"]
+    dataset_name = config.get("dataset_name", None)
 
     # ── 2. 确定输出目录 ─────────────────────────────────────
     if args.output_dir:
         run_dir = Path(args.output_dir)
     elif args.run_id:
-        run_dir = output_root / args.run_id
+        if dataset_name:
+            run_dir = output_root / dataset_name / args.run_id
+        else:
+            run_dir = output_root / args.run_id
     else:
-        run_id = find_latest_run(output_root)
-        if run_id is None:
+        found_id = find_latest_run(output_root, dataset_name)
+        if found_id is None:
             logger.error("未找到任何 run，请先运行 train.py 或指定 --run_id")
             sys.exit(1)
-        run_dir = output_root / run_id
-        logger.info(f"使用最新 run: {run_id}")
+        if dataset_name:
+            run_dir = output_root / dataset_name / found_id
+        else:
+            run_dir = output_root / found_id
+        logger.info(f"使用最新 run: {found_id}")
 
     if not run_dir.exists():
         logger.error(f"输出目录不存在: {run_dir}")
@@ -99,11 +148,16 @@ def main() -> None:
     logger.info(f"图模型后端: {graph_backend}, torch_geometric_available: {torch_geometric_available}")
 
     # ── 4. 加载图数据 ───────────────────────────────────────
+    # 向后兼容：优先使用 val_mask_path，回退到 eval_mask_path
+    val_mask_path = config.get("val_mask_path") or config.get("eval_mask_path")
+    test_mask_path = config.get("test_mask_path", None)
+
     graph_data = GraphData(
         node_features_path=str(project_root / config["node_features_path"]),
         labels_path=str(project_root / config["labels_path"]),
         train_mask_path=str(project_root / config["train_mask_path"]),
-        eval_mask_path=str(project_root / config["eval_mask_path"]),
+        val_mask_path=str(project_root / val_mask_path),
+        test_mask_path=str(project_root / test_mask_path) if test_mask_path else None,
         edge_path=str(project_root / config["edge_path"]),
         node_path=str(project_root / config["node_path"]),
         graph_meta_path=str(project_root / config["graph_meta_path"]),
@@ -142,85 +196,60 @@ def main() -> None:
     model.eval()
     logger.info(f"模型加载完成: {model_path}")
 
-    # ── 7. 推理 ─────────────────────────────────────────────
+    # ── 7. 全图推理 ─────────────────────────────────────────
     x = graph_data.node_features.to(device)
     edge_index = graph_data.edge_index.to(device)
     y = graph_data.labels.to(device)
-    eval_mask = graph_data.eval_labeled_mask.to(device)
-
-    with torch.no_grad():
-        logits = model(x, edge_index)
-        eval_loss = nn.BCEWithLogitsLoss()(logits[eval_mask], y[eval_mask])
-        eval_loss_value = eval_loss.item()
-
-        eval_scores = torch.sigmoid(logits[eval_mask]).cpu().numpy()
-        eval_labels = y[eval_mask].cpu().numpy()
-        eval_node_indices = torch.where(eval_mask.cpu())[0].numpy()
-
     threshold = config.get("threshold", 0.5)
-    eval_preds = (eval_scores >= threshold).astype(int)
-
-    logger.info(f"Eval 样本数: {len(eval_labels)}")
-    logger.info(f"Eval loss: {eval_loss_value:.4f}")
-
-    # ── 8. 计算指标 ─────────────────────────────────────────
-    cls_metrics, cls_warnings = compute_classification_metrics(
-        eval_labels, eval_scores, eval_preds, threshold
-    )
-
     k_values = [5, 10, 20]
-    pk_metrics, pk_warnings = compute_precision_at_k(eval_labels, eval_scores, k_values)
-    rk_metrics, rk_warnings = compute_recall_at_k(eval_labels, eval_scores, k_values)
-
-    all_warnings = cls_warnings + pk_warnings + rk_warnings
-    n_pos = int(eval_labels.sum())
-    n_neg = int(len(eval_labels) - n_pos)
-
-    # 图概况
-    graph_meta = graph_data.graph_meta or {}
-    graph_summary = {
-        "num_nodes": graph_data.num_nodes,
-        "num_edges": graph_data.edge_index.shape[1],
-        "feature_dim": graph_data.feature_dim,
-        "train_labeled": int(graph_data.train_labeled_mask.sum().item()),
-        "eval_labeled": int(graph_data.eval_labeled_mask.sum().item()),
-        "unlabeled": int((graph_data.labels < 0).sum().item()),
-    }
+    criterion = nn.BCEWithLogitsLoss()
 
     run_id_str = run_dir.name
 
+    # --- Val 评估 ---
+    val_mask = graph_data.val_labeled_mask.to(device)
+    val_result = evaluate_split(model, x, edge_index, y, val_mask, criterion, threshold, k_values)
+    logger.info(f"Val 样本数: {len(val_result['labels'])}, loss: {val_result['loss']:.4f}, AUC: {val_result['cls_metrics'].get('auc')}")
+
+    # --- Test 评估 ---
+    test_result = None
+    if graph_data.test_labeled_mask is not None:
+        test_mask = graph_data.test_labeled_mask.to(device)
+        test_result = evaluate_split(model, x, edge_index, y, test_mask, criterion, threshold, k_values)
+        logger.info(f"Test 样本数: {len(test_result['labels'])}, loss: {test_result['loss']:.4f}, AUC: {test_result['cls_metrics'].get('auc')}")
+
+    # ── 8. 构建 metrics ─────────────────────────────────────
+    label_definition = (graph_data.graph_meta or {}).get(
+        "label_definition",
+        "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
+    )
+
+    def build_metric_block(split_name: str, result: dict) -> dict:
+        n_pos = int(result["labels"].sum())
+        n_neg = int(len(result["labels"]) - n_pos)
+        return {
+            "model_name": "graphsage",
+            "dataset_name": dataset_name or "",
+            "run_id": run_id_str,
+            "split": split_name,
+            "sample_count": len(result["labels"]),
+            "positive_count": n_pos,
+            "negative_count": n_neg,
+            "eval_loss": result["loss"],
+            **result["cls_metrics"],
+            "precision_at_k": result["pk_metrics"],
+            "recall_at_k": result["rk_metrics"],
+            "threshold": threshold,
+            "label_definition": label_definition,
+            "warnings": result["warnings"],
+        }
+
     metrics = {
-        "model_name": "graphsage",
-        "run_id": run_id_str,
-        "split": "eval",
-        "sample_count": len(eval_labels),
-        "positive_count": n_pos,
-        "negative_count": n_neg,
-        "auc": cls_metrics.get("auc"),
-        "accuracy": cls_metrics.get("accuracy"),
-        "precision": cls_metrics.get("precision"),
-        "recall": cls_metrics.get("recall"),
-        "f1": cls_metrics.get("f1"),
-        "precision_at_k": pk_metrics,
-        "recall_at_k": rk_metrics,
-        "eval_loss": eval_loss_value,
-        "label_definition": "流程验证伪标签: interaction_score >= threshold (继承自 tabular)",
-        "graph_summary": graph_summary,
-        "graph_backend": graph_backend,
-        "torch_geometric_available": torch_geometric_available,
-        "fallback_used": fallback_used,
-        "threshold": threshold,
-        "warnings": all_warnings,
+        "val_metrics": build_metric_block("val", val_result),
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "notes": [
-            "当前指标仅基于 sample0427 样本数据计算，仅用于流程级验证。",
-            "不表示正式推荐系统效果结论。",
-            "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
-            "eval 仅在 eval_mask=True 且 label in {0,1} 的节点上计算指标。",
-            "本次 run 与 202604291703 的区别仅为 GraphSAGE 输入特征标准化。",
-            "当前指标仍只用于流程验证，不代表正式模型效果。",
-        ],
     }
+    if test_result is not None:
+        metrics["test_metrics"] = build_metric_block("test", test_result)
 
     # ── 9. 保存 metrics.json ────────────────────────────────
     metrics_path = run_dir / "metrics.json"
@@ -228,44 +257,60 @@ def main() -> None:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
     logger.info(f"指标已保存: {metrics_path}")
 
-    # ── 10. 保存 predictions.csv ────────────────────────────
+    # ── 10. 保存 predictions ────────────────────────────────
     nodes_df = graph_data.nodes_df
-    eval_nodes_df = nodes_df.iloc[eval_node_indices].copy()
-    eval_video_ids = eval_nodes_df["raw_id"].values
 
-    pred_df = pd.DataFrame(
-        {
-            "node_id": eval_node_indices,
-            "video_id": eval_video_ids,
-            "label": eval_labels,
-            "score": eval_scores,
-            "pred": eval_preds,
-            "split": "eval",
-            "model_name": "graphsage",
-            "run_id": run_id_str,
-        }
-    )
-    # sample_id = video_id 兼容
-    pred_df.insert(0, "sample_id", eval_video_ids)
+    val_node_indices = np.where(val_mask.cpu())[0].numpy()
+    test_node_indices = np.where(test_mask.cpu())[0].numpy() if test_result is not None else None
 
-    pred_path = run_dir / "predictions.csv"
-    pred_df.to_csv(pred_path, index=False)
-    logger.info(f"预测结果已保存: {pred_path}")
+    def save_predictions(split_name: str, result: dict, node_idx: np.ndarray, prefix: str) -> None:
+        split_nodes_df = nodes_df.iloc[node_idx].copy()
+        video_ids = split_nodes_df["raw_id"].values
+
+        pred_df = pd.DataFrame(
+            {
+                "sample_id": video_ids,
+                "node_id": node_idx,
+                "video_id": video_ids,
+                "label": result["labels"],
+                "score": result["scores"],
+                "pred": result["preds"],
+                "split": split_name,
+                "model_name": "graphsage",
+                "dataset_name": dataset_name or "",
+                "run_id": run_id_str,
+            }
+        )
+        pred_path = run_dir / f"{prefix}_{split_name}.csv"
+        pred_df.to_csv(pred_path, index=False)
+        logger.info(f"{split_name} 预测已保存: {pred_path} ({len(pred_df)} 行)")
+
+    save_predictions("val", val_result, val_node_indices, "predictions")
+    if test_result is not None:
+        save_predictions("test", test_result, test_node_indices, "predictions")
 
     # ── 11. 打印指标摘要 ────────────────────────────────────
     logger.info("=== 评估结果 ===")
-    logger.info(f"样本数: {metrics['sample_count']} (正例: {n_pos}, 负例: {n_neg})")
-    logger.info(f"AUC: {metrics['auc']}")
-    logger.info(f"Accuracy: {metrics['accuracy']}")
-    logger.info(f"Precision: {metrics['precision']}")
-    logger.info(f"Recall: {metrics['recall']}")
-    logger.info(f"F1: {metrics['f1']}")
-    for k in k_values:
-        pk = pk_metrics.get(f"precision_at_{k}", "N/A")
-        rk = rk_metrics.get(f"recall_at_{k}", "N/A")
-        logger.info(f"Precision@{k}: {pk}, Recall@{k}: {rk}")
-    if all_warnings:
-        logger.warning(f"Warnings: {all_warnings}")
+
+    def log_metrics(split_name: str, result: dict) -> None:
+        n_pos = int(result["labels"].sum())
+        n_neg = int(len(result["labels"]) - n_pos)
+        logger.info(f"[{split_name}] 样本数: {len(result['labels'])} (正例: {n_pos}, 负例: {n_neg})")
+        logger.info(f"[{split_name}] AUC: {result['cls_metrics'].get('auc')}")
+        logger.info(f"[{split_name}] Accuracy: {result['cls_metrics'].get('accuracy')}")
+        logger.info(f"[{split_name}] Precision: {result['cls_metrics'].get('precision')}")
+        logger.info(f"[{split_name}] Recall: {result['cls_metrics'].get('recall')}")
+        logger.info(f"[{split_name}] F1: {result['cls_metrics'].get('f1')}")
+        logger.info(f"[{split_name}] Loss: {result['loss']:.4f}")
+
+    log_metrics("val", val_result)
+    if test_result is not None:
+        log_metrics("test", test_result)
+
+    if val_result["warnings"]:
+        logger.warning(f"Val warnings: {val_result['warnings']}")
+    if test_result and test_result["warnings"]:
+        logger.warning(f"Test warnings: {test_result['warnings']}")
 
 
 if __name__ == "__main__":

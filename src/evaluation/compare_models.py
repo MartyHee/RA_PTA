@@ -27,6 +27,7 @@ def check_predictions_quality(
     required_cols: list[str],
     model_name: str,
     expected_run_id: str | None = None,
+    expected_split: str = "test",
 ) -> dict[str, Any]:
     """检查 predictions.csv 质量，返回检查结果字典。"""
     result: dict[str, Any] = {
@@ -91,9 +92,9 @@ def check_predictions_quality(
     # split
     if "split" in df.columns:
         result["split_values"] = df["split"].dropna().unique().tolist()
-        if set(result["split_values"]) != {"eval"}:
+        if set(result["split_values"]) != {expected_split}:
             result["split_is_eval"] = False
-            result["warnings"].append(f"split 值 {result['split_values']}，不完全是 eval")
+            result["warnings"].append(f"split 值 {result['split_values']}，不完全是 {expected_split}")
 
     # model_name consistency
     if "model_name" in df.columns:
@@ -137,8 +138,15 @@ def collect_model_metrics(
     model_key: str,
     model_cfg: dict[str, Any],
     project_root: Path,
+    split: str = "test",
 ) -> dict[str, Any]:
-    """读取单个模型的 metrics.json 和 run_meta.json，合并返回。"""
+    """读取单个模型的 metrics.json 和 run_meta.json，合并返回。
+
+    Args:
+        split: 提取哪个 split 的指标，如 "test" 或 "val"。
+               当 metrics.json 为三层结构时提取对应键，
+               为 flat 结构时（向后兼容）直接读取顶层。
+    """
     model_name = model_cfg["model_name"]
     run_id = model_cfg["run_id"]
     output_dir = project_root / model_cfg["output_dir"]
@@ -158,25 +166,32 @@ def collect_model_metrics(
     with open(metrics_path, "r", encoding="utf-8") as f:
         metrics = json.load(f)
 
-    summary["sample_count"] = metrics.get("sample_count")
-    summary["positive_count"] = metrics.get("positive_count")
-    summary["negative_count"] = metrics.get("negative_count")
+    # 支持 nested (val_metrics/test_metrics) 和 flat 两种结构
+    split_key = f"{split}_metrics"
+    if split_key in metrics:
+        split_data = metrics[split_key]
+    else:
+        split_data = metrics
+
+    summary["sample_count"] = split_data.get("sample_count")
+    summary["positive_count"] = split_data.get("positive_count")
+    summary["negative_count"] = split_data.get("negative_count")
 
     # 分类指标
     for k in ("auc", "accuracy", "precision", "recall", "f1"):
-        summary[k] = metrics.get(k)
+        summary[k] = split_data.get(k)
 
     # 展开 precision_at_k / recall_at_k
-    pk = metrics.get("precision_at_k", {})
-    rk = metrics.get("recall_at_k", {})
+    pk = split_data.get("precision_at_k", {})
+    rk = split_data.get("recall_at_k", {})
     for k, v in pk.items():
         summary[k] = v
     for k, v in rk.items():
         summary[k] = v
 
-    summary["eval_loss"] = metrics.get("eval_loss")
-    summary["threshold"] = metrics.get("threshold")
-    summary["warnings"] = metrics.get("warnings", [])
+    summary["eval_loss"] = split_data.get("eval_loss")
+    summary["threshold"] = split_data.get("threshold")
+    summary["warnings"] = split_data.get("warnings", [])
 
     # 读 run_meta.json
     meta_path = output_dir / "run_meta.json"
@@ -186,11 +201,13 @@ def collect_model_metrics(
         summary["best_epoch"] = meta.get("best_epoch")
         summary["best_eval_loss"] = meta.get("best_eval_loss")
         summary["device"] = meta.get("device")
+        summary["num_params"] = meta.get("num_params")
         summary["run_meta_notes"] = meta.get("notes", [])
     else:
         summary["best_epoch"] = None
         summary["best_eval_loss"] = None
         summary["device"] = None
+        summary["num_params"] = None
 
     return summary
 
@@ -239,6 +256,79 @@ def compute_topk_comparison(
     return rows
 
 
+def check_cross_model_consistency(
+    all_predictions: dict[str, pd.DataFrame],
+) -> dict[str, Any]:
+    """跨模型 predictions 一致性检查。
+
+    检查所有模型的 video_id 集合是否完全一致、
+    label 是否完全一致。
+    """
+    result: dict[str, Any] = {
+        "models_checked": list(all_predictions.keys()),
+        "video_id_consistent": True,
+        "label_consistent": True,
+        "n_samples": None,
+        "details": {},
+        "warnings": [],
+    }
+
+    if len(all_predictions) < 2:
+        result["warnings"].append("少于 2 个模型，跳过跨模型一致性检查")
+        return result
+
+    video_id_sets: dict[str, set] = {}
+    label_series: dict[str, pd.Series] = {}
+    sample_ids_sets: dict[str, set] = {}
+
+    for model_key, df in all_predictions.items():
+        if "video_id" in df.columns:
+            video_id_sets[model_key] = set(df["video_id"].dropna().unique())
+        if "label" in df.columns:
+            label_series[model_key] = df["label"].reset_index(drop=True)
+        if "sample_id" in df.columns:
+            sample_ids_sets[model_key] = set(df["sample_id"].dropna().unique())
+
+    # video_id 一致性
+    if video_id_sets:
+        first_key = next(iter(video_id_sets.keys()))
+        first_set = video_id_sets[first_key]
+        for mk, vs in video_id_sets.items():
+            if vs != first_set:
+                result["video_id_consistent"] = False
+                result["warnings"].append(
+                    f"模型 {mk} 的 video_id 集合与 {first_key} 不一致: "
+                    f"差异 {len(vs ^ first_set)} 个"
+                )
+        result["n_samples"] = len(first_set)
+        result["details"]["video_id_set_size"] = len(first_set)
+        result["details"]["shared_video_id_count"] = len(
+            set.intersection(*video_id_sets.values())
+        ) if len(video_id_sets) > 1 else len(first_set)
+
+    # label 一致性（逐行比较排序后的 label 序列）
+    if label_series and len(label_series) > 1:
+        first_key = next(iter(label_series.keys()))
+        first_labels = label_series[first_key]
+        for mk, ls in label_series.items():
+            if not ls.equals(first_labels):
+                result["label_consistent"] = False
+                diff_count = int((ls.values != first_labels.values).sum())
+                result["warnings"].append(
+                    f"模型 {mk} 的 label 序列与 {first_key} 不一致: "
+                    f"差异 {diff_count} 行"
+                )
+        result["details"]["label_positive_count"] = int(first_labels.sum())
+
+    # summary
+    if result["video_id_consistent"]:
+        result["details"]["video_id_status"] = "全一致"
+    if result["label_consistent"]:
+        result["details"]["label_status"] = "全一致"
+
+    return result
+
+
 def compute_score_distribution(
     df: pd.DataFrame,
     model_name: str,
@@ -249,6 +339,11 @@ def compute_score_distribution(
     labels = df["label"].values.astype(float)
     preds = df["pred"].values.astype(int) if "pred" in df.columns else (scores >= 0.5).astype(int)
 
+    pos_mask = labels == 1.0
+    neg_mask = labels == 0.0
+    avg_score_pos = float(scores[pos_mask].mean()) if pos_mask.sum() > 0 else None
+    avg_score_neg = float(scores[neg_mask].mean()) if neg_mask.sum() > 0 else None
+
     result = {
         "model_name": model_name,
         "run_id": run_id,
@@ -257,6 +352,8 @@ def compute_score_distribution(
         "score_mean": float(scores.mean()),
         "score_std": float(scores.std()),
         "score_median": float(np.median(scores)),
+        "avg_score_positive_label": avg_score_pos,
+        "avg_score_negative_label": avg_score_neg,
         "pred_positive_count": int(preds.sum()),
         "pred_positive_rate": float(preds.mean()),
         "label_positive_count": int(labels.sum()),

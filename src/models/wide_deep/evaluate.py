@@ -1,4 +1,4 @@
-"""Wide & Deep 评估主程序"""
+"""Wide & Deep 评估主程序 — 支持 train/val/test 三路切分"""
 
 from __future__ import annotations
 
@@ -45,6 +45,72 @@ def find_latest_run(output_root: Path) -> str | None:
     return runs[-1] if runs else None
 
 
+def evaluate(
+    model: nn.Module,
+    loader: DataLoader,
+    device: str,
+    criterion: nn.Module,
+    threshold: float,
+) -> dict:
+    """评估模型，返回所有结果。"""
+    model.eval()
+    all_logits: list[float] = []
+    all_scores: list[float] = []
+    all_labels: list[float] = []
+
+    with torch.no_grad():
+        for batch in loader:
+            numeric_b = batch["numeric"].to(device)
+            cat_b = batch["categorical"].to(device)
+            wide_b = batch["wide"].to(device)
+            labels_b = batch["label"].to(device)
+
+            logits = model(numeric_b, cat_b, wide_b)
+            scores = torch.sigmoid(logits)
+
+            all_logits.extend(logits.cpu().numpy())
+            all_scores.extend(scores.cpu().numpy())
+            all_labels.extend(labels_b.cpu().numpy())
+
+    all_logits_arr = np.array(all_logits)
+    all_scores_arr = np.array(all_scores)
+    all_labels_arr = np.array(all_labels)
+    all_preds_arr = (all_scores_arr >= threshold).astype(int)
+
+    eval_loss = criterion(
+        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
+    ).item()
+
+    cls_metrics, cls_warnings = compute_classification_metrics(
+        all_labels_arr, all_scores_arr, all_preds_arr, threshold
+    )
+
+    k_values = [5, 10, 20]
+    pk_metrics, pk_warnings = compute_precision_at_k(
+        all_labels_arr, all_scores_arr, k_values
+    )
+    rk_metrics, rk_warnings = compute_recall_at_k(
+        all_labels_arr, all_scores_arr, k_values
+    )
+
+    n_pos = int(all_labels_arr.sum())
+    n_neg = int(len(all_labels_arr) - n_pos)
+
+    return {
+        "logits": all_logits_arr,
+        "scores": all_scores_arr,
+        "preds": all_preds_arr,
+        "labels": all_labels_arr,
+        "eval_loss": eval_loss,
+        "cls_metrics": cls_metrics,
+        "pk_metrics": pk_metrics,
+        "rk_metrics": rk_metrics,
+        "warnings": cls_warnings + pk_warnings + rk_warnings,
+        "n_pos": n_pos,
+        "n_neg": n_neg,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Wide & Deep 评估")
     parser.add_argument(
@@ -64,6 +130,12 @@ def main() -> None:
         type=str,
         default=None,
         help="直接指定输出目录（优先级高于 run_id）",
+    )
+    parser.add_argument(
+        "--split",
+        type=str,
+        default=None,
+        help="评估指定 split (val/test)，默认全部",
     )
     args = parser.parse_args()
 
@@ -89,11 +161,9 @@ def main() -> None:
         logger.error(f"输出目录不存在: {run_dir}")
         sys.exit(1)
 
+    run_id_final = run_dir.name
     logger.info(f"评估目录: {run_dir}")
-
-    # ── 确定 run_id ────────────────────────────────────────
-    run_id = run_dir.name
-    logger.info(f"Run ID: {run_id}")
+    logger.info(f"Run ID: {run_id_final}")
 
     # ── 3. 加载特征配置 ─────────────────────────────────────
     feature_config_path = run_dir / "feature_config_used.json"
@@ -103,36 +173,41 @@ def main() -> None:
     with open(feature_config_path, "r", encoding="utf-8") as f:
         feature_config = json.load(f)
 
+    dataset_name = feature_config.get("dataset_name", "sample0427")
+
     # ── 4. 恢复处理器 ───────────────────────────────────────
     processor = WideDeepDataProcessor.from_config(feature_config)
 
-    # ── 5. 加载数据 ─────────────────────────────────────────
-    eval_path = project_root / config["eval_data_path"]
-    eval_df, _ = read_csv_safe(str(eval_path))
-    logger.info(f"评估样本数: {len(eval_df)}")
+    # ── 5. 确定评估数据路径 ─────────────────────────────────
+    is_three_way = "test_data_path" in config
 
-    eval_data = processor.transform(eval_df)
-    eval_dataset = WideDeepDataset(
-        eval_data["numeric"],
-        eval_data["categorical"],
-        eval_data["wide"],
-        eval_data["labels"],
-    )
-    batch_size = config.get("batch_size", 64)
-    eval_loader = DataLoader(
-        eval_dataset, batch_size=batch_size, shuffle=False, drop_last=False
-    )
+    splits_to_eval: list[str] = []
+    split_paths: dict[str, Path] = {}
+
+    if args.split:
+        splits_to_eval = [args.split]
+    elif is_three_way:
+        splits_to_eval = ["val", "test"]
+    else:
+        splits_to_eval = ["eval"]
+
+    if is_three_way:
+        if "val" in splits_to_eval or not args.split:
+            split_paths["val"] = project_root / config["val_data_path"]
+        if "test" in splits_to_eval or not args.split:
+            split_paths["test"] = project_root / config["test_data_path"]
+    else:
+        split_paths["eval"] = project_root / config["eval_data_path"]
 
     # ── 6. 加载模型 ─────────────────────────────────────────
-    device = config.get("device", "auto")
-    if device == "auto":
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-    elif device == "cuda" and not torch.cuda.is_available():
+    device = config.get("device", "cuda")
+    if device == "cuda" and not torch.cuda.is_available():
         device = "cpu"
 
+    cat_embed_dims = processor.cat_embed_dims
     model = WideDeepModel(
         numeric_dim=feature_config.get("numeric_cols", []).__len__(),
-        cat_embed_dims=processor.cat_embed_dims,
+        cat_embed_dims=cat_embed_dims,
         wide_vocab_sizes=processor.wide_vocab_sizes,
         deep_hidden_units=config.get("deep_hidden_units", [64, 32]),
         dropout=config.get("dropout", 0.3),
@@ -147,119 +222,110 @@ def main() -> None:
     model.eval()
     logger.info(f"模型加载完成: {model_path}")
 
-    # ── 7. 推理 ─────────────────────────────────────────────
+    # ── 7. 对每个 split 评估 ────────────────────────────────
     criterion = nn.BCEWithLogitsLoss()
-    all_logits: list[float] = []
-    all_scores: list[float] = []
-    all_labels: list[float] = []
-
-    with torch.no_grad():
-        for batch in eval_loader:
-            numeric_b = batch["numeric"].to(device)
-            cat_b = batch["categorical"].to(device)
-            wide_b = batch["wide"].to(device)
-            logits = model(numeric_b, cat_b, wide_b)
-            scores = torch.sigmoid(logits)
-            all_logits.extend(logits.cpu().numpy())
-            all_scores.extend(scores.cpu().numpy())
-            all_labels.extend(batch["label"].cpu().numpy())
-
-    all_logits_arr = np.array(all_logits)
-    all_scores_arr = np.array(all_scores)
-    all_labels_arr = np.array(all_labels)
-
-    # 计算 eval_loss（加载最佳模型后在 eval 集上重新计算）
-    eval_loss = criterion(
-        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
-    ).item()
-    logger.info(f"Eval loss (BCEWithLogitsLoss): {eval_loss:.6f}")
     threshold = config.get("threshold", 0.5)
-    all_preds_arr = (all_scores_arr >= threshold).astype(int)
 
-    # ── 8. 计算指标 ─────────────────────────────────────────
-    cls_metrics, cls_warnings = compute_classification_metrics(
-        all_labels_arr, all_scores_arr, all_preds_arr, threshold
-    )
+    all_metrics: dict = {}
 
-    k_values = [5, 10, 20]
-    pk_metrics, pk_warnings = compute_precision_at_k(
-        all_labels_arr, all_scores_arr, k_values
-    )
-    rk_metrics, rk_warnings = compute_recall_at_k(
-        all_labels_arr, all_scores_arr, k_values
-    )
+    for split_name, data_path in split_paths.items():
+        logger.info(f"评估 split: {split_name} ({data_path})")
 
-    all_warnings = cls_warnings + pk_warnings + rk_warnings
-    n_pos = int(all_labels_arr.sum())
-    n_neg = int(len(all_labels_arr) - n_pos)
+        df, _ = read_csv_safe(str(data_path))
+        logger.info(f"  {split_name} 样本数: {len(df)}")
 
-    metrics = {
-        "model_name": "wide_deep",
-        "run_id": run_id,
-        "split": "eval",
-        "sample_count": len(all_labels_arr),
-        "positive_count": n_pos,
-        "negative_count": n_neg,
-        "auc": cls_metrics.get("auc"),
-        "accuracy": cls_metrics.get("accuracy"),
-        "precision": cls_metrics.get("precision"),
-        "recall": cls_metrics.get("recall"),
-        "f1": cls_metrics.get("f1"),
-        "precision_at_k": pk_metrics,
-        "recall_at_k": rk_metrics,
-        "eval_loss": eval_loss,
-        "threshold": threshold,
-        "label_definition": "流程验证伪标签: interaction_score >= threshold",
-        "warnings": all_warnings,
-        "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "notes": [
-            "当前指标仅基于 sample0427 样本数据计算，仅用于流程级验证。",
-            "不表示正式推荐系统效果结论。",
-            "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
-            "当前仅有 eval 评估，无独立 test 集。",
-        ],
-    }
+        data = processor.transform(df)
+        dataset = WideDeepDataset(
+            data["numeric"], data["categorical"], data["wide"], data["labels"]
+        )
+        loader = DataLoader(
+            dataset, batch_size=config.get("batch_size", 64), shuffle=False
+        )
 
-    # ── 9. 保存 metrics.json ────────────────────────────────
-    metrics_path = run_dir / "metrics.json"
-    with open(metrics_path, "w", encoding="utf-8") as f:
-        json.dump(metrics, f, ensure_ascii=False, indent=2)
-    logger.info(f"指标已保存: {metrics_path}")
+        result = evaluate(model, loader, device, criterion, threshold)
 
-    # ── 10. 保存 predictions.csv ────────────────────────────
-    ids_df = eval_data["ids"]  # 包含 id_cols
-    pred_df = pd.DataFrame(
-        {
-            "label": all_labels_arr,
-            "score": all_scores_arr,
-            "pred": all_preds_arr,
-            "split": "eval",
+        # 保存 predictions
+        pred_df = pd.DataFrame(
+            {
+                "label": result["labels"],
+                "score": result["scores"],
+                "pred": result["preds"],
+                "split": split_name,
+                "model_name": "wide_deep",
+                "dataset_name": dataset_name,
+                "run_id": run_id_final,
+            }
+        )
+        ids_data = data.get("ids")
+        if ids_data is not None:
+            ids_df = ids_data.reset_index(drop=True)
+            pred_df = pd.concat([ids_df, pred_df], axis=1)
+
+        pred_path = run_dir / f"predictions_{split_name}.csv"
+        pred_df.to_csv(pred_path, index=False, encoding="utf-8-sig")
+        logger.info(f"  predictions 已保存: {pred_path} ({len(pred_df)} 条)")
+
+        # 构建 metrics
+        label_definition = feature_config.get(
+            "label_definition",
+            "interaction_score >= threshold (离线实验伪标签)",
+        )
+        metrics = {
             "model_name": "wide_deep",
-            "run_id": run_id,
+            "dataset_name": dataset_name,
+            "run_id": run_id_final,
+            "split": split_name,
+            "sample_count": len(result["labels"]),
+            "positive_count": result["n_pos"],
+            "negative_count": result["n_neg"],
+            "eval_loss": result["eval_loss"],
+            "auc": result["cls_metrics"].get("auc"),
+            "accuracy": result["cls_metrics"].get("accuracy"),
+            "precision": result["cls_metrics"].get("precision"),
+            "recall": result["cls_metrics"].get("recall"),
+            "f1": result["cls_metrics"].get("f1"),
+            "precision_at_k": result["pk_metrics"],
+            "recall_at_k": result["rk_metrics"],
+            "threshold": threshold,
+            "label_definition": label_definition,
+            "warnings": result["warnings"],
+            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
-    )
-    if ids_df is not None:
-        ids_df.reset_index(drop=True, inplace=True)
-        pred_df = pd.concat([ids_df.reset_index(drop=True), pred_df], axis=1)
+        all_metrics[f"{split_name}_metrics"] = metrics
 
-    pred_path = run_dir / "predictions.csv"
-    pred_df.to_csv(pred_path, index=False)
-    logger.info(f"预测结果已保存: {pred_path}")
+        logger.info(
+            f"  {split_name}: AUC={metrics['auc']}, "
+            f"F1={metrics['f1']}, Loss={metrics['eval_loss']:.6f}"
+        )
 
-    # ── 11. 打印指标摘要 ────────────────────────────────────
-    logger.info("=== 评估结果 ===")
-    logger.info(f"样本数: {metrics['sample_count']} (正例: {n_pos}, 负例: {n_neg})")
-    logger.info(f"AUC: {metrics['auc']}")
-    logger.info(f"Accuracy: {metrics['accuracy']}")
-    logger.info(f"Precision: {metrics['precision']}")
-    logger.info(f"Recall: {metrics['recall']}")
-    logger.info(f"F1: {metrics['f1']}")
-    for k in k_values:
-        pk = pk_metrics.get(f"precision_at_{k}", "N/A")
-        rk = rk_metrics.get(f"recall_at_{k}", "N/A")
-        logger.info(f"Precision@{k}: {pk}, Recall@{k}: {rk}")
-    if all_warnings:
-        logger.warning(f"Warnings: {all_warnings}")
+    # ── 8. 保存更新后的 metrics ─────────────────────────────
+    existing_metrics_path = run_dir / "metrics.json"
+    if existing_metrics_path.exists():
+        with open(existing_metrics_path, "r", encoding="utf-8") as f:
+            existing = json.load(f)
+        existing.update(all_metrics)
+        existing["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        existing = all_metrics
+        existing["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with open(existing_metrics_path, "w", encoding="utf-8") as f:
+        json.dump(existing, f, ensure_ascii=False, indent=2)
+    logger.info(f"指标已保存: {existing_metrics_path}")
+
+    # ── 9. 打印摘要 ────────────────────────────────────────
+    logger.info("=" * 60)
+    logger.info("评估完成！")
+    for split_name in split_paths:
+        m = all_metrics.get(f"{split_name}_metrics", {})
+        logger.info(
+            f"  {split_name}: "
+            f"AUC={m.get('auc')}, F1={m.get('f1')}, "
+            f"样本={m.get('sample_count')}, "
+            f"正例={m.get('positive_count')}, "
+            f"负例={m.get('negative_count')}"
+        )
+    logger.info("=" * 60)
 
 
 if __name__ == "__main__":

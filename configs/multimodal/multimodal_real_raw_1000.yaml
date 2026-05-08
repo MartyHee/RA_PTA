@@ -1,0 +1,54 @@
+# =============================================================================
+# 多模态模型配置 - real_raw_1000
+# =============================================================================
+# 基于 real_raw_1000 真实网页端 raw 数据构建的三模态输入，训练 Multimodal 模型。
+# 三路切分模式：train 700 / val 150 / test 150。
+# =============================================================================
+
+model_name: multimodal
+dataset_name: real_raw_1000
+
+# ---------------------------------------------------------------------------
+# 数据路径
+# ---------------------------------------------------------------------------
+train_npz_path: data/multimodal/real_raw_1000/multimodal_train.npz
+val_npz_path: data/multimodal/real_raw_1000/multimodal_val.npz
+test_npz_path: data/multimodal/real_raw_1000/multimodal_test.npz
+feature_info_path: data/multimodal/real_raw_1000/multimodal_feature_info.json
+
+metrics_config_path: configs/common/metrics.yaml
+output_root: outputs/multimodal/real_raw_1000
+
+# ---------------------------------------------------------------------------
+# 各分支隐层维度
+# ---------------------------------------------------------------------------
+text_hidden_dim: 32
+visual_hidden_dim: 16
+structured_hidden_dim: 32
+fusion_hidden_dim: 64
+
+# ---------------------------------------------------------------------------
+# 训练超参数
+# ---------------------------------------------------------------------------
+dropout: 0.3
+batch_size: 64
+learning_rate: 0.001
+weight_decay: 0.0001
+epochs: 50
+early_stopping_patience: 8
+random_seed: 2026
+threshold: 0.5
+device: cuda
+
+# ---------------------------------------------------------------------------
+# 优化器 / 损失函数
+# ---------------------------------------------------------------------------
+optimizer: adam
+loss: bce
+
+# ---------------------------------------------------------------------------
+# 当前阶段约束
+# ---------------------------------------------------------------------------
+no_image_download: true
+no_external_api: true
+no_large_pretrained_model: true

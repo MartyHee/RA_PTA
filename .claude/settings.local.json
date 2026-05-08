@@ -59,7 +59,8 @@
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --help)",
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -c ' *)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/multimodal/train.py --config configs/multimodal/multimodal_real_raw_1000.yaml)"
     ]
   }
 }

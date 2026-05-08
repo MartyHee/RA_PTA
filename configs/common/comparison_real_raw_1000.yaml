@@ -1,0 +1,76 @@
+# =============================================================================
+# 统一模型对比实验配置 - real_raw_1000
+# =============================================================================
+# 汇总 DNN、Wide & Deep、GraphSAGE、Multimodal 四个模型在 real_raw_1000
+# 真实网页端 raw 数据上的 test split 评估结果。
+# 使用三路切分：train 700 / val 150 / test 150，test 做最终主评估。
+# =============================================================================
+
+dataset_name: real_raw_1000
+report_title: "多模型离线对比报告（real_raw_1000 真实网页端数据）"
+
+# 主评估 split（test 或 val，默认 test）
+primary_split: test
+
+# 预测文件名（test 为 predictions_test.csv，val 为 predictions_val.csv）
+prediction_file: predictions_test.csv
+
+# 数据说明
+dataset_description:
+  source: "抖音公开网页端 20260507_230322 数据包，1000 条视频 URL"
+  n_videos: 1000
+  n_tables: 11
+  split_description: "train 700 / val 150 / test 150（video_id 互斥，按 label 分层）"
+  label_description: "interaction_score = digg_count + comment_count + share_count + collect_count，P60 分位数（18147.80）构造二分类伪标签"
+  positive_count: 400
+  negative_count: 600
+
+# 模型运行配置（固定本次比较的 run）
+model_runs:
+  dnn:
+    model_name: dnn
+    run_id: "202605081636"
+    output_dir: outputs/dnn/real_raw_1000/202605081636
+  wide_deep:
+    model_name: wide_deep
+    run_id: "202605081746"
+    output_dir: outputs/wide_deep/real_raw_1000/202605081746
+  graphsage:
+    model_name: graphsage
+    run_id: "202605081828"
+    output_dir: outputs/graphsage/real_raw_1000/202605081828
+  multimodal:
+    model_name: multimodal
+    run_id: "202605081927"
+    output_dir: outputs/multimodal/real_raw_1000/202605081927
+
+# 公共评估指标配置路径
+metrics_config_path: configs/common/metrics.yaml
+
+# 输出根目录（运行时自动生成的时间戳子目录将创建于此）
+output_root: outputs/comparison
+
+# 预测文件检查必需的列
+required_prediction_columns:
+  - sample_id
+  - video_id
+  - author_id
+  - label
+  - score
+  - pred
+  - split
+  - model_name
+  - dataset_name
+  - run_id
+
+# Top-K K 值列表（若 metrics.yaml 中存在则覆盖）
+k_values: [5, 10, 20]
+
+# 报告说明
+notes:
+  - "当前对比基于 real_raw_1000 真实网页端 raw 数据。"
+  - "标签为 interaction_score 伪标签，不代表真实 CTR/CVR/完播/转化。"
+  - "test split 仅用于最终评估，未参与模型选择或早停。"
+  - "所有模型结果均为离线实验对比，不代表线上推荐效果。"
+  - "当前数据来自公开网页端，不代表平台内部完整数据。"
+  - "sample0427 是历史流程验证数据，不是当前主实验数据。"

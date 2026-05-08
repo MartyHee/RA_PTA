@@ -1,0 +1,82 @@
+{
+  "input_paths": {
+    "raw_data_root": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\20260507_230322",
+    "tabular_train": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_train.csv",
+    "tabular_val": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_val.csv",
+    "tabular_test": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_test.csv",
+    "tabular_feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_feature_info.json"
+  },
+  "output_paths": {
+    "train_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_train.npz",
+    "val_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_val.npz",
+    "test_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_test.npz",
+    "feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_feature_info.json"
+  },
+  "train_size": 700,
+  "val_size": 150,
+  "test_size": 150,
+  "label_distribution_train": {
+    "pos": 280,
+    "neg": 420
+  },
+  "label_distribution_val": {
+    "pos": 60,
+    "neg": 90
+  },
+  "label_distribution_test": {
+    "pos": 60,
+    "neg": 90
+  },
+  "text_feature_shape_train": [
+    700,
+    32
+  ],
+  "text_feature_shape_val": [
+    150,
+    32
+  ],
+  "text_feature_shape_test": [
+    150,
+    32
+  ],
+  "visual_feature_shape_train": [
+    700,
+    18
+  ],
+  "visual_feature_shape_val": [
+    150,
+    18
+  ],
+  "visual_feature_shape_test": [
+    150,
+    18
+  ],
+  "structured_feature_shape_train": [
+    700,
+    38
+  ],
+  "structured_feature_shape_val": [
+    150,
+    38
+  ],
+  "structured_feature_shape_test": [
+    150,
+    38
+  ],
+  "missing_text_count_train": 19,
+  "missing_text_count_val": 3,
+  "missing_text_count_test": 5,
+  "used_fallback_method": false,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "generated_at": "2026-05-08 18:54:10",
+  "warnings": [],
+  "notes": [
+    "当前多模态数据集基于 real_raw_1000 真实网页端 raw 数据构建。",
+    "text_features 基于 combined_text（desc + caption + comment + hashtag + music_title + signature）。",
+    "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
+    "structured_features 从 tabular 数值特征筛选，经 z-score 标准化（fit on train only）。",
+    "split 与 tabular 完全一致（train 700 / val 150 / test 150）。"
+  ]
+}

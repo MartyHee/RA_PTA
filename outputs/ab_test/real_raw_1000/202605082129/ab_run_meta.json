@@ -1,0 +1,34 @@
+{
+  "ab_run_id": "202605082129",
+  "output_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\ab_test\\real_raw_1000\\202605082129",
+  "started_at": "2026-05-08 21:29:38",
+  "finished_at": "2026-05-08 21:29:41",
+  "config_path": "configs/ab_test/ab_real_raw_1000.yaml",
+  "input_predictions_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000\\202605081927\\predictions_test.csv",
+  "model_name": "multimodal",
+  "model_run_id": "202605081927",
+  "comparison_run_id": "202605082029",
+  "comparison_output_dir": "outputs/comparison/202605082029",
+  "group_method": "hash",
+  "group_key": "video_id",
+  "treatment_ratio": 0.5,
+  "random_seed": 2026,
+  "output_files": [
+    "ab_run_meta.json",
+    "ab_group_assignment.csv",
+    "ab_metrics_summary.csv",
+    "ab_metrics_summary.json",
+    "ab_score_distribution.csv",
+    "ab_simulation_report.md",
+    "ab_score_distribution.png"
+  ],
+  "warnings": [],
+  "notes": [
+    "当前为离线 A/B 模拟，不是真实线上实验",
+    "基于 real_raw_1000 test split (150 条) 的 Multimodal 模型预测结果",
+    "分组在同一批 predictions 上进行，不代表真实策略差异",
+    "当前 label 是 interaction_score 伪标签，不代表真实 CTR/CVR/完播/转化",
+    "两组使用同一个模型预测结果，lift 不是因果收益",
+    "样本仅 test split 150 条，hash 分组后统计波动较大"
+  ]
+}

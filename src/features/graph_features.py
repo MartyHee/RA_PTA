@@ -26,6 +26,21 @@ DEFAULT_TABULAR_FEATURE_COLS = [
     "chapter_count",
 ]
 
+# real_raw_1000 适用于图节点的主视频 tabular 数值特征
+# 不含 video_tag_count / chapter_count（对应 raw 表为空）
+# 增加 related_video_count 作为补充
+REAL_RAW_TABULAR_FEATURE_COLS = [
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "comment_table_count",
+    "related_video_count",
+]
+
 
 def build_node_type_onehot(
     node_types: list[str],
@@ -151,18 +166,21 @@ def build_video_tabular_features(
 
 def get_feature_columns(
     tabular_feature_cols: list[str] | None = None,
+    type_list: list[str] | None = None,
 ) -> list[str]:
     """获取节点特征列名列表（用于 graph_meta.json 记录）。
 
     Args:
         tabular_feature_cols: 使用的 tabular 数值特征列
+        type_list: 节点类型列表（决定 one-hot 列名顺序）
 
     Returns:
         完整特征列名列表
     """
     if tabular_feature_cols is None:
         tabular_feature_cols = DEFAULT_TABULAR_FEATURE_COLS
-    type_list = DEFAULT_NODE_TYPES
+    if type_list is None:
+        type_list = DEFAULT_NODE_TYPES
     type_onehot_cols = [f"node_type_{t}" for t in type_list]
     degree_cols = ["total_degree", "in_degree", "out_degree"]
     return type_onehot_cols + degree_cols + list(tabular_feature_cols)

@@ -1,0 +1,5 @@
+model_name,file_exists,n_rows,required_cols_present,score_min,score_max,score_in_range,pred_is_01,label_is_01,split_is_eval,model_name_match,run_id_match,has_nan,has_inf,duplicate_sample_id,duplicate_video_id,warnings,errors
+dnn,True,150,True,5.496826e-10,1.0,True,True,True,True,True,True,False,False,0,0,[],[]
+wide_deep,True,150,True,3.8898385e-08,1.0,True,True,True,True,True,True,False,False,0,0,[],[]
+graphsage,True,150,False,,,True,True,True,True,True,True,False,False,0,0,[],"[""缺少必需列: ['author_id']""]"
+multimodal,True,150,True,4.0643715060184604e-09,1.0,True,True,True,True,True,True,False,False,0,0,[],[]

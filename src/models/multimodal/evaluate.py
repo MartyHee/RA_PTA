@@ -1,4 +1,4 @@
-"""多模态模型评估主程序"""
+"""多模态模型评估主程序 — 支持 val/test 双路评估（三路切分模式）"""
 
 from __future__ import annotations
 
@@ -32,6 +32,81 @@ from utils.logger import get_logger  # noqa: E402
 logger = get_logger("multimodal_eval")
 
 
+def evaluate_model(
+    model: nn.Module,
+    dataset: MultimodalDataset,
+    device: str,
+    criterion: nn.Module,
+    threshold: float,
+) -> dict:
+    """评估模型，返回所有结果。"""
+    model.eval()
+    all_logits: list[float] = []
+    all_scores: list[float] = []
+    all_labels: list[float] = []
+    all_sample_ids: list[int] = []
+    all_video_ids: list[int] = []
+    all_author_ids: list[str] = []
+
+    with torch.no_grad():
+        for i in range(len(dataset)):
+            item = dataset[i]
+            text_t = item["text"].unsqueeze(0).to(device)
+            visual_t = item["visual"].unsqueeze(0).to(device)
+            struct_t = item["structured"].unsqueeze(0).to(device)
+
+            logit = model(text_t, visual_t, struct_t)
+            score = torch.sigmoid(logit)
+
+            all_logits.append(logit.cpu().item())
+            all_scores.append(score.cpu().item())
+            all_labels.append(item["label"].item())
+            all_sample_ids.append(int(item["sample_id"]))
+            all_video_ids.append(int(item["video_id"]))
+            all_author_ids.append(str(item["author_id"]))
+
+    all_logits_arr = np.array(all_logits)
+    all_scores_arr = np.array(all_scores)
+    all_labels_arr = np.array(all_labels)
+    all_preds_arr = (all_scores_arr >= threshold).astype(int)
+
+    eval_loss = criterion(
+        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
+    ).item()
+
+    cls_metrics, cls_warnings = compute_classification_metrics(
+        all_labels_arr, all_scores_arr, all_preds_arr, threshold
+    )
+
+    k_values = [5, 10, 20]
+    pk_metrics, pk_warnings = compute_precision_at_k(
+        all_labels_arr, all_scores_arr, k_values
+    )
+    rk_metrics, rk_warnings = compute_recall_at_k(
+        all_labels_arr, all_scores_arr, k_values
+    )
+
+    n_pos = int(all_labels_arr.sum())
+    n_neg = int(len(all_labels_arr) - n_pos)
+
+    return {
+        "sample_ids": all_sample_ids,
+        "video_ids": all_video_ids,
+        "author_ids": all_author_ids,
+        "logits": all_logits_arr,
+        "scores": all_scores_arr,
+        "preds": all_preds_arr,
+        "labels": all_labels_arr,
+        "eval_loss": eval_loss,
+        "cls_metrics": cls_metrics,
+        "pk_metrics": pk_metrics,
+        "rk_metrics": rk_metrics,
+        "warnings": cls_warnings + pk_warnings + rk_warnings,
+        "n_pos": n_pos,
+        "n_neg": n_neg,
+    }
+
+
 def find_latest_run(output_root: Path) -> str | None:
     """在 output_root 中查找最近一次 run 的 run_id。"""
     latest_file = output_root / "latest_run.txt"
@@ -63,9 +138,10 @@ def main() -> None:
     config = load_config(args.config)
     project_root = Path(_project_root)
     output_root = project_root / config["output_root"]
-    eval_npz_path = project_root / config["eval_npz_path"]
     feature_info_path = project_root / config["feature_info_path"]
     metrics_config_path = project_root / config["metrics_config_path"]
+    dataset_name = config.get("dataset_name", "sample0427")
+    model_name = config.get("model_name", "multimodal")
 
     # ── 2. 确定输出目录 ─────────────────────────────────────
     if args.run_id:
@@ -91,6 +167,10 @@ def main() -> None:
     text_dim = feature_info.get("text_dim", 32)
     visual_dim = feature_info.get("visual_dim", 10)
     structured_dim = feature_info.get("structured_dim", 20)
+    label_definition = feature_info.get(
+        "label_definition",
+        "interaction_score >= threshold (离线实验伪标签)",
+    )
 
     # ── 4. 加载 feature_config_used ─────────────────────────
     feature_config_path = run_dir / "feature_config_used.json"
@@ -106,11 +186,24 @@ def main() -> None:
     metrics_config = load_yaml(metrics_config_path)
     k_values = metrics_config.get("k_values", [5, 10, 20])
 
-    # ── 6. 加载评估数据 ─────────────────────────────────────
-    eval_dataset = MultimodalDataset(eval_npz_path, feature_info)
-    for warn in eval_dataset.warnings:
-        logger.warning(f"评估集: {warn}")
-    logger.info(f"评估样本数: {len(eval_dataset)}")
+    # ── 6. 加载数据 ─────────────────────────────────────────
+    is_three_way = "val_npz_path" in config
+
+    val_npz_path = project_root / config.get(
+        "val_npz_path", config.get("eval_npz_path", "")
+    )
+    val_dataset = MultimodalDataset(val_npz_path, feature_info)
+    for warn in val_dataset.warnings:
+        logger.warning(f"验证集: {warn}")
+    logger.info(f"验证样本数: {len(val_dataset)}")
+
+    test_dataset = None
+    if is_three_way:
+        test_npz_path = project_root / config["test_npz_path"]
+        test_dataset = MultimodalDataset(test_npz_path, feature_info)
+        for warn in test_dataset.warnings:
+            logger.warning(f"测试集: {warn}")
+        logger.info(f"测试样本数: {len(test_dataset)}")
 
     # ── 7. 加载模型 ─────────────────────────────────────────
     device = config.get("device", "cuda")
@@ -137,139 +230,93 @@ def main() -> None:
     model.eval()
     logger.info(f"模型加载完成: {model_path}")
 
-    # ── 8. 推理 ─────────────────────────────────────────────
+    # ── 8. 推理与评估 ─────────────────────────────────────
     criterion = nn.BCEWithLogitsLoss()
     threshold = config.get("threshold", 0.5)
-    all_logits: list[float] = []
-    all_scores: list[float] = []
-    all_labels: list[float] = []
-    all_sample_ids: list[int] = []
-    all_video_ids: list[int] = []
-    all_author_ids: list[str] = []
 
-    with torch.no_grad():
-        for i in range(len(eval_dataset)):
-            item = eval_dataset[i]
-            text_t = item["text"].unsqueeze(0).to(device)
-            visual_t = item["visual"].unsqueeze(0).to(device)
-            struct_t = item["structured"].unsqueeze(0).to(device)
+    # Val 评估
+    logger.info("评估 val split...")
+    val_result = evaluate_model(model, val_dataset, device, criterion, threshold)
 
-            logit = model(text_t, visual_t, struct_t)
-            score = torch.sigmoid(logit)
+    # Test 评估（三路模式）
+    test_result = None
+    if test_dataset is not None:
+        logger.info("评估 test split...")
+        test_result = evaluate_model(model, test_dataset, device, criterion, threshold)
 
-            all_logits.append(logit.cpu().item())
-            all_scores.append(score.cpu().item())
-            all_labels.append(item["label"].item())
-            all_sample_ids.append(int(item["sample_id"]))
-            all_video_ids.append(int(item["video_id"]))
-            all_author_ids.append(str(item["author_id"]))
+    # ── 9. 保存 predictions ──────────────────────────────
+    def save_predictions(eval_result: dict, split_name: str) -> None:
+        pred_df = pd.DataFrame(
+            {
+                "sample_id": eval_result["sample_ids"],
+                "video_id": eval_result["video_ids"],
+                "author_id": eval_result["author_ids"],
+                "label": eval_result["labels"],
+                "score": eval_result["scores"],
+                "pred": eval_result["preds"],
+                "split": split_name,
+                "model_name": model_name,
+                "dataset_name": dataset_name,
+                "run_id": run_id,
+            }
+        )
+        pred_path = run_dir / f"predictions_{split_name}.csv"
+        pred_df.to_csv(pred_path, index=False, encoding="utf-8-sig")
+        logger.info(f"预测结果已保存: {pred_path} ({len(pred_df)} 条)")
 
-    all_logits_arr = np.array(all_logits)
-    all_scores_arr = np.array(all_scores)
-    all_labels_arr = np.array(all_labels)
+    save_predictions(val_result, "val")
+    if test_result is not None:
+        save_predictions(test_result, "test")
 
-    # 计算 eval_loss（加载最佳模型后在 eval 集上重新计算）
-    eval_loss = criterion(
-        torch.tensor(all_logits_arr), torch.tensor(all_labels_arr)
-    ).item()
-    logger.info(f"Eval loss (BCEWithLogitsLoss): {eval_loss:.6f}")
-    all_preds_arr = (all_scores_arr >= threshold).astype(int)
+    # ── 10. 构建 metrics ─────────────────────────────────
+    def build_metrics_dict(eval_result: dict, split: str) -> dict:
+        return {
+            "model_name": model_name,
+            "dataset_name": dataset_name,
+            "run_id": run_id,
+            "split": split,
+            "sample_count": len(eval_result["labels"]),
+            "positive_count": eval_result["n_pos"],
+            "negative_count": eval_result["n_neg"],
+            "eval_loss": eval_result["eval_loss"],
+            "auc": eval_result["cls_metrics"].get("auc"),
+            "accuracy": eval_result["cls_metrics"].get("accuracy"),
+            "precision": eval_result["cls_metrics"].get("precision"),
+            "recall": eval_result["cls_metrics"].get("recall"),
+            "f1": eval_result["cls_metrics"].get("f1"),
+            "precision_at_k": eval_result["pk_metrics"],
+            "recall_at_k": eval_result["rk_metrics"],
+            "threshold": threshold,
+            "label_definition": label_definition,
+            "warnings": eval_result["warnings"],
+            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
-    # ── 9. 计算指标 ─────────────────────────────────────────
-    cls_metrics, cls_warnings = compute_classification_metrics(
-        all_labels_arr, all_scores_arr, all_preds_arr, threshold
-    )
+    val_metrics = build_metrics_dict(val_result, "val")
+    metrics_output: dict = {"val_metrics": val_metrics}
 
-    pk_metrics, pk_warnings = compute_precision_at_k(
-        all_labels_arr, all_scores_arr, k_values
-    )
-    rk_metrics, rk_warnings = compute_recall_at_k(
-        all_labels_arr, all_scores_arr, k_values
-    )
+    if test_result is not None:
+        test_metrics = build_metrics_dict(test_result, "test")
+        metrics_output["test_metrics"] = test_metrics
 
-    all_warnings = cls_warnings + pk_warnings + rk_warnings
-    n_pos = int(all_labels_arr.sum())
-    n_neg = int(len(all_labels_arr) - n_pos)
+    metrics_output["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # ── 10. 组装 metrics ───────────────────────────────────
-    metrics = {
-        "model_name": "multimodal",
-        "run_id": run_id,
-        "split": "eval",
-        "sample_count": len(all_labels_arr),
-        "positive_count": n_pos,
-        "negative_count": n_neg,
-        "auc": cls_metrics.get("auc"),
-        "accuracy": cls_metrics.get("accuracy"),
-        "precision": cls_metrics.get("precision"),
-        "recall": cls_metrics.get("recall"),
-        "f1": cls_metrics.get("f1"),
-        "precision_at_k": pk_metrics,
-        "recall_at_k": rk_metrics,
-        "eval_loss": eval_loss,
-        "threshold": threshold,
-        "label_definition": feature_info.get(
-            "label_definition", "流程验证伪标签: interaction_score >= threshold"
-        ),
-        "feature_shapes": {
-            "text_dim": text_dim,
-            "visual_dim": visual_dim,
-            "structured_dim": structured_dim,
-        },
-        "no_image_download_confirmed": config.get("no_image_download", True),
-        "no_external_api_confirmed": config.get("no_external_api", True),
-        "no_large_pretrained_model_confirmed": config.get(
-            "no_large_pretrained_model", True
-        ),
-        "warnings": all_warnings,
-        "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "notes": [
-            "当前指标仅基于 sample0427 样本数据计算，仅用于流程级验证。",
-            "不表示正式推荐系统效果结论。",
-            "标签为 interaction_score 伪标签，不代表真实曝光/点击/转化目标。",
-            "visual_features 仅包含媒体元信息，不包含图像语义特征。",
-            "未下载图片。",
-            "未调用外部 API。",
-            "未使用大型预训练模型。",
-        ],
-    }
-
-    # ── 11. 保存 metrics.json ──────────────────────────────
     metrics_path = run_dir / "metrics.json"
     with open(metrics_path, "w", encoding="utf-8") as f:
-        json.dump(metrics, f, ensure_ascii=False, indent=2)
+        json.dump(metrics_output, f, ensure_ascii=False, indent=2)
     logger.info(f"指标已保存: {metrics_path}")
 
-    # ── 12. 保存 predictions.csv ───────────────────────────
-    pred_df = pd.DataFrame(
-        {
-            "sample_id": all_sample_ids,
-            "video_id": all_video_ids,
-            "author_id": all_author_ids,
-            "label": all_labels_arr,
-            "score": all_scores_arr,
-            "pred": all_preds_arr,
-            "split": "eval",
-            "model_name": "multimodal",
-            "run_id": run_id,
-        }
-    )
-    pred_path = run_dir / "predictions.csv"
-    pred_df.to_csv(pred_path, index=False)
-    logger.info(f"预测结果已保存: {pred_path}")
-
-    # ── 13. 打印指标摘要 ──────────────────────────────────
+    # ── 11. 打印指标摘要 ──────────────────────────────────
     logger.info("=== 评估结果 ===")
-    logger.info(f"样本数: {metrics['sample_count']} (正例: {n_pos}, 负例: {n_neg})")
-    logger.info(f"AUC: {metrics['auc']}")
-    logger.info(f"Accuracy: {metrics['accuracy']}")
-    logger.info(f"Precision: {metrics['precision']}")
-    logger.info(f"Recall: {metrics['recall']}")
-    logger.info(f"F1: {metrics['f1']}")
-    for k in k_values:
-        pk = pk_metrics.get(f"precision_at_{k}", "N/A")
-        rk = rk_metrics.get(f"recall_at_{k}", "N/A")
-        logger.info(f"Precision@{k}: {pk}, Recall@{k}: {rk}")
+    logger.info(f"Val: 样本数={val_metrics['sample_count']}, "
+                f"AUC={val_metrics['auc']}, F1={val_metrics['f1']}")
+    if test_result:
+        logger.info(f"Test: 样本数={test_metrics['sample_count']}, "
+                    f"AUC={test_metrics['auc']}, F1={test_metrics['f1']}")
+
+    all_warnings = val_result["warnings"]
+    if test_result:
+        all_warnings += test_result["warnings"]
     if all_warnings:
         logger.warning(f"Warnings: {all_warnings}")
 

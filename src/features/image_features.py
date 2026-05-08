@@ -112,6 +112,47 @@ def build_visual_features(
         lambda x: float(_parse_url_count(x))
     )
 
+    # ── 扩展特征（向后兼容，缺列则跳过）────────────────────────────────
+    # 11. cover_url_count（数值计数，非仅二值）
+    if "cover_url_list" in df.columns:
+        df["cover_url_count"] = df["cover_url_list"].apply(
+            lambda x: float(_parse_url_count(x))
+        )
+
+    # 12. dynamic_cover_url_count
+    if "dynamic_cover_url_list" in df.columns:
+        df["dynamic_cover_url_count"] = df["dynamic_cover_url_list"].apply(
+            lambda x: float(_parse_url_count(x))
+        )
+
+    # 13-14. video_width / video_height
+    for col in ["video_width", "video_height"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0).astype(np.float32)
+
+    # 15. video_wh_ratio
+    if "video_width" in df.columns and "video_height" in df.columns:
+        v_ratio = np.where(
+            df["video_height"].values > 0,
+            df["video_width"].values / df["video_height"].values,
+            0.0,
+        )
+        df["video_wh_ratio"] = v_ratio.astype(np.float32)
+
+    # 16-17. dynamic_cover_width / dynamic_cover_height
+    for col in ["dynamic_cover_width", "dynamic_cover_height"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(-1.0).astype(np.float32)
+
+    # 18. dynamic_cover_wh_ratio
+    if "dynamic_cover_width" in df.columns and "dynamic_cover_height" in df.columns:
+        d_ratio = np.where(
+            df["dynamic_cover_height"].values > 0,
+            df["dynamic_cover_width"].values / df["dynamic_cover_height"].values,
+            0.0,
+        )
+        df["dynamic_cover_wh_ratio"] = d_ratio.astype(np.float32)
+
     feature_cols = [
         "has_origin_cover",
         "has_dynamic_cover",
@@ -124,6 +165,16 @@ def build_visual_features(
         "has_dynamic_cover_url",
         "origin_cover_url_count",
     ]
+
+    # 扩展特征列（仅包含实际存在的列）
+    extra_cols = [
+        "cover_url_count", "dynamic_cover_url_count",
+        "video_width", "video_height", "video_wh_ratio",
+        "dynamic_cover_width", "dynamic_cover_height", "dynamic_cover_wh_ratio",
+    ]
+    for col in extra_cols:
+        if col in df.columns:
+            feature_cols.append(col)
 
     result = df[feature_cols].reset_index()  # video_id 列恢复为数据列
     info["visual_dim"] = len(feature_cols)

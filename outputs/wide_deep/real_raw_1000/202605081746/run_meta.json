@@ -1,0 +1,20 @@
+{
+  "model_name": "wide_deep",
+  "dataset_name": "real_raw_1000",
+  "run_id": "202605081746",
+  "output_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_1000\\202605081746",
+  "train_started_at": "2026-05-08 17:46:53",
+  "train_finished_at": "2026-05-08 17:47:01",
+  "config_path": "configs/wide_deep/wide_deep_real_raw_1000.yaml",
+  "train_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_train.csv",
+  "val_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_val.csv",
+  "test_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_test.csv",
+  "best_epoch": 22,
+  "best_val_loss": 0.192852,
+  "final_train_loss": 0.038177,
+  "final_val_loss": 0.215816,
+  "device": "cuda",
+  "num_params": 42760,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
+  "warnings": []
+}

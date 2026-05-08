@@ -25,6 +25,7 @@ _project_root = os.path.abspath(os.path.join(_script_dir, "..", ".."))
 sys.path.insert(0, os.path.join(_project_root, "src"))
 
 from evaluation.compare_models import (  # noqa: E402
+    check_cross_model_consistency,
     check_predictions_quality,
     collect_model_metrics,
     compute_score_distribution,
@@ -65,10 +66,14 @@ def main() -> None:
     required_cols = config.get("required_prediction_columns", [
         "sample_id", "video_id", "label", "score", "pred", "split", "model_name",
     ])
+    prediction_file = config.get("prediction_file", "predictions.csv")
+    primary_split = config.get("primary_split", "test")
 
     logger.info(f"===== 统一模型对比实验 =====")
     logger.info(f"Comparison Run ID: {comparison_run_id}")
     logger.info(f"比较模型: {list(model_runs.keys())}")
+    logger.info(f"预测文件: {prediction_file}")
+    logger.info(f"主评估 split: {primary_split}")
     logger.info(f"输出目录: {output_dir}")
     logger.info(f"K 值: {k_values}")
 
@@ -81,7 +86,7 @@ def main() -> None:
         model_name = model_cfg["model_name"]
         run_id = model_cfg["run_id"]
         run_dir = project_root / model_cfg["output_dir"]
-        pred_path = run_dir / "predictions.csv"
+        pred_path = run_dir / prediction_file
 
         if not pred_path.exists():
             quality_results.append({
@@ -89,13 +94,16 @@ def main() -> None:
                 "file_exists": False,
                 "errors": [f"文件不存在: {pred_path}"],
             })
-            logger.error(f"{model_name}: predictions.csv 不存在")
+            logger.error(f"{model_name}: {prediction_file} 不存在")
             continue
 
         df = pd.read_csv(pred_path)
         logger.info(f"{model_name}: 读取 {len(df)} 行, 列: {list(df.columns)}")
 
-        qc = check_predictions_quality(df, required_cols, model_name, run_id)
+        qc = check_predictions_quality(
+            df, required_cols, model_name, run_id,
+            expected_split=primary_split,
+        )
         quality_results.append(qc)
 
         if qc["errors"]:
@@ -105,11 +113,25 @@ def main() -> None:
 
         all_predictions[model_key] = df
 
-    # ── 3. 汇总指标 ─────────────────────────────────────────
-    logger.info("正在汇总模型指标...")
+    # ── 3. 跨模型一致性检查 ─────────────────────────────────
+    logger.info("正在检查跨模型 predictions 一致性...")
+    cross_model_result = check_cross_model_consistency(all_predictions)
+    if cross_model_result["video_id_consistent"]:
+        logger.info(f"  video_id 一致: {cross_model_result['details'].get('video_id_set_size', 'N/A')} 个样本")
+    else:
+        logger.warning(f"  video_id 不一致: {cross_model_result['warnings']}")
+    if cross_model_result["label_consistent"]:
+        logger.info(f"  label 一致: {cross_model_result['details'].get('label_positive_count', 'N/A')} 个正样本")
+    else:
+        logger.warning(f"  label 不一致: {cross_model_result['warnings']}")
+
+    # ── 4. 汇总指标（主评估 split） ──────────────────────────
+    logger.info(f"正在汇总模型指标 (split={primary_split})...")
     summary_rows: list[dict] = []
     for model_key, model_cfg in model_runs.items():
-        metrics = collect_model_metrics(model_key, model_cfg, project_root)
+        metrics = collect_model_metrics(
+            model_key, model_cfg, project_root, split=primary_split,
+        )
         summary_rows.append(metrics)
         if "error" in metrics:
             logger.error(f"{model_cfg['model_name']}: {metrics['error']}")
@@ -120,7 +142,35 @@ def main() -> None:
                 f"F1={metrics.get('f1')}"
             )
 
-    # ── 4. 保存指标汇总 ─────────────────────────────────────
+    # ── 4b. 汇总 val 指标（参考） ────────────────────────────
+    val_summary_rows: list[dict] = []
+    if primary_split == "test":
+        logger.info("汇总 val split 指标（参考）...")
+        for model_key, model_cfg in model_runs.items():
+            val_metrics = collect_model_metrics(
+                model_key, model_cfg, project_root, split="val",
+            )
+            val_summary_rows.append(val_metrics)
+            if "error" not in val_metrics:
+                logger.info(
+                    f"  {val_metrics['model_name']}: Val AUC={val_metrics.get('auc')}, "
+                    f"Val F1={val_metrics.get('f1')}"
+                )
+
+    # ── 4c. 保存 val 指标参考表 ──────────────────────────────
+    if val_summary_rows:
+        val_summary_df = pd.DataFrame(val_summary_rows)
+        val_csv_path = output_dir / "val_metrics_summary.csv"
+        val_summary_df.to_csv(val_csv_path, index=False)
+        logger.info(f"Val 指标参考已保存: {val_csv_path}")
+
+    # ── 4d. 保存跨模型一致性检查 ────────────────────────────
+    cross_model_path = output_dir / "cross_model_consistency_check.json"
+    with open(cross_model_path, "w", encoding="utf-8") as f:
+        json.dump(cross_model_result, f, ensure_ascii=False, indent=2, default=str)
+    logger.info(f"跨模型一致性检查已保存: {cross_model_path}")
+
+    # ── 5. 保存指标汇总 ─────────────────────────────────────
     summary_df = pd.DataFrame(summary_rows)
 
     # 展开嵌套列排序
@@ -131,7 +181,7 @@ def main() -> None:
         "precision_at_5", "recall_at_5",
         "precision_at_10", "recall_at_10",
         "precision_at_20", "recall_at_20",
-        "eval_loss", "best_epoch", "best_eval_loss", "device",
+        "eval_loss", "best_epoch", "best_eval_loss", "num_params", "device",
     ]
     existing_cols = [c for c in summary_cols if c in summary_df.columns]
     extra_cols = [c for c in summary_df.columns if c not in summary_cols and c not in ("error", "warnings")]
@@ -240,9 +290,12 @@ def main() -> None:
     # ── 9. 生成 Markdown 报告 ──────────────────────────────
     logger.info("正在生成对比报告...")
     rel_output_dir = str(output_dir.relative_to(project_root))
+    val_summary_df = pd.DataFrame(val_summary_rows) if val_summary_rows else None
     report = _generate_report(
         config, summary_df, quality_results, topk_rows, score_dist_rows,
         k_values, plot_results, comparison_run_id, rel_output_dir,
+        val_summary_df=val_summary_df,
+        cross_model_result=cross_model_result,
     )
     report_path = output_dir / "model_comparison_report.md"
     with open(report_path, "w", encoding="utf-8") as f:
@@ -257,7 +310,7 @@ def main() -> None:
     for model_key, model_cfg in model_runs.items():
         run_dir = project_root / model_cfg["output_dir"]
         input_metrics_paths.append(str(run_dir / "metrics.json"))
-        input_predictions_paths.append(str(run_dir / "predictions.csv"))
+        input_predictions_paths.append(str(run_dir / prediction_file))
 
     output_files_list = sorted([
         str(f.relative_to(output_dir))
@@ -317,66 +370,71 @@ def _generate_report(
     plot_results: dict,
     comparison_run_id: str | None = None,
     rel_output_dir: str = "outputs/comparison",
+    val_summary_df: pd.DataFrame | None = None,
+    cross_model_result: dict | None = None,
 ) -> str:
     """生成 Markdown 对比报告。"""
     notes = config.get("notes", [])
     model_runs = config.get("model_runs", {})
+    ds_desc = config.get("dataset_description", {})
+    primary_split = config.get("primary_split", "test")
 
     lines = []
     _w = lines.append
 
     # Title
-    _w("# 多模型离线对比报告（sample0427 流程验证）")
+    _w(f"# {config.get('report_title', '多模型离线对比报告')}")
     _w("")
     _w(f"> 生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    _w(f"> Comparison Run ID：{comparison_run_id or 'N/A'}")
     _w("")
 
-    # 1. 对比目标
-    _w("## 1. 对比目标")
+    # 1. 实验目标
+    _w("## 1. 实验目标")
     _w("")
-    _w("本报告汇总 DNN、Wide & Deep、GraphSAGE、多模态四个模型在 sample0427 样本数据上的 eval 评估结果。")
+    _w("汇总 DNN、Wide & Deep、GraphSAGE、Multimodal 四个模型在 real_raw_1000 真实网页端 raw 数据上的最终评估结果。")
     _w("")
     for note in notes:
         _w(f"- {note}")
     _w("")
 
-    # 2. 数据与标签说明
-    _w("## 2. 数据与标签说明")
+    # 2. 数据说明
+    _w("## 2. 数据说明")
     _w("")
-    _w("- **数据来源**：sample0427 样本数据（79 条主视频，11 张表）")
-    _w("- **标签构造**：interaction_score = digg_count + comment_count + share_count + collect_count，60% 分位数阈值构造二分类伪标签")
-    _w("- **标签含义**：当前标签为流程验证伪标签，不代表真实曝光、点击、完播、转化、留存等业务指标")
-    _w("- **数据划分**：train/eval = 80/20（seed=2026），train 63 条、eval 16 条")
-    _w("- **独立 test 集**：当前无独立 test 集，eval 仅用于流程验证和最小模型评估")
-    _w("- **样本限制**：eval 仅 16 条（正例 6、负例 10），所有指标波动极大，仅支持工程流程验证")
+    _w(f"- **数据来源**：{ds_desc.get('source', '抖音公开网页端')}")
+    _w(f"- **视频数**：{ds_desc.get('n_videos', '1000')} 个 unique video_id")
+    _w(f"- **原始表数量**：{ds_desc.get('n_tables', 11)} 张 raw 表")
+    _w(f"- **数据划分**：{ds_desc.get('split_description', 'train/val/test')}")
+    _w(f"- **标签构造**：{ds_desc.get('label_description', 'interaction_score 分位数伪标签')}")
+    _w(f"- **正负样本分布**：正例 {ds_desc.get('positive_count', 400)}，负例 {ds_desc.get('negative_count', 600)}")
+    _w("")
+    _w(f"**{primary_split.upper()} split 定位**：{primary_split} split 仅用于最终泛化评估，未参与模型选择或早停。")
+    _w("")
+    _w("**样本限制**：")
+    _w("- real_raw_1000 来自公开网页端，不代表平台内部完整数据。")
+    _w("- 当前没有真实曝光、点击、完播、转化、留存标签。")
+    _w("- none-match 样本占 21.2%，部分字段覆盖有限。")
+    _w("- 所有模型结果均为离线实验对比，不代表线上推荐效果。")
     _w("")
 
     # 3. 对比模型
     _w("## 3. 对比模型与 Run ID")
     _w("")
-    _w(f"> Comparison Run ID：{comparison_run_id or 'N/A'}")
-    _w("")
     _w("| 模型 | Run ID | 输出目录 |")
     _w("|---|---|---|")
-    _w("| DNN | {dnn_run} | outputs/dnn/{dnn_run} |".format(
-        dnn_run=model_runs.get("dnn", {}).get("run_id", "N/A")
-    ))
-    _w("| Wide & Deep | {wd_run} | outputs/wide_deep/{wd_run} |".format(
-        wd_run=model_runs.get("wide_deep", {}).get("run_id", "N/A")
-    ))
-    _w("| GraphSAGE | {gs_run} | outputs/graphsage/{gs_run} |".format(
-        gs_run=model_runs.get("graphsage", {}).get("run_id", "N/A")
-    ))
-    _w("| Multimodal | {mm_run} | outputs/multimodal/{mm_run} |".format(
-        mm_run=model_runs.get("multimodal", {}).get("run_id", "N/A")
-    ))
+    for mk in ("dnn", "wide_deep", "graphsage", "multimodal"):
+        mc = model_runs.get(mk, {})
+        mn = mc.get("model_name", mk)
+        rid = mc.get("run_id", "N/A")
+        out_dir = mc.get("output_dir", "N/A")
+        _w(f"| {mn} | {rid} | {out_dir} |")
     _w("")
 
-    # 4. 指标汇总
-    _w("## 4. 指标汇总")
+    # 4. Test 指标总表（主评估）
+    _w(f"## 4. {primary_split.upper()} 指标总表（主评估）")
     _w("")
 
-    # 基本指标表
+    # 4.1 分类指标
     _w("### 4.1 分类指标")
     _w("")
     cls_header = "| 模型 | AUC | Accuracy | Precision | Recall | F1 |"
@@ -394,7 +452,7 @@ def _generate_report(
         )
     _w("")
 
-    # Top-K 指标表
+    # 4.2 Precision@K / Recall@K
     _w("### 4.2 排序指标（Precision@K / Recall@K）")
     _w("")
     pk_header = "| 模型 | Precision@5 | Recall@5 | Precision@10 | Recall@10 | Precision@20 | Recall@20 |"
@@ -413,14 +471,16 @@ def _generate_report(
         )
     _w("")
 
-    # 样本信息表
+    # 4.3 样本与训练信息
     _w("### 4.3 样本与训练信息")
     _w("")
-    info_header = "| 模型 | Sample Count | Positive | Negative | Eval Loss | Best Epoch | Device |"
-    info_sep = "|---|---|---|---|---|---|---|"
+    info_header = "| 模型 | Sample Count | Positive | Negative | Eval Loss | Best Epoch | Num Params | Device |"
+    info_sep = "|---|---|---|---|---|---|---|---|"
     _w(info_header)
     _w(info_sep)
     for _, row in summary_df.iterrows():
+        np_val = row.get("num_params")
+        np_str = f"{np_val:,}" if np_val is not None else "N/A"
         _w(
             f"| {row.get('model_name', 'N/A')} "
             f"| {row.get('sample_count', 'N/A')} "
@@ -428,71 +488,184 @@ def _generate_report(
             f"| {row.get('negative_count', 'N/A')} "
             f"| {fmt_metric(row.get('eval_loss'))} "
             f"| {row.get('best_epoch', 'N/A')} "
+            f"| {np_str} "
             f"| {row.get('device', 'N/A')} |"
         )
     _w("")
 
-    # 5. 各模型结果简析
-    _w("## 5. 各模型结果简析")
+    # 5. Val 指标参考表
+    if val_summary_df is not None and len(val_summary_df) > 0:
+        _w("## 5. Val 指标参考表")
+        _w("")
+        _w("> 以下为各模型在 val split 上的指标，用于训练过程中的 best epoch 选择。不作为最终主评估结果。")
+        _w("")
+        _w("### 5.1 分类指标（Val）")
+        _w("")
+        _w(cls_header)
+        _w(cls_sep)
+        for _, row in val_summary_df.iterrows():
+            _w(
+                f"| {row.get('model_name', 'N/A')} "
+                f"| {fmt_metric(row.get('auc'))} "
+                f"| {fmt_metric(row.get('accuracy'))} "
+                f"| {fmt_metric(row.get('precision'))} "
+                f"| {fmt_metric(row.get('recall'))} "
+                f"| {fmt_metric(row.get('f1'))} |"
+            )
+        _w("")
+
+        _w("### 5.2 样本与训练信息（Val）")
+        _w("")
+        _w(info_header)
+        _w(info_sep)
+        for _, row in val_summary_df.iterrows():
+            np_val = row.get("num_params")
+            np_str = f"{np_val:,}" if np_val is not None else "N/A"
+            _w(
+                f"| {row.get('model_name', 'N/A')} "
+                f"| {row.get('sample_count', 'N/A')} "
+                f"| {row.get('positive_count', 'N/A')} "
+                f"| {row.get('negative_count', 'N/A')} "
+                f"| {fmt_metric(row.get('eval_loss'))} "
+                f"| {row.get('best_epoch', 'N/A')} "
+                f"| {np_str} "
+                f"| {row.get('device', 'N/A')} |"
+            )
+        _w("")
+
+    # 6. Top-K 对比
+    topk_section_num = "6" if val_summary_df is not None else "5"
+    _w(f"## {topk_section_num}. Top-K 对比")
+    _w("")
+    _w(f"基于 predictions_{primary_split}.csv 重新计算 Top-K 指标（与 metrics.json 对齐检查）：")
+    _w("")
+
+    topk_models = set()
+    for tr in topk_rows:
+        topk_models.add(tr.get("model_name", ""))
+    topk_sorted = sorted(topk_models)
+
+    for k in k_values:
+        _w(f"### Precision@{k} / Recall@{k}")
+        _w("")
+        _w("| 模型 | Precision@K | Recall@K | Top-K 正样本数 | 总正样本数 |")
+        _w("|---|---|---|---|---|")
+        for tr in topk_rows:
+            if tr.get("k") != k:
+                continue
+            _w(
+                f"| {tr.get('model_name', 'N/A')} "
+                f"| {fmt_metric(tr.get('precision_at_k'))} "
+                f"| {fmt_metric(tr.get('recall_at_k'))} "
+                f"| {tr.get('topk_positive_count', 'N/A')} "
+                f"| {tr.get('eval_positive_count', 'N/A')} |"
+            )
+        _w("")
+
+    # 7. 分数分布分析
+    dist_section_num = str(int(topk_section_num) + 1)
+    _w(f"## {dist_section_num}. 分数分布分析")
+    _w("")
+    _w("| 模型 | Min | Max | Mean | Std | Median | Avg Score (正例) | Avg Score (负例) | Pred正类率 | Label正类率 |")
+    _w("|---|---|---|---|---|---|---|---|---|---|")
+    for sd in score_dist_rows:
+        _w(
+            f"| {sd.get('model_name', 'N/A')} "
+            f"| {fmt_metric(sd.get('score_min'))} "
+            f"| {fmt_metric(sd.get('score_max'))} "
+            f"| {fmt_metric(sd.get('score_mean'))} "
+            f"| {fmt_metric(sd.get('score_std'))} "
+            f"| {fmt_metric(sd.get('score_median'))} "
+            f"| {fmt_metric(sd.get('avg_score_positive_label'))} "
+            f"| {fmt_metric(sd.get('avg_score_negative_label'))} "
+            f"| {fmt_pct(sd.get('pred_positive_rate'))} "
+            f"| {fmt_pct(sd.get('label_positive_rate'))} |"
+        )
+    _w("")
+
+    # 8. 跨模型一致性检查
+    check_section_num = str(int(dist_section_num) + 1)
+    _w(f"## {check_section_num}. 跨模型预测一致性检查")
+    _w("")
+    if cross_model_result:
+        _w(f"- **检查模型数**: {len(cross_model_result.get('models_checked', []))}")
+        _w(f"- **Video ID 一致性**: {'✅ 一致' if cross_model_result.get('video_id_consistent') else '❌ 不一致'}")
+        _w(f"- **Label 一致性**: {'✅ 一致' if cross_model_result.get('label_consistent') else '❌ 不一致'}")
+        _w(f"- **样本数**: {cross_model_result.get('n_samples', 'N/A')} 条")
+        if cross_model_result.get("warnings"):
+            for w in cross_model_result["warnings"]:
+                _w(f"- ⚠️ {w}")
+    else:
+        _w("_跨模型一致性检查未执行_")
+    _w("")
+
+    # 9. 各模型简析
+    analysis_section_num = str(int(check_section_num) + 1)
+    _w(f"## {analysis_section_num}. 各模型结果简析")
     _w("")
     for _, row in summary_df.iterrows():
         mn = row.get("model_name", "N/A")
-        _w(f"### {mn.upper() if mn != 'wide_deep' else 'Wide & Deep'}")
+        display_name = mn.upper() if mn != "wide_deep" else "Wide & Deep"
+        _w(f"### {display_name}")
         _w("")
         auc = row.get("auc")
         f1 = row.get("f1")
         acc = row.get("accuracy")
+        prec = row.get("precision")
+        rec = row.get("recall")
+        eloss = row.get("eval_loss")
+        be = row.get("best_epoch")
         if auc is not None:
-            _w(f"- 在当前流程验证集上，AUC 为 {fmt_metric(auc)}，F1 为 {fmt_metric(f1)}，Accuracy 为 {fmt_metric(acc)}。")
+            _w(f"- **分类能力**：AUC={fmt_metric(auc)}，F1={fmt_metric(f1)}，Accuracy={fmt_metric(acc)}。")
+            _w(f"- **精确率/召回率**：Precision={fmt_metric(prec)}，Recall={fmt_metric(rec)}。")
+            _w(f"- **损失**：{primary_split}_loss={fmt_metric(eloss)}。")
+            if be is not None:
+                _w(f"- **最佳 epoch**：{be}。")
         _w("")
 
-    # 6. 模型优缺点对比
-    _w("## 6. 模型优缺点对比")
+    # 10. 模型优缺点对比
+    proscons_section_num = str(int(analysis_section_num) + 1)
+    _w(f"## {proscons_section_num}. 模型优缺点对比")
     _w("")
     _w("| 模型 | 优点 | 局限 |")
     _w("|---|---|---|")
-    _w("| DNN | 结构简单、易跑通、适合表格特征 | 不显式建模交叉、依赖特征工程 |")
-    _w("| Wide & Deep | 能显式引入交叉特征 | 当前交叉特征样本少、容易偏正类 |")
-    _w("| GraphSAGE | 能使用 video-author / video-hashtag / related-video 图关系 | 当前图中大量节点和边为规则补齐，图关系不代表真实推荐图谱 |")
-    _w("| Multimodal | 能融合文本、媒体元信息、结构化特征 | 当前 visual_features 只是媒体元信息，不是真实图像语义 |")
+    _w("| DNN | 结构简单、训练稳定、适合结构化表格特征 | 需要特征工程，不能自动学习特征交叉 |")
+    _w("| Wide & Deep | 可显式引入交叉特征 | 当前交叉特征在 700 条训练样本上稀疏度高，未提供额外增益 |")
+    _w("| GraphSAGE | 利用 video-author / video-hashtag / related-video 图拓扑信息 | 7257 个无标签节点；Recall 偏低（保守预测）|")
+    _w("| Multimodal | 融合文本/媒体元信息/结构化三模态；参数量小（7,857） | visual 分支仅用媒体元信息，非真实图像语义 |")
     _w("")
 
-    # 7. 主要限制
-    _w("## 7. 主要限制")
+    # 11. 当前限制
+    limits_section_num = str(int(proscons_section_num) + 1)
+    _w(f"## {limits_section_num}. 当前限制")
     _w("")
-    _w("1. **样本量小**：79 条主视频，16 条 eval，所有指标波动大，不具备统计显著性。")
-    _w("2. **无独立 test 集**：当前仅使用 train/eval 切分，无法做最终泛化评估。")
-    _w("3. **伪标签**：标签基于 interaction_score 分位数构造，不代表 CTR/CVR/完播/留存等真实业务目标。")
-    _w("4. **部分字段规则生成**：5 张完全补齐表（raw_video_tag、raw_video_status_control、raw_chapter、raw_comment、raw_related_video）数据不代表真实分布。")
-    _w("5. **多模态视觉分支**：visual_features 仅包含媒体元信息（封面尺寸、URL 存在性等），不包含真实图像语义特征。")
-    _w("6. **指标不可用于正式业务结论**：当前所有对比结果仅支持流程级验证。")
-    _w("")
-
-    # 8. 后续改进假设
-    _w("## 8. 后续改进假设")
-    _w("")
-    _w("1. **数据规模**：接入更大规模真实数据（1000+ 条），提升指标稳定性。")
-    _w("2. **评估方式**：使用 train/val/test 三路切分或交叉验证，替代当前仅 train/eval 的方式。")
-    _w("3. **Wide & Deep 交叉特征**：加强交叉特征选择，增加有效的 wide 侧信号。")
-    _w("4. **GraphSAGE 图关系**：使用更真实的用户-视频、作者-视频、视频-视频关系，减少规则补齐边占比。")
-    _w("5. **多模态视觉**：引入真实封面图像或视频帧特征（需用户明确要求并确认依赖）。")
-    _w("6. **阈值选择**：统一做阈值选择与概率校准，改善 Precision/Recall 平衡。")
-    _w("7. **在线验证**：后续开展在线或准在线 A/B 实验，验证模型在线收益。")
+    _w("1. **样本量有限**：1000 条视频，val/test 各 150 条，评估稳定性有限。")
+    _w("2. **伪标签**：标签基于 interaction_score 分位数构造，不代表 CTR/CVR/完播/转化等真实业务目标。")
+    _w("3. **数据源限制**：真实网页端数据不代表平台内部完整数据。")
+    _w("4. **无真实图像语义**：多模态模型的视觉分支仅使用媒体元信息（封面尺寸、URL 数量等）。")
+    _w("5. **GraphSAGE 图结构**：related-only 视频节点无标签，仅作为上下文节点。")
+    _w("6. **none-match 样本**：21.2% 的样本为 none/low confidence，部分字段覆盖不足。")
+    _w("7. **raw_video_tag 和 raw_chapter 为空**，无法用于任何模型。")
+    _w("8. **当前所有结果仅为离线实验对比，不代表线上推荐效果或业务收益。**")
     _w("")
 
-    # 9. 结论
-    _w("## 9. 结论")
+    # 12. 下一步建议
+    next_section_num = str(int(limits_section_num) + 1)
+    _w(f"## {next_section_num}. 下一步建议")
     _w("")
-    _w("当前对比结果仅支持以下结论：")
-    _w("")
-    _w("1. ✅ **已跑通多模型流程**：DNN、Wide & Deep、GraphSAGE、Multimodal 四类模型均已实现最小可运行闭环。")
-    _w("2. ✅ **已完成统一输出**：四个模型均按统一规范输出 metrics.json、predictions.csv、train_log.csv、model.pt 等文件。")
-    _w("3. ✅ **已完成统一对比**：对比实验入口统一，可自动汇总指标、生成对比报告和图表。")
-    _w("4. ❌ **不支持正式业务效果判断**：当前 sample0427 样本数据、伪标签和 16 条 eval 不足以支持任何正式推荐系统效果结论。")
+    _w("1. **增大数据量**：继续采集 URL（当前仅 1000 条），提升模型泛化能力。")
+    _w("2. **真实标签**：接入真实曝光、点击、完播等标签替代目前 interaction_score 伪标签。")
+    _w("3. **超参数调优**：增大 epochs、调整 learning rate、尝试不同 fusion 策略或 attention 聚合器。")
+    _w("4. **高级 fusion**：Multimodal 可尝试 attention-based fusion 替代简单拼接。")
+    _w("5. **图增强**：GraphSAGE 可尝试 GAT 替代 mean aggregator，或增加 comment_user 节点。")
+    _w("6. **视觉增强**：如用户明确要求，引入封面图像特征（需确认 CLIP/ResNet 依赖）。")
+    _w("7. **校准与阈值优化**：统一做概率校准，优化 Precision/Recall 平衡。")
+    _w("8. **离线 A/B 模拟**：对各模型预测结果做离线分组统计，比较模型间差异。")
     _w("")
 
-    # 10. 图表索引
-    _w("## 10. 图表索引")
+    # 13. 图表索引
+    charts_section_num = str(int(next_section_num) + 1)
+    _w(f"## {charts_section_num}. 图表索引")
     _w("")
     if plot_results.get("_warning"):
         _w(f"> {plot_results['_warning']}")
@@ -512,32 +685,16 @@ def _generate_report(
             _w(f"- {status} `{fname}`")
         _w("")
 
-    # 11. 分数分布简表
-    _w("## 11. 分数分布概况")
+    # 14. 输出文件清单
+    outfiles_section_num = str(int(charts_section_num) + 1)
+    _w(f"## {outfiles_section_num}. 输出文件清单")
     _w("")
-    sd_header = "| 模型 | Score Min | Score Max | Score Mean | Score Std | Pred Positive Rate | Label Positive Rate |"
-    sd_sep = "|---|---|---|---|---|---|---|"
-    _w(sd_header)
-    _w(sd_sep)
-    for sd in score_dist_rows:
-        _w(
-            f"| {sd.get('model_name', 'N/A')} "
-            f"| {fmt_metric(sd.get('score_min'))} "
-            f"| {fmt_metric(sd.get('score_max'))} "
-            f"| {fmt_metric(sd.get('score_mean'))} "
-            f"| {fmt_metric(sd.get('score_std'))} "
-            f"| {fmt_pct(sd.get('pred_positive_rate'))} "
-            f"| {fmt_pct(sd.get('label_positive_rate'))} |"
-        )
-    _w("")
-
-    # 12. 输出文件
-    _w("## 12. 输出文件清单")
-    _w("")
-    output_dir_path = rel_output_dir
     output_files = [
+        "comparison_run_meta.json",
+        "cross_model_consistency_check.json",
         "model_metrics_summary.csv",
         "model_metrics_summary.json",
+        "val_metrics_summary.csv",
         "model_prediction_quality_check.csv",
         "model_prediction_quality_check.json",
         "topk_comparison.csv",
@@ -549,7 +706,7 @@ def _generate_report(
         "model_comparison_report.md",
     ]
     for fname in output_files:
-        _w(f"- `{output_dir_path}/{fname}`")
+        _w(f"- `{rel_output_dir}/{fname}`")
     _w("")
 
     return "\n".join(lines)

@@ -1,0 +1,19 @@
+{
+  "models_checked": [
+    "dnn",
+    "wide_deep",
+    "graphsage",
+    "multimodal"
+  ],
+  "video_id_consistent": true,
+  "label_consistent": true,
+  "n_samples": 150,
+  "details": {
+    "video_id_set_size": 150,
+    "shared_video_id_count": 150,
+    "label_positive_count": 60,
+    "video_id_status": "全一致",
+    "label_status": "全一致"
+  },
+  "warnings": []
+}

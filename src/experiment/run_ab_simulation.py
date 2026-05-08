@@ -164,74 +164,106 @@ def plot_score_distribution(
 def generate_report(config: dict[str, Any], total: dict[str, Any],
                     group_summary: list[dict[str, Any]],
                     lift: dict[str, Any], ab_run_id: str,
-                    output_dir: str, warnings_list: list[str]) -> str:
-    """生成 A/B 模拟 Markdown 报告。"""
+                    output_dir: str, warnings_list: list[str],
+                    baseline_comparison: dict[str, Any] | None = None) -> str:
+    """生成 A/B 模拟 Markdown 报告（数据驱动，基于 config 内容）。"""
     treatment = next((g for g in group_summary if g["group"] == "treatment"), {})
     control = next((g for g in group_summary if g["group"] == "control"), {})
 
+    dataset_name = config.get("dataset_name", "unknown")
+    model_name = config["model_name"]
+    group_labels = config.get("group_labels", {"control": "A", "treatment": "B"})
+    k_values = config.get("k_values", [5, 10, 20])
+    notes = config.get("notes", [])
+    data_split = config.get("data_split", "eval")
+
     lines = []
-    lines.append("# 离线 A/B 模拟报告（sample0427 流程验证）\n")
+    lines.append(f"# 离线 A/B 模拟报告（{dataset_name}）\n")
     lines.append(f"> 生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     lines.append(f"> A/B Run ID：{ab_run_id}\n")
 
-    # 1. 模拟目标
+    # ── 1. 模拟目标 ──
     lines.append("## 1. 模拟目标\n")
-    lines.append("本报告演示基于模型 predictions.csv 的离线 A/B 分组和指标统计方法。")
+    lines.append("本报告基于模型 predictions.csv 进行离线 A/B 分组和指标统计。")
     lines.append("当前仅基于同一批预测结果做分组统计差异分析，不涉及真实线上策略差异。\n")
-
-    # 2. 输入数据
-    lines.append("## 2. 输入数据\n")
-    lines.append(f"- **模型**: {config['model_name']}")
-    lines.append(f"- **Model Run ID**: {config['model_run_id']}")
+    lines.append(f"- **数据集**: {dataset_name}")
+    lines.append(f"- **主模型**: {model_name} (run_id: {config.get('model_run_id', 'N/A')})")
+    if baseline_comparison:
+        lines.append(f"- **Baseline 参考**: {config.get('baseline_model_name', 'dnn')} (run_id: {config.get('baseline_run_id', 'N/A')})")
     lines.append(f"- **Comparison Run ID**: {config.get('comparison_run_id', 'N/A')}")
-    lines.append(f"- **Predictions 路径**: {config['input_predictions_path']}")
+    lines.append(f"- **样本**: {total.get('total_sample_count', 'N/A')} 条 {data_split} split\n")
+    dataset_desc = config.get("dataset_description", "")
+    if dataset_desc:
+        lines.append(f"> **数据说明**: {dataset_desc}\n")
+
+    # ── 2. 输入数据 ──
+    lines.append("## 2. 输入数据\n")
+    lines.append(f"- **模型**: {model_name}")
+    lines.append(f"- **Model Run ID**: {config.get('model_run_id', 'N/A')}")
+    lines.append(f"- **Comparison Run ID**: {config.get('comparison_run_id', 'N/A')}")
+    lines.append(f"- **Predictions 路径**: {config.get('input_predictions_path', 'N/A')}")
+    if baseline_comparison:
+        lines.append(f"- **Baseline Predictions 路径**: {config.get('baseline_predictions_path', 'N/A')}")
     lines.append(f"- **总样本数**: {total.get('total_sample_count', 'N/A')}")
     lines.append(f"- **正样本数 / 负样本数**: {total.get('total_positive_count', 'N/A')} / "
                  f"{total.get('total_negative_count', 'N/A')}")
+    lines.append(f"- **标签正类率**: {total.get('total_label_positive_rate', 'N/A'):.2%}")
     lines.append("")
 
-    # 3. 分组逻辑
+    # ── 3. 分组逻辑 ──
     lines.append("## 3. 分组逻辑\n")
     lines.append(f"- **分组方法**: {config['group_method']}")
     lines.append(f"- **分组键**: {config['group_key']}")
     lines.append(f"- **实验组比例 (treatment_ratio)**: {config['treatment_ratio']}")
-    lines.append(f"- **随机种子 (random_seed)**: {config.get('random_seed', 'N/A')}")
     if config.get("group_method") == "hash":
         lines.append("  - hash 分组基于 group_key（video_id）的 MD5 值进行稳定分配，")
         lines.append("    同一 video_id 多次运行分组结果一致。")
     else:
-        lines.append("  - random 分组基于随机种子进行洗牌分配。")
+        lines.append(f"  - random 分组基于随机种子 {config.get('random_seed', 'N/A')} 进行洗牌分配。")
     lines.append("")
 
-    # 4. 分组结果
+    # ── 4. 分组结果 ──
     lines.append("## 4. 分组结果\n")
-    lines.append(f"| 组 | 角色 | 样本数 | 正样本数 | 负样本数 | 标签正类率 | 预测正类率 |")
-    lines.append(f"|---|---|---|---|---|---|---|")
+    lines.append(f"| 组 | 角色 | 样本数 | 正样本数 | 负样本数 | 标签正类率 | 预测正类率 | 平均分 | 中位数分 |")
+    lines.append(f"|---|---|---|---|---|---|---|---|---|")
     for g in group_summary:
         n_neg = g["sample_count"] - g["positive_count"]
         lines.append(
-            f"| {config['group_labels'].get(g['group'], g['group'])} | {g['group']} | "
+            f"| {group_labels.get(g['group'], g['group'])} | {g['group']} | "
             f"{g['sample_count']} | {g['positive_count']} | {n_neg} | "
-            f"{g['label_positive_rate']:.2%} | {g['pred_positive_rate']:.2%} |"
+            f"{g['label_positive_rate']:.2%} | {g['pred_positive_rate']:.2%} | "
+            f"{g['score_mean']:.4f} | {g['score_median']:.4f} |"
         )
     lines.append("")
 
-    # 5. 指标统计
+    # 分组均衡性检查
+    n_control = next((g["sample_count"] for g in group_summary if g["group"] == "control"), 0)
+    n_treatment = next((g["sample_count"] for g in group_summary if g["group"] == "treatment"), 0)
+    lines.append(f"> 分组均衡性: Control={n_control}, Treatment={n_treatment}, "
+                 f"合计={n_control + n_treatment}。")
+    if abs(n_control - n_treatment) > 10:
+        lines.append("> ⚠️ 两组样本量差异超过 10，hash 分组在小样本下出现一定波动。\n")
+    else:
+        lines.append("> 两组样本量基本均衡。\n")
+
+    # ── 5. 指标统计 ──
     lines.append("## 5. 指标统计\n")
+
+    # 5.1 分类指标
     lines.append("### 5.1 分类指标\n")
-    lines.append(f"| 组 | AUC | Precision | Recall | F1 |")
-    lines.append(f"|---|---|---|---|---|")
+    lines.append(f"| 组 | AUC | Accuracy | Precision | Recall | F1 |")
+    lines.append(f"|---|---|---|---|---|---|")
     for g in group_summary:
-        grp_label = config['group_labels'].get(g['group'], g['group'])
+        grp_label = group_labels.get(g['group'], g['group'])
         auc_str = f"{g['auc']:.4f}" if g.get('auc') is not None else "N/A"
+        acc_str = f"{g['accuracy']:.4f}" if g.get('accuracy') is not None else "N/A"
         prec_str = f"{g['precision']:.4f}" if g.get('precision') is not None else "N/A"
         rec_str = f"{g['recall']:.4f}" if g.get('recall') is not None else "N/A"
         f1_str = f"{g['f1']:.4f}" if g.get('f1') is not None else "N/A"
-        lines.append(f"| {grp_label} | {auc_str} | {prec_str} | {rec_str} | {f1_str} |")
+        lines.append(f"| {grp_label} | {auc_str} | {acc_str} | {prec_str} | {rec_str} | {f1_str} |")
     lines.append("")
 
     # 5.2 排序指标
-    k_values = config.get("k_values", [5, 10])
     lines.append("### 5.2 排序指标\n")
     k_headers = " | ".join([f"Precision@{k}" for k in k_values] + [f"Recall@{k}" for k in k_values])
     lines.append(f"| 组 | {k_headers} |")
@@ -246,7 +278,7 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
             f"{g.get(f'recall_at_{k}', 'N/A'):.4f}" if g.get(f'recall_at_{k}') is not None else "N/A"
             for k in k_values
         ])
-        lines.append(f"| {config['group_labels'].get(g['group'], g['group'])} | {p_vals} | {r_vals} |")
+        lines.append(f"| {group_labels.get(g['group'], g['group'])} | {p_vals} | {r_vals} |")
     lines.append("")
 
     # 5.3 分数分布
@@ -254,7 +286,7 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
     lines.append(f"| 组 | Score Mean | Score Std | Score Median | Score Min | Score Max |")
     lines.append(f"|---|---|---|---|---|---|")
     for g in group_summary:
-        grp_label = config['group_labels'].get(g['group'], g['group'])
+        grp_label = group_labels.get(g['group'], g['group'])
         smin_str = f"{g['score_min']:.4f}" if g.get('score_min') is not None else "N/A"
         smax_str = f"{g['score_max']:.4f}" if g.get('score_max') is not None else "N/A"
         lines.append(
@@ -263,7 +295,7 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
         )
     lines.append("")
 
-    # 6. Lift 计算
+    # ── 6. Lift 计算 ──
     lines.append("## 6. Lift 计算\n")
     lines.append("以下 lift 为离线分组统计差异，不是线上因果收益。\n")
     lines.append("计算公式：")
@@ -291,18 +323,56 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
     lines.append("> control 和 treatment 两组使用完全相同的模型预测结果，")
     lines.append("> 分组仅基于 group_key 的 hash 值，不属于真实线上 A/B 测试。\n")
 
-    # 7. 局限性
-    lines.append("## 7. 局限性\n")
+    # ── 7. Baseline 对比（可选） ──
+    if baseline_comparison:
+        lines.append("## 7. Baseline 模型分数对比（参考）\n")
+        lines.append(f"以下为 DNN (baseline) 与 {model_name} (主模型) 在各组的分数对比，仅供参考。\n")
+        lines.append(f"| 组 | DNN Score Mean | DNN Score Std | {model_name} Score Mean | Score Delta Mean |")
+        lines.append(f"|---|---|---|---|---|")
+        for role in ["control", "treatment"]:
+            if role in baseline_comparison:
+                bc = baseline_comparison[role]
+                dnn_mean = bc.get("dnn_score_mean", "N/A")
+                dnn_std = bc.get("dnn_score_std", "N/A")
+                group_metrics = next((g for g in group_summary if g["group"] == role), {})
+                mm_mean = group_metrics.get("score_mean", "N/A")
+                delta = bc.get("score_delta_mean", "N/A")
+                dnn_mean_s = f"{dnn_mean:.4f}" if isinstance(dnn_mean, (int, float)) else str(dnn_mean)
+                dnn_std_s = f"{dnn_std:.4f}" if isinstance(dnn_std, (int, float)) else str(dnn_std)
+                mm_mean_s = f"{mm_mean:.4f}" if isinstance(mm_mean, (int, float)) else str(mm_mean)
+                delta_s = f"{delta:+.4f}" if isinstance(delta, (int, float)) else str(delta)
+                grp_label = group_labels.get(role, role)
+                lines.append(f"| {grp_label} | {dnn_mean_s} | {dnn_std_s} | {mm_mean_s} | {delta_s} |")
+        lines.append("")
+        lines.append("> **注意**: DNN 分数仅作为参考 baseline，不代表真实 control 策略。")
+        lines.append("> 两个模型在同一批数据上评分，差异反映模型行为差异而非策略收益。\n")
+
+    # ── 8. 主要发现 ──
+    lines.append("## 8. 主要发现\n")
+    for g in group_summary:
+        grp_label = group_labels.get(g['group'], g['group'])
+        auc_str = f"{g.get('auc', 'N/A'):.4f}" if g.get('auc') is not None else "N/A"
+        prec_str = f"{g.get('precision', 'N/A'):.4f}" if g.get('precision') is not None else "N/A"
+        rec_str = f"{g.get('recall', 'N/A'):.4f}" if g.get('recall') is not None else "N/A"
+        f1_str = f"{g.get('f1', 'N/A'):.4f}" if g.get('f1') is not None else "N/A"
+        lines.append(f"- **{grp_label} 组 (n={g['sample_count']})**: AUC={auc_str}, "
+                     f"Precision={prec_str}, Recall={rec_str}, F1={f1_str}")
+    lines.append("")
+
+    # ── 9. 局限性 ──
+    lines.append("## 9. 局限性\n")
     lines.append("1. **没有真实用户曝光日志**: 当前仅基于模型预测 score，无真实曝光数据。")
     lines.append("2. **没有真实点击/转化/完播标签**: 当前 label 为 interaction_score 分位数伪标签。")
     lines.append("3. **没有真实 control/treatment 策略差异**: 两组使用完全相同的模型预测，无策略差异。")
-    lines.append("4. **样本量极小**: 当前 eval 仅 16 条样本，A/B 分组后各组样本更少，统计稳定性差。")
-    lines.append(f"5. **当前 label 是伪标签**: 不代表真实 CTR/CVR/完播/留存等业务指标。")
-    lines.append("6. **当前结果不能代表真实线上 A/B 测试**: 分组统计差异可能完全来自随机波动。")
+    lines.append(f"4. **样本量有限**: 当前基于 {data_split} split {total.get('total_sample_count', 'N/A')} 条样本，"
+                 f"A/B 分组后各组样本更少，hash 分组可能存在一定波动。")
+    lines.append("5. **lift 不是因果收益**: 所有 lift 仅为分组统计差异，不代表任何策略干预效果。")
+    lines.append("6. **离线 A/B 不等于线上 A/B**: 离线模拟没有流量干预、没有用户行为反馈、没有时间维度。")
+    lines.append("7. **样本来源**: 数据来自抖音公开网页端，不代表平台内部完整数据。")
     lines.append("")
 
-    # 8. 后续真实 A/B 测试建议
-    lines.append("## 8. 后续真实 A/B 测试建议\n")
+    # ── 10. 后续真实 A/B 测试建议 ──
+    lines.append("## 10. 后续真实 A/B 测试建议\n")
     lines.append("1. **实验单位**: 明确以 user_id 或 device_id 为实验单位，确保同一用户始终在同一组。")
     lines.append("2. **随机化方式**: 使用稳定的 hash 分桶（如 user_id mod 100），确保分组可复现。")
     lines.append("3. **流量比例**: 根据实验风险确定 treatment 流量比例（如 1%/5%/10%/50%）。")
@@ -313,24 +383,25 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
     lines.append("8. **完整链路**: 记录曝光、点击、播放、完播、互动等完整用户行为链路。")
     lines.append("9. **显著性检验**: 使用 t-test 或 bootstrap 计算置信区间和 p-value。")
     lines.append("10. **AA 测试**: 上线前先做 AA 测试验证分组无偏性。")
-    lines.append("11. **样本污染防护**: 防止同一用户出现在不同组，避免实验组间干扰。")
     lines.append("")
 
-    # 9. 结论
-    lines.append("## 9. 结论\n")
-    lines.append("✅ **已跑通离线 A/B 模拟流程**: 分组逻辑、指标统计、lift 计算、报告生成均已实现。")
+    # ── 11. 结论 ──
+    lines.append("## 11. 结论\n")
+    lines.append(f"✅ **已跑通离线 A/B 模拟流程**: 基于 {dataset_name} {data_split} split "
+                 f"({total.get('total_sample_count', 'N/A')} 条) 完成分组、指标统计、lift 计算。")
     lines.append("")
-    lines.append("❌ **不支持正式线上收益判断**: 当前结果基于 sample0427 样本数据（16 条 eval），")
+    lines.append("❌ **不支持正式线上收益判断**: 当前结果基于离线预测和 hash 分组，")
     lines.append("    不具备统计显著性，不能代表真实线上 A/B 测试结论。")
     lines.append("")
 
-    # 10. 输出文件清单
-    lines.append("## 10. 输出文件清单\n")
+    # ── 12. 输出文件清单 ──
+    section_num = 12
+    lines.append(f"## {section_num}. 输出文件清单\n")
     output_files_text = [
+        f"- `{output_dir}/ab_run_meta.json`",
         f"- `{output_dir}/ab_group_assignment.csv`",
         f"- `{output_dir}/ab_metrics_summary.csv`",
         f"- `{output_dir}/ab_metrics_summary.json`",
-        f"- `{output_dir}/ab_run_meta.json`",
         f"- `{output_dir}/ab_score_distribution.csv`",
         f"- `{output_dir}/ab_score_distribution.png`",
         f"- `{output_dir}/ab_simulation_report.md`",
@@ -339,7 +410,7 @@ def generate_report(config: dict[str, Any], total: dict[str, Any],
     lines.append("")
 
     if warnings_list:
-        lines.append("## 11. 运行警告\n")
+        lines.append(f"## {section_num + 1}. 运行警告\n")
         for w in warnings_list:
             lines.append(f"- ⚠️ {w}")
         lines.append("")
@@ -398,6 +469,24 @@ def main():
     score_col = config.get("score_col", "score")
     label_col = config.get("label_col", "label")
     pred_col = config.get("pred_col", "pred")
+
+    # ── 可选 DNN baseline 加载 ────────────────────────────
+    baseline_path = config.get("baseline_predictions_path")
+    if baseline_path:
+        baseline_path_abs = resolve_path(baseline_path, _project_root)
+        if os.path.isfile(baseline_path_abs):
+            baseline_df = pd.read_csv(baseline_path_abs)
+            df = df.merge(
+                baseline_df[["video_id", "score"]].rename(columns={"score": "dnn_score"}),
+                on="video_id", how="left"
+            )
+            n_missing = df["dnn_score"].isna().sum()
+            if n_missing > 0:
+                all_warnings.append(f"DNN baseline merge: {n_missing} 条未匹配到 dnn_score")
+            print(f"[INFO] DNN baseline merged: {len(df)} rows, {n_missing} missing dnn_score")
+        else:
+            print(f"[WARNING] DNN baseline 文件不存在: {baseline_path_abs}")
+            all_warnings.append(f"DNN baseline 文件不存在: {baseline_path_abs}")
 
     # ── 分组分配 ───────────────────────────────────────
     group_method = config.get("group_method", "hash")
@@ -474,11 +563,6 @@ def main():
         metrics = compute_group_metrics(
             gdf, group_role, k_values, score_col, label_col, pred_col
         )
-        # 添加 min/max 到指标（compute_group_metrics 不包含它们）
-        scores = gdf[score_col].values.astype(float)
-        metrics["score_min"] = float(scores.min())
-        metrics["score_max"] = float(scores.max())
-
         group_summary.append(metrics)
         group_distributions.append(compute_score_distribution(
             gdf, group_role, score_col, label_col, pred_col
@@ -497,6 +581,22 @@ def main():
         print(f"[INFO] Lift - score_mean: {lift_summary.get('relative_lift_score_mean', 'N/A')}")
     else:
         all_warnings.append("缺少 treatment 或 control 组，无法计算 lift")
+
+    # ── DNN baseline 分组统计 ─────────────────────────────
+    baseline_comparison: dict[str, Any] = {}
+    if "dnn_score" in df.columns:
+        for group_role in ["control", "treatment"]:
+            gdf = df[df["group"] == group_role]
+            dnn_scores = gdf["dnn_score"].values.astype(float)
+            mm_scores = gdf[score_col].values.astype(float)
+            baseline_comparison[group_role] = {
+                "model_name": config.get("baseline_model_name", "dnn"),
+                "dnn_score_mean": float(dnn_scores.mean()),
+                "dnn_score_std": float(dnn_scores.std()),
+                "dnn_score_median": float(np.median(dnn_scores)),
+                "score_delta_mean": float((mm_scores - dnn_scores).mean()),
+            }
+        print(f"[INFO] DNN baseline comparison computed for {len(baseline_comparison)} groups")
 
     # ── 写出 ab_group_assignment.csv ───────────────────
     assignment_path = os.path.join(output_dir_abs, "ab_group_assignment.csv")
@@ -528,8 +628,9 @@ def main():
     # ── 写出 ab_metrics_summary.csv ────────────────────
     metrics_csv_path = os.path.join(output_dir_abs, "ab_metrics_summary.csv")
     metrics_csv_cols = [
-        "group", "group_role", "sample_count", "positive_count",
+        "group", "group_role", "sample_count", "positive_count", "negative_count",
         "label_positive_rate", "score_mean", "score_std", "score_median",
+        "score_min", "score_max",
         "pred_positive_count", "pred_positive_rate",
         "precision", "recall", "f1",
     ]
@@ -561,6 +662,7 @@ def main():
         "total_summary": total_summary,
         "group_summary": group_summary,
         "lift_summary": lift_summary,
+        "baseline_comparison": baseline_comparison if baseline_comparison else None,
         "warnings": all_warnings,
         "notes": config.get("notes", []),
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -603,6 +705,7 @@ def main():
         ab_run_id=ab_run_id,
         output_dir=output_dir_abs,
         warnings_list=all_warnings,
+        baseline_comparison=baseline_comparison if baseline_comparison else None,
     )
     report_path = os.path.join(output_dir_abs, "ab_simulation_report.md")
     with open(report_path, "w", encoding="utf-8") as f:

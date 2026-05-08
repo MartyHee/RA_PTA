@@ -1,0 +1,59 @@
+{
+  "val_metrics": {
+    "model_name": "graphsage",
+    "dataset_name": "real_raw_1000",
+    "run_id": "202605081828",
+    "split": "val",
+    "sample_count": 150,
+    "positive_count": 60,
+    "negative_count": 90,
+    "eval_loss": 0.2728036940097809,
+    "auc": 0.9711111111111111,
+    "accuracy": 0.8733333333333333,
+    "precision": 0.9555555555555556,
+    "recall": 0.7166666666666667,
+    "f1": 0.819047619047619,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "precision_at_20": 1.0
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.08333333333333333,
+      "recall_at_10": 0.16666666666666666,
+      "recall_at_20": 0.3333333333333333
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
+    "warnings": []
+  },
+  "generated_at": "2026-05-08 18:28:53",
+  "test_metrics": {
+    "model_name": "graphsage",
+    "dataset_name": "real_raw_1000",
+    "run_id": "202605081828",
+    "split": "test",
+    "sample_count": 150,
+    "positive_count": 60,
+    "negative_count": 90,
+    "eval_loss": 0.29280412197113037,
+    "auc": 0.9611111111111111,
+    "accuracy": 0.88,
+    "precision": 1.0,
+    "recall": 0.7,
+    "f1": 0.8235294117647058,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "precision_at_20": 1.0
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.08333333333333333,
+      "recall_at_10": 0.16666666666666666,
+      "recall_at_20": 0.3333333333333333
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
+    "warnings": []
+  }
+}

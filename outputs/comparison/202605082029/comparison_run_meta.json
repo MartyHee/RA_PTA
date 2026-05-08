@@ -1,0 +1,61 @@
+{
+  "comparison_run_id": "202605082029",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\comparison\\202605082029",
+  "started_at": "2026-05-08 20:29:27",
+  "finished_at": "2026-05-08 20:29:29",
+  "config_path": "configs/common/comparison_real_raw_1000.yaml",
+  "model_runs": {
+    "dnn": {
+      "run_id": "202605081636",
+      "output_dir": "outputs/dnn/real_raw_1000/202605081636"
+    },
+    "wide_deep": {
+      "run_id": "202605081746",
+      "output_dir": "outputs/wide_deep/real_raw_1000/202605081746"
+    },
+    "graphsage": {
+      "run_id": "202605081828",
+      "output_dir": "outputs/graphsage/real_raw_1000/202605081828"
+    },
+    "multimodal": {
+      "run_id": "202605081927",
+      "output_dir": "outputs/multimodal/real_raw_1000/202605081927"
+    }
+  },
+  "input_metrics_paths": [
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_1000\\202605081636\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_1000\\202605081746\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\real_raw_1000\\202605081828\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000\\202605081927\\metrics.json"
+  ],
+  "input_predictions_paths": [
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_1000\\202605081636\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_1000\\202605081746\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\real_raw_1000\\202605081828\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000\\202605081927\\predictions_test.csv"
+  ],
+  "output_files": [
+    "cross_model_consistency_check.json",
+    "metric_bar_auc.png",
+    "metric_bar_f1.png",
+    "metric_bar_precision_recall.png",
+    "model_comparison_report.md",
+    "model_metrics_summary.csv",
+    "model_metrics_summary.json",
+    "model_prediction_quality_check.csv",
+    "model_prediction_quality_check.json",
+    "model_score_distribution.csv",
+    "model_score_distribution.png",
+    "topk_comparison.csv",
+    "val_metrics_summary.csv"
+  ],
+  "notes": [
+    "当前对比基于 real_raw_1000 真实网页端 raw 数据。",
+    "标签为 interaction_score 伪标签，不代表真实 CTR/CVR/完播/转化。",
+    "test split 仅用于最终评估，未参与模型选择或早停。",
+    "所有模型结果均为离线实验对比，不代表线上推荐效果。",
+    "当前数据来自公开网页端，不代表平台内部完整数据。",
+    "sample0427 是历史流程验证数据，不是当前主实验数据。"
+  ],
+  "warnings": []
+}

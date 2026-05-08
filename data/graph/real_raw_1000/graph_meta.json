@@ -1,0 +1,110 @@
+{
+  "dataset_name": "real_raw_1000",
+  "num_nodes": 8257,
+  "num_edges_forward": 8720,
+  "num_edges_bidirectional": 17440,
+  "feature_dim": 16,
+  "node_type_counts": {
+    "video": 4774,
+    "author": 822,
+    "music": 816,
+    "hashtag": 1845
+  },
+  "edge_type_counts": {
+    "video_author": 1000,
+    "video_music": 818,
+    "video_hashtag": 2420,
+    "video_related_video": 4482
+  },
+  "main_video_count": 1000,
+  "related_only_video_count": 3774,
+  "labeled_node_count": 1000,
+  "train_node_count": 700,
+  "val_node_count": 150,
+  "test_node_count": 150,
+  "unlabeled_node_count": 7257,
+  "feature_columns": [
+    "node_type_video",
+    "node_type_author",
+    "node_type_music",
+    "node_type_hashtag",
+    "total_degree",
+    "in_degree",
+    "out_degree",
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "comment_table_count",
+    "related_video_count"
+  ],
+  "label_definition": "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
+  "label_source": "data/features/real_raw_1000/tabular_train/val/test.csv",
+  "split_definition": "train/val/test 三路切分（700/150/150），继承自 tabular，按 video_id 分层",
+  "edge_direction": "bidirectional: 每条边同时输出正向 (is_reverse=False) 和反向 (is_reverse=True)",
+  "graph_type": "simplified homogeneous (all node types in single node_id space)",
+  "source_tables_used": [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_hashtag",
+    "raw_video_tag",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video"
+  ],
+  "tabular_data_used": [
+    "data/features/real_raw_1000/tabular_train.csv",
+    "data/features/real_raw_1000/tabular_val.csv",
+    "data/features/real_raw_1000/tabular_test.csv"
+  ],
+  "edge_definitions": {
+    "video_author": "raw_video_detail.video_id -> author_id",
+    "video_music": "raw_music.video_id -> music_id (skip if missing, no fallback)",
+    "video_hashtag": "raw_hashtag.video_id -> hashtag_id (or fallback hashtag_name)",
+    "video_related_video": "raw_related_video.source_video_id -> related_video_id"
+  },
+  "music_node_handling": "music_id missing for 182 video(s); those nodes were skipped (no fallback identifier used)",
+  "empty_tables_handled": [
+    "raw_video_tag (0 rows, tag nodes skipped)",
+    "raw_chapter (0 rows, no handling needed)"
+  ],
+  "node_types_used": [
+    "video",
+    "author",
+    "music",
+    "hashtag"
+  ],
+  "tabular_feature_cols_used": [
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "comment_table_count",
+    "related_video_count"
+  ],
+  "test_split_note": "test_mask 仅用于最终泛化评估，不得用于训练、调参或特征标准化拟合",
+  "warnings": [
+    "Skipped 182 music node(s) due to missing music_id (no fallback used)",
+    "Some hashtag nodes used fallback identifier (hashtag_name)"
+  ],
+  "notes": [
+    "当前图数据基于 real_raw_1000 真实网页端 raw 数据构建。",
+    "related_video_id 来自真实搜索/推荐响应，非规则生成 ID。",
+    "hashtag_id, music_id 来自真实页面响应。",
+    "raw_video_tag 为空表，不包含 tag 节点和 video-tag 边。",
+    "raw_chapter 为空表。",
+    "music_id 缺失的视频已跳过对应 music 节点，未使用回退标识。",
+    "所有边已输出双向 (bidirectional)，GraphSAGE 训练时可使用无向邻居采样。",
+    "非主视频节点 (author/music/hashtag/related_only_video) label=-1, mask=False。",
+    "特征以 raw 值保存，训练阶段在 GraphSAGE dataset 中基于 train_mask 做标准化。",
+    "不包含 comment_user 节点，可在后续迭代中加入。"
+  ],
+  "generated_at": "2026-05-08 18:11:36"
+}

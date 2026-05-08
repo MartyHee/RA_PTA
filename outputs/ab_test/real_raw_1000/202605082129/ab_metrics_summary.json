@@ -1,0 +1,112 @@
+{
+  "ab_run_id": "202605082129",
+  "input_predictions_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000\\202605081927\\predictions_test.csv",
+  "model_name": "multimodal",
+  "model_run_id": "202605081927",
+  "comparison_run_id": "202605082029",
+  "comparison_output_dir": "outputs/comparison/202605082029",
+  "group_method": "hash",
+  "group_key": "video_id",
+  "treatment_ratio": 0.5,
+  "random_seed": 2026,
+  "total_summary": {
+    "total_sample_count": 150,
+    "total_positive_count": 60,
+    "total_negative_count": 90,
+    "total_label_positive_rate": 0.4,
+    "total_score_mean": 0.36487352693727787,
+    "total_pred_positive_rate": 0.3466666666666667
+  },
+  "group_summary": [
+    {
+      "group": "control",
+      "group_role": "control",
+      "sample_count": 74,
+      "positive_count": 26,
+      "negative_count": 48,
+      "label_positive_rate": 0.35135135135135137,
+      "score_mean": 0.3076922075019333,
+      "score_std": 0.38711316464595913,
+      "score_median": 0.07814584299921985,
+      "score_min": 4.0643715060184604e-09,
+      "score_max": 1.0,
+      "pred_positive_count": 20,
+      "pred_positive_rate": 0.2702702702702703,
+      "auc": 0.9951923076923077,
+      "accuracy": 0.918918918918919,
+      "precision": 1.0,
+      "recall": 0.7692307692307693,
+      "f1": 0.8695652173913043,
+      "precision_at_5": 1.0,
+      "recall_at_5": 0.19230769230769232,
+      "precision_at_10": 1.0,
+      "recall_at_10": 0.38461538461538464,
+      "precision_at_20": 1.0,
+      "recall_at_20": 0.7692307692307693
+    },
+    {
+      "group": "treatment",
+      "group_role": "treatment",
+      "sample_count": 76,
+      "positive_count": 34,
+      "negative_count": 42,
+      "label_positive_rate": 0.4473684210526316,
+      "score_mean": 0.42055007480853435,
+      "score_std": 0.42704241621533906,
+      "score_median": 0.1698525175452232,
+      "score_min": 4.0643715060184604e-09,
+      "score_max": 1.0,
+      "pred_positive_count": 32,
+      "pred_positive_rate": 0.42105263157894735,
+      "auc": 0.9621848739495799,
+      "accuracy": 0.9210526315789473,
+      "precision": 0.9375,
+      "recall": 0.8823529411764706,
+      "f1": 0.9090909090909091,
+      "precision_at_5": 1.0,
+      "recall_at_5": 0.14705882352941177,
+      "precision_at_10": 1.0,
+      "recall_at_10": 0.29411764705882354,
+      "precision_at_20": 1.0,
+      "recall_at_20": 0.5882352941176471
+    }
+  ],
+  "lift_summary": {
+    "treatment_minus_control_score_mean": 0.11285786730660102,
+    "treatment_minus_control_label_positive_rate": 0.09601706970128021,
+    "treatment_minus_control_pred_positive_rate": 0.15078236130867706,
+    "relative_lift_score_mean": 36.678818817955246,
+    "relative_lift_label_positive_rate": 27.327935222672057,
+    "relative_lift_pred_positive_rate": 55.78947368421051,
+    "treatment_minus_control_auc": -0.033007433742727854,
+    "treatment_minus_control_precision": -0.0625,
+    "treatment_minus_control_recall": 0.11312217194570129,
+    "treatment_minus_control_f1": 0.03952569169960474
+  },
+  "baseline_comparison": {
+    "control": {
+      "model_name": "dnn",
+      "dnn_score_mean": 0.2893696386279302,
+      "dnn_score_std": 0.40484817151526986,
+      "dnn_score_median": 0.0321851885,
+      "score_delta_mean": 0.018322568874003145
+    },
+    "treatment": {
+      "model_name": "dnn",
+      "dnn_score_mean": 0.38033663447723653,
+      "dnn_score_std": 0.4323644995056969,
+      "dnn_score_median": 0.10220764,
+      "score_delta_mean": 0.04021344033129784
+    }
+  },
+  "warnings": [],
+  "notes": [
+    "当前为离线 A/B 模拟，不是真实线上实验",
+    "基于 real_raw_1000 test split (150 条) 的 Multimodal 模型预测结果",
+    "分组在同一批 predictions 上进行，不代表真实策略差异",
+    "当前 label 是 interaction_score 伪标签，不代表真实 CTR/CVR/完播/转化",
+    "两组使用同一个模型预测结果，lift 不是因果收益",
+    "样本仅 test split 150 条，hash 分组后统计波动较大"
+  ],
+  "generated_at": "2026-05-08 21:29:38"
+}

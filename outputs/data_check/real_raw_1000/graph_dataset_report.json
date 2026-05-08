@@ -1,0 +1,94 @@
+{
+  "build_success": true,
+  "dataset_name": "real_raw_1000",
+  "num_nodes": 8257,
+  "num_edges_forward": 8720,
+  "num_edges_bidirectional": 17440,
+  "node_type_counts": {
+    "video": 4774,
+    "author": 822,
+    "music": 816,
+    "hashtag": 1845
+  },
+  "edge_type_counts": {
+    "video_author": 1000,
+    "video_music": 818,
+    "video_hashtag": 2420,
+    "video_related_video": 4482
+  },
+  "labeled_node_count": 1000,
+  "train_node_count": 700,
+  "val_node_count": 150,
+  "test_node_count": 150,
+  "unlabeled_node_count": 7257,
+  "label_distribution": {
+    "positive": 400,
+    "negative": 600,
+    "unlabeled": 7257
+  },
+  "mask_check": {
+    "train_true": 700,
+    "val_true": 150,
+    "test_true": 150,
+    "overlap_train_val": 0,
+    "overlap_train_test": 0,
+    "overlap_val_test": 0,
+    "neither_true": 7257
+  },
+  "isolated_node_count": 0,
+  "isolated_node_ids": [],
+  "has_unmapped_edges": false,
+  "unmapped_edge_summary": {},
+  "feature_dim": 16,
+  "feature_columns": [
+    "node_type_video",
+    "node_type_author",
+    "node_type_music",
+    "node_type_hashtag",
+    "total_degree",
+    "in_degree",
+    "out_degree",
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "comment_table_count",
+    "related_video_count"
+  ],
+  "tabular_feature_cols_used": [
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "follower_count",
+    "hashtag_count",
+    "comment_table_count",
+    "related_video_count"
+  ],
+  "node_types_used": [
+    "video",
+    "author",
+    "music",
+    "hashtag"
+  ],
+  "empty_tables_handled": [
+    "raw_video_tag (0 rows, skipped tag nodes)",
+    "raw_chapter (0 rows, skipped)"
+  ],
+  "music_empty_skipped": 182,
+  "warnings": [
+    "Skipped 182 music node(s) due to missing music_id (no fallback used)",
+    "Some hashtag nodes used fallback identifier (hashtag_name)"
+  ],
+  "notes": [
+    "当前图数据检查报告基于 real_raw_1000 真实网页端 raw 数据构建。",
+    "孤立节点是预期行为（无关联边的节点不影响主视频监督训练）。",
+    "所有边已输出双向。",
+    "test_mask 仅用于最终泛化评估，不得用于训练或调参。"
+  ],
+  "generated_at": "2026-05-08 18:11:36"
+}

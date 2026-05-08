@@ -92,7 +92,7 @@ def compute_group_metrics(
         指标字典。
     """
     if k_values is None:
-        k_values = [5, 10]
+        k_values = [5, 10, 20]
 
     y_true = df[label_col].values.astype(float)
     y_score = df[score_col].values.astype(float)
@@ -103,10 +103,13 @@ def compute_group_metrics(
         "group_role": group_role,
         "sample_count": len(df),
         "positive_count": int(y_true.sum()),
+        "negative_count": len(df) - int(y_true.sum()),
         "label_positive_rate": float(y_true.mean()),
         "score_mean": float(y_score.mean()),
         "score_std": float(y_score.std()),
         "score_median": float(np.median(y_score)),
+        "score_min": float(y_score.min()),
+        "score_max": float(y_score.max()),
         "pred_positive_count": int(y_pred.sum()),
         "pred_positive_rate": float(y_pred.mean()),
     }
