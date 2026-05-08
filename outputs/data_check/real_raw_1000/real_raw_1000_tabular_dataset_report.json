@@ -1,0 +1,91 @@
+{
+  "dataset_name": "real_raw_1000",
+  "run_id": "20260507_230322",
+  "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\20260507_230322",
+  "output_train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_train.csv",
+  "output_val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_val.csv",
+  "output_test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_test.csv",
+  "output_feature_info_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_feature_info.json",
+  "total_rows": 1000,
+  "train_rows": 700,
+  "val_rows": 150,
+  "test_rows": 150,
+  "total_columns": 56,
+  "total_features": 51,
+  "numeric_feature_count": 31,
+  "categorical_feature_count": 5,
+  "text_stat_feature_count": 7,
+  "aggregation_feature_count": 10,
+  "wide_cross_feature_count": 3,
+  "excluded_fields": {
+    "raw_author": [
+      "crawl_time",
+      "sec_uid",
+      "unique_id",
+      "short_id",
+      "avatar_thumb_url_list"
+    ],
+    "raw_music": [
+      "crawl_time",
+      "music_mid",
+      "music_id",
+      "music_owner_id"
+    ],
+    "raw_video_media": [
+      "crawl_time",
+      "cover_uri",
+      "origin_cover_uri",
+      "dynamic_cover_uri",
+      "video_format",
+      "video_ratio",
+      "bit_rate_raw",
+      "big_thumbs_raw",
+      "video_meta_raw"
+    ]
+  },
+  "label_summary": {
+    "method": "interaction_binary",
+    "threshold": 18147.799999999996,
+    "pos_count": 400,
+    "neg_count": 600,
+    "pos_ratio": 0.4,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)"
+  },
+  "split_summary": {
+    "method": "stratified_by_label",
+    "seed": 2026,
+    "train_size": 700,
+    "val_size": 150,
+    "test_size": 150
+  },
+  "split_exclusivity": {
+    "exclusive": true,
+    "details": {}
+  },
+  "test_split_note": "test split 仅用于最终泛化评估，不得用于调参或早停。val split 用于训练过程中选 best epoch、早停和超参数调优。",
+  "empty_tables_handled": [
+    "video_tag",
+    "chapter"
+  ],
+  "missing_summary": {},
+  "warnings": [
+    "none-match 样本 212 条 (21.2%) 中，176 条 interaction 字段全为 0/NaN，36 条有部分互动数据。",
+    "play_count: 993/1000 条为 0 (99.3%)",
+    "region 原始缺失 635/1000 (63.5%)，已填充为 __MISSING__",
+    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条，泛化评估稳定性有限。",
+    "raw_video_tag 当前为空表，不作为特征来源。",
+    "raw_chapter 当前为空表，不作为特征来源。"
+  ],
+  "generated_at": "2026-05-08 15:46:03",
+  "known_limitations": [
+    "real_raw_1000 来自公开网页端，不代表平台内部完整数据。",
+    "当前没有真实曝光、点击、完播、转化、留存标签。",
+    "标签为 interaction_score 分位数伪标签，仅用于离线多模型对比。",
+    "raw_video_tag 当前为空。",
+    "raw_chapter 当前为空。",
+    "none-match 样本占 21.2%，176 条无互动数据。",
+    "评论和相关推荐不是每个视频都触发。",
+    "部分字段低覆盖（region 36.5%, item_title 60.7%），已自动过滤最低覆盖字段。",
+    "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
+  ]
+}

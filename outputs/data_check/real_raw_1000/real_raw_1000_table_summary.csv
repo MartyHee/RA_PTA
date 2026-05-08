@@ -1,0 +1,12 @@
+﻿table_key,table_name,file_name,file_exists,read_success,encoding_used,row_count,column_count,is_empty,allowed_empty,error_message
+video_detail,raw_video_detail,raw_video_detail_20260507_230322.csv,True,True,utf-8-sig,1000,30,False,False,
+author,raw_author,raw_author_20260507_230322.csv,True,True,utf-8-sig,1000,20,False,False,
+music,raw_music,raw_music_20260507_230322.csv,True,True,utf-8-sig,1000,16,False,False,
+hashtag,raw_hashtag,raw_hashtag_20260507_230322.csv,True,True,utf-8-sig,2420,10,False,False,
+video_tag,raw_video_tag,raw_video_tag_20260507_230322.csv,True,True,utf-8-sig,0,5,True,True,
+video_media,raw_video_media,raw_video_media_20260507_230322.csv,True,True,utf-8-sig,1000,24,False,False,
+video_status_control,raw_video_status_control,raw_video_status_control_20260507_230322.csv,True,True,utf-8-sig,1000,17,False,False,
+chapter,raw_chapter,raw_chapter_20260507_230322.csv,True,True,utf-8-sig,0,10,True,True,
+comment,raw_comment,raw_comment_20260507_230322.csv,True,True,utf-8-sig,1852,24,False,False,
+related_video,raw_related_video,raw_related_video_20260507_230322.csv,True,True,utf-8-sig,4482,22,False,False,
+crawl_log,raw_crawl_log,raw_crawl_log_20260507_230322.csv,True,True,utf-8-sig,1000,14,False,False,

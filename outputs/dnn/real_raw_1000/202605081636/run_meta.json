@@ -1,0 +1,20 @@
+{
+  "model_name": "dnn",
+  "dataset_name": "real_raw_1000",
+  "run_id": "202605081636",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_1000\\202605081636",
+  "train_started_at": "2026-05-08 16:36:43",
+  "train_finished_at": "2026-05-08 16:36:51",
+  "config_path": "configs/dnn/dnn_real_raw_1000.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_train.csv",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_val.csv",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_test.csv",
+  "best_epoch": 33,
+  "best_val_loss": 0.164682,
+  "final_train_loss": 0.014491,
+  "final_val_loss": 0.190533,
+  "device": "cuda",
+  "num_params": 41177,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
+  "warnings": []
+}

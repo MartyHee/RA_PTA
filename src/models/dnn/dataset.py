@@ -159,6 +159,46 @@ class TabularDataset(Dataset):
         }
 
 
+def get_features_from_feature_info(feature_info: dict) -> dict:
+    """从 tabular_feature_info.json 提取特征列表。
+
+    适配两种 feature_info 格式：
+    - 新格式 (real_raw_1000): numeric_features, text_stat_features, categorical_features
+    - 旧格式 (sample0427): numeric_cols, text_stat_cols, categorical_cols
+    """
+    # 数值特征：尝试新格式，回退旧格式
+    numeric_cols = list(feature_info.get("numeric_features", []))
+    if not numeric_cols:
+        numeric_cols = list(feature_info.get("numeric_cols", []))
+
+    # 文本统计特征（也作为数值特征处理）
+    text_stat_cols = list(feature_info.get("text_stat_features", []))
+    if not text_stat_cols:
+        text_stat_cols = list(feature_info.get("text_stat_cols", []))
+
+    # 合并所有数值特征
+    all_numeric = numeric_cols.copy()
+    for c in text_stat_cols:
+        if c not in all_numeric:
+            all_numeric.append(c)
+
+    # 类别特征
+    categorical_cols = list(feature_info.get("categorical_features", []))
+    if not categorical_cols:
+        categorical_cols = list(feature_info.get("categorical_cols", []))
+
+    id_cols = list(feature_info.get("id_cols", []))
+    label_col = feature_info.get("label_col", "label")
+
+    return {
+        "numeric_cols": all_numeric,
+        "categorical_cols": categorical_cols,
+        "text_stat_cols": text_stat_cols,
+        "id_cols": id_cols,
+        "label_col": label_col,
+    }
+
+
 def get_excluded_cols(quality_check: dict) -> set[str]:
     """从质量检查报告中获取所有应排除的字段集合。"""
     excluded: set[str] = set()

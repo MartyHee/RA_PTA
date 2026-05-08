@@ -1,0 +1,331 @@
+{
+  "dataset_name": "real_raw_1000",
+  "run_id": "20260507_230322",
+  "label_col": "label",
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
+  "label_threshold": 18147.799999999996,
+  "id_cols": [
+    "sample_id",
+    "video_id",
+    "author_id"
+  ],
+  "numeric_features": [
+    "duration_ms",
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count",
+    "play_count",
+    "recommend_count",
+    "admire_count",
+    "create_time",
+    "is_top",
+    "original",
+    "aweme_type",
+    "media_type",
+    "follower_count",
+    "total_favorited",
+    "verification_type",
+    "origin_cover_width",
+    "origin_cover_height",
+    "comment_permission_status",
+    "publish_hour",
+    "publish_weekday",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "max_comment_digg_count",
+    "chapter_count",
+    "related_video_count",
+    "comment_user_count",
+    "cover_url_count",
+    "origin_cover_url_count",
+    "dynamic_cover_url_count"
+  ],
+  "categorical_features": [
+    "author_id",
+    "region",
+    "music_title",
+    "music_author",
+    "hashtag_name_top"
+  ],
+  "text_stat_features": [
+    "desc_length",
+    "desc_word_count",
+    "caption_length",
+    "signature_length",
+    "nickname_length",
+    "music_title_length",
+    "avg_comment_text_length"
+  ],
+  "aggregation_features": [
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "max_comment_digg_count",
+    "chapter_count",
+    "related_video_count",
+    "comment_user_count",
+    "cover_url_count",
+    "origin_cover_url_count",
+    "dynamic_cover_url_count"
+  ],
+  "wide_cross_features": [
+    "author_id_x_top_hashtag",
+    "author_id_x_music_title",
+    "duration_bucket_x_top_hashtag"
+  ],
+  "excluded_fields": {
+    "raw_author": [
+      "crawl_time",
+      "sec_uid",
+      "unique_id",
+      "short_id",
+      "avatar_thumb_url_list"
+    ],
+    "raw_music": [
+      "crawl_time",
+      "music_mid",
+      "music_id",
+      "music_owner_id"
+    ],
+    "raw_video_media": [
+      "crawl_time",
+      "cover_uri",
+      "origin_cover_uri",
+      "dynamic_cover_uri",
+      "video_format",
+      "video_ratio",
+      "bit_rate_raw",
+      "big_thumbs_raw",
+      "video_meta_raw"
+    ]
+  },
+  "field_quality_report": {
+    "raw_author": {
+      "author_user_id": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "favoriting_count": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "following_count": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "custom_verify": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "enterprise_verify_reason": {
+        "non_null": 15,
+        "total": 822,
+        "non_null_rate": 0.0182,
+        "nunique": 16,
+        "is_constant": false
+      },
+      "author_status": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "author_secret": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "author_prevent_download": {
+        "non_null": 0,
+        "total": 822,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      }
+    },
+    "raw_music": {
+      "music_shoot_duration": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "is_commerce_music": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "music_status": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "music_collect_count": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "music_cover_url_list": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "music_play_url_list": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      }
+    },
+    "raw_video_media": {
+      "cover_width": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "cover_height": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "is_h265": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "is_long_video": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      },
+      "has_watermark": {
+        "non_null": 0,
+        "total": 1000,
+        "non_null_rate": 0.0,
+        "nunique": 1,
+        "is_constant": true
+      }
+    },
+    "raw_video_status_control": {}
+  },
+  "total_features": 51,
+  "split_info": {
+    "method": "stratified_by_label",
+    "seed": 2026,
+    "train_size": 700,
+    "val_size": 150,
+    "test_size": 150,
+    "total_size": 1000,
+    "train_pos": 280,
+    "train_neg": 420,
+    "val_pos": 60,
+    "val_neg": 90,
+    "test_pos": 60,
+    "test_neg": 90
+  },
+  "label_distribution_total": {
+    "pos": 400,
+    "neg": 600,
+    "pos_ratio": 0.4
+  },
+  "label_distribution_train": {
+    "pos": 280,
+    "neg": 420,
+    "pos_ratio": 0.4
+  },
+  "label_distribution_val": {
+    "pos": 60,
+    "neg": 90,
+    "pos_ratio": 0.4
+  },
+  "label_distribution_test": {
+    "pos": 60,
+    "neg": 90,
+    "pos_ratio": 0.4
+  },
+  "split_exclusivity": {
+    "exclusive": true,
+    "details": {}
+  },
+  "test_split_note": "test split 仅用于最终泛化评估，不得用于调参或早停。val split 用于训练过程中选 best epoch、早停和超参数调优。",
+  "source_tables_used": [
+    "video_detail",
+    "author",
+    "music",
+    "hashtag",
+    "video_tag",
+    "video_media",
+    "video_status_control",
+    "chapter",
+    "comment",
+    "related_video",
+    "crawl_log"
+  ],
+  "join_keys_used": [
+    "video_id",
+    "author_id",
+    "source_video_id"
+  ],
+  "warnings": [
+    "none-match 样本 212 条 (21.2%) 中，176 条 interaction 字段全为 0/NaN，36 条有部分互动数据。",
+    "play_count: 993/1000 条为 0 (99.3%)",
+    "region 原始缺失 635/1000 (63.5%)，已填充为 __MISSING__",
+    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条，泛化评估稳定性有限。",
+    "raw_video_tag 当前为空表，不作为特征来源。",
+    "raw_chapter 当前为空表，不作为特征来源。"
+  ],
+  "known_limitations": [
+    "real_raw_1000 来自公开网页端，不代表平台内部完整数据。",
+    "当前没有真实曝光、点击、完播、转化、留存标签。",
+    "标签为 interaction_score 分位数伪标签，仅用于离线多模型对比。",
+    "raw_video_tag 当前为空。",
+    "raw_chapter 当前为空。",
+    "none-match 样本占 21.2%，176 条无互动数据。",
+    "评论和相关推荐不是每个视频都触发。",
+    "部分字段低覆盖（region 36.5%, item_title 60.7%），已自动过滤最低覆盖字段。",
+    "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
+  ],
+  "generated_at": "2026-05-08 15:46:03",
+  "notes": [
+    "本数据集基于 real_raw_1000 真实网页端 raw 数据构建。",
+    "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",
+    "train/val/test 三路切分，按 video_id 分层。",
+    "字段排除基于数据质量动态计算，非硬编码。",
+    "共包含来自 11 张源表的特征。"
+  ]
+}

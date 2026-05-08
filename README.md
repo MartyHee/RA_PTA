@@ -1,106 +1,260 @@
-# RA_PTA 模型实验项目说明
+# RA_PTA 多模型对比实验项目说明
 
----
+## 1. 项目概述
 
-## 1. 当前阶段状态
+本项目用于基于抖音公开网页端数据进行多模型对比实验。核心工作包括：
 
-已完成流程级验证，所有模型与实验流程均已跑通：
+- raw 数据读取与质量检查
+- tabular / graph / multimodal 输入构建
+- DNN / Wide & Deep / GraphSAGE / Multimodal 多模型训练
+- 统一离线评估
+- 多模型指标对比
+- 离线 A/B 模拟或分组统计
+- 实验报告整理
 
-- ✅ sample0427 数据读取与 schema 校验
-- ✅ tabular 数据集构建
-- ✅ graph 数据集构建
-- ✅ multimodal 数据集构建
-- ✅ DNN 模型（最小训练、评估、预测闭环）
-- ✅ Wide & Deep 模型（最小训练、评估、预测闭环）
-- ✅ GraphSAGE 模型（最小训练、评估、预测闭环）
-- ✅ Multimodal 融合模型（最小训练、评估、预测闭环）
-- ✅ 统一模型对比实验（4 模型汇总、质量检查、图表、对比报告）
-- ✅ 离线 A/B 模拟（hash 分组、组内指标统计、lift 计算、报告）
-- ✅ 最终多模型对比实验报告（`reports/model_comparison_report.md`）
-
-> **重要说明**：当前所有结果基于 sample0427 样本数据（79 条主视频，16 条 eval），仅用于流程级验证。所有指标波动极大，不具备统计显著性。标签为 interaction_score 伪标签，不代表真实 CTR/CVR/完播/留存等业务指标。**不证明任何模型在真实推荐场景下更优，不支持任何线上收益判断。**
-
----
-
-## 2. 最新关键输出目录
-
-| 模块         | Run ID       | 输出目录                               |
-| ------------ | ------------ | -------------------------------------- |
-| DNN          | 202604301440 | `outputs/dnn/202604301440/`          |
-| Wide & Deep  | 202604301557 | `outputs/wide_deep/202604301557/`    |
-| GraphSAGE    | 202604291958 | `outputs/graphsage/202604291958/`    |
-| Multimodal   | 202604301557 | `outputs/multimodal/202604301557/`   |
-| 统一对比实验 | 202604301609 | `outputs/comparison/202604301609/`   |
-| A/B 模拟     | 202604301630 | `outputs/ab_test/202604301630/`      |
-| 最终报告     | —           | `reports/model_comparison_report.md` |
-
-各模型输出包含 `metrics.json`、`predictions.csv`、`train_log.csv`、`model.pt`、`run_meta.json`、`feature_config_used.json`。
-
-对比实验输出包含 12 个文件（对比报告、指标汇总、质量检查、Top-K 校验、分数分布、图表）。
-
-A/B 模拟输出包含 7 个文件（分组分配、指标汇总、分数分布、模拟报告）。
-
----
-
-## 3. 当前推荐阅读顺序
-
-```
-1. README.md                           — 项目总览（本文件）
-2. reports/model_comparison_report.md  — 最终多模型对比实验报告
-3. outputs/comparison/202604301609/model_comparison_report.md  — 对比实验详细报告
-4. outputs/ab_test/202604301630/ab_simulation_report.md         — A/B 模拟详细报告
-```
-
----
-
-## 4. 当前使用的数据
-
-当前用于实验的数据并不是正式完整 raw 爬虫数据，而是**流程验证用样本数据**，路径如下：
-
-`D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project/data/sample0427/`
-
-其中最重要的说明文件是：
-
-`D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project/data/sample0427/sample_data_dictionary.md`
-
-使用数据前必须明确以下事实：
-
-- `sample0427` 是用于实验流程验证的样本数据
-- 它和正式 `data_dictionary.md` 不是严格等价
-- 部分字段来自规则补齐、结构模拟或样本级占位
-- 当前数据适合做模型输入输出、训练流程、实验框架、图构造、多模态融合等"流程验证"
-- 当前数据不适合直接作为正式效果结论的最终依据
-- 后续正式实验仍应优先使用真实抓取数据
-
-当前样本目录包含 11 张表：
+当前项目根目录：
 
 ```text
-sample0427_raw_video_detail.csv
-sample0427_raw_author.csv
-sample0427_raw_music.csv
-sample0427_raw_hashtag.csv
-sample0427_raw_video_tag.csv
-sample0427_raw_video_media.csv
-sample0427_raw_video_status_control.csv
-sample0427_raw_chapter.csv
-sample0427_raw_comment.csv
-sample0427_raw_related_video.csv
-sample0427_raw_crawl_log.csv
+D:/CodeData/Program Coding/ByteDance/RA_PTA/
+```
+
+上游爬虫与 raw 数据项目目录：
+
+```text
+D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project/
 ```
 
 ---
 
-## 5. 项目目录结构
+## 2. 当前阶段状态
+
+### 2.1 已完成：sample0427 流程验证
+
+此前已经基于 `sample0427` 跑通过完整流程：
+
+- sample0427 数据读取与 schema 校验
+- tabular 数据集构建
+- graph 数据集构建
+- multimodal 数据集构建
+- DNN 模型最小训练、评估、预测闭环
+- Wide & Deep 模型最小训练、评估、预测闭环
+- GraphSAGE 模型最小训练、评估、预测闭环
+- Multimodal 融合模型最小训练、评估、预测闭环
+- 统一模型对比实验
+- 离线 A/B 模拟
+- 多模型对比实验报告
+
+这些结果证明工程链路已经跑通，但由于 sample0427 样本量小且存在规则补齐字段，不能作为真实模型效果结论。
+
+### 2.2 已完成：真实 raw 数据采集
+
+已完成 1000 条公开视频 URL 的真实网页端 raw 数据采集，并形成数据包：
+
+```text
+real_raw_1000_20260507_230322
+```
+
+当前真实 raw 数据目录：
+
+```text
+douyin_data_project/data/interim/20260507_230322/
+```
+
+数据包交付说明：
+
+```text
+douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md
+```
+
+### 2.3 当前下一步
+
+当前即将从 sample0427 切换到 `real_raw_1000`：
+
+1. 新增真实 raw 数据读取配置。
+2. 实现 `real_raw_1000` 读取检查。
+3. 基于真实 raw 数据重新构建 tabular / graph / multimodal 输入。
+4. 重新训练 DNN / Wide & Deep / GraphSAGE / Multimodal。
+5. 重新进行多模型对比实验。
+6. 生成基于真实 raw 数据的多模型对比报告。
+
+---
+
+## 3. 当前主数据源：real_raw_1000
+
+### 3.1 数据包基本信息
+
+| 项目 | 内容 |
+|---|---|
+| 数据包名称 | `real_raw_1000_20260507_230322` |
+| 采集 run_id | `20260507_230322` |
+| 数据来源 | 抖音网页端公开视频页面 |
+| 输入 URL 文件 | `configs/batch_urls_1000_from_2000.txt` |
+| 输入 URL 数 | 1000 |
+| unique video_id | 1000 |
+| 成功 URL | 1000 |
+| failed URL | 0 |
+| 输出目录 | `douyin_data_project/data/interim/20260507_230322/` |
+| 交付说明 | `douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md` |
+| 采集方式 | Playwright browser 模式，每 URL 独立 page，restart-every=10，workers=1 |
+
+### 3.2 输出文件清单
+
+| 序号 | 文件 | 行数 | 字段数 | 用途 |
+|---:|---|---:|---:|---|
+| 1 | `real_web_video_meta_20260507_230322.csv` | 1000 | 68 | 完整 meta 大宽表 |
+| 2 | `raw_video_detail_20260507_230322.csv` | 1000 | 30 | 主视频详情表 |
+| 3 | `raw_author_20260507_230322.csv` | 1000 | 20 | 作者信息表 |
+| 4 | `raw_music_20260507_230322.csv` | 1000 | 16 | 音乐信息表 |
+| 5 | `raw_hashtag_20260507_230322.csv` | 2420 | 10 | 话题标签表 |
+| 6 | `raw_video_tag_20260507_230322.csv` | 0 | 5 | 平台标签表，当前为空 |
+| 7 | `raw_video_media_20260507_230322.csv` | 1000 | 24 | 媒体元信息表 |
+| 8 | `raw_video_status_control_20260507_230322.csv` | 1000 | 17 | 状态权限表 |
+| 9 | `raw_chapter_20260507_230322.csv` | 0 | 10 | 章节表，当前为空 |
+| 10 | `raw_comment_20260507_230322.csv` | 1852 | 24 | 评论明细表 |
+| 11 | `raw_related_video_20260507_230322.csv` | 4482 | 22 | 相关推荐边表 |
+| 12 | `raw_crawl_log_20260507_230322.csv` | 1000 | 14 | 采集日志表 |
+
+---
+
+## 4. 数据质量摘要
+
+### 4.1 总体质量
+
+| 指标 | 值 |
+|---|---:|
+| 总 URL | 1000 |
+| 成功 URL | 1000，100% |
+| failed URL | 0，0% |
+| unique video_id | 1000，100% |
+| video_id 与 page_url 一致率 | 1000 / 1000，100% |
+| exact + high | 788，78.8% |
+| none + low | 212，21.2% |
+
+none-match 样本仍可获得 video_id 与 author_id，但部分 aweme_detail 内的互动和媒体字段覆盖不足。后续建模时可以基于 `raw_crawl_log.match_type` 和 `confidence` 选择是否过滤低置信样本。
+
+### 4.2 关键字段覆盖
+
+| 表 | 字段 | 非空率 |
+|---|---|---:|
+| raw_video_detail | video_id | 1000 / 1000，100% |
+| raw_video_detail | author_id | 1000 / 1000，100%，822 unique |
+| raw_video_detail | create_time | 1000 / 1000，100% |
+| raw_video_detail | duration_ms | 822 / 1000，82.2% |
+| raw_video_detail | digg_count | 822 / 1000，82.2% |
+| raw_author | author_id | 822 / 1000，82.2%，822 unique |
+| raw_music | video_id | 1000 / 1000，100% |
+| raw_video_media | video_id | 1000 / 1000，100% |
+| raw_video_status_control | video_id | 1000 / 1000，100% |
+| raw_hashtag | video_id / hashtag_name | 2420 / 2420，100% |
+| raw_comment | comment_id | 1852 / 1852，100% |
+| raw_comment | comment_text | 1819 / 1852，98.2% |
+| raw_related_video | source_video_id / related_video_id | 4482 / 4482，100% |
+| raw_crawl_log | target_url / match_type / confidence | 1000 / 1000，100% |
+
+### 4.3 跨表关联
+
+| 关联 | 匹配率 |
+|---|---:|
+| raw_video_detail.author_id -> raw_author.author_id | 822 / 822，100% |
+| raw_music.video_id -> raw_video_detail.video_id | 1000 / 1000，100% |
+| raw_video_media.video_id -> raw_video_detail.video_id | 1000 / 1000，100% |
+| raw_video_status_control.video_id -> raw_video_detail.video_id | 1000 / 1000，100% |
+| raw_hashtag.video_id -> raw_video_detail.video_id | 603 / 603，100% |
+| raw_comment.video_id -> raw_video_detail.video_id | 374 / 374，100% |
+| raw_related_video.source_video_id -> raw_video_detail.video_id | 449 / 449，100% |
+
+### 4.4 触发率
+
+| 表 | 行数 | 触发视频数 | 触发率 |
+|---|---:|---:|---:|
+| raw_hashtag | 2420 | 603 | 60.3% |
+| raw_comment | 1852 | 374 | 37.4% |
+| raw_related_video | 4482 | 449 | 44.9% |
+
+---
+
+## 5. 表级使用建议
+
+### raw_video_detail
+
+主视频详情表。建议作为后续 tabular 输入主表，包含 `video_id`、`author_id`、文本内容、发布时间、时长、互动统计等字段。
+
+注意：`duration_ms`、`digg_count` 等字段在 none-match 样本中覆盖不全，建模时需按非空率筛选或填充。
+
+### raw_author
+
+作者信息表。可通过 `raw_video_detail.author_id` 关联。当前有 822 个 unique author_id。
+
+### raw_music
+
+音乐信息表。通过 `video_id` 关联主表。可用于音乐标题、音乐作者、原声标记等特征。
+
+### raw_hashtag
+
+话题标签表。可聚合为 `hashtag_count`、`hashtag_name_joined`，也可用于构造 video-hashtag 图边。
+
+### raw_video_tag
+
+当前为空表。详情页响应未发现 `video_tag` 结构，暂不作为模型特征。后续可从搜索页或推荐流响应补充。
+
+### raw_video_media
+
+媒体元信息表。包含封面 URL 列表、动态封面、原始封面、视频宽高等字段。`*_url_list` 字段为 JSON 列表字符串。
+
+### raw_video_status_control
+
+状态权限表。可用于权限、下载、评论、分享、审核状态等过滤或特征。
+
+### raw_chapter
+
+当前为空表。详情页响应未发现 `chapter_list` 结构，暂不作为模型特征。
+
+### raw_comment
+
+评论明细表。374/1000 视频触发评论响应，共 1852 条评论。可聚合评论数量、评论文本长度、评论点赞等特征。
+
+### raw_related_video
+
+相关推荐边表。449/1000 视频触发相关推荐，共 4482 条边。可直接用于 GraphSAGE 的 video-video 边。
+
+### raw_crawl_log
+
+采集日志表。用于过滤低置信样本、追踪 `match_type`、`confidence`、状态码和采集质量。
+
+---
+
+## 6. sample0427 历史说明
+
+`sample0427` 路径：
+
+```text
+douyin_data_project/data/sample0427/
+```
+
+`sample0427` 的当前定位是：
+
+- 历史流程验证数据
+- 快速回归测试数据
+- schema 与表结构参考数据
+- 小样本调试数据
+
+不建议再作为当前主实验数据。不得覆盖或删除 sample0427。若使用 sample0427，应明确说明它只用于流程测试或回归验证。
+
+---
+
+## 7. 项目目录结构
 
 ```text
 RA_PTA/
 ├── README.md
+├── CLAUDE.md
 ├── development_log.md
 ├── configs/
 │   ├── common/
 │   │   ├── data_paths.yaml
 │   │   ├── metrics.yaml
-│   │   └── split.yaml
+│   │   ├── split.yaml
+│   │   └── real_raw_1000.yaml        # 建议新增
 │   ├── dnn/
 │   │   └── dnn_base.yaml
 │   ├── wide_deep/
@@ -119,58 +273,28 @@ RA_PTA/
 │   ├── graph/
 │   ├── multimodal/
 │   └── experiment_inputs/
+├── douyin_data_project/
+│   └── data/
+│       ├── sample0427/               # 历史流程验证数据
+│       └── interim/
+│           └── 20260507_230322/      # 当前真实 raw 数据包
 ├── src/
 │   ├── data/
 │   │   ├── load_sample0427.py
+│   │   ├── load_real_raw.py           # 建议新增
 │   │   ├── validate_schema.py
 │   │   ├── build_tabular_dataset.py
 │   │   ├── build_graph_dataset.py
 │   │   └── build_multimodal_dataset.py
 │   ├── features/
-│   │   ├── tabular_features.py
-│   │   ├── cross_features.py
-│   │   ├── text_features.py
-│   │   ├── image_features.py
-│   │   └── graph_features.py
 │   ├── models/
 │   │   ├── dnn/
-│   │   │   ├── model.py
-│   │   │   ├── train.py
-│   │   │   ├── evaluate.py
-│   │   │   └── predict.py
 │   │   ├── wide_deep/
-│   │   │   ├── model.py
-│   │   │   ├── train.py
-│   │   │   ├── evaluate.py
-│   │   │   └── predict.py
 │   │   ├── graphsage/
-│   │   │   ├── model.py
-│   │   │   ├── train.py
-│   │   │   ├── evaluate.py
-│   │   │   └── predict.py
 │   │   └── multimodal/
-│   │       ├── text_encoder.py
-│   │       ├── image_encoder.py
-│   │       ├── fusion_model.py
-│   │       ├── train.py
-│   │       ├── evaluate.py
-│   │       └── predict.py
 │   ├── evaluation/
-│   │   ├── metrics.py
-│   │   ├── ranking_metrics.py
-│   │   ├── compare_models.py
-│   │   ├── plot_results.py
-│   │   └── report_utils.py
 │   ├── experiment/
-│   │   ├── run_comparison.py
-│   │   ├── run_ab_simulation.py
-│   │   └── ab_metrics.py
 │   └── utils/
-│       ├── seed.py
-│       ├── io.py
-│       ├── logger.py
-│       ├── config.py
-│       └── common.py
 ├── outputs/
 │   ├── data_check/
 │   ├── dnn/
@@ -178,166 +302,51 @@ RA_PTA/
 │   ├── graphsage/
 │   ├── multimodal/
 │   ├── comparison/
-│   ├── ab_test/
-│   └── figures/
+│   └── ab_test/
 ├── reports/
 │   ├── model_comparison_report.md
 │   └── figures/
 └── scripts/
-    └── check_tabular_quality.py
 ```
 
 ---
 
-## 6. 目录设计说明
+## 8. 主要运行入口
 
-### 6.1 根目录文件
+### 数据读取与特征构建
 
-#### `README.md`
+| 脚本 | 用途 |
+|---|---|
+| `src/data/load_sample0427.py` | sample0427 历史样本读取 |
+| `src/data/load_real_raw.py` | real_raw_1000 真实 raw 数据读取，建议新增 |
+| `src/data/validate_schema.py` | schema 校验与关联检查 |
+| `src/data/build_tabular_dataset.py` | tabular 数据集构建 |
+| `src/data/build_graph_dataset.py` | 图节点、边、特征构建 |
+| `src/data/build_multimodal_dataset.py` | 多模态数据集构建 |
 
-当前项目总说明文件。必须保持更新，说明当前任务、目录结构、数据来源、模型边界、运行方式和实验约定。
+### 模型训练与评估
 
-#### `development_log.md`
+| 脚本 | 用途 |
+|---|---|
+| `src/models/dnn/train.py` / `evaluate.py` | DNN 训练与评估 |
+| `src/models/wide_deep/train.py` / `evaluate.py` | Wide & Deep 训练与评估 |
+| `src/models/graphsage/train.py` / `evaluate.py` | GraphSAGE 训练与评估 |
+| `src/models/multimodal/train.py` / `evaluate.py` | Multimodal 训练与评估 |
 
-开发日志。每次运行、修改、实验或新增脚本后都要维护，保证可追溯。
+### 实验入口
 
----
-
-### 6.2 `configs/`
-
-用于保存统一配置文件，避免把路径、超参数、实验选项写死在代码里。
-
-分为：
-
-- `common/`：公共路径、切分、评估指标
-- `dnn/`：DNN 模型配置
-- `wide_deep/`：Wide & Deep 配置
-- `graphsage/`：GraphSAGE 配置
-- `multimodal/`：多模态模型配置
-- `ab_test/`：A/B 模拟配置
-
----
-
-### 6.3 `data/`
-
-用于承接数据中间产物，不直接修改 `douyin_data_project` 原始文件。
-
-约定：
-
-- `external/`：外部预训练模型、静态资源等。当前阶段默认不使用外部下载资源
-- `interim/`：中间处理结果
-- `processed/`：清洗后可直接训练的数据
-- `features/`：表格特征输入
-- `graph/`：图节点、边、图特征
-- `multimodal/`：文本、媒体、结构化融合输入
-- `experiment_inputs/`：统一实验输入快照
+| 脚本 | 用途 |
+|---|---|
+| `src/experiment/run_comparison.py` | 统一多模型对比实验 |
+| `src/experiment/run_ab_simulation.py` | 离线 A/B 模拟或分组统计 |
 
 ---
 
-### 6.4 `src/data/`
+## 9. 统一评估口径
 
-负责读取 `sample0427`、做 schema 对齐检查、构建 tabular / graph / multimodal 输入数据。
+多模型对比实验优先统一以下指标：
 
-必须做到：
-
-- 不直接修改原始 sample0427 文件
-- 所有派生产物写入当前项目自己的 `data/` 目录
-- 所有输入路径可由配置文件管理
-- CSV 中字符串化的 list、JSON、ARRAY 字段要按存储类型和逻辑类型分别处理
-- `*_raw` 字段原则上保留原始值，不要在数据读取层直接覆盖
-
----
-
-### 6.5 `src/features/`
-
-负责实验所需特征处理，不同模型可复用。
-
-至少应包括：
-
-- 表格特征
-- 交叉特征
-- 文本特征
-- 视觉或媒体元信息特征
-- 图节点/边特征
-
----
-
-### 6.6 `src/models/`
-
-每个模型独立一个子目录。
-
-要求：
-
-- 每个模型目录至少有 `model.py`、`train.py`、`evaluate.py`
-- 如需要推理脚本，可加 `predict.py`
-- GraphSAGE 的图数据构建逻辑放在 `src/data/build_graph_dataset.py`，模型目录只保留模型、训练、评估、预测逻辑
-- 多模态的数据集构建逻辑放在 `src/data/build_multimodal_dataset.py`，模型目录保留 encoder、fusion、训练、评估、预测逻辑
-
----
-
-### 6.7 `src/evaluation/`
-
-负责统一评估逻辑。
-
-必须统一：
-
-- 分类指标
-- 排序指标
-- 多模型对比逻辑
-- 图表输出逻辑
-- 报告拼装逻辑
-
-不要把评估代码散落在各模型训练脚本里。
-
----
-
-### 6.8 `src/experiment/`
-
-负责主程序入口。
-
-当前已实现的实验入口：
-
-- `run_comparison.py` — 统一读取各模型结果并出对比报告
-- `run_ab_simulation.py` — 简单 A/B 分组模拟和指标统计
-- `ab_metrics.py` — A/B 分组与指标统计函数（被 `run_ab_simulation.py` 调用）
-
----
-
-### 6.9 `outputs/`
-
-按模型和任务分类保存输出。
-
-已产出：
-
-- 数据检查输出目录（`outputs/data_check/`）
-- 每个模型自己的输出目录（带 run_id 时间戳子目录）
-- 对比实验目录（带 comparison_run_id 时间戳子目录）
-- A/B 模拟目录（带 ab_run_id 时间戳子目录）
-
----
-
-### 6.10 `notebooks/`
-
-`notebooks/` 仅用于人工 sanity check、调试和结果查看，不作为正式训练、评估、对比或 A/B 模拟入口。正式流程必须通过 `src/experiment/` 下的脚本执行。
-
----
-
-### 6.11 `reports/`
-
-用于保存汇总后的 Markdown 报告或分析报告。
-
-当前已产出：
-
-- `reports/model_comparison_report.md` — 最终多模型对比实验报告
-- `reports/figures/` — 报告所用图表
-
----
-
-## 7. 当前的统一评估口径
-
-当前样本数据主要用于流程验证，所有模型统一以下指标。
-
-### 7.1 分类指标
+### 分类指标
 
 - AUC
 - Accuracy
@@ -345,41 +354,37 @@ RA_PTA/
 - Recall
 - F1
 
-### 7.2 排序指标
+### 排序指标
 
 - Precision@K
 - Recall@K
 
-### 7.3 图模型与多模态模型
+### 损失与样本统计
 
-如果最终仍输出二分类分数或排序分数，也应优先保持与上面指标一致，方便横向比较。
+- eval_loss
+- num_samples
+- num_positive
+- num_negative
+- warnings
 
-### 7.4 A/B 模拟
-
-建议至少统计：
-
-- 分组样本数
-- 平均预测分
-- 平均标签值
-- Top-K 命中情况
-- 简单 lift
-
-如果样本太小、标签单一或某些指标无法计算，必须在 `metrics.json`、报告和 `development_log.md` 中记录 warning，不要静默跳过。
+如果某个模型无法计算某项指标，对应值可为 `null`，但必须在 `warnings` 中说明。
 
 ---
 
-## 8. 统一输出格式
+## 10. 统一输出格式
 
-为了后续统一对比实验，每个模型训练评估完成后，至少输出以下文件：
+每个模型训练评估完成后，至少输出：
 
 ```text
-outputs/<model_name>/metrics.json
-outputs/<model_name>/predictions.csv
-outputs/<model_name>/train_log.csv
-outputs/<model_name>/model.pt
+outputs/<model_name>/<run_id>/metrics.json
+outputs/<model_name>/<run_id>/predictions.csv
+outputs/<model_name>/<run_id>/train_log.csv
+outputs/<model_name>/<run_id>/model.pt
+outputs/<model_name>/<run_id>/run_meta.json
+outputs/<model_name>/<run_id>/feature_config_used.json
 ```
 
-其中 `<model_name>` 使用以下固定名称：
+其中 `<model_name>` 固定为：
 
 ```text
 dnn
@@ -388,30 +393,24 @@ graphsage
 multimodal
 ```
 
-`predictions.csv` 至少包含以下列：
+`predictions.csv` 至少包含：
 
 ```text
-sample_id 或 video_id
+video_id 或 sample_id
 label
 score
 pred
 split
 model_name
+run_id
 ```
-
-字段含义：
-
-- `sample_id` 或 `video_id`：样本标识。优先使用 `video_id`
-- `label`：流程验证标签
-- `score`：模型输出的正类概率或排序分数
-- `pred`：按默认阈值产生的预测类别
-- `split`：train / eval / test 等数据划分标识
-- `model_name`：模型名称，必须与输出目录一致
 
 `metrics.json` 至少包含：
 
 ```text
 model_name
+run_id
+eval_loss
 auc
 accuracy
 precision
@@ -425,83 +424,86 @@ num_negative
 warnings
 ```
 
-如果某个指标无法计算，对应值可以为 `null`，但必须在 `warnings` 中说明原因。
+---
+
+## 11. 当前已知限制
+
+1. `raw_video_tag` 当前为空，详情页响应未发现 video_tag 结构。
+2. `raw_chapter` 当前为空，详情页响应未发现 chapter_list 结构。
+3. none-match 样本占 21.2%，部分互动和媒体字段覆盖不足。
+4. raw_comment 触发率为 37.4%，不是所有视频都有评论响应。
+5. raw_related_video 触发率为 44.9%，不是所有视频都有相关推荐响应。
+6. 当前数据来自公开网页端，不代表平台内部完整数据。
+7. 当前不包含真实曝光、点击、完播、转化、留存标签。
+8. 后续标签仍需基于互动指标构造，不能称为真实 CTR/CVR 标签。
+9. 当前离线实验结果不能代表线上推荐效果或业务收益。
 
 ---
 
-## 9. 当前限制
+## 12. 下一步开发计划
 
-### 9.1 数据限制
-
-1. **sample0427 样本量小**：主视频仅 79 条，train=63，eval=16，指标波动极大。
-2. **无独立 test 集**：当前仅有 train/eval 切分，无法做最终泛化评估。
-3. **伪标签**：label 为 interaction_score（digg_count+comment_count+share_count+collect_count）60% 分位数构造，不代表真实 CTR/CVR/完播/留存。
-4. **无真实推荐标签**：当前无真实曝光、点击、完播、转化、留存标签。
-5. **部分字段规则生成**：5 张完全补齐表（raw_video_tag、raw_video_status_control、raw_chapter、raw_comment、raw_related_video）数据不代表真实分布。
-6. **27 个全空字段**：这些字段在 schema 中有定义但样本中无数据。
-
-### 9.2 模型限制
-
-7. **GraphSAGE 图关系不代表真实推荐图谱**：图中的 video-author、video-hashtag、video-related_video 等关系来自样本级补齐，不代表真实推荐图谱。
-8. **Multimodal 视觉分支仅使用媒体元信息**：当前 visual_features 仅包含封面尺寸、URL 存在性等本地元信息，不是真实图像/视频语义特征。未下载图片、未调用外部 API、未使用大型预训练模型。
-
-### 9.3 实验限制
-
-9. **当前指标不能作为正式业务效果结论**：所有结果基于 sample0427 样本数据，仅用于流程级验证。
-10. **A/B 模拟是离线分组统计，不是真实线上 A/B 测试**：两组使用完全相同的模型预测结果，分组仅基于 video_id 的 hash 值，lift 无因果含义。
-11. **不证明任何模型效果更优**：当前指标差异可能完全来自样本偏差和随机波动。
+1. 新增 `real_raw_1000` 数据路径配置。
+2. 实现真实 raw 数据读取检查。
+3. 基于真实 raw 数据重新构建 tabular 数据集。
+4. 基于真实 raw 数据重新构建 graph 数据集。
+5. 基于真实 raw 数据重新构建 multimodal 数据集。
+6. 使用真实 raw 数据重新训练 DNN。
+7. 使用真实 raw 数据重新训练 Wide & Deep。
+8. 使用真实 raw 数据重新训练 GraphSAGE。
+9. 使用真实 raw 数据重新训练 Multimodal。
+10. 重新进行统一多模型对比实验。
+11. 生成真实 raw 数据上的多模型对比实验报告。
+12. 如需要更大样本，可继续采集剩余 1060 URL 或使用 URL 发现器扩充数据。
+13. 后续单独增强 raw_video_tag、raw_chapter、评论触发策略和相关推荐触发策略。
 
 ---
 
-## 10. 当前主要运行入口
+## 13. 实验结果表述规范
 
-### 数据与特征构建
+可以使用：
 
-| 脚本                                     | 用途                  |
-| ---------------------------------------- | --------------------- |
-| `src/data/load_sample0427.py`          | 统一读取 11 张 CSV 表 |
-| `src/data/validate_schema.py`          | Schema 校验与关联检查 |
-| `src/data/build_tabular_dataset.py`    | Tabular 数据集构建    |
-| `src/data/build_graph_dataset.py`      | 图节点/边/特征构建    |
-| `src/data/build_multimodal_dataset.py` | 三模态数据集构建      |
+- “多模型对比实验”
+- “流程验证结果”
+- “真实网页端 raw 数据上的离线实验结果”
+- “基于互动指标构造的离线标签”
 
-### 模型训练与评估
+不要使用：
 
-| 脚本                                                 | 用途                   |
-| ---------------------------------------------------- | ---------------------- |
-| `src/models/dnn/train.py` / `evaluate.py`        | DNN 训练与评估         |
-| `src/models/wide_deep/train.py` / `evaluate.py`  | Wide & Deep 训练与评估 |
-| `src/models/graphsage/train.py` / `evaluate.py`  | GraphSAGE 训练与评估   |
-| `src/models/multimodal/train.py` / `evaluate.py` | Multimodal 训练与评估  |
+- “正式线上推荐效果”
+- “真实业务收益”
+- “CTR/CVR 真实标签”
+- “线上 A/B 实验结论”
 
-### 实验入口
-
-| 脚本                                    | 用途                                                  |
-| --------------------------------------- | ----------------------------------------------------- |
-| `src/experiment/run_comparison.py`    | 统一对比实验（汇总 4 模型指标、质量检查、图表、报告） |
-| `src/experiment/run_ab_simulation.py` | 离线 A/B 模拟（分组、指标、lift、报告）               |
+如果报告中引用 sample0427 结果，应称为“sample0427 流程验证结果”。如果报告中引用 real_raw_1000 结果，应称为“真实网页端 raw 数据上的离线实验结果”。
 
 ---
 
-## 11. 后续建议
+## 14. 当前推荐阅读顺序
 
-### 数据层面
-
-1. **扩大数据规模**：接入更大规模真实抓取数据，提升指标稳定性。
-2. **构造真实标签**：使用曝光、点击、完播、互动、转化等真实业务指标作为标签。
-3. **完善评估方式**：建立 train / validation / test 三路切分，或使用交叉验证。
-
-### 模型层面
-
-4. **DNN 优化**：特征筛选、阈值校准、概率校准（Platt scaling / Isotonic regression）。
-5. **Wide & Deep 优化**：更稳定的交叉特征设计（如 FM / FMFM 风格交互）、hash trick、正则化。
-6. **GraphSAGE 增强**：接入真实用户行为边、作者关系边、视频共现边，减少规则补齐边占比。
-7. **多模态增强**：接入封面图、视频帧、OCR、ASR、标题文本等更真实语义，使用预训练视觉编码器。
-
-### 分析与实验层面
-
-8. **分析增强**：增加校准曲线、PR 曲线、AUC 置信区间、特征重要性分析。
-9. **在线实验**：设计正式线上或准线上 A/B 实验，明确实验单位、流量分配、核心指标和护栏指标。
-10. **护栏指标**：增加推荐多样性、重复率、低质内容比例等非效果类指标。
+```text
+1. README.md
+2. CLAUDE.md
+3. development_log.md
+4. douyin_data_project/data/interim/20260507_230322/real_raw_data_delivery_20260507_230322.md
+5. reports/model_comparison_report.md                 # sample0427 历史流程验证报告
+6. outputs/comparison/202604301609/model_comparison_report.md
+7. outputs/ab_test/202604301630/ab_simulation_report.md
+```
 
 ---
+
+## 15. 历史产物说明
+
+历史 sample0427 流程验证产物保留在：
+
+| 模块 | Run ID | 输出目录 |
+|---|---|---|
+| DNN | 202604301440 | `outputs/dnn/202604301440/` |
+| Wide & Deep | 202604301557 | `outputs/wide_deep/202604301557/` |
+| GraphSAGE | 202604291958 | `outputs/graphsage/202604291958/` |
+| Multimodal | 202604301557 | `outputs/multimodal/202604301557/` |
+| 统一对比实验 | 202604301609 | `outputs/comparison/202604301609/` |
+| A/B 模拟 | 202604301630 | `outputs/ab_test/202604301630/` |
+| 报告 | — | `reports/model_comparison_report.md` |
+
+这些产物用于历史对照和流程回归，不再作为当前主实验结果。

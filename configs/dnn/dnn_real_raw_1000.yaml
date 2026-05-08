@@ -1,0 +1,51 @@
+# =============================================================================
+# DNN 模型配置 — real_raw_1000
+# =============================================================================
+# 基于 real_raw_1000 tabular 数据训练 DNN 二分类模型。
+# 使用 train/val/test 三路切分，val 选 best epoch，test 做最终评估。
+# =============================================================================
+
+model_name: dnn
+dataset_name: real_raw_1000
+
+# 数据输入路径（相对于项目根目录）
+train_data_path: data/features/real_raw_1000/tabular_train.csv
+val_data_path: data/features/real_raw_1000/tabular_val.csv
+test_data_path: data/features/real_raw_1000/tabular_test.csv
+feature_info_path: data/features/real_raw_1000/tabular_feature_info.json
+
+# 训练超参数
+batch_size: 64
+learning_rate: 0.001
+epochs: 40
+early_stopping_patience: 8
+
+# 网络结构
+hidden_units: [64, 32]
+dropout: 0.3
+
+# 激活函数
+activation: relu
+
+# 优化器
+optimizer: adam
+weight_decay: 0.0001
+
+# 损失函数
+loss: bce
+
+# 随机种子
+random_seed: 2026
+
+# 二分类阈值
+threshold: 0.5
+
+# 设备（cuda / cpu，程序会自动检测 CUDA 可用性）
+device: cuda
+
+# 输出根目录（相对于项目根目录）
+# 注意：不要输出到 outputs/dnn/<run_id>/，避免和 sample0427 历史 run 混在一起
+output_root: outputs/dnn/real_raw_1000
+
+# best model 选择依据
+early_stopping_metric: val_loss

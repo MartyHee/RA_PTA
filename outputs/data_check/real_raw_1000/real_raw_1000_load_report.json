@@ -1,0 +1,226 @@
+{
+  "dataset_name": "real_raw_1000",
+  "run_id": "20260507_230322",
+  "root_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\20260507_230322",
+  "delivery_doc": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\20260507_230322\\real_raw_data_delivery_20260507_230322.md",
+  "generated_at": "2026-05-08 14:48:19",
+  "table_status": {
+    "raw_video_detail": {
+      "file_name": "raw_video_detail_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 30,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_author": {
+      "file_name": "raw_author_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 20,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_music": {
+      "file_name": "raw_music_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 16,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_hashtag": {
+      "file_name": "raw_hashtag_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 2420,
+      "column_count": 10,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_video_tag": {
+      "file_name": "raw_video_tag_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 0,
+      "column_count": 5,
+      "is_empty": true,
+      "allowed_empty": true
+    },
+    "raw_video_media": {
+      "file_name": "raw_video_media_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 24,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_video_status_control": {
+      "file_name": "raw_video_status_control_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 17,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_chapter": {
+      "file_name": "raw_chapter_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 0,
+      "column_count": 10,
+      "is_empty": true,
+      "allowed_empty": true
+    },
+    "raw_comment": {
+      "file_name": "raw_comment_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1852,
+      "column_count": 24,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_related_video": {
+      "file_name": "raw_related_video_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 4482,
+      "column_count": 22,
+      "is_empty": false,
+      "allowed_empty": false
+    },
+    "raw_crawl_log": {
+      "file_name": "raw_crawl_log_20260507_230322.csv",
+      "read_success": true,
+      "row_count": 1000,
+      "column_count": 14,
+      "is_empty": false,
+      "allowed_empty": false
+    }
+  },
+  "loaded_table_count": 11,
+  "empty_tables": [
+    "raw_video_tag",
+    "raw_chapter"
+  ],
+  "missing_files": [],
+  "failed_tables": [],
+  "key_field_checks": [
+    {
+      "table": "raw_video_detail",
+      "field": "video_id",
+      "non_null": 1000,
+      "total": 1000,
+      "non_null_rate": 1.0,
+      "unique_count": 1000
+    },
+    {
+      "table": "raw_video_detail",
+      "field": "author_id",
+      "non_null": 1000,
+      "total": 1000,
+      "non_null_rate": 1.0,
+      "unique_count": 822
+    },
+    {
+      "table": "raw_author",
+      "field": "author_id",
+      "non_null": 1000,
+      "total": 1000,
+      "non_null_rate": 1.0,
+      "unique_count": 822
+    },
+    {
+      "table": "raw_crawl_log",
+      "field": "match_type",
+      "non_null": 1000,
+      "total": 1000,
+      "non_null_rate": 1.0,
+      "unique_count": 2
+    },
+    {
+      "table": "raw_crawl_log",
+      "field": "confidence",
+      "non_null": 1000,
+      "total": 1000,
+      "non_null_rate": 1.0,
+      "unique_count": 2
+    }
+  ],
+  "relation_checks": [
+    {
+      "source_table": "raw_video_detail",
+      "source_key": "author_id",
+      "target_table": "raw_author",
+      "target_key": "author_id",
+      "source_unique_keys": 822,
+      "matched_keys": 822,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_music",
+      "source_key": "video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 1000,
+      "matched_keys": 1000,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_video_media",
+      "source_key": "video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 1000,
+      "matched_keys": 1000,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_video_status_control",
+      "source_key": "video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 1000,
+      "matched_keys": 1000,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_hashtag",
+      "source_key": "video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 603,
+      "matched_keys": 603,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_comment",
+      "source_key": "video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 374,
+      "matched_keys": 374,
+      "match_rate": 1.0,
+      "status": "pass"
+    },
+    {
+      "source_table": "raw_related_video",
+      "source_key": "source_video_id",
+      "target_table": "raw_video_detail",
+      "target_key": "video_id",
+      "source_unique_keys": 449,
+      "matched_keys": 449,
+      "match_rate": 1.0,
+      "status": "pass"
+    }
+  ],
+  "known_limitations": [
+    "raw_video_tag 当前 0 行，详情页响应未发现 video_tag 结构。",
+    "raw_chapter 当前 0 行，详情页响应未发现 chapter_list 结构。",
+    "none-match 样本占 21.2%，部分互动和媒体字段覆盖率低。",
+    "当前不包含真实曝光、点击、完播、转化标签。",
+    "当前来自公开网页端数据，不代表平台内部完整数据。"
+  ],
+  "next_step": "完成读取检查后，下一步可基于 real_raw_1000 构建 tabular 数据集。"
+}

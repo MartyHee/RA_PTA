@@ -1,0 +1,81 @@
+# =============================================================================
+# real_raw_1000 数据读取配置
+# =============================================================================
+# 数据包: real_raw_1000_20260507_230322
+# 采集 run_id: 20260507_230322
+# 交付说明: real_raw_data_delivery_20260507_230322.md
+# =============================================================================
+
+dataset_name: "real_raw_1000"
+run_id: "20260507_230322"
+root: "douyin_data_project/data/interim/20260507_230322"
+delivery_doc: "real_raw_data_delivery_20260507_230322.md"
+
+tables:
+  video_detail: "raw_video_detail_20260507_230322.csv"
+  author: "raw_author_20260507_230322.csv"
+  music: "raw_music_20260507_230322.csv"
+  hashtag: "raw_hashtag_20260507_230322.csv"
+  video_tag: "raw_video_tag_20260507_230322.csv"
+  video_media: "raw_video_media_20260507_230322.csv"
+  video_status_control: "raw_video_status_control_20260507_230322.csv"
+  chapter: "raw_chapter_20260507_230322.csv"
+  comment: "raw_comment_20260507_230322.csv"
+  related_video: "raw_related_video_20260507_230322.csv"
+  crawl_log: "raw_crawl_log_20260507_230322.csv"
+
+# 关键表检查列表（预期非空）
+critical_tables:
+  - video_detail
+  - author
+  - music
+  - video_media
+  - video_status_control
+  - crawl_log
+
+# 空表白名单（允许 0 行）
+allowed_empty_tables:
+  - video_tag
+  - chapter
+
+# 字段检查：关键表的关键字段
+key_field_checks:
+  video_detail:
+    - video_id
+    - author_id
+  author:
+    - author_id
+  crawl_log:
+    - match_type
+    - confidence
+
+# 跨表关联检查
+relation_checks:
+  - source: video_detail
+    source_key: author_id
+    target: author
+    target_key: author_id
+  - source: music
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: video_media
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: video_status_control
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: hashtag
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: comment
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: related_video
+    source_key: source_video_id
+    target: video_detail
+    target_key: video_id

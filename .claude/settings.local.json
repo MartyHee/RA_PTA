@@ -58,7 +58,8 @@
       "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --mock --url-file data/test/test_urls.txt)",
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --help)",
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
-      "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -c ' *)"
+      "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -c ' *)",
+      "Bash(python -c ' *)"
     ]
   }
 }
