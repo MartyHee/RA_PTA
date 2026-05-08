@@ -1,0 +1,29 @@
+{
+  "tune_run_id": "20260509000636",
+  "best_trial_id": 16,
+  "primary_metric": "val_auc",
+  "secondary_metric": "val_f1",
+  "best_hyperparams": {
+    "learning_rate": 0.005177405940287037,
+    "weight_decay": 0.009097973559236023,
+    "dropout": 0.1234940870062332,
+    "hidden_dim": 16,
+    "batch_size": 64
+  },
+  "val_metrics": {
+    "auc": 0.997962962962963,
+    "f1": 0.9661016949152542
+  },
+  "test_metrics": {
+    "auc": 0.9944444444444445,
+    "f1": 0.9107142857142857
+  },
+  "num_completed_trials": 20,
+  "num_failed_trials": 0,
+  "warnings": [
+    "Best trial 仅基于 val 指标选择，test 指标仅供参考。",
+    "当前调优基于 interaction_score 伪标签，不代表真实业务目标。",
+    "所有结果均为离线实验，不代表线上推荐效果。"
+  ],
+  "generated_at": "2026-05-09 00:13:07"
+}

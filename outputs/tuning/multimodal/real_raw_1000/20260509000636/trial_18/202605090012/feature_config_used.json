@@ -1,0 +1,31 @@
+{
+  "dataset_name": "real_raw_1000",
+  "train_npz_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_train.npz",
+  "val_npz_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_val.npz",
+  "text_dim": 32,
+  "visual_dim": 18,
+  "structured_dim": 38,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
+  "text_feature_method": "tfidf_svd",
+  "visual_feature_method": "media_metadata_only",
+  "structured_feature_method": "tabular_numeric_scaled",
+  "branch_hidden_dims": {
+    "text": 64,
+    "visual": 32,
+    "structured": 64
+  },
+  "fusion_hidden_dim": 128,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "warnings": [
+    "标签为 interaction_score 伪标签，不代表真实业务目标"
+  ],
+  "notes": [
+    "当前多模态模型基于 real_raw_1000 数据训练",
+    "未下载图片。",
+    "未调用外部 API。",
+    "未使用大型预训练模型。"
+  ],
+  "test_npz_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_test.npz"
+}

@@ -1,0 +1,26 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_1000",
+  "run_id": "202605090007",
+  "output_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\tuning\\multimodal\\real_raw_1000\\20260509000636\\trial_3\\202605090007",
+  "input_dims": {
+    "text": 32,
+    "visual": 18,
+    "structured": 38
+  },
+  "train_started_at": "2026-05-09 00:07:46",
+  "train_finished_at": "2026-05-09 00:08:01",
+  "config_path": "outputs\\tuning\\multimodal\\real_raw_1000\\20260509000636\\trial_3_config.yaml",
+  "train_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_train.npz",
+  "val_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_val.npz",
+  "test_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_test.npz",
+  "best_epoch": 49,
+  "best_val_loss": 0.194883,
+  "final_train_loss": 0.204744,
+  "final_val_loss": 0.194997,
+  "test_loss": 0.22960333701940822,
+  "device": "cuda",
+  "num_params": 7857,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
+  "warnings": []
+}
