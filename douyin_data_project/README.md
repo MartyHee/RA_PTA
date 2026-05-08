@@ -42,6 +42,7 @@
 | `docs/Data_description.md` | 数据建设方案、字段可得性、W4 任务与数据映射      |
 | `docs/data_dictionary.md`  | 当前字段扩充与最终 raw schema 的核心依据         |
 | `docs/development_log.md`  | 开发日志，记录历史修改、运行命令、输出和验证结果 |
+| `docs/real_raw_data_delivery_20260507_230322.md` | 首批 1000 URL 真实 raw 数据包交付说明 |
 | `README.md`                | 项目说明，面向用户和开发者                       |
 | `CLAUDE.md`                | 智能体工作规范，面向 cc/Claude 使用              |
 
@@ -51,6 +52,7 @@
 2. 再读 `docs/Data_description.md`
 3. 再读 `docs/data_dictionary.md`
 4. 如需了解历史问题，阅读 `docs/development_log.md`
+5. 如需了解首批真实 raw 数据交付详情，阅读 `docs/real_raw_data_delivery_20260507_230322.md`
 
 ---
 
