@@ -1,0 +1,2 @@
+﻿trial_id,status,learning_rate,weight_decay,dropout,hidden_dim,batch_size,best_epoch,val_auc,val_f1,test_auc,test_f1,output_dir
+0,completed,3.441949079328263e-05,0.0003627877907172374,0.28690736045739407,16,64,50,0.4494444444444444,0.21621621621621623,0.45944444444444443,0.2542372881355932,outputs\tuning\multimodal\real_raw_1000\20260508235219\trial_0\202605082352

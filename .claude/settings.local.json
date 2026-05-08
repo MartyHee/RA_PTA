@@ -60,7 +60,10 @@
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe run_crawl.py --browser --url-file configs/discovery_sample_10.txt --source-entry manual_url --workers 1 --restart-every 20)",
       "Bash(/d/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe -c ' *)",
       "Bash(python -c ' *)",
-      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/multimodal/train.py --config configs/multimodal/multimodal_real_raw_1000.yaml)"
+      "Bash(D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe src/models/multimodal/train.py --config configs/multimodal/multimodal_real_raw_1000.yaml)",
+      "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" -c \"import ast; ast.parse\\(open\\('src/experiment/tune_multimodal_random_search.py', encoding='utf-8'\\).read\\(\\)\\); print\\('Syntax OK'\\)\")",
+      "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" -c \"import yaml; print\\(yaml.__version__\\); d={'z':1,'a':2}; print\\(yaml.dump\\(d, default_flow_style=False, sort_keys=False\\)\\)\")",
+      "Bash(\"D:/CodeData/software/Anaconda/Anaconda3/envs/ra/python.exe\" src/experiment/tune_multimodal_random_search.py --config configs/multimodal/multimodal_real_raw_1000_tune.yaml --num-trials 1)"
     ]
   }
 }
