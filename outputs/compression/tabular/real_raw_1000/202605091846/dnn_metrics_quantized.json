@@ -1,0 +1,73 @@
+{
+  "model_name": "dnn",
+  "dataset_name": "real_raw_1000",
+  "run_id": "202605091846",
+  "split": "test",
+  "source_run_id": 202605081636,
+  "quantization_method": "dynamic_quantization",
+  "sample_count": 150,
+  "positive_count": 60,
+  "negative_count": 90,
+  "eval_loss": 0.24646049737930298,
+  "fp32_metrics": {
+    "eval_loss": 0.23612640798091888,
+    "auc": 0.9716666666666667,
+    "accuracy": 0.9,
+    "precision": 0.9591836734693877,
+    "recall": 0.7833333333333333,
+    "f1": 0.8623853211009175
+  },
+  "quantized_metrics": {
+    "eval_loss": 0.24646049737930298,
+    "auc": 0.9674074074074074,
+    "accuracy": 0.8866666666666667,
+    "precision": 0.9387755102040817,
+    "recall": 0.7666666666666667,
+    "f1": 0.8440366972477065
+  },
+  "precision_at_k": {
+    "precision_at_5": 1.0,
+    "precision_at_10": 1.0,
+    "precision_at_20": 1.0
+  },
+  "recall_at_k": {
+    "recall_at_5": 0.08333333333333333,
+    "recall_at_10": 0.16666666666666666,
+    "recall_at_20": 0.3333333333333333
+  },
+  "threshold": 0.5,
+  "num_parameters": 41177,
+  "model_size_fp32_mb": 0.1607,
+  "model_size_quantized_mb": 0.1379,
+  "size_reduction_ratio": 0.8583,
+  "fp32_benchmark": {
+    "num_samples": 150,
+    "warmup_runs": 10,
+    "repeat_runs": 100,
+    "total_inference_calls": 15000,
+    "avg_latency_ms_per_sample": 0.175261,
+    "p50_latency_ms_per_sample": 0.1264,
+    "p95_latency_ms_per_sample": 0.42221,
+    "latency_std_ms": 0.144436,
+    "latency_min_ms": 0.0822,
+    "latency_max_ms": 3.6906,
+    "total_benchmark_time_s": 2.6289,
+    "throughput_samples_per_sec": 5705.78
+  },
+  "quantized_benchmark": {
+    "num_samples": 150,
+    "warmup_runs": 10,
+    "repeat_runs": 100,
+    "total_inference_calls": 15000,
+    "avg_latency_ms_per_sample": 0.770685,
+    "p50_latency_ms_per_sample": 0.5974,
+    "p95_latency_ms_per_sample": 1.786175,
+    "latency_std_ms": 0.637391,
+    "latency_min_ms": 0.2331,
+    "latency_max_ms": 20.4168,
+    "total_benchmark_time_s": 11.5603,
+    "throughput_samples_per_sec": 1297.55
+  },
+  "warnings": [],
+  "generated_at": "2026-05-09 18:47:06"
+}

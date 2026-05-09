@@ -1,0 +1,42 @@
+# =============================================================================
+# Tabular 模型 (DNN / Wide & Deep) 动态量化压缩实验配置
+# =============================================================================
+# 对上一阶段 real_raw_1000 的 DNN & Wide & Deep baseline run 做同口径
+# benchmark 和动态量化，评估量化前后离线指标、模型大小和推理时延变化。
+# =============================================================================
+
+# DNN 源模型信息
+dnn:
+  source_run_id: 202605081636
+  source_output_dir: outputs/dnn/real_raw_1000/202605081636
+  config_path: configs/dnn/dnn_real_raw_1000.yaml
+
+# Wide & Deep 源模型信息
+wide_deep:
+  source_run_id: 202605081746
+  source_output_dir: outputs/wide_deep/real_raw_1000/202605081746
+  config_path: configs/wide_deep/wide_deep_real_raw_1000.yaml
+
+# 实验数据路径（模型训练时使用的 test split）
+test_data_path: data/features/real_raw_1000/tabular_test.csv
+feature_info_path: data/features/real_raw_1000/tabular_feature_info.json
+
+# 量化参数
+quantization:
+  method: dynamic_quantization
+  dtype: qint8
+  quantized_layers:
+    - nn.Linear
+
+# Benchmark 参数
+warmup_runs: 10
+repeat_runs: 100
+batch_size: 64
+device: cpu
+
+# 评估参数
+threshold: 0.5
+random_seed: 42
+
+# 输出根目录
+output_root: outputs/compression/tabular/real_raw_1000

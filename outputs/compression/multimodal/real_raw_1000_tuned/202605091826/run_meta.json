@@ -1,0 +1,92 @@
+{
+  "task": "multimodal_dynamic_quantization",
+  "run_id": "202605091826",
+  "started_at": "2026-05-09 18:26:05",
+  "finished_at": "2026-05-09 18:26:23",
+  "config_path": "configs/multimodal/multimodal_quantization_real_raw_1000_tuned.yaml",
+  "source_model_run_id": "202605091755",
+  "source_model_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000_tuned\\202605091755\\model.pt",
+  "source_model_config_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\configs\\multimodal\\multimodal_real_raw_1000_tuned.yaml",
+  "source_benchmark_run_id": "202605091806",
+  "source_benchmark_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\benchmark\\real_raw_1000\\202605091806",
+  "quantization_method": "dynamic_quantization",
+  "quantized_dtype": "qint8",
+  "quantized_layers": [
+    "nn.Linear"
+  ],
+  "device": "cpu",
+  "warmup_runs": 10,
+  "repeat_runs": 100,
+  "test_npz_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_test.npz",
+  "feature_info_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_feature_info.json",
+  "num_parameters": 2649,
+  "model_size_fp32_mb": 0.0136,
+  "model_size_quantized_mb": 0.0099,
+  "size_reduction_ratio": 0.7301,
+  "fp32_eval": {
+    "eval_loss": 0.14224410803190726,
+    "auc": 0.9927777777777778,
+    "accuracy": 0.9333333333333333,
+    "precision": 0.9807692307692307,
+    "recall": 0.85,
+    "f1": 0.9107142857142857
+  },
+  "quantized_eval": {
+    "eval_loss": 0.14193650751268297,
+    "auc": 0.9918518518518519,
+    "accuracy": 0.94,
+    "precision": 0.9811320754716981,
+    "recall": 0.8666666666666667,
+    "f1": 0.9203539823008849
+  },
+  "summary_rows": [
+    {
+      "model_version": "tuned_multimodal_fp32_cuda",
+      "auc": 0.9927777777777778,
+      "accuracy": 0.9333333333333333,
+      "precision": 0.9807692307692307,
+      "recall": 0.85,
+      "f1": 0.9107142857142857,
+      "num_parameters": 2649,
+      "model_size_mb": 0.0136,
+      "avg_latency_ms_per_sample": 0.690228,
+      "p50_latency_ms_per_sample": 0.571,
+      "p95_latency_ms_per_sample": 1.508405,
+      "throughput_samples_per_sec": 1448.8,
+      "device": "cuda",
+      "quantized": false
+    },
+    {
+      "model_version": "tuned_multimodal_fp32_cpu",
+      "auc": 0.9927777777777778,
+      "accuracy": 0.9333333333333333,
+      "precision": 0.9807692307692307,
+      "recall": 0.85,
+      "f1": 0.9107142857142857,
+      "num_parameters": 2649,
+      "model_size_mb": 0.0136,
+      "avg_latency_ms_per_sample": 0.113358,
+      "p50_latency_ms_per_sample": 0.0807,
+      "p95_latency_ms_per_sample": 0.242705,
+      "throughput_samples_per_sec": 8821.59,
+      "device": "cpu",
+      "quantized": false
+    },
+    {
+      "model_version": "tuned_multimodal_quantized",
+      "auc": 0.9918518518518519,
+      "accuracy": 0.94,
+      "precision": 0.9811320754716981,
+      "recall": 0.8666666666666667,
+      "f1": 0.9203539823008849,
+      "num_parameters": 2649,
+      "model_size_mb": 0.0099,
+      "avg_latency_ms_per_sample": 0.925766,
+      "p50_latency_ms_per_sample": 0.6783,
+      "p95_latency_ms_per_sample": 2.25202,
+      "throughput_samples_per_sec": 1080.19,
+      "device": "cpu",
+      "quantized": true
+    }
+  ]
+}

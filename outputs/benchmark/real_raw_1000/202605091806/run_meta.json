@@ -1,0 +1,60 @@
+{
+  "task": "multimodal_inference_benchmark",
+  "run_id": "202605091806",
+  "started_at": "2026-05-09 18:06:17",
+  "finished_at": "2026-05-09 18:06:41",
+  "config_path": "configs/evaluation/inference_benchmark_real_raw_1000.yaml",
+  "test_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_test.npz",
+  "feature_info_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_1000\\multimodal_feature_info.json",
+  "test_samples": 150,
+  "warmup_runs": 10,
+  "repeat_runs": 100,
+  "device": "cuda",
+  "device_fallback": false,
+  "model_versions": [
+    "baseline_multimodal",
+    "tuned_multimodal"
+  ],
+  "results": [
+    {
+      "model_version": "baseline_multimodal",
+      "description": "原始 Multimodal baseline (run_id=202605081927)",
+      "model_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000\\202605081927\\model.pt",
+      "num_parameters": 7857,
+      "model_size_mb": 0.0334,
+      "device": "cuda",
+      "num_samples": 150,
+      "warmup_runs": 10,
+      "repeat_runs": 100,
+      "total_inference_calls": 15000,
+      "avg_latency_ms_per_sample": 0.680699,
+      "p50_latency_ms_per_sample": 0.5612,
+      "p95_latency_ms_per_sample": 1.471335,
+      "latency_std_ms": 0.45267,
+      "latency_min_ms": 0.2177,
+      "latency_max_ms": 10.9791,
+      "total_benchmark_time_s": 10.2105,
+      "throughput_samples_per_sec": 1469.08
+    },
+    {
+      "model_version": "tuned_multimodal",
+      "description": "正式 tuned Multimodal (run_id=202605091755, best trial 16)",
+      "model_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_1000_tuned\\202605091755\\model.pt",
+      "num_parameters": 2649,
+      "model_size_mb": 0.0136,
+      "device": "cuda",
+      "num_samples": 150,
+      "warmup_runs": 10,
+      "repeat_runs": 100,
+      "total_inference_calls": 15000,
+      "avg_latency_ms_per_sample": 0.690228,
+      "p50_latency_ms_per_sample": 0.571,
+      "p95_latency_ms_per_sample": 1.508405,
+      "latency_std_ms": 0.445919,
+      "latency_min_ms": 0.2194,
+      "latency_max_ms": 10.7524,
+      "total_benchmark_time_s": 10.3534,
+      "throughput_samples_per_sec": 1448.8
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+# =============================================================================
+# Multimodal 模型推理性能 Benchmark 配置文件
+# =============================================================================
+# 评估 baseline Multimodal 与正式 tuned Multimodal 的推理时延。
+# 统一使用 test split，batch_size=1 单样本推理。
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# 待 benchmark 的模型版本
+# ---------------------------------------------------------------------------
+model_versions:
+  - name: baseline_multimodal
+    description: "原始 Multimodal baseline (run_id=202605081927)"
+    model_path: outputs/multimodal/real_raw_1000/202605081927/model.pt
+    config_path: configs/multimodal/multimodal_real_raw_1000.yaml
+  - name: tuned_multimodal
+    description: "正式 tuned Multimodal (run_id=202605091755, best trial 16)"
+    model_path: outputs/multimodal/real_raw_1000_tuned/202605091755/model.pt
+    config_path: configs/multimodal/multimodal_real_raw_1000_tuned.yaml
+
+# ---------------------------------------------------------------------------
+# 测试数据路径
+# ---------------------------------------------------------------------------
+test_npz_path: data/multimodal/real_raw_1000/multimodal_test.npz
+feature_info_path: data/multimodal/real_raw_1000/multimodal_feature_info.json
+
+# ---------------------------------------------------------------------------
+# Benchmark 设置
+# ---------------------------------------------------------------------------
+warmup_runs: 10
+repeat_runs: 100
+device: cuda
+random_seed: 42
+
+# ---------------------------------------------------------------------------
+# 输出目录
+# ---------------------------------------------------------------------------
+output_root: outputs/benchmark/real_raw_1000

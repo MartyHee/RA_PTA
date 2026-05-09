@@ -1,0 +1,52 @@
+# =============================================================================
+# Multimodal 动态量化配置文件 - real_raw_1000 tuned
+# =============================================================================
+# 对正式 tuned Multimodal (run_id=202605091755) 做 PyTorch 动态量化。
+# 量化方式: torch.quantization.quantize_dynamic
+# 量化目标: nn.Linear → 动态量化 (weights qint8, activations 动态量化)
+# =============================================================================
+
+model_name: multimodal
+dataset_name: real_raw_1000_tuned
+
+# ---------------------------------------------------------------------------
+# 源模型路径（正式 tuned run）
+# ---------------------------------------------------------------------------
+source_model_run_id: "202605091755"
+source_model_config_path: configs/multimodal/multimodal_real_raw_1000_tuned.yaml
+source_model_path: outputs/multimodal/real_raw_1000_tuned/202605091755/model.pt
+
+# ---------------------------------------------------------------------------
+# 前置 benchmark run_id（用于对比）
+# ---------------------------------------------------------------------------
+source_benchmark_run_id: "202605091806"
+source_benchmark_dir: outputs/benchmark/real_raw_1000/202605091806
+
+# ---------------------------------------------------------------------------
+# 数据路径
+# ---------------------------------------------------------------------------
+test_npz_path: data/multimodal/real_raw_1000/multimodal_test.npz
+feature_info_path: data/multimodal/real_raw_1000/multimodal_feature_info.json
+
+# ---------------------------------------------------------------------------
+# 量化设置
+# ---------------------------------------------------------------------------
+quantization:
+  method: dynamic_quantization
+  dtype: qint8
+  quantized_layers:
+    - nn.Linear
+
+# ---------------------------------------------------------------------------
+# Benchmark 设置
+# ---------------------------------------------------------------------------
+warmup_runs: 10
+repeat_runs: 100
+device: cpu
+random_seed: 42
+threshold: 0.5
+
+# ---------------------------------------------------------------------------
+# 输出目录
+# ---------------------------------------------------------------------------
+output_root: outputs/compression/multimodal/real_raw_1000_tuned

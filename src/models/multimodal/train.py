@@ -503,6 +503,8 @@ def main() -> None:
         "num_params": n_params,
         "label_definition": label_definition,
         "warnings": [],
+        "source_tuning_run_id": config.get("source_tuning_run_id"),
+        "source_best_trial_id": config.get("source_best_trial_id"),
     }
     if device_fallback_reason:
         run_meta["warnings"].append(device_fallback_reason)
