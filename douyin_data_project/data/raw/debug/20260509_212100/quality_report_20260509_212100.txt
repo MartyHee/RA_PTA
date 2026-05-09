@@ -1,0 +1,37 @@
+================================================================================
+Quality Report for Run ID: 20260509_212100
+================================================================================
+Total URL processed: 1000
+Successfully crawled: 1000
+Failed to crawl: 0
+Records generated: 1000
+
+Match Type Distribution:
+  exact: 664 (66.4%)
+  partial: 0 (0.0%)
+  none: 336 (33.6%)
+  unknown: 0 (0.0%)
+
+Confidence Distribution:
+  high: 664 (66.4%)
+  medium: 0 (0.0%)
+  low: 336 (33.6%)
+  unknown: 0 (0.0%)
+
+High-confidence samples (exact+high): 664 (66.4%)
+Video ID consistent with page_url: 1000 (100.0%)
+Video ID mismatch: 0 (0.0%)
+Short/abnormal video_id (<=3 chars): 0 (0.0%)
+Cross-page mixing suspected: 336 (33.6%)
+
+Run Stability Summary:
+  URLs failed: 0
+  Pages with no candidates: 336
+  Pages with only low confidence: 336
+
+Overall Assessment:
+  ⚠️ High-confidence sample ratio is low (<70%)
+  ✅ Video ID consistency is good (>80%)
+  ✅ No short/abnormal video IDs detected
+  ⚠️ 336 records suspected of cross-page mixing
+================================================================================
