@@ -1,0 +1,3 @@
+url,source_entry,page_type,error,timestamp
+https://www.douyin.com/video/7612614949575200010,manual_url,video_detail,"It looks like you are using Playwright Sync API inside the asyncio loop.
+Please use the Async API instead.",2026-05-10T19:52:12.628925
