@@ -1,0 +1,185 @@
+{
+  "audit_time": "2026-05-11 10:53:37",
+  "input_run_ids": [
+    "20260509_212100",
+    "20260510_151052",
+    "20260510_183114",
+    "20260510_210600",
+    "20260511_084923"
+  ],
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data/interim/real_raw_5000_candidate",
+  "unique_video_ids": 5000,
+  "total_detail_rows": 5000,
+  "duplicated_video_ids": 0,
+  "valid_samples": 5000,
+  "valid_sample_ratio": 1.0,
+  "video_id_consistent": 5000,
+  "video_id_consistency_ratio": 1.0,
+  "video_id_mismatch": 0,
+  "core_field_coverage": {
+    "create_time": {
+      "non_null": 5000,
+      "total": 5000,
+      "coverage": 1.0
+    },
+    "duration_ms": {
+      "non_null": 3651,
+      "total": 5000,
+      "coverage": 0.7302
+    },
+    "digg_count": {
+      "non_null": 3645,
+      "total": 5000,
+      "coverage": 0.729
+    },
+    "comment_count": {
+      "non_null": 3646,
+      "total": 5000,
+      "coverage": 0.7292
+    },
+    "share_count": {
+      "non_null": 3646,
+      "total": 5000,
+      "coverage": 0.7292
+    },
+    "collect_count": {
+      "non_null": 3645,
+      "total": 5000,
+      "coverage": 0.729
+    }
+  },
+  "match_type_distribution": {
+    "exact": 3493,
+    "none": 1507
+  },
+  "confidence_distribution": {
+    "high": 3493,
+    "low": 1507
+  },
+  "none_match_count": 1507,
+  "none_match_ratio": 0.3014,
+  "high_confidence_ratio": 0.6986,
+  "low_quality_samples": {
+    "count": 0,
+    "ratio": 0.0
+  },
+  "cross_table_joins": {
+    "raw_author.author_id -> raw_video_detail.author_id": {
+      "left_total": 3558,
+      "matched": 3558,
+      "match_ratio": 1.0
+    },
+    "raw_music.video_id -> raw_video_detail.video_id": {
+      "left_total": 5000,
+      "matched": 5000,
+      "match_ratio": 1.0
+    },
+    "raw_video_media.video_id -> raw_video_detail.video_id": {
+      "left_total": 5000,
+      "matched": 5000,
+      "match_ratio": 1.0
+    },
+    "raw_video_status_control.video_id -> raw_video_detail.video_id": {
+      "left_total": 5000,
+      "matched": 5000,
+      "match_ratio": 1.0
+    },
+    "raw_hashtag.video_id -> raw_video_detail.video_id": {
+      "left_total": 2541,
+      "matched": 2541,
+      "match_ratio": 1.0
+    },
+    "raw_comment.video_id -> raw_video_detail.video_id": {
+      "left_total": 1874,
+      "matched": 1874,
+      "match_ratio": 1.0
+    },
+    "raw_related_video.source_video_id -> raw_video_detail.video_id": {
+      "left_total": 2266,
+      "matched": 2266,
+      "match_ratio": 1.0
+    }
+  },
+  "trigger_rates": {
+    "hashtag": {
+      "videos_with_hashtag": 2541,
+      "trigger_rate": 0.5082
+    },
+    "comment": {
+      "videos_with_comment": 1874,
+      "trigger_rate": 0.3748
+    },
+    "related_video": {
+      "videos_with_related": 2266,
+      "trigger_rate": 0.4532
+    }
+  },
+  "table_summary": [
+    {
+      "table": "raw_video_detail",
+      "rows": 5000,
+      "columns": 30
+    },
+    {
+      "table": "raw_author",
+      "rows": 3558,
+      "columns": 20
+    },
+    {
+      "table": "raw_music",
+      "rows": 5000,
+      "columns": 16
+    },
+    {
+      "table": "raw_hashtag",
+      "rows": 10097,
+      "columns": 10
+    },
+    {
+      "table": "raw_video_tag",
+      "rows": 0,
+      "columns": 0
+    },
+    {
+      "table": "raw_video_media",
+      "rows": 5000,
+      "columns": 24
+    },
+    {
+      "table": "raw_video_status_control",
+      "rows": 5000,
+      "columns": 17
+    },
+    {
+      "table": "raw_chapter",
+      "rows": 0,
+      "columns": 0
+    },
+    {
+      "table": "raw_comment",
+      "rows": 9334,
+      "columns": 24
+    },
+    {
+      "table": "raw_related_video",
+      "rows": 22657,
+      "columns": 22
+    },
+    {
+      "table": "raw_crawl_log",
+      "rows": 5000,
+      "columns": 14
+    }
+  ],
+  "overall_assessment": {
+    "unique_video_ids_meets_5000": true,
+    "valid_samples_meets_5000": true,
+    "core_field_coverage_acceptable": true,
+    "none_match_ratio_acceptable": false,
+    "cross_table_join_acceptable": true
+  },
+  "recommend_batch_6": false,
+  "recommend_batch_6_reasons": [
+    "None-match ratio (30.14%) > 30%"
+  ]
+}

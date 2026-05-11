@@ -1,0 +1,68 @@
+{
+  "merge_time": "2026-05-11 10:53:32",
+  "input_run_ids": [
+    "20260509_212100",
+    "20260510_151052",
+    "20260510_183114",
+    "20260510_210600",
+    "20260511_084923"
+  ],
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data/interim/real_raw_5000_candidate",
+  "tables": {
+    "raw_video_detail": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 5000,
+      "duplicates_removed": 0
+    },
+    "raw_author": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 3558,
+      "duplicates_removed": 1442
+    },
+    "raw_music": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 5000,
+      "duplicates_removed": 0
+    },
+    "raw_hashtag": {
+      "rows_before_merge": 10112,
+      "rows_after_merge": 10097,
+      "duplicates_removed": 15
+    },
+    "raw_video_tag": {
+      "rows_before_merge": 0,
+      "rows_after_merge": 0,
+      "duplicates_removed": 0
+    },
+    "raw_video_media": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 5000,
+      "duplicates_removed": 0
+    },
+    "raw_video_status_control": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 5000,
+      "duplicates_removed": 0
+    },
+    "raw_chapter": {
+      "rows_before_merge": 0,
+      "rows_after_merge": 0,
+      "duplicates_removed": 0
+    },
+    "raw_comment": {
+      "rows_before_merge": 9334,
+      "rows_after_merge": 9334,
+      "duplicates_removed": 0
+    },
+    "raw_related_video": {
+      "rows_before_merge": 22657,
+      "rows_after_merge": 22657,
+      "duplicates_removed": 0
+    },
+    "raw_crawl_log": {
+      "rows_before_merge": 5000,
+      "rows_after_merge": 5000,
+      "duplicates_removed": 0
+    }
+  }
+}

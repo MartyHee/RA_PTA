@@ -1,0 +1,30 @@
+{
+  "build_time": "2026-05-11 11:45:02",
+  "input_run_ids": [
+    "20260509_212100",
+    "20260510_151052",
+    "20260510_183114",
+    "20260510_210600",
+    "20260511_084923"
+  ],
+  "total_raw_rows": 5000,
+  "unique_video_ids": 5000,
+  "high_confidence": {
+    "count": 3493,
+    "ratio": 0.6986,
+    "description": "match_type=exact AND confidence=high"
+  },
+  "filter_criteria": {
+    "match_type": "exact",
+    "confidence": "high"
+  },
+  "output_files": {
+    "high_confidence_meta": "D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project\\data/processed/real_raw_5000\\high_confidence_web_video_meta_real_raw_5000.csv",
+    "video_ids": "D:/CodeData/Program Coding/ByteDance/RA_PTA/douyin_data_project\\data/processed/real_raw_5000\\high_confidence_video_ids.txt"
+  },
+  "data_package_relation": {
+    "full_data": "data/interim/real_raw_5000/ (11 raw tables, 5000 video_ids)",
+    "high_confidence_filter": "data/processed/real_raw_5000/ (exact+high subset)",
+    "note": "high_confidence_video_ids.txt 可用于上层特征构建时过滤样本。默认标准输入仍是 data/interim/real_raw_5000/ 下的 11 张 raw 表。"
+  }
+}

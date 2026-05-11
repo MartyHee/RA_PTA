@@ -1,0 +1,12 @@
+table,rows,columns
+raw_video_detail,5000,30
+raw_author,3558,20
+raw_music,5000,16
+raw_hashtag,10097,10
+raw_video_tag,0,0
+raw_video_media,5000,24
+raw_video_status_control,5000,17
+raw_chapter,0,0
+raw_comment,9334,24
+raw_related_video,22657,22
+raw_crawl_log,5000,14
