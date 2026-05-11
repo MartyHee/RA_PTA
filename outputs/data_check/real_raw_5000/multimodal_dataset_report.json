@@ -1,0 +1,86 @@
+{
+  "input_paths": {
+    "raw_data_root": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\real_raw_5000",
+    "tabular_train": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_train.csv",
+    "tabular_val": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_val.csv",
+    "tabular_test": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv",
+    "tabular_feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_feature_info.json"
+  },
+  "output_paths": {
+    "train_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+    "val_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+    "test_npz": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+    "feature_info": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_feature_info.json"
+  },
+  "train_size": 3500,
+  "val_size": 750,
+  "test_size": 750,
+  "label_distribution_train": {
+    "pos": 1400,
+    "neg": 2100
+  },
+  "label_distribution_val": {
+    "pos": 300,
+    "neg": 450
+  },
+  "label_distribution_test": {
+    "pos": 300,
+    "neg": 450
+  },
+  "text_feature_shape_train": [
+    3500,
+    32
+  ],
+  "text_feature_shape_val": [
+    750,
+    32
+  ],
+  "text_feature_shape_test": [
+    750,
+    32
+  ],
+  "visual_feature_shape_train": [
+    3500,
+    18
+  ],
+  "visual_feature_shape_val": [
+    750,
+    18
+  ],
+  "visual_feature_shape_test": [
+    750,
+    18
+  ],
+  "structured_feature_shape_train": [
+    3500,
+    33
+  ],
+  "structured_feature_shape_val": [
+    750,
+    33
+  ],
+  "structured_feature_shape_test": [
+    750,
+    33
+  ],
+  "missing_text_count_train": 294,
+  "missing_text_count_val": 59,
+  "missing_text_count_test": 53,
+  "used_fallback_method": false,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "leakage_check": {
+    "passed": true,
+    "report_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\data_check\\real_raw_5000\\multimodal_leakage_check_report.json"
+  },
+  "generated_at": "2026-05-11 14:40:21",
+  "warnings": [],
+  "notes": [
+    "当前多模态数据集基于 real_raw_5000 真实网页端 raw 数据构建。",
+    "text_features 基于 combined_text（desc + caption + comment + hashtag + music_title + signature）。",
+    "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
+    "structured_features 从 tabular 数值特征筛选，经 z-score 标准化（fit on train only）。",
+    "split 与 tabular 完全一致。"
+  ]
+}

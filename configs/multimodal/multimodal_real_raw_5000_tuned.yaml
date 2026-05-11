@@ -1,0 +1,101 @@
+# =============================================================================
+# 多模态模型 baseline 配置 — real_raw_5000 no_interaction_leakage
+# =============================================================================
+# 本配置基于 20-trial random search 最佳结果更新。
+#
+# Source tuning run:
+#   search_run_id: 20260511163836
+#   best_trial_id: 10 (0-indexed)
+#   best_val_auc: 0.8413
+#   best_val_f1:   0.7162
+#   best_test_auc: 0.7843
+#   best_test_f1:  0.6831
+#   experiment_config: configs/experiments/multimodal_search.yaml
+#
+# 实验目的:
+#   使用 random search 最佳超参数，基于 train split 训练正式 baseline，
+#   使用 val split 选择 best epoch，
+#   使用 test split 做最终评估。
+# =============================================================================
+
+model_name: multimodal
+model_variant: best_from_search
+dataset_name: real_raw_5000
+dataset_variant: no_interaction_leakage
+
+# ---------------------------------------------------------------------------
+# 数据路径
+# ---------------------------------------------------------------------------
+train_npz_path: data/multimodal/real_raw_5000/multimodal_train.npz
+val_npz_path: data/multimodal/real_raw_5000/multimodal_val.npz
+test_npz_path: data/multimodal/real_raw_5000/multimodal_test.npz
+feature_info_path: data/multimodal/real_raw_5000/multimodal_feature_info.json
+leakage_report_path: outputs/data_check/real_raw_5000/multimodal_leakage_check_report.json
+
+metrics_config_path: configs/common/metrics.yaml
+output_root: outputs/multimodal/real_raw_5000
+
+# ---------------------------------------------------------------------------
+# 各分支隐层维度（源自 best trial hidden_dim=16 的映射）
+#   text_hidden_dim = hidden_dim
+#   visual_hidden_dim = max(8, hidden_dim // 2)
+#   structured_hidden_dim = hidden_dim
+#   fusion_hidden_dim = hidden_dim * 2
+# ---------------------------------------------------------------------------
+text_hidden_dim: 16
+visual_hidden_dim: 8
+structured_hidden_dim: 16
+fusion_hidden_dim: 32
+
+# ---------------------------------------------------------------------------
+# 训练超参数（源自 best trial #10 of search_run_id=20260511163836）
+# ---------------------------------------------------------------------------
+dropout: 0.205
+batch_size: 128
+learning_rate: 0.001225
+weight_decay: 0.000018
+epochs: 50
+early_stopping_patience: 8
+random_seed: 2026
+threshold: 0.5
+device: cuda
+
+# ---------------------------------------------------------------------------
+# 优化器 / 损失函数
+# ---------------------------------------------------------------------------
+optimizer: adam
+loss: bce
+
+# ---------------------------------------------------------------------------
+# 当前阶段约束
+# ---------------------------------------------------------------------------
+no_image_download: true
+no_external_api: true
+no_large_pretrained_model: true
+
+# ---------------------------------------------------------------------------
+# 来源追溯（从 random search 最佳结果更新）
+# ---------------------------------------------------------------------------
+source_search_run_id: "20260511163836"
+source_tuning_run_id: "20260511163836"
+source_best_trial_id: 10
+source_best_val_auc: 0.8413
+source_best_val_f1: 0.7162
+source_best_test_auc: 0.7843
+source_best_test_f1: 0.6831
+source_experiment_config: configs/experiments/multimodal_search.yaml
+
+# ---------------------------------------------------------------------------
+# 泄漏控制确认
+# ---------------------------------------------------------------------------
+leakage_control:
+  excluded_label_source_features:
+    - digg_count
+    - comment_count
+    - share_count
+    - collect_count
+  audit_id_cols:
+    - sample_id
+    - video_id
+    - author_id
+    - interaction_score

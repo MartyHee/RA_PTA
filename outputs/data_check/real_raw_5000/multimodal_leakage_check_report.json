@@ -1,0 +1,85 @@
+{
+  "dataset_name": "real_raw_5000",
+  "leakage_check_passed": true,
+  "excluded_label_source_features": {
+    "defined": [
+      "digg_count",
+      "comment_count",
+      "share_count",
+      "collect_count"
+    ],
+    "found_in_structured_features": [],
+    "found_in_text_sources": {},
+    "status": "OK"
+  },
+  "interaction_score_in_structured_features": {
+    "found": false,
+    "status": "OK"
+  },
+  "audit_id_cols_in_structured_features": {
+    "defined": [
+      "sample_id",
+      "video_id",
+      "author_id",
+      "interaction_score"
+    ],
+    "found_in_structured_features": [],
+    "status": "OK"
+  },
+  "structured_feature_columns": [
+    "duration_ms",
+    "aweme_type",
+    "media_type",
+    "is_top",
+    "original",
+    "follower_count",
+    "total_favorited",
+    "verification_type",
+    "music_duration",
+    "video_width",
+    "video_height",
+    "origin_cover_width",
+    "origin_cover_height",
+    "private_status",
+    "review_status",
+    "publish_hour",
+    "publish_weekday",
+    "desc_length",
+    "desc_word_count",
+    "caption_length",
+    "signature_length",
+    "nickname_length",
+    "music_title_length",
+    "avg_comment_text_length",
+    "hashtag_count",
+    "video_tag_count",
+    "comment_table_count",
+    "chapter_count",
+    "related_video_count",
+    "comment_user_count",
+    "cover_url_count",
+    "origin_cover_url_count",
+    "dynamic_cover_url_count"
+  ],
+  "text_source_fields": {
+    "video_detail": [
+      "caption",
+      "desc"
+    ],
+    "comment": [
+      "comment_text"
+    ],
+    "hashtag": [
+      "hashtag_name"
+    ],
+    "music": [
+      "music_title",
+      "music_author"
+    ],
+    "author": [
+      "signature"
+    ]
+  },
+  "errors": [],
+  "warnings": []
+}

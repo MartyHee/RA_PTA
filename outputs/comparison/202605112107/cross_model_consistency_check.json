@@ -1,0 +1,20 @@
+{
+  "models_checked": [
+    "dnn",
+    "wide_deep",
+    "graphsage",
+    "multimodal"
+  ],
+  "video_id_consistent": true,
+  "label_consistent": false,
+  "n_samples": 750,
+  "details": {
+    "video_id_set_size": 750,
+    "shared_video_id_count": 750,
+    "label_positive_count": 300,
+    "video_id_status": "全一致"
+  },
+  "warnings": [
+    "模型 multimodal 的 label 序列与 dnn 不一致: 差异 360 行"
+  ]
+}

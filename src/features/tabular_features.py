@@ -233,7 +233,15 @@ def compute_missing_summary(df: pd.DataFrame) -> dict[str, Any]:
     """计算 DataFrame 每列的缺失值统计。"""
     summary = {}
     for col in df.columns:
-        missing_count = int(df[col].isna().sum())
+        try:
+            missing_series = df[col].isna().sum()
+            # 处理 Series 返回（重复列名时可能出现）
+            if hasattr(missing_series, 'item'):
+                missing_count = int(missing_series.iloc[0]) if hasattr(missing_series, 'iloc') else int(missing_series)
+            else:
+                missing_count = int(missing_series)
+        except (TypeError, ValueError):
+            missing_count = 0
         missing_rate = round(missing_count / len(df), 4) if len(df) > 0 else 0.0
         summary[col] = {
             "missing_count": missing_count,

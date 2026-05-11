@@ -1,0 +1,67 @@
+{
+  "val_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "no_interaction_leakage",
+    "run_id": "202605111858",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.45618921518325806,
+    "auc": 0.8336592592592593,
+    "accuracy": 0.7453333333333333,
+    "precision": 0.639386189258312,
+    "recall": 0.8333333333333334,
+    "f1": 0.723589001447178,
+    "precision_at_k": {
+      "precision_at_5": 0.800000011920929,
+      "precision_at_10": 0.8999999761581421,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.8199999928474426
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.13666666666666666
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 18:58:40"
+  },
+  "test_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "no_interaction_leakage",
+    "run_id": "202605111858",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4535575807094574,
+    "auc": 0.8413851851851852,
+    "accuracy": 0.7533333333333333,
+    "precision": 0.6478149100257069,
+    "recall": 0.84,
+    "f1": 0.7314949201741655,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.800000011920929
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.03333333333333333,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.13333333333333333
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 18:58:40"
+  },
+  "generated_at": "2026-05-11 18:58:40"
+}

@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "graphsage",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "no_interaction_leakage",
+    "run_id": "202605112028",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.47019848227500916,
+    "auc": 0.8242074074074074,
+    "accuracy": 0.7346666666666667,
+    "precision": 0.6361185983827493,
+    "recall": 0.7866666666666666,
+    "f1": 0.7034277198211625,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 0.800000011920929,
+      "precision_at_20": 0.8500000238418579,
+      "precision_at_50": 0.8399999737739563
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.02666666666666667,
+      "recall_at_20": 0.056666666666666664,
+      "recall_at_50": 0.14
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score >= P60, 继承自 tabular",
+    "warnings": []
+  },
+  "generated_at": "2026-05-11 20:29:00",
+  "test_metrics": {
+    "model_name": "graphsage",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "no_interaction_leakage",
+    "run_id": "202605112028",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4621022939682007,
+    "auc": 0.832748148148148,
+    "accuracy": 0.764,
+    "precision": 0.6742209631728046,
+    "recall": 0.7933333333333333,
+    "f1": 0.7289433384379785,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 0.8999999761581421,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.7400000095367432
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.12333333333333334
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score >= P60, 继承自 tabular",
+    "warnings": []
+  }
+}

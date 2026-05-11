@@ -80,7 +80,7 @@ def evaluate_model(
         all_labels_arr, all_scores_arr, all_preds_arr, threshold
     )
 
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
     pk_metrics, pk_warnings = compute_precision_at_k(
         all_labels_arr, all_scores_arr, k_values
     )
@@ -123,6 +123,7 @@ def main() -> None:
     config = load_config(args.config)
     logger.info(f"配置加载完成: {args.config}")
     dataset_name = config.get("dataset_name", "sample0427")
+    dataset_variant = config.get("dataset_variant", "")
     model_name = config.get("model_name", "multimodal")
 
     # ── 2. 生成 run_id ──────────────────────────────────────
@@ -160,6 +161,25 @@ def main() -> None:
         f"模态维度: text={text_dim}, visual={visual_dim}, "
         f"structured={structured_dim}"
     )
+
+    # ── 5a. 泄漏控制检查 ────────────────────────────────────
+    leakage_control_passed = True
+    leakage_check_errors: list[str] = []
+    leakage_report_path_cfg = config.get("leakage_report_path")
+    if leakage_report_path_cfg:
+        lr_path = project_root / leakage_report_path_cfg
+        if lr_path.exists():
+            with open(lr_path, "r", encoding="utf-8") as f:
+                lr_report = json.load(f)
+            leakage_control_passed = lr_report.get("leakage_check_passed", False)
+            if not leakage_control_passed:
+                msg = f"泄漏检查未通过: {lr_report.get('errors', [])}"
+                leakage_check_errors.append(msg)
+                logger.error(msg)
+                sys.exit(1)
+            logger.info(f"泄漏检查已通过: {lr_path}")
+        else:
+            logger.warning(f"泄漏检查报告不存在: {lr_path}")
 
     # ── 6. 加载数据 ─────────────────────────────────────────
     # 三路切分模式 (real_raw_1000): 配置中含 test_npz_path
@@ -247,7 +267,7 @@ def main() -> None:
     epochs_no_improve = 0
     train_log: list[dict] = []
 
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
 
     for epoch in range(epochs):
         # --- Train ---
@@ -386,6 +406,7 @@ def main() -> None:
                 "split": split_name,
                 "model_name": model_name,
                 "dataset_name": dataset_name,
+                "dataset_variant": dataset_variant,
                 "run_id": run_id,
             }
         )
@@ -481,6 +502,7 @@ def main() -> None:
     run_meta = {
         "model_name": model_name,
         "dataset_name": dataset_name,
+        "dataset_variant": dataset_variant,
         "run_id": run_id,
         "output_dir": str(output_dir),
         "input_dims": {
@@ -502,7 +524,8 @@ def main() -> None:
         "device": device,
         "num_params": n_params,
         "label_definition": label_definition,
-        "warnings": [],
+        "leakage_control_passed": leakage_control_passed,
+        "warnings": leakage_check_errors.copy(),
         "source_tuning_run_id": config.get("source_tuning_run_id"),
         "source_best_trial_id": config.get("source_best_trial_id"),
     }

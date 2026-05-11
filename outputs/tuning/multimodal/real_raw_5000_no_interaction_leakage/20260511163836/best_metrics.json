@@ -1,0 +1,32 @@
+{
+  "tune_run_id": "20260511163836",
+  "experiment_config": "configs/experiments/multimodal_search.yaml",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "no_interaction_leakage",
+  "best_trial_id": 10,
+  "primary_metric": "val_auc",
+  "secondary_metric": "val_f1",
+  "best_hyperparams": {
+    "learning_rate": 0.0012245728047051874,
+    "weight_decay": 1.8000364896732537e-05,
+    "dropout": 0.20462121852472,
+    "hidden_dim": 16,
+    "batch_size": 128
+  },
+  "val_metrics": {
+    "auc": 0.8413222222222223,
+    "f1": 0.7161961367013373
+  },
+  "test_metrics": {
+    "auc": 0.7843037037037037,
+    "f1": 0.6831395348837209
+  },
+  "num_completed_trials": 20,
+  "num_failed_trials": 0,
+  "warnings": [
+    "Best trial 仅基于 val 指标选择，test 指标仅供参考。",
+    "当前调优基于 interaction_score 伪标签，不代表真实业务目标。",
+    "所有结果均为离线实验，不代表线上推荐效果。"
+  ],
+  "generated_at": "2026-05-11 16:47:07"
+}

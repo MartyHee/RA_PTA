@@ -320,6 +320,8 @@ def main() -> None:
 
     run_meta: dict = {
         "comparison_run_id": comparison_run_id,
+        "dataset_name": config.get("dataset_name", ""),
+        "dataset_variant": config.get("dataset_variant", ""),
         "output_dir": str(output_dir),
         "started_at": started_at,
         "finished_at": finished_at,
@@ -392,7 +394,8 @@ def _generate_report(
     # 1. 实验目标
     _w("## 1. 实验目标")
     _w("")
-    _w("汇总 DNN、Wide & Deep、GraphSAGE、Multimodal 四个模型在 real_raw_1000 真实网页端 raw 数据上的最终评估结果。")
+    ds_name = config.get("dataset_name", "未知数据集")
+    _w(f"汇总 DNN、Wide & Deep、GraphSAGE、Multimodal 四个模型在 {ds_name} 真实网页端 raw 数据上的最终评估结果。")
     _w("")
     for note in notes:
         _w(f"- {note}")
@@ -401,24 +404,58 @@ def _generate_report(
     # 2. 数据说明
     _w("## 2. 数据说明")
     _w("")
-    _w(f"- **数据来源**：{ds_desc.get('source', '抖音公开网页端')}")
-    _w(f"- **视频数**：{ds_desc.get('n_videos', '1000')} 个 unique video_id")
-    _w(f"- **原始表数量**：{ds_desc.get('n_tables', 11)} 张 raw 表")
-    _w(f"- **数据划分**：{ds_desc.get('split_description', 'train/val/test')}")
-    _w(f"- **标签构造**：{ds_desc.get('label_description', 'interaction_score 分位数伪标签')}")
-    _w(f"- **正负样本分布**：正例 {ds_desc.get('positive_count', 400)}，负例 {ds_desc.get('negative_count', 600)}")
+    ds_desc = config.get("dataset_description", {})
+    n_videos = ds_desc.get("n_videos", "N/A")
+    n_tables = ds_desc.get("n_tables", 11)
+    split_desc = ds_desc.get("split_description", "train/val/test")
+    label_desc = ds_desc.get("label_description", "interaction_score 分位数伪标签")
+    pos_count = ds_desc.get("positive_count", "N/A")
+    neg_count = ds_desc.get("negative_count", "N/A")
+    source = ds_desc.get("source", "抖音公开网页端")
+
+    dataset_variant = config.get("dataset_variant", "")
+    leakage_note = ""
+    if dataset_variant == "no_interaction_leakage":
+        leakage_note = (
+            "本实验使用 no_interaction_leakage 口径："
+            "digg_count/comment_count/share_count/collect_count 仅用于构造 label，"
+            "未进入任何模型输入。"
+        )
+
+    _w(f"- **数据来源**：{source}")
+    _w(f"- **视频数**：{n_videos} 个 unique video_id")
+    _w(f"- **原始表数量**：{n_tables} 张 raw 表")
+    _w(f"- **数据划分**：{split_desc}")
+    _w(f"- **标签构造**：{label_desc}")
+    _w(f"- **正负样本分布**：正例 {pos_count}，负例 {neg_count}")
+    if leakage_note:
+        _w(f"- **泄漏控制**：{leakage_note}")
     _w("")
     _w(f"**{primary_split.upper()} split 定位**：{primary_split} split 仅用于最终泛化评估，未参与模型选择或早停。")
     _w("")
     _w("**样本限制**：")
-    _w("- real_raw_1000 来自公开网页端，不代表平台内部完整数据。")
+    _w(f"- {ds_name} 来自公开网页端，不代表平台内部完整数据。")
     _w("- 当前没有真实曝光、点击、完播、转化、留存标签。")
-    _w("- none-match 样本占 21.2%，部分字段覆盖有限。")
+    _w("- 约 30.1% 样本为 none/low confidence，部分字段覆盖有限。")
     _w("- 所有模型结果均为离线实验对比，不代表线上推荐效果。")
     _w("")
 
-    # 3. 对比模型
-    _w("## 3. 对比模型与 Run ID")
+    # 3. No-Interaction-Leakage 说明
+    if dataset_variant == "no_interaction_leakage":
+        _w("## 3. No-Interaction-Leakage 说明")
+        _w("")
+        _w("本实验采用 `no_interaction_leakage` 口径，核心约束如下：")
+        _w("")
+        _w("1. **label 构造**：`interaction_score = digg_count + comment_count + share_count + collect_count`，P60 分位数二分类。")
+        _w("2. **泄漏控制**：上述 4 个字段仅用于构造 label，在特征构建阶段被严格排除，未进入任何模型输入。")
+        _w("3. **验证机制**：每个模型的构建脚本均包含泄漏检查，如发现泄漏字段进入特征列表则报错中止。")
+        _w("4. **必要性**：历史实验（real_raw_1000）中上述字段进入模型输入，导致 AUC≈0.99，")
+        _w("   高 AUC 主要来自标签构造字段泄漏，不代表模型真实推荐泛化能力。")
+        _w("5. **当前口径**：去除泄漏后四模型 AUC 范围 0.78-0.84，下降约 0.15-0.21，说明历史高 AUC 的确主要依赖泄漏。")
+        _w("")
+
+    # 4. 对比模型
+    _w("## 4. 对比模型与 Run ID")
     _w("")
     _w("| 模型 | Run ID | 输出目录 |")
     _w("|---|---|---|")
@@ -430,12 +467,12 @@ def _generate_report(
         _w(f"| {mn} | {rid} | {out_dir} |")
     _w("")
 
-    # 4. Test 指标总表（主评估）
-    _w(f"## 4. {primary_split.upper()} 指标总表（主评估）")
+    # 5. Test 指标总表（主评估）
+    _w(f"## 5. {primary_split.upper()} 指标总表（主评估）")
     _w("")
 
-    # 4.1 分类指标
-    _w("### 4.1 分类指标")
+    # 5.1 分类指标
+    _w("### 5.1 分类指标")
     _w("")
     cls_header = "| 模型 | AUC | Accuracy | Precision | Recall | F1 |"
     cls_sep = "|---|---|---|---|---|---|"
@@ -452,27 +489,27 @@ def _generate_report(
         )
     _w("")
 
-    # 4.2 Precision@K / Recall@K
-    _w("### 4.2 排序指标（Precision@K / Recall@K）")
+    # 5.2 Precision@K / Recall@K
+    _w("### 5.2 排序指标（Precision@K / Recall@K）")
     _w("")
-    pk_header = "| 模型 | Precision@5 | Recall@5 | Precision@10 | Recall@10 | Precision@20 | Recall@20 |"
-    pk_sep = "|---|---|---|---|---|---|---|"
+    pk_cols = []
+    for k in k_values:
+        pk_cols.append(f"Precision@{k}")
+        pk_cols.append(f"Recall@{k}")
+    pk_header = "| 模型 | " + " | ".join(pk_cols) + " |"
+    pk_sep = "|" + "---|" * (1 + len(pk_cols))
     _w(pk_header)
     _w(pk_sep)
     for _, row in summary_df.iterrows():
-        _w(
-            f"| {row.get('model_name', 'N/A')} "
-            f"| {fmt_metric(row.get('precision_at_5'))} "
-            f"| {fmt_metric(row.get('recall_at_5'))} "
-            f"| {fmt_metric(row.get('precision_at_10'))} "
-            f"| {fmt_metric(row.get('recall_at_10'))} "
-            f"| {fmt_metric(row.get('precision_at_20'))} "
-            f"| {fmt_metric(row.get('recall_at_20'))} |"
-        )
+        cells = [f"{row.get('model_name', 'N/A')}"]
+        for k in k_values:
+            cells.append(fmt_metric(row.get(f"precision_at_{k}")))
+            cells.append(fmt_metric(row.get(f"recall_at_{k}")))
+        _w("| " + " | ".join(cells) + " |")
     _w("")
 
-    # 4.3 样本与训练信息
-    _w("### 4.3 样本与训练信息")
+    # 5.3 样本与训练信息
+    _w("### 5.3 样本与训练信息")
     _w("")
     info_header = "| 模型 | Sample Count | Positive | Negative | Eval Loss | Best Epoch | Num Params | Device |"
     info_sep = "|---|---|---|---|---|---|---|---|"
@@ -493,13 +530,13 @@ def _generate_report(
         )
     _w("")
 
-    # 5. Val 指标参考表
+    # 6. Val 指标参考表
     if val_summary_df is not None and len(val_summary_df) > 0:
-        _w("## 5. Val 指标参考表")
+        _w("## 6. Val 指标参考表")
         _w("")
         _w("> 以下为各模型在 val split 上的指标，用于训练过程中的 best epoch 选择。不作为最终主评估结果。")
         _w("")
-        _w("### 5.1 分类指标（Val）")
+        _w("### 6.1 分类指标（Val）")
         _w("")
         _w(cls_header)
         _w(cls_sep)
@@ -514,7 +551,7 @@ def _generate_report(
             )
         _w("")
 
-        _w("### 5.2 样本与训练信息（Val）")
+        _w("### 6.2 样本与训练信息（Val）")
         _w("")
         _w(info_header)
         _w(info_sep)
@@ -533,8 +570,8 @@ def _generate_report(
             )
         _w("")
 
-    # 6. Top-K 对比
-    topk_section_num = "6" if val_summary_df is not None else "5"
+    # 7. Top-K 对比
+    topk_section_num = "7" if val_summary_df is not None else "6"
     _w(f"## {topk_section_num}. Top-K 对比")
     _w("")
     _w(f"基于 predictions_{primary_split}.csv 重新计算 Top-K 指标（与 metrics.json 对齐检查）：")
@@ -629,38 +666,63 @@ def _generate_report(
     _w("")
     _w("| 模型 | 优点 | 局限 |")
     _w("|---|---|---|")
-    _w("| DNN | 结构简单、训练稳定、适合结构化表格特征 | 需要特征工程，不能自动学习特征交叉 |")
-    _w("| Wide & Deep | 可显式引入交叉特征 | 当前交叉特征在 700 条训练样本上稀疏度高，未提供额外增益 |")
-    _w("| GraphSAGE | 利用 video-author / video-hashtag / related-video 图拓扑信息 | 7257 个无标签节点；Recall 偏低（保守预测）|")
-    _w("| Multimodal | 融合文本/媒体元信息/结构化三模态；参数量小（7,857） | visual 分支仅用媒体元信息，非真实图像语义 |")
+    _w("| DNN | 结构简单、训练稳定、适合结构化表格特征；训练样本 3500，优于 real_raw_1000 的 700 | 需要特征工程，不能自动学习特征交叉 |")
+    _w("| Wide & Deep | 可显式引入交叉特征；Wide 部分可记忆稀疏模式 | 当前交叉特征在 3500 训练样本上仍稀疏，未提供额外增益；AUC 最低 0.8242 |")
+    _w("| GraphSAGE | 利用 video-author / video-hashtag / related-video 图拓扑信息（31998 节点）；AUC 接近 DNN | Recall 偏低；大量 related-only 节点无标签，仅作为上下文 |")
+    _w("| Multimodal | 融合文本/媒体元信息/结构化三模态；参数量小（2,569） | visual 分支仅用媒体元信息，非真实图像语义；AUC 最低 0.7812，未带来融合增益 |")
     _w("")
 
-    # 11. 当前限制
-    limits_section_num = str(int(proscons_section_num) + 1)
+    # 11. 与历史实验对比
+    hist_section_num = str(int(proscons_section_num) + 1)
+    _w(f"## {hist_section_num}. 与历史含泄漏实验结果对比")
+    _w("")
+    _w("> real_raw_1000 实验中，digg_count/comment_count/share_count/collect_count 四个标签构造字段进入了模型输入，")
+    _w("> 导致 AUC≈0.99。当前 real_raw_5000 no_interaction_leakage 实验已将这四个字段严格排除。")
+    _w("")
+    _w("### 12.1 去泄漏前后 AUC 对比")
+    _w("")
+    _w("| 模型 | real_raw_1000（含泄漏）Test AUC | real_raw_5000（去泄漏）Test AUC | 下降幅度 |")
+    _w("|---|---|---|---|")
+    _w("| DNN | ~0.99 | 0.8414 | ~0.15 |")
+    _w("| Wide & Deep | ~0.99 | 0.8242 | ~0.17 |")
+    _w("| GraphSAGE | ~0.99 | 0.8327 | ~0.16 |")
+    _w("| Multimodal | ~0.99 | 0.7812 | ~0.21 |")
+    _w("")
+    _w("### 12.2 关键结论")
+    _w("")
+    _w("1. 去除标签构造字段后，四模型 AUC 从 ~0.99 降至 0.78-0.84，下降 0.15-0.21。")
+    _w("2. 下降幅度意味着历史高 AUC 主要来自标签构造字段泄漏，而非模型对视频互动的真实预测能力。")
+    _w("3. 去泄漏后 DNN 仍保持最优（0.8414），GraphSAGE 接近 DNN（0.8327），Multimodal 下降最多（0.7812）。")
+    _w("4. 当前 AUC 范围 0.78-0.84 更接近无标签泄漏时的真实模型能力基线。")
+    _w("5. 后续所有实验必须统一使用 no_interaction_leakage 口径。")
+    _w("")
+
+    # 12. 当前限制
+    limits_section_num = str(int(hist_section_num) + 1)
     _w(f"## {limits_section_num}. 当前限制")
     _w("")
-    _w("1. **样本量有限**：1000 条视频，val/test 各 150 条，评估稳定性有限。")
-    _w("2. **伪标签**：标签基于 interaction_score 分位数构造，不代表 CTR/CVR/完播/转化等真实业务目标。")
-    _w("3. **数据源限制**：真实网页端数据不代表平台内部完整数据。")
-    _w("4. **无真实图像语义**：多模态模型的视觉分支仅使用媒体元信息（封面尺寸、URL 数量等）。")
-    _w("5. **GraphSAGE 图结构**：related-only 视频节点无标签，仅作为上下文节点。")
-    _w("6. **none-match 样本**：21.2% 的样本为 none/low confidence，部分字段覆盖不足。")
-    _w("7. **raw_video_tag 和 raw_chapter 为空**，无法用于任何模型。")
+    _w("1. **伪标签**：标签基于 interaction_score 分位数构造，不代表 CTR/CVR/完播/转化等真实业务目标。")
+    _w("2. **数据源限制**：数据来自公开网页端，不代表平台内部完整推荐数据。")
+    _w("3. **无真实图像语义**：多模态模型的视觉分支仅使用媒体元信息（封面尺寸、URL 数量等）。")
+    _w("4. **GraphSAGE 图结构**：related-only 视频节点（14414 个）无标签，仅作为上下文节点参与消息传递。")
+    _w("5. **none/low confidence 样本**：约 30.1% 的样本字段覆盖不足（如 digg_count 等互动字段缺失）。")
+    _w("6. **raw_video_tag 和 raw_chapter 为空**，无法用于任何模型。")
+    _w("7. **评估稳定性**：test split 750 条（300 正 / 450 负），评估结果有一定方差。")
     _w("8. **当前所有结果仅为离线实验对比，不代表线上推荐效果或业务收益。**")
     _w("")
 
-    # 12. 下一步建议
+    # 13. 下一步建议
     next_section_num = str(int(limits_section_num) + 1)
     _w(f"## {next_section_num}. 下一步建议")
     _w("")
-    _w("1. **增大数据量**：继续采集 URL（当前仅 1000 条），提升模型泛化能力。")
+    _w("1. **多 seed 稳定性验证**：使用 3-5 个 random seed 重复实验，确认当前 AUC 排序稳定性。")
     _w("2. **真实标签**：接入真实曝光、点击、完播等标签替代目前 interaction_score 伪标签。")
     _w("3. **超参数调优**：增大 epochs、调整 learning rate、尝试不同 fusion 策略或 attention 聚合器。")
     _w("4. **高级 fusion**：Multimodal 可尝试 attention-based fusion 替代简单拼接。")
     _w("5. **图增强**：GraphSAGE 可尝试 GAT 替代 mean aggregator，或增加 comment_user 节点。")
     _w("6. **视觉增强**：如用户明确要求，引入封面图像特征（需确认 CLIP/ResNet 依赖）。")
     _w("7. **校准与阈值优化**：统一做概率校准，优化 Precision/Recall 平衡。")
-    _w("8. **离线 A/B 模拟**：对各模型预测结果做离线分组统计，比较模型间差异。")
+    _w("8. **端到端流水线工程化**：在 no-leakage 口径确认后，进入推荐流水线工程化。")
     _w("")
 
     # 13. 图表索引

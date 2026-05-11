@@ -1,6 +1,6 @@
-"""GraphSAGE 图数据集构建脚本 — real_raw_1000
+"""GraphSAGE 图数据集构建脚本 — real_raw 系列 (支持 real_raw_1000 / 5000 等)
 
-基于 real_raw_1000 原始 raw 表和 tabular 数据，构建以视频为核心的简化同构图。
+基于真实 raw 表和 tabular 数据，构建以视频为核心的简化同构图。
 所有节点映射到统一 node_id 空间，保留 node_type 字段。
 所有边输出双向（正向 + 反向）。
 使用 train/val/test 三路 mask 对齐 tabular split。
@@ -8,7 +8,7 @@
 设计原则：
 - 不修改 douyin_data_project 爬虫代码
 - 不修改真实 raw CSV 文件
-- 不覆盖 sample0427 旧图数据
+- 通过配置文件控制数据集差异（无新增脚本）
 - raw_video_tag / raw_chapter 空表跳过，不影响构图
 - music_id 缺失时跳过对应 music 节点（不使用回退标识）
 """
@@ -43,20 +43,19 @@ from src.features.graph_features import (  # noqa: E402
 # ============================================================================
 # Constants
 # ============================================================================
-REAL_RAW_NODE_TYPES = ["video", "author", "music", "hashtag"]
-
-RAW_FILE_MAP = {
-    "raw_video_detail": "raw_video_detail_20260507_230322.csv",
-    "raw_author": "raw_author_20260507_230322.csv",
-    "raw_music": "raw_music_20260507_230322.csv",
-    "raw_hashtag": "raw_hashtag_20260507_230322.csv",
-    "raw_video_tag": "raw_video_tag_20260507_230322.csv",
-    "raw_chapter": "raw_chapter_20260507_230322.csv",
-    "raw_comment": "raw_comment_20260507_230322.csv",
-    "raw_related_video": "raw_related_video_20260507_230322.csv",
-}
-
 ALLOWED_EMPTY_TABLES = {"raw_video_tag", "raw_chapter"}
+
+# 所有真实 raw 系列共用的表名（不含后缀）
+BASE_RAW_TABLE_NAMES = [
+    "raw_video_detail",
+    "raw_author",
+    "raw_music",
+    "raw_hashtag",
+    "raw_video_tag",
+    "raw_chapter",
+    "raw_comment",
+    "raw_related_video",
+]
 
 
 def make_raw_key(entity_type: str, raw_id: str) -> str:
@@ -84,7 +83,7 @@ def safe_int_str(value: Any) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="GraphSAGE 图数据集构建 — real_raw_1000")
+    parser = argparse.ArgumentParser(description="GraphSAGE 图数据集构建 — real_raw 系列")
     parser.add_argument(
         "--config",
         default="configs/graphsage/graphsage_real_raw_1000.yaml",
@@ -95,7 +94,18 @@ def main() -> None:
     config = load_config(args.config)
     project_root = Path(config.get("project_root", PROJECT_ROOT))
 
-    # Resolve directories
+    # ------------------------------------------------------------------
+    # 解析配置参数（向后兼容默认值）
+    # ------------------------------------------------------------------
+    dataset_name = config.get("dataset_name", "real_raw_1000")
+    dataset_variant = config.get("dataset_variant", "")
+    raw_file_suffix = config.get("raw_file_suffix", "_20260507_230322.csv")
+    node_types = config.get("node_types", ["video", "author", "music", "hashtag"])
+    expected_split_counts = config.get(
+        "expected_split_counts", {"train": 700, "val": 150, "test": 150}
+    )
+
+    # 路径
     raw_data_dir = Path(
         config.get(
             "raw_data_dir",
@@ -111,6 +121,25 @@ def main() -> None:
     check_dir = Path(
         config.get("data_check_dir", project_root / "outputs" / "data_check" / "real_raw_1000")
     )
+    tabular_feature_info_path = Path(
+        config.get(
+            "tabular_feature_info_path",
+            project_root / "data" / "features" / "real_raw_1000" / "tabular_feature_info.json",
+        )
+    )
+
+    # 泄漏控制配置
+    leakage_excluded = config.get(
+        "leakage_control",
+        {
+            "excluded_label_source_features": [
+                "digg_count", "comment_count", "share_count", "collect_count",
+            ],
+            "excluded_audit_cols": ["interaction_score"],
+        },
+    )
+    excluded_label_source = leakage_excluded.get("excluded_label_source_features", [])
+    excluded_audit = leakage_excluded.get("excluded_audit_cols", [])
 
     # Create output directories
     graph_data_dir.mkdir(parents=True, exist_ok=True)
@@ -119,9 +148,14 @@ def main() -> None:
     warnings: list[str] = []
 
     # ========================================================================
-    # 1. Load raw tables
+    # 1. Load raw tables (config-driven file names)
     # ========================================================================
-    print("[1/8] 加载原始数据表...")
+    print(f"[1/8] 加载原始数据表 (suffix: {raw_file_suffix})...")
+    RAW_FILE_MAP = {}
+    for tbl_name in BASE_RAW_TABLE_NAMES:
+        fname = f"{tbl_name}{raw_file_suffix}"
+        RAW_FILE_MAP[tbl_name] = fname
+
     tables: dict[str, pd.DataFrame] = {}
     for name, fname in RAW_FILE_MAP.items():
         path = raw_data_dir / fname
@@ -131,9 +165,16 @@ def main() -> None:
                 tables[name] = pd.DataFrame()
                 continue
             raise FileNotFoundError(f"关键表缺失: {path}")
-        df, enc = read_csv_safe(path)
-        tables[name] = df
-        print(f"  {name}: {len(df)} rows, {len(df.columns)} cols, encoding={enc}")
+        try:
+            df, enc = read_csv_safe(path)
+            tables[name] = df
+            print(f"  {name}: {len(df)} rows, {len(df.columns)} cols, encoding={enc}")
+        except pd.errors.EmptyDataError:
+            if name in ALLOWED_EMPTY_TABLES:
+                print(f"  {name}: 文件为空（允许空表），使用空 DataFrame")
+                tables[name] = pd.DataFrame()
+            else:
+                raise
 
     # ========================================================================
     # 2. Load tabular data (labels, split, numeric features)
@@ -176,12 +217,13 @@ def main() -> None:
     for sp in video_split.values():
         split_counts[sp] += 1
     print(f"  Labeled split counts: {dict(split_counts)}")
-    expected_splits = {"train": 700, "val": 150, "test": 150}
-    for sp, cnt in expected_splits.items():
+    for sp, cnt in expected_split_counts.items():
         actual = split_counts.get(sp, 0)
         if actual != cnt:
             warnings.append(f"Expected {sp}={cnt}, got {actual}")
             print(f"  [WARN] {sp}: expected {cnt}, got {actual}")
+        else:
+            print(f"  [OK] {sp}: {cnt}")
 
     # ========================================================================
     # 3. Build node mapping
@@ -409,22 +451,77 @@ def main() -> None:
     )
 
     # ========================================================================
-    # 5. Build node features
+    # 5. Build node features with leakage control
     # ========================================================================
     print("[5/8] 构建节点特征...")
 
-    # 5a. One-hot node type (4 dims: video, author, music, hashtag)
-    node_types = [node_type_map[i] for i in range(num_nodes)]
-    type_onehot = build_node_type_onehot(node_types, type_list=REAL_RAW_NODE_TYPES)
+    # 5a. Read tabular feature columns from tabular_feature_info.json (no-leakage)
+    #     instead of hardcoded REAL_RAW_TABULAR_FEATURE_COLS (which contains leakage fields)
+    tabular_feature_cols_used: list[str] = []
+    leakage_info: dict[str, Any] = {}
+    if tabular_feature_info_path.exists():
+        with open(tabular_feature_info_path, "r", encoding="utf-8") as f:
+            ti = json.load(f)
+
+        # Build numeric feature list from feature_info (excluding categorical + wide)
+        numeric_features = ti.get("numeric_features", [])
+        text_stat_features = ti.get("text_stat_features", [])
+        tabular_feature_cols_used = numeric_features + text_stat_features
+
+        # Verify excluded_label_source_features are NOT in feature list
+        feature_info_excluded = ti.get("excluded_label_source_features", [])
+        leak_found = []
+        for col in feature_info_excluded:
+            if col in tabular_feature_cols_used:
+                leak_found.append(col)
+        if leak_found:
+            msg = f"泄漏字段 {leak_found} 出现在图 tabular 特征列表中！中止构建。"
+            print(f"  [ERROR] {msg}")
+            raise ValueError(msg)
+
+        # Also check excluded_audit_cols (interaction_score etc.)
+        for col in excluded_audit:
+            if col in tabular_feature_cols_used:
+                msg = f"审计字段 {col} 不应出现在图特征中！中止构建。"
+                print(f"  [ERROR] {msg}")
+                raise ValueError(msg)
+
+        leakage_control_passed = True
+        leakage_info = {
+            "leakage_control_passed": True,
+            "excluded_label_source_features": feature_info_excluded,
+            "feature_source": str(tabular_feature_info_path),
+            "feature_count": len(tabular_feature_cols_used),
+        }
+        print(
+            f"  Loaded {len(tabular_feature_cols_used)} no-leakage tabular features"
+            f" from {tabular_feature_info_path.name}"
+        )
+        print(f"    (leakage check: {len(feature_info_excluded)} excluded fields verified)")
+    else:
+        # Backward compatibility: fall back to hardcoded col list
+        print(f"  [WARN] tabular_feature_info.json not found at {tabular_feature_info_path}")
+        print(f"  Falling back to REAL_RAW_TABULAR_FEATURE_COLS (contains leakage fields!)")
+        tabular_feature_cols_used = list(REAL_RAW_TABULAR_FEATURE_COLS)
+        leakage_control_passed = False
+        leakage_info = {
+            "leakage_control_passed": False,
+            "note": "Fallback to REAL_RAW_TABULAR_FEATURE_COLS (may contain leakage fields)",
+        }
+        warnings.append("Leakage control not applied: tabular_feature_info.json not found")
+
+    # 5b. One-hot node type
+    all_node_types = [node_type_map[i] for i in range(num_nodes)]
+    type_onehot = build_node_type_onehot(all_node_types, type_list=node_types)
     print(f"  Node type one-hot: {type_onehot.shape}")
 
-    # 5b. Degree features (from forward edges only, to avoid double counting)
+    # 5c. Degree features (from forward edges only, to avoid double counting)
     forward_edges = edges_df[edges_df["is_reverse"] == False].copy()
     node_degrees = compute_node_degrees(forward_edges)
     deg_features = build_degree_features(list(range(num_nodes)), node_degrees)
     print(f"  Degree features: {deg_features.shape}")
 
-    # 5c. Tabular numeric features for main video nodes
+    # 5d. Tabular numeric features for main video nodes
     video_key_to_nid: dict[str, int] = {}
     for vid_str in main_video_ids:
         raw_key = make_raw_key("video", vid_str)
@@ -432,23 +529,22 @@ def main() -> None:
         if nid is not None:
             video_key_to_nid[vid_str] = nid
 
-    # Use REAL_RAW_TABULAR_FEATURE_COLS (without video_tag_count, chapter_count)
     tabular_feat = build_video_tabular_features(
         tabular_all, video_key_to_nid, num_nodes,
-        feature_cols=REAL_RAW_TABULAR_FEATURE_COLS,
+        feature_cols=tabular_feature_cols_used,
     )
-    print(f"  Tabular features: {tabular_feat.shape}")
+    print(f"  Tabular features: {tabular_feat.shape} ({len(tabular_feature_cols_used)} cols)")
 
     # Combine: [type_onehot | deg_features | tabular_feat]
     node_features = np.concatenate([type_onehot, deg_features, tabular_feat], axis=1)
     feature_dim = node_features.shape[1]
 
     # Build feature column names for metadata
-    type_onehot_cols = [f"node_type_{t}" for t in REAL_RAW_NODE_TYPES]
+    type_onehot_cols = [f"node_type_{t}" for t in node_types]
     degree_cols = ["total_degree", "in_degree", "out_degree"]
-    feature_columns = type_onehot_cols + degree_cols + list(REAL_RAW_TABULAR_FEATURE_COLS)
+    feature_columns = type_onehot_cols + degree_cols + tabular_feature_cols_used
     print(f"  Total feature dim: {feature_dim}")
-    print(f"  Feature columns: {feature_columns}")
+    print(f"  Feature columns: {len(feature_columns)}")
 
     # ========================================================================
     # 6. Build labels and masks (train/val/test three-way)
@@ -587,15 +683,19 @@ def main() -> None:
 
     # --- 7i. graph_meta.json ---
     node_type_counts_dict: dict[str, int] = {}
-    for nt in REAL_RAW_NODE_TYPES:
+    for nt in node_types:
         node_type_counts_dict[nt] = sum(1 for t in node_type_map.values() if t == nt)
 
     forward_edge_type_counts: dict[str, int] = defaultdict(int)
     for _, row in edges_df[edges_df["is_reverse"] == False].iterrows():
         forward_edge_type_counts[row["edge_type"]] += 1
 
+    label_def_str = "离线实验伪标签: interaction_score >= P60, 继承自 tabular"
+    label_source_str = str(feature_dir / "tabular_train/val/test.csv")
+
     graph_meta = {
-        "dataset_name": "real_raw_1000",
+        "dataset_name": dataset_name,
+        "dataset_variant": dataset_variant,
         "num_nodes": num_nodes,
         "num_edges_forward": int(edges_df[edges_df["is_reverse"] == False].shape[0]),
         "num_edges_bidirectional": num_edges,
@@ -610,18 +710,23 @@ def main() -> None:
         "test_node_count": test_count,
         "unlabeled_node_count": unlabeled_count,
         "feature_columns": feature_columns,
-        "label_definition": "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
-        "label_source": "data/features/real_raw_1000/tabular_train/val/test.csv",
-        "split_definition": "train/val/test 三路切分（700/150/150），继承自 tabular，按 video_id 分层",
+        "tabular_feature_cols_used": tabular_feature_cols_used,
+        "tabular_feature_info_source": str(tabular_feature_info_path),
+        "label_definition": label_def_str,
+        "label_source": label_source_str,
+        "split_definition": (
+            "train/val/test 三路切分，继承自 tabular，按 video_id 分层"
+        ),
         "edge_direction": (
             "bidirectional: 每条边同时输出正向 (is_reverse=False) 和反向 (is_reverse=True)"
         ),
         "graph_type": "simplified homogeneous (all node types in single node_id space)",
+        "node_types_used": node_types,
         "source_tables_used": list(RAW_FILE_MAP.keys()),
         "tabular_data_used": [
-            "data/features/real_raw_1000/tabular_train.csv",
-            "data/features/real_raw_1000/tabular_val.csv",
-            "data/features/real_raw_1000/tabular_test.csv",
+            str(tabular_train_path),
+            str(tabular_val_path),
+            str(tabular_test_path),
         ],
         "edge_definitions": {
             "video_author": "raw_video_detail.video_id -> author_id",
@@ -643,14 +748,13 @@ def main() -> None:
             "raw_video_tag (0 rows, tag nodes skipped)",
             "raw_chapter (0 rows, no handling needed)",
         ],
-        "node_types_used": REAL_RAW_NODE_TYPES,
-        "tabular_feature_cols_used": REAL_RAW_TABULAR_FEATURE_COLS,
+        "leakage_control": leakage_info,
         "test_split_note": (
             "test_mask 仅用于最终泛化评估，不得用于训练、调参或特征标准化拟合"
         ),
         "warnings": warnings,
         "notes": [
-            "当前图数据基于 real_raw_1000 真实网页端 raw 数据构建。",
+            f"当前图数据基于 {dataset_name} 真实网页端 raw 数据构建。",
             "related_video_id 来自真实搜索/推荐响应，非规则生成 ID。",
             "hashtag_id, music_id 来自真实页面响应。",
             "raw_video_tag 为空表，不包含 tag 节点和 video-tag 边。",
@@ -690,7 +794,8 @@ def main() -> None:
     # --- 8a. graph_dataset_report.json ---
     report = {
         "build_success": True,
-        "dataset_name": "real_raw_1000",
+        "dataset_name": dataset_name,
+        "dataset_variant": dataset_variant,
         "num_nodes": num_nodes,
         "num_edges_forward": int(edges_df[edges_df["is_reverse"] == False].shape[0]),
         "num_edges_bidirectional": num_edges,
@@ -721,8 +826,9 @@ def main() -> None:
         "unmapped_edge_summary": dict(unmapped_edge_counts),
         "feature_dim": feature_dim,
         "feature_columns": feature_columns,
-        "tabular_feature_cols_used": REAL_RAW_TABULAR_FEATURE_COLS,
-        "node_types_used": REAL_RAW_NODE_TYPES,
+        "tabular_feature_cols_used": tabular_feature_cols_used,
+        "node_types_used": node_types,
+        "leakage_control": leakage_info,
         "empty_tables_handled": [
             "raw_video_tag (0 rows, skipped tag nodes)",
             "raw_chapter (0 rows, skipped)",
@@ -730,7 +836,7 @@ def main() -> None:
         "music_empty_skipped": music_empty,
         "warnings": warnings,
         "notes": [
-            "当前图数据检查报告基于 real_raw_1000 真实网页端 raw 数据构建。",
+            f"当前图数据检查报告基于 {dataset_name} 真实网页端 raw 数据构建。",
             "孤立节点是预期行为（无关联边的节点不影响主视频监督训练）。",
             "所有边已输出双向。",
             "test_mask 仅用于最终泛化评估，不得用于训练或调参。",
@@ -756,7 +862,7 @@ def main() -> None:
     # Summary
     # ========================================================================
     print("\n" + "=" * 60)
-    print("  GraphSAGE 图数据集构建完成 (real_raw_1000)!")
+    print(f"  GraphSAGE 图数据集构建完成 ({dataset_name})!")
     print("=" * 60)
     print(f"  总节点数:         {num_nodes}")
     print(f"    主视频:          {len(main_video_ids)}")
@@ -772,6 +878,7 @@ def main() -> None:
     print(f"    其中 test:      {test_count}")
     print(f"  无标签节点:        {unlabeled_count}")
     print(f"  孤立节点:          {len(isolated_indices)}")
+    print(f"  泄漏控制:          {'通过' if leakage_control_passed else '未启用'}")
     print(f"  Warnings:          {len(warnings)}")
     for w in warnings:
         print(f"    - {w}")

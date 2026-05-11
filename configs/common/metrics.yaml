@@ -18,7 +18,7 @@ ranking:
   recall_at_k: true
 
 # Precision@K 和 Recall@K 的 K 值列表
-k_values: [5, 10, 20]
+k_values: [5, 10, 20, 50]
 
 # 二分类阈值（默认 0.5）
 threshold: 0.5

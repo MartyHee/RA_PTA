@@ -1,0 +1,73 @@
+# =============================================================================
+# Multimodal 数据集构建配置 — real_raw_5000 (no_interaction_leakage)
+# =============================================================================
+# 基于 real_raw_5000 真实网页端 raw 数据，结合 tabular train/val/test split，
+# 构建 text / visual / structured 三模态 npz 输入文件。
+#
+# 设计要点：
+#   1. 使用现有 train/val/test split，不重新切分。
+#   2. 与 tabular 的 video_id 和 label 完全对齐。
+#   3. text_features 基于 TF-IDF + SVD (fit on train only)。
+#   4. visual_features 仅使用 raw_video_media 元信息，不下载图片。
+#   5. structured_features 复用 tabular 数值+文本统计特征 (z-score, fit on train only)。
+#   6. 严格禁止 digg_count/comment_count/share_count/collect_count 进入任何模态。
+#   7. interaction_score 仅作为审计列，不进入模型特征。
+# =============================================================================
+
+dataset_name: real_raw_5000
+run_id: real_raw_5000
+
+# ---------------------------------------------------------------------------
+# 数据源路径（相对于项目根目录）
+# ---------------------------------------------------------------------------
+raw_data_root: douyin_data_project/data/interim/real_raw_5000
+tabular_dir: data/features/real_raw_5000
+multimodal_output_dir: data/multimodal/real_raw_5000
+data_check_output_dir: outputs/data_check/real_raw_5000
+
+# ---------------------------------------------------------------------------
+# 输入文件映射
+# ---------------------------------------------------------------------------
+tables:
+  video_detail: raw_video_detail_real_raw_5000.csv
+  author: raw_author_real_raw_5000.csv
+  music: raw_music_real_raw_5000.csv
+  hashtag: raw_hashtag_real_raw_5000.csv
+  video_media: raw_video_media_real_raw_5000.csv
+  comment: raw_comment_real_raw_5000.csv
+  chapter: raw_chapter_real_raw_5000.csv
+  video_tag: raw_video_tag_real_raw_5000.csv
+
+tabular_train: tabular_train.csv
+tabular_val: tabular_val.csv
+tabular_test: tabular_test.csv
+tabular_feature_info: tabular_feature_info.json
+
+# ---------------------------------------------------------------------------
+# 文本特征参数
+# ---------------------------------------------------------------------------
+text_dim: 32
+random_seed: 2026
+
+# ---------------------------------------------------------------------------
+# 泄漏控制配置
+# ---------------------------------------------------------------------------
+leakage_control:
+  excluded_label_source_features:
+    - digg_count
+    - comment_count
+    - share_count
+    - collect_count
+  audit_id_cols:
+    - sample_id
+    - video_id
+    - author_id
+    - interaction_score
+  enforce_strict_deletion: true
+
+# ---------------------------------------------------------------------------
+# 当前阶段约束
+# ---------------------------------------------------------------------------
+no_image_download: true
+no_external_api: true
+no_large_pretrained_model: true

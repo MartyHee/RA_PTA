@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605111642",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4546423361701834,
+    "auc": 0.8413222222222223,
+    "accuracy": 0.7453333333333333,
+    "precision": 0.646112600536193,
+    "recall": 0.8033333333333333,
+    "f1": 0.7161961367013373,
+    "precision_at_k": {
+      "precision_at_5": 0.8,
+      "precision_at_10": 0.9,
+      "precision_at_20": 0.9,
+      "precision_at_50": 0.88
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.14666666666666667
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 16:43:11"
+  },
+  "test_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605111642",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.49336249421999423,
+    "auc": 0.7843037037037037,
+    "accuracy": 0.7093333333333334,
+    "precision": 0.6056701030927835,
+    "recall": 0.7833333333333333,
+    "f1": 0.6831395348837209,
+    "precision_at_k": {
+      "precision_at_5": 0.6,
+      "precision_at_10": 0.7,
+      "precision_at_20": 0.8,
+      "precision_at_50": 0.64
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.01,
+      "recall_at_10": 0.023333333333333334,
+      "recall_at_20": 0.05333333333333334,
+      "recall_at_50": 0.10666666666666667
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 16:43:11"
+  },
+  "generated_at": "2026-05-11 16:43:11"
+}

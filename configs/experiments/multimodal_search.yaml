@@ -1,0 +1,83 @@
+# =============================================================================
+# Multimodal 随机搜索通用实验配置
+# =============================================================================
+# 本配置描述一次 Multimodal 模型超参随机搜索实验。
+#
+# 与 datasets.yaml 配合：
+#   - dataset_name + dataset_variant 决定数据来源
+#   - base_model_config_path 决定模型结构默认值
+#   - search_space 定义搜索范围
+#   - 输出目录由 dataset_name + variant 自动生成
+#
+# 用法示例（在项目根目录执行）：
+#   python src/experiment/search_multimodal.py \
+#       --config configs/experiments/multimodal_search.yaml \
+#       --num-trials 20
+#
+# 禁止为每个数据集复制本配置。如果数据集路径有差异，
+# 应优先在 datasets.yaml 中注册新数据集/variant。
+# =============================================================================
+
+# 实验元信息
+experiment_name: multimodal_random_search
+dataset_name: real_raw_5000
+dataset_variant: no_interaction_leakage
+
+# 基础模型配置（不含数据集路径，仅含模型结构和训练默认值）
+base_model_config_path: configs/multimodal/multimodal_base.yaml
+
+# ---------------------------------------------------------------------------
+# 搜索空间
+# learning_rate / weight_decay: 对数均匀采样
+# dropout: 均匀采样
+# hidden_dim / batch_size: 离散值
+# ---------------------------------------------------------------------------
+search_space:
+  learning_rate:
+    min: 0.00001
+    max: 0.01
+    scale: log
+  weight_decay:
+    min: 0.000001
+    max: 0.01
+    scale: log
+  dropout:
+    min: 0.1
+    max: 0.5
+    scale: uniform
+  hidden_dim:
+    values: [16, 32, 64]
+  batch_size:
+    values: [32, 64, 128]
+
+# ---------------------------------------------------------------------------
+# 调优设置
+# ---------------------------------------------------------------------------
+num_trials: 20
+random_seed: 2026
+
+# ---------------------------------------------------------------------------
+# 排序指标
+# ---------------------------------------------------------------------------
+primary_metric: val_auc
+secondary_metric: val_f1
+
+# ---------------------------------------------------------------------------
+# 模型训练默认值（可被 trial 超参数覆盖）
+# ---------------------------------------------------------------------------
+model_defaults:
+  epochs: 50
+  early_stopping_patience: 8
+  threshold: 0.5
+  device: cuda
+  no_image_download: true
+  no_external_api: true
+  no_large_pretrained_model: true
+
+# ---------------------------------------------------------------------------
+# 来源追溯（可选，记录本实验基于哪次调优）
+# ---------------------------------------------------------------------------
+source_reference: null
+# source_reference:
+#   tuning_run_id: "20260509000636"
+#   experiment: "real_raw_1000_tuned"

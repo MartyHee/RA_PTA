@@ -87,7 +87,7 @@ def evaluate(
         all_labels_arr, all_scores_arr, all_preds_arr, threshold
     )
 
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
     pk_metrics, pk_warnings = compute_precision_at_k(
         all_labels_arr, all_scores_arr, k_values
     )
@@ -127,6 +127,7 @@ def main() -> None:
     config = load_config(args.config)
     logger.info(f"配置加载完成: {args.config}")
     dataset_name = config.get("dataset_name", "sample0427")
+    dataset_variant = config.get("dataset_variant", "")
     model_name = config.get("model_name", "dnn")
 
     # ── 2. 生成 run_id ──────────────────────────────────────
@@ -195,6 +196,25 @@ def main() -> None:
 
         val_path = project_root / config["eval_data_path"]
         test_path = None
+
+    # ── 6a. 泄漏控制检查 ────────────────────────────────────
+    leakage_control_passed = True
+    leakage_check_errors: list[str] = []
+    leakage_report_path_cfg = config.get("leakage_report_path")
+    if leakage_report_path_cfg:
+        lr_path = project_root / leakage_report_path_cfg
+        if lr_path.exists():
+            with open(lr_path, "r", encoding="utf-8") as f:
+                lr_report = json.load(f)
+            leakage_control_passed = lr_report.get("leakage_check_passed", False)
+            if not leakage_control_passed:
+                msg = f"泄漏检查未通过: {lr_report.get('errors', [])}"
+                leakage_check_errors.append(msg)
+                logger.error(msg)
+                sys.exit(1)
+            logger.info(f"泄漏检查已通过: {lr_path}")
+        else:
+            logger.warning(f"泄漏检查报告不存在: {lr_path}")
 
     logger.info(f"数值特征数: {len(numeric_cols)}, 类别特征数: {len(categorical_cols)}")
     logger.info(f"数值特征: {numeric_cols}")
@@ -418,6 +438,7 @@ def main() -> None:
                 "split": split_name,
                 "model_name": model_name,
                 "dataset_name": dataset_name,
+                "dataset_variant": dataset_variant,
                 "run_id": run_id,
             }
         )
@@ -439,6 +460,7 @@ def main() -> None:
         return {
             "model_name": model_name,
             "dataset_name": dataset_name,
+            "dataset_variant": dataset_variant,
             "run_id": run_id,
             "split": split,
             "sample_count": len(eval_result["labels"]),
@@ -474,6 +496,8 @@ def main() -> None:
     # ── 17. 保存特征配置 ────────────────────────────────────
     feature_config = processor.get_config()
     feature_config["dataset_name"] = dataset_name
+    feature_config["dataset_variant"] = dataset_variant
+    feature_config["leakage_control_passed"] = leakage_control_passed
     feature_config["label_definition"] = label_definition
     feature_config["author_id_as_categorical"] = "author_id" in categorical_cols
     if text_stat_cols_used:
@@ -502,6 +526,15 @@ def main() -> None:
     run_meta = {
         "model_name": model_name,
         "dataset_name": dataset_name,
+        "dataset_variant": dataset_variant,
+        "leakage_control_passed": leakage_control_passed,
+        "feature_profile": {
+            "numeric_count": len(numeric_cols),
+            "categorical_count": len(categorical_cols),
+            "text_stat_count": len(text_stat_cols_used),
+            "total_features": len(numeric_cols) + len(categorical_cols),
+            "feature_source": str(feature_info_path),
+        },
         "run_id": run_id,
         "output_dir": str(output_dir),
         "train_started_at": train_started_at,

@@ -1,0 +1,42 @@
+# =============================================================================
+# 数据集中心注册表
+# =============================================================================
+# 本文件是数据集的单一事实来源。后续新增数据集只需在此注册，
+# 即可被通用实验入口（search_multimodal.py 等）发现和使用。
+#
+# 原则：
+#   1. 每个数据集可以有多个 variant（如 no_interaction_leakage）。
+#   2. 每个 variant 定义该数据集在三模态数据构建完成后的产物路径。
+#   3. 模型训练脚本通过 dataset_name + variant 在此查找路径，
+#      而非在模型配置中硬编码 dataset-specific 路径。
+#   4. 构建脚本（build_*.py）的输入输出路径仍由各自的构建配置管理。
+#   5. 本注册表是供实验/训练入口查询的产物路径索引，不是构建配置。
+# =============================================================================
+
+datasets:
+  # ---------------------------------------------------------------------------
+  # real_raw_1000 — 1000 条样本，历史参照组
+  # ---------------------------------------------------------------------------
+  real_raw_1000:
+    description: "1000 条样本，含泄漏的历史实验数据"
+    raw_config: configs/common/real_raw_1000.yaml
+    variants:
+      default:
+        train_npz_path: data/multimodal/real_raw_1000/multimodal_train.npz
+        val_npz_path: data/multimodal/real_raw_1000/multimodal_val.npz
+        test_npz_path: data/multimodal/real_raw_1000/multimodal_test.npz
+        feature_info_path: data/multimodal/real_raw_1000/multimodal_feature_info.json
+
+  # ---------------------------------------------------------------------------
+  # real_raw_5000 — 5000 条样本，当前主数据源
+  # ---------------------------------------------------------------------------
+  real_raw_5000:
+    description: "5000 条样本，当前主线数据源"
+    raw_config: configs/common/real_raw_5000.yaml
+    variants:
+      no_interaction_leakage:
+        train_npz_path: data/multimodal/real_raw_5000/multimodal_train.npz
+        val_npz_path: data/multimodal/real_raw_5000/multimodal_val.npz
+        test_npz_path: data/multimodal/real_raw_5000/multimodal_test.npz
+        feature_info_path: data/multimodal/real_raw_5000/multimodal_feature_info.json
+        leakage_report_path: outputs/data_check/real_raw_5000/multimodal_leakage_check_report.json

@@ -1,0 +1,45 @@
+# =============================================================================
+# DNN 模型配置 — real_raw_5000 no_interaction_leakage
+# =============================================================================
+# 基于 real_raw_5000 tabular 数据训练 DNN 二分类模型。
+# 使用 train/val/test 三路切分，val 选 best epoch，test 做最终评估。
+# 已实施 no_interaction_leakage 控制。
+# =============================================================================
+
+model_name: dnn
+dataset_name: real_raw_5000
+dataset_variant: no_interaction_leakage
+
+# 数据输入路径（相对于项目根目录）
+train_data_path: data/features/real_raw_5000/tabular_train.csv
+val_data_path: data/features/real_raw_5000/tabular_val.csv
+test_data_path: data/features/real_raw_5000/tabular_test.csv
+feature_info_path: data/features/real_raw_5000/tabular_feature_info.json
+leakage_report_path: outputs/data_check/real_raw_5000/real_raw_5000_leakage_check_report.json
+
+# DNN 网络结构
+hidden_units: [64, 32]
+dropout: 0.3
+activation: relu
+
+# 训练超参数
+batch_size: 128
+learning_rate: 0.001
+weight_decay: 0.0001
+epochs: 50
+early_stopping_patience: 10
+
+# 优化器 / 损失函数
+optimizer: adam
+loss: bce
+
+# 随机种子与阈值
+random_seed: 2026
+threshold: 0.5
+device: cuda
+
+# 输出根目录（相对于项目根目录）
+output_root: outputs/dnn/real_raw_5000
+
+# best model 选择依据
+early_stopping_metric: val_loss

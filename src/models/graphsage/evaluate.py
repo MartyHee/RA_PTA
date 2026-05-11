@@ -109,6 +109,7 @@ def main() -> None:
     project_root = Path(_project_root)
     output_root = project_root / config["output_root"]
     dataset_name = config.get("dataset_name", None)
+    dataset_variant = config.get("dataset_variant", "")
 
     # ── 2. 确定输出目录 ─────────────────────────────────────
     if args.output_dir:
@@ -201,7 +202,7 @@ def main() -> None:
     edge_index = graph_data.edge_index.to(device)
     y = graph_data.labels.to(device)
     threshold = config.get("threshold", 0.5)
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
     criterion = nn.BCEWithLogitsLoss()
 
     run_id_str = run_dir.name
@@ -230,6 +231,7 @@ def main() -> None:
         return {
             "model_name": "graphsage",
             "dataset_name": dataset_name or "",
+            "dataset_variant": dataset_variant,
             "run_id": run_id_str,
             "split": split_name,
             "sample_count": len(result["labels"]),
@@ -278,6 +280,7 @@ def main() -> None:
                 "split": split_name,
                 "model_name": "graphsage",
                 "dataset_name": dataset_name or "",
+                "dataset_variant": dataset_variant,
                 "run_id": run_id_str,
             }
         )

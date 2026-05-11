@@ -98,7 +98,10 @@ def main() -> None:
     logger.info(f"配置加载完成: {args.config}")
 
     dataset_name = config.get("dataset_name", None)
+    dataset_variant = config.get("dataset_variant", "")
     logger.info(f"数据集: {dataset_name or '(legacy, no dataset_name)'}")
+    if dataset_variant:
+        logger.info(f"数据集变体: {dataset_variant}")
 
     # ── 2. 生成 run_id ──────────────────────────────────────
     run_id = datetime.now().strftime("%Y%m%d%H%M")
@@ -150,6 +153,19 @@ def main() -> None:
 
     if graph_data.test_labeled_mask is not None:
         logger.info(f"test_labeled={int(graph_data.test_labeled_mask.sum().item())}")
+
+    # ── 6b. 泄漏控制检查（从 graph_meta 读取） ─────────────────────
+    leakage_control_passed = True
+    if graph_data.graph_meta and "leakage_control" in graph_data.graph_meta:
+        lc = graph_data.graph_meta["leakage_control"]
+        leakage_control_passed = lc.get("leakage_control_passed", False)
+        if not leakage_control_passed:
+            logger.error("图数据的泄漏检查未通过，中止训练")
+            logger.error(f"泄漏控制信息: {lc}")
+            sys.exit(1)
+        logger.info(f"泄漏检查已通过: {lc.get('excluded_label_source_features', [])}")
+    else:
+        logger.warning("graph_meta 中未找到 leakage_control 信息，跳过泄漏检查")
 
     # ── 6a. 特征标准化（可选） ──────────────────────────────────
     norm_config = config.get("feature_normalization", {})
@@ -211,7 +227,7 @@ def main() -> None:
     # ── 10. 训练循环 ───────────────────────────────────────
     epochs = config.get("epochs", 20)
     threshold = config.get("threshold", 0.5)
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
 
     # 早停配置
     es_config = config.get("early_stopping", {})
@@ -341,6 +357,7 @@ def main() -> None:
             "split": "val",
             "model_name": "graphsage",
             "dataset_name": dataset_name or "",
+            "dataset_variant": dataset_variant,
             "run_id": run_id,
         }
     )
@@ -364,6 +381,7 @@ def main() -> None:
                 "split": "test",
                 "model_name": "graphsage",
                 "dataset_name": dataset_name or "",
+                "dataset_variant": dataset_variant,
                 "run_id": run_id,
             }
         )
@@ -420,6 +438,7 @@ def main() -> None:
         return {
             "model_name": "graphsage",
             "dataset_name": dataset_name or "",
+            "dataset_variant": dataset_variant,
             "run_id": run_id,
             "split": split_name,
             "sample_count": len(result["labels"]),
@@ -447,9 +466,16 @@ def main() -> None:
 
     # ── 17. 保存 run_meta.json ──────────────────────────────
     graph_meta = graph_data.graph_meta or {}
+    # Build feature profile
+    feature_columns = graph_meta.get("feature_columns", [])
+    tabular_cols_used = graph_meta.get("tabular_feature_cols_used", [])
+    node_type_cols = [c for c in feature_columns if c.startswith("node_type_")]
+    degree_cols = [c for c in feature_columns if c in ("total_degree", "in_degree", "out_degree")]
+
     run_meta = {
         "model_name": "graphsage",
         "dataset_name": dataset_name or "",
+        "dataset_variant": dataset_variant,
         "run_id": run_id,
         "output_dir": str(output_dir),
         "graph_dir": str(graph_data_dir),
@@ -475,6 +501,15 @@ def main() -> None:
         "early_stopping": es_enabled,
         "early_stopping_patience": es_patience if es_enabled else None,
         "feature_normalization_enabled": normalization_applied,
+        "leakage_control_passed": leakage_control_passed,
+        "feature_profile": {
+            "node_type_count": len(node_type_cols),
+            "degree_feature_count": len(degree_cols),
+            "tabular_feature_count": len(tabular_cols_used),
+            "total_features": feature_columns,
+            "feature_dim": graph_data.feature_dim,
+            "tabular_feature_source": graph_meta.get("tabular_feature_info_source", ""),
+        },
         "label_definition": label_definition,
         "warnings": [],
     }

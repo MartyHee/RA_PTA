@@ -1,0 +1,108 @@
+{
+  "dataset_name": "real_raw_5000",
+  "run_id": "real_raw_5000",
+  "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\real_raw_5000",
+  "quality_filter_mode": "full",
+  "output_train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_train.csv",
+  "output_val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_val.csv",
+  "output_test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv",
+  "output_feature_info_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_feature_info.json",
+  "original_total": 5000,
+  "filtered_total": 5000,
+  "train_rows": 3500,
+  "val_rows": 750,
+  "test_rows": 750,
+  "total_columns": 51,
+  "total_features": 45,
+  "numeric_feature_count": 26,
+  "categorical_feature_count": 2,
+  "text_stat_feature_count": 7,
+  "aggregation_feature_count": 9,
+  "wide_cross_feature_count": 1,
+  "excluded_fields": {
+    "raw_author": [
+      "crawl_time",
+      "sec_uid",
+      "unique_id",
+      "short_id",
+      "avatar_thumb_url_list"
+    ],
+    "raw_music": [
+      "crawl_time",
+      "music_mid",
+      "music_id",
+      "music_owner_id"
+    ],
+    "raw_video_media": [
+      "crawl_time",
+      "cover_uri",
+      "origin_cover_uri",
+      "dynamic_cover_uri",
+      "video_format",
+      "video_ratio",
+      "bit_rate_raw",
+      "big_thumbs_raw",
+      "video_meta_raw"
+    ]
+  },
+  "excluded_label_source_features": [
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count"
+  ],
+  "excluded_potential_leakage_cols": [
+    "max_comment_digg_count",
+    "avg_related_digg_count",
+    "avg_related_comment_count",
+    "play_count",
+    "recommend_count",
+    "admire_count"
+  ],
+  "label_summary": {
+    "method": "interaction_binary",
+    "threshold": 10039.6,
+    "pos_count": 2000,
+    "neg_count": 3000,
+    "pos_ratio": 0.4,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)"
+  },
+  "split_summary": {
+    "method": "stratified_by_label",
+    "seed": 2026,
+    "train_size": 3500,
+    "val_size": 750,
+    "test_size": 750
+  },
+  "split_exclusivity": {
+    "exclusive": true,
+    "details": {}
+  },
+  "test_split_note": "test split 仅用于最终泛化评估，不得用于调参或早停。val split 用于训练过程中选 best epoch、早停和超参数调优。",
+  "empty_tables_handled": [
+    "video_tag",
+    "chapter"
+  ],
+  "missing_summary": {},
+  "warnings": [
+    "none-match 样本 0 条 (0.0%) 中互动字段覆盖率较低。",
+    "play_count 已被排除（潜在泄漏字段）。",
+    "当前样本量 5000 条，train/val/test 三路切分后 test 约 750 条。",
+    "raw_video_tag 当前为空表，不作为特征来源。",
+    "raw_chapter 当前为空表，不作为特征来源。",
+    "digg_count/comment_count/share_count/collect_count 已从特征中排除 (leakage control)。",
+    "max_comment_digg_count/avg_related_digg_count/avg_related_comment_count 等 潜在泄漏字段已从聚合特征中排除。",
+    "interaction_score 仅作为审计列保留，不进入模型特征。"
+  ],
+  "generated_at": "2026-05-11 13:58:34",
+  "known_limitations": [
+    "real_raw_5000 来自公开网页端，不代表平台内部完整数据。",
+    "当前没有真实曝光、点击、完播、转化、留存标签。",
+    "标签为 interaction_score 分位数伪标签，仅用于离线多模型对比。",
+    "raw_video_tag 当前为空。",
+    "raw_chapter 当前为空。",
+    "none-match 样本占 0.0%，部分互动字段覆盖率低。",
+    "评论和相关推荐不是每个视频都触发。",
+    "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
+  ]
+}

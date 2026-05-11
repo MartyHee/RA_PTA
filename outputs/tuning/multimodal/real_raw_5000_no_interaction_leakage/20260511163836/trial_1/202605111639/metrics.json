@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605111639",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.48736330395427735,
+    "auc": 0.7774555555555556,
+    "accuracy": 0.676,
+    "precision": 0.5566600397614314,
+    "recall": 0.9333333333333333,
+    "f1": 0.6973848069738481,
+    "precision_at_k": {
+      "precision_at_5": 0.8,
+      "precision_at_10": 0.9,
+      "precision_at_20": 0.95,
+      "precision_at_50": 0.78
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06333333333333334,
+      "recall_at_50": 0.13
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 16:39:34"
+  },
+  "test_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605111639",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.5055537262021241,
+    "auc": 0.7699037037037038,
+    "accuracy": 0.6813333333333333,
+    "precision": 0.5594541910331384,
+    "recall": 0.9566666666666667,
+    "f1": 0.7060270602706027,
+    "precision_at_k": {
+      "precision_at_5": 0.6,
+      "precision_at_10": 0.7,
+      "precision_at_20": 0.8,
+      "precision_at_50": 0.76
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.01,
+      "recall_at_10": 0.023333333333333334,
+      "recall_at_20": 0.05333333333333334,
+      "recall_at_50": 0.12666666666666668
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-11 16:39:34"
+  },
+  "generated_at": "2026-05-11 16:39:34"
+}

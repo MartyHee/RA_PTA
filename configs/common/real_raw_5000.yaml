@@ -1,0 +1,90 @@
+# =============================================================================
+# real_raw_5000 数据读取配置
+# =============================================================================
+# 数据包: real_raw_5000
+# 采集 run_ids: 20260509_212100, 20260510_151052, 20260510_183114,
+#               20260510_210600, 20260511_084923
+# 交付说明: real_raw_5000_delivery.md
+# =============================================================================
+
+dataset_name: "real_raw_5000"
+run_id: "real_raw_5000"
+root: "douyin_data_project/data/interim/real_raw_5000"
+delivery_doc: "real_raw_5000_delivery.md"
+expected_unique_video_ids: 5000
+
+# quality_filter 配置（供后续构建阶段使用）
+quality_filter:
+  mode: "full"  # full / high_confidence
+
+# high-confidence 辅助文件路径
+high_confidence_video_ids: "douyin_data_project/data/processed/real_raw_5000/high_confidence_video_ids.txt"
+
+tables:
+  video_detail: "raw_video_detail_real_raw_5000.csv"
+  author: "raw_author_real_raw_5000.csv"
+  music: "raw_music_real_raw_5000.csv"
+  hashtag: "raw_hashtag_real_raw_5000.csv"
+  video_tag: "raw_video_tag_real_raw_5000.csv"
+  video_media: "raw_video_media_real_raw_5000.csv"
+  video_status_control: "raw_video_status_control_real_raw_5000.csv"
+  chapter: "raw_chapter_real_raw_5000.csv"
+  comment: "raw_comment_real_raw_5000.csv"
+  related_video: "raw_related_video_real_raw_5000.csv"
+  crawl_log: "raw_crawl_log_real_raw_5000.csv"
+
+# 关键表检查列表（预期非空）
+critical_tables:
+  - video_detail
+  - author
+  - music
+  - video_media
+  - video_status_control
+  - crawl_log
+
+# 空表白名单（允许 0 行）
+allowed_empty_tables:
+  - video_tag
+  - chapter
+
+# 字段检查：关键表的关键字段
+key_field_checks:
+  video_detail:
+    - video_id
+    - author_id
+  author:
+    - author_id
+  crawl_log:
+    - match_type
+    - confidence
+
+# 跨表关联检查
+relation_checks:
+  - source: video_detail
+    source_key: author_id
+    target: author
+    target_key: author_id
+  - source: music
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: video_media
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: video_status_control
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: hashtag
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: comment
+    source_key: video_id
+    target: video_detail
+    target_key: video_id
+  - source: related_video
+    source_key: source_video_id
+    target: video_detail
+    target_key: video_id

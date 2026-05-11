@@ -1,0 +1,30 @@
+{
+  "model_name": "wide_deep",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "no_interaction_leakage",
+  "run_id": "202605111921",
+  "output_dir": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_5000\\202605111921",
+  "train_started_at": "2026-05-11 19:21:33",
+  "train_finished_at": "2026-05-11 19:21:40",
+  "config_path": "configs/wide_deep/wide_deep_real_raw.yaml",
+  "train_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_train.csv",
+  "val_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_val.csv",
+  "test_path": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv",
+  "best_epoch": 11,
+  "best_val_loss": 0.481218,
+  "final_train_loss": 0.431898,
+  "final_val_loss": 0.488898,
+  "device": "cuda",
+  "num_params": 25966,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "feature_profile": {
+    "numeric_count": 33,
+    "categorical_count": 2,
+    "wide_count": 1,
+    "text_stat_count": 7,
+    "total_features": 36,
+    "feature_source": "d:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_feature_info.json"
+  },
+  "leakage_control_passed": true,
+  "warnings": []
+}

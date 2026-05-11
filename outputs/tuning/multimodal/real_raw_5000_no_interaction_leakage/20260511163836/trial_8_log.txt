@@ -1,0 +1,59 @@
+STDOUT:
+2026-05-11 16:41:45 | INFO | multimodal_train | 配置加载完成: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8_config.yaml
+2026-05-11 16:41:45 | INFO | multimodal_train | Run ID: 202605111641
+2026-05-11 16:41:45 | INFO | multimodal_train | Dataset: real_raw_5000
+2026-05-11 16:41:45 | INFO | multimodal_train | 输出目录: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641
+2026-05-11 16:41:45 | INFO | multimodal_train | 模态维度: text=32, visual=18, structured=33
+2026-05-11 16:41:45 | INFO | multimodal_train | 泄漏检查已通过: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\data_check\real_raw_5000\multimodal_leakage_check_report.json
+2026-05-11 16:41:45 | INFO | multimodal_train | 测试样本: 750
+2026-05-11 16:41:45 | INFO | multimodal_train | 训练样本: 3500 (正=1400, 负=2100)
+2026-05-11 16:41:45 | INFO | multimodal_train | 验证样本: 750 (正=300, 负=450)
+2026-05-11 16:41:45 | INFO | multimodal_train | 设备: cuda
+2026-05-11 16:41:45 | INFO | multimodal_train | 模型参数数: 7697
+2026-05-11 16:41:45 | INFO | multimodal_train | 模型结构: text(32->32), visual(18->16), structured(33->32), fusion->64->1
+2026-05-11 16:41:46 | INFO | multimodal_train | Epoch  1/50 | train_loss: 2.7251 | val_loss: 0.5025 | AUC: 0.7860  *
+2026-05-11 16:41:47 | INFO | multimodal_train | Epoch  2/50 | train_loss: 0.7861 | val_loss: 0.4922 | AUC: 0.7929  *
+2026-05-11 16:41:48 | INFO | multimodal_train | Epoch  3/50 | train_loss: 0.5219 | val_loss: 0.4850 | AUC: 0.8228  *
+2026-05-11 16:41:48 | INFO | multimodal_train | Epoch  4/50 | train_loss: 0.5083 | val_loss: 0.4778 | AUC: 0.8245  *
+2026-05-11 16:41:49 | INFO | multimodal_train | Epoch  5/50 | train_loss: 0.4945 | val_loss: 0.4720 | AUC: 0.8351  *
+2026-05-11 16:41:50 | INFO | multimodal_train | Epoch  6/50 | train_loss: 0.4934 | val_loss: 0.4647 | AUC: 0.8348  *
+2026-05-11 16:41:50 | INFO | multimodal_train | Epoch  7/50 | train_loss: 0.4846 | val_loss: 0.4609 | AUC: 0.8351  *
+2026-05-11 16:41:51 | INFO | multimodal_train | Epoch  8/50 | train_loss: 0.4885 | val_loss: 0.4590 | AUC: 0.8337  *
+2026-05-11 16:41:52 | INFO | multimodal_train | Epoch  9/50 | train_loss: 0.4871 | val_loss: 0.4606 | AUC: 0.8343
+2026-05-11 16:41:52 | INFO | multimodal_train | Epoch 10/50 | train_loss: 0.4821 | val_loss: 0.4604 | AUC: 0.8301
+2026-05-11 16:41:53 | INFO | multimodal_train | Epoch 11/50 | train_loss: 0.4850 | val_loss: 0.4601 | AUC: 0.8340
+2026-05-11 16:41:53 | INFO | multimodal_train | Epoch 12/50 | train_loss: 0.4803 | val_loss: 0.4593 | AUC: 0.8343
+2026-05-11 16:41:54 | INFO | multimodal_train | Epoch 13/50 | train_loss: 0.4789 | val_loss: 0.4601 | AUC: 0.8332
+2026-05-11 16:41:55 | INFO | multimodal_train | Epoch 14/50 | train_loss: 0.4805 | val_loss: 0.4578 | AUC: 0.8334  *
+2026-05-11 16:41:56 | INFO | multimodal_train | Epoch 15/50 | train_loss: 0.4738 | val_loss: 0.4577 | AUC: 0.8355  *
+2026-05-11 16:41:56 | INFO | multimodal_train | Epoch 16/50 | train_loss: 0.4815 | val_loss: 0.4576 | AUC: 0.8360  *
+2026-05-11 16:41:57 | INFO | multimodal_train | Epoch 17/50 | train_loss: 0.4807 | val_loss: 0.4585 | AUC: 0.8333
+2026-05-11 16:41:58 | INFO | multimodal_train | Epoch 18/50 | train_loss: 0.4766 | val_loss: 0.4570 | AUC: 0.8351  *
+2026-05-11 16:41:58 | INFO | multimodal_train | Epoch 19/50 | train_loss: 0.4769 | val_loss: 0.4593 | AUC: 0.8321
+2026-05-11 16:41:59 | INFO | multimodal_train | Epoch 20/50 | train_loss: 0.4752 | val_loss: 0.4611 | AUC: 0.8297
+2026-05-11 16:42:00 | INFO | multimodal_train | Epoch 21/50 | train_loss: 0.4764 | val_loss: 0.4580 | AUC: 0.8343
+2026-05-11 16:42:00 | INFO | multimodal_train | Epoch 22/50 | train_loss: 0.4714 | val_loss: 0.4577 | AUC: 0.8311
+2026-05-11 16:42:01 | INFO | multimodal_train | Epoch 23/50 | train_loss: 0.4717 | val_loss: 0.4609 | AUC: 0.8288
+2026-05-11 16:42:02 | INFO | multimodal_train | Epoch 24/50 | train_loss: 0.4683 | val_loss: 0.4614 | AUC: 0.8304
+2026-05-11 16:42:02 | INFO | multimodal_train | Epoch 25/50 | train_loss: 0.4702 | val_loss: 0.4574 | AUC: 0.8339
+2026-05-11 16:42:03 | INFO | multimodal_train | Epoch 26/50 | train_loss: 0.4696 | val_loss: 0.4637 | AUC: 0.8283
+2026-05-11 16:42:03 | INFO | multimodal_train | Early stopping at epoch 26, best epoch: 18 (val_loss=0.457006)
+2026-05-11 16:42:03 | INFO | multimodal_train | 训练日志已保存: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641\train_log.csv
+2026-05-11 16:42:03 | INFO | multimodal_train | 加载最佳模型 (epoch 18, val_loss=0.457006)
+2026-05-11 16:42:03 | INFO | multimodal_train | 对 test split 进行最终评估...
+2026-05-11 16:42:04 | INFO | multimodal_train | 预测结果已保存: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641\predictions_val.csv (750 条)
+2026-05-11 16:42:04 | INFO | multimodal_train | 预测结果已保存: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641\predictions_test.csv (750 条)
+2026-05-11 16:42:04 | INFO | multimodal_train | 指标已保存: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641\metrics.json
+2026-05-11 16:42:04 | INFO | multimodal_train | 特征配置已保存: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641\feature_config_used.json
+2026-05-11 16:42:04 | INFO | multimodal_train | ============================================================
+2026-05-11 16:42:04 | INFO | multimodal_train | 训练完成！
+2026-05-11 16:42:04 | INFO | multimodal_train | Dataset: real_raw_5000
+2026-05-11 16:42:04 | INFO | multimodal_train | Run ID: 202605111641
+2026-05-11 16:42:04 | INFO | multimodal_train | 输出目录: D:\CodeData\Program Coding\ByteDance\RA_PTA\outputs\tuning\multimodal\real_raw_5000_no_interaction_leakage\20260511163836\trial_8\202605111641
+2026-05-11 16:42:04 | INFO | multimodal_train | Best epoch: 18 (val_loss=0.457006)
+2026-05-11 16:42:04 | INFO | multimodal_train | Val  AUC: 0.835062962962963, F1: 0.7116564417177914
+2026-05-11 16:42:04 | INFO | multimodal_train | Test AUC: 0.779525925925926, F1: 0.6596385542168675
+2026-05-11 16:42:04 | INFO | multimodal_train | ============================================================
+
+
+STDERR:

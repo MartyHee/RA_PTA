@@ -1,20 +1,22 @@
-"""Multimodal 数据集构建 — real_raw_1000
+"""Multimodal 数据集构建
 
-基于 real_raw_1000 真实网页端 raw 数据，结合 tabular train/val/test split，
+基于真实网页端 raw 数据，结合 tabular train/val/test split，
 构建 text / visual / structured 三模态 npz 输入文件。
+数据集名称、路径、表名由配置文件驱动。
 
 用法:
-    python src/data/build_multimodal_real_raw.py --config configs/multimodal/multimodal_real_raw_1000.yaml
+    python src/data/build_multimodal_real_raw.py --config configs/multimodal/multimodal_real_raw_5000.yaml
 
 输出:
-    data/multimodal/real_raw_1000/
+    data/multimodal/<dataset_name>/
         multimodal_train.npz
         multimodal_val.npz
         multimodal_test.npz
         multimodal_feature_info.json
-    outputs/data_check/real_raw_1000/
+    outputs/data_check/<dataset_name>/
         multimodal_dataset_report.json
         multimodal_dataset_preview.csv
+        multimodal_leakage_check_report.json
 """
 
 from __future__ import annotations
@@ -54,17 +56,101 @@ def load_raw_table(raw_dir: Path, filename: str, table_label: str) -> pd.DataFra
     if path.stat().st_size == 0:
         logger(f"  [WARN] 文件为空: {path} → 返回空 DataFrame")
         return pd.DataFrame()
-    df, enc = read_csv_safe(str(path))
+    try:
+        df, enc = read_csv_safe(str(path))
+    except pd.errors.EmptyDataError:
+        logger(f"  [WARN] 文件无解析列: {path} → 返回空 DataFrame")
+        return pd.DataFrame()
     logger(f"  [{table_label}] {len(df)} 行 x {len(df.columns)} 列 (编码: {enc})")
     return df
 
 
+def validate_multimodal_leakage(
+    structured_cols: list[str],
+    text_source_fields: dict[str, list[str]],
+    leakage_cfg: dict,
+    dataset_name: str,
+) -> dict:
+    """验证多模态特征中不包含泄漏字段。
+
+    Checks:
+      1. excluded_label_source_features 不在 structured_features 中
+      2. interaction_score 不在 structured_features 中
+      3. excluded_label_source_features 不在 text_source_fields 中
+
+    Returns:
+        leakage_check_report dict
+    """
+    excluded = leakage_cfg.get("excluded_label_source_features", [])
+    audit_id_cols = leakage_cfg.get("audit_id_cols", [])
+
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    # Check 1: excluded_label_source_features in structured_cols
+    found_in_struct = [f for f in excluded if f in structured_cols]
+    if found_in_struct:
+        errors.append(
+            f"泄漏字段 {found_in_struct} 出现在 structured_features 中"
+        )
+
+    # Check 2: interaction_score in structured_cols
+    if "interaction_score" in structured_cols:
+        errors.append("interaction_score 出现在 structured_features 中")
+
+    # Check 3: audit_id_cols (除 interaction_score 外) in structured_cols
+    audit_in_struct = [
+        c for c in audit_id_cols if c != "interaction_score" and c in structured_cols
+    ]
+    if audit_in_struct:
+        errors.append(f"审计列 {audit_in_struct} 出现在 structured_features 中")
+
+    # Check 4: excluded_label_source_features in text_source_fields
+    found_in_text = {}
+    for field in excluded:
+        sources = []
+        for table, cols in text_source_fields.items():
+            if field in cols:
+                sources.append(f"{table}.{field}")
+        if sources:
+            found_in_text[field] = sources
+    if found_in_text:
+        errors.append(
+            f"泄漏字段出现在 text 源字段中: {found_in_text}"
+        )
+
+    report = {
+        "dataset_name": dataset_name,
+        "leakage_check_passed": len(errors) == 0,
+        "excluded_label_source_features": {
+            "defined": excluded,
+            "found_in_structured_features": found_in_struct,
+            "found_in_text_sources": found_in_text,
+            "status": "ERROR" if found_in_struct or found_in_text else "OK",
+        },
+        "interaction_score_in_structured_features": {
+            "found": "interaction_score" in structured_cols,
+            "status": "ERROR" if "interaction_score" in structured_cols else "OK",
+        },
+        "audit_id_cols_in_structured_features": {
+            "defined": audit_id_cols,
+            "found_in_structured_features": audit_in_struct,
+            "status": "ERROR" if audit_in_struct else "OK",
+        },
+        "structured_feature_columns": structured_cols,
+        "text_source_fields": text_source_fields,
+        "errors": errors,
+        "warnings": warnings,
+    }
+    return report
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Multimodal 数据集构建 — real_raw_1000")
+    parser = argparse.ArgumentParser(description="Multimodal 数据集构建")
     parser.add_argument(
         "--config",
         type=str,
-        default=str(_PROJECT_ROOT / "configs/multimodal/multimodal_real_raw_1000.yaml"),
+        default=str(_PROJECT_ROOT / "configs/multimodal/multimodal_real_raw_5000.yaml"),
         help="配置文件路径",
     )
     args = parser.parse_args()
@@ -84,6 +170,7 @@ def main() -> None:
 
     text_dim = config.get("text_dim", 32)
     random_seed = config.get("random_seed", 2026)
+    leakage_cfg = config.get("leakage_control", {})
     notes: list[str] = []
     warnings: list[str] = []
     used_fallback = False
@@ -130,8 +217,8 @@ def main() -> None:
         "离线实验伪标签: interaction_score >= P60 (18147.80), 继承自 tabular",
     )
 
-    # ── 3. 加载 real_raw_1000 原始表 ────────────────────────────────────
-    logger("[build_multimodal_real_raw] 加载 real_raw_1000 原始表...")
+    # ── 3. 加载原始表 ────────────────────────────────────
+    logger(f"[build_multimodal_real_raw] 加载 {config['dataset_name']} 原始表...")
 
     video_detail = load_raw_table(raw_root, tables_cfg["video_detail"], "video_detail")
     author = load_raw_table(raw_root, tables_cfg["author"], "author")
@@ -372,8 +459,16 @@ def main() -> None:
     val_text_empty = int((val_text_vec.sum(axis=1) == 0).sum())
     test_text_empty = int((test_text_vec.sum(axis=1) == 0).sum())
 
+    text_source_fields = {
+        "video_detail": ["caption", "desc"],
+        "comment": ["comment_text"],
+        "hashtag": ["hashtag_name"],
+        "music": ["music_title", "music_author"],
+        "author": ["signature"],
+    }
+
     feature_info: dict[str, Any] = {
-        "dataset_name": "real_raw_1000",
+        "dataset_name": config["dataset_name"],
         "label_col": "label",
         "label_definition": label_definition,
         "train_size": len(train_vids_sorted),
@@ -385,13 +480,7 @@ def main() -> None:
         # text
         "text_feature_method": text_info.get("method", "unknown"),
         "text_dim": actual_text_dim,
-        "text_source_fields": {
-            "video_detail": ["caption", "desc"],
-            "comment": ["comment_text"],
-            "hashtag": ["hashtag_name"],
-            "music": ["music_title", "music_author"],
-            "author": ["signature"],
-        },
+        "text_source_fields": text_source_fields,
         "text_vectorizer_info": text_info,
         "text_empty_count_train": train_text_empty,
         "text_empty_count_val": val_text_empty,
@@ -425,7 +514,7 @@ def main() -> None:
         "warnings": warnings,
         "notes": notes
         + [
-            "本数据集基于 real_raw_1000 真实网页端 raw 数据构建。",
+            f"本数据集基于 {config['dataset_name']} 真实网页端 raw 数据构建。",
             "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",
             "text_features 基于 TF-IDF+SVD 或 HashingVectorizer，非大型语言模型。",
             "visual_features 仅使用媒体元信息（URL 存在性、尺寸、水印），未下载图片。",
@@ -441,6 +530,31 @@ def main() -> None:
     with open(info_json_path, "w", encoding="utf-8") as f:
         json.dump(feature_info, f, ensure_ascii=False, indent=2)
     logger(f"  feature_info: {info_json_path}")
+
+    # ── 8.5 泄漏验证 ─────────────────────────────────────────────────────
+    logger("[build_multimodal_real_raw] 执行多模态泄漏检查...")
+
+    leakage_report = validate_multimodal_leakage(
+        structured_cols=structured_cols,
+        text_source_fields=text_source_fields,
+        leakage_cfg=leakage_cfg,
+        dataset_name=config["dataset_name"],
+    )
+
+    if leakage_report["leakage_check_passed"]:
+        logger("  泄漏检查: 通过 OK")
+    else:
+        logger("  泄漏检查: 失败 FAILED")
+        for err in leakage_report["errors"]:
+            logger(f"    ERROR: {err}")
+        if leakage_cfg.get("enforce_strict_deletion", False):
+            logger("  enforce_strict_deletion=True → 终止")
+            sys.exit(1)
+
+    leakage_json_path = data_check_dir / "multimodal_leakage_check_report.json"
+    with open(leakage_json_path, "w", encoding="utf-8") as f:
+        json.dump(leakage_report, f, ensure_ascii=False, indent=2)
+    logger(f"  泄漏检查报告: {leakage_json_path}")
 
     # ── 9. 输出 multimodal_dataset_report.json ──────────────────────────
     logger("[build_multimodal_real_raw] 输出 multimodal_dataset_report.json...")
@@ -481,14 +595,18 @@ def main() -> None:
         "no_image_download_confirmed": True,
         "no_external_api_confirmed": True,
         "no_large_pretrained_model_confirmed": True,
+        "leakage_check": {
+            "passed": leakage_report["leakage_check_passed"],
+            "report_path": str(leakage_json_path),
+        },
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "warnings": warnings,
         "notes": [
-            "当前多模态数据集基于 real_raw_1000 真实网页端 raw 数据构建。",
+            f"当前多模态数据集基于 {config['dataset_name']} 真实网页端 raw 数据构建。",
             "text_features 基于 combined_text（desc + caption + comment + hashtag + music_title + signature）。",
             "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
             "structured_features 从 tabular 数值特征筛选，经 z-score 标准化（fit on train only）。",
-            "split 与 tabular 完全一致（train 700 / val 150 / test 150）。",
+            "split 与 tabular 完全一致。",
         ],
     }
 
@@ -531,7 +649,7 @@ def main() -> None:
     # ── 11. 摘要 ─────────────────────────────────────────────────────────
     logger("")
     logger("=" * 60)
-    logger("Multimodal 数据集构建完成 — real_raw_1000")
+    logger(f"Multimodal 数据集构建完成 — {config['dataset_name']}")
     logger("=" * 60)
     logger(f"  Train 样本: {len(train_vids_sorted)}")
     logger(f"  Val   样本: {len(val_vids_sorted)}")
@@ -548,9 +666,11 @@ def main() -> None:
     logger(f"  Train npz: {train_npz_path}")
     logger(f"  Val npz: {val_npz_path}")
     logger(f"  Test npz: {test_npz_path}")
+    logger(f"  泄漏检查: {'通过 OK' if leakage_report['leakage_check_passed'] else '失败 FAILED'}")
     logger(f"  Feature info: {info_json_path}")
     logger(f"  Report: {report_json_path}")
     logger(f"  Preview: {preview_csv_path}")
+    logger(f"  Leakage report: {leakage_json_path}")
     logger("=" * 60)
 
 

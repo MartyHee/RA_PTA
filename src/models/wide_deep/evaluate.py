@@ -85,7 +85,7 @@ def evaluate(
         all_labels_arr, all_scores_arr, all_preds_arr, threshold
     )
 
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
     pk_metrics, pk_warnings = compute_precision_at_k(
         all_labels_arr, all_scores_arr, k_values
     )
@@ -174,6 +174,7 @@ def main() -> None:
         feature_config = json.load(f)
 
     dataset_name = feature_config.get("dataset_name", "sample0427")
+    dataset_variant = feature_config.get("dataset_variant", "")
 
     # ── 4. 恢复处理器 ───────────────────────────────────────
     processor = WideDeepDataProcessor.from_config(feature_config)
@@ -253,6 +254,7 @@ def main() -> None:
                 "split": split_name,
                 "model_name": "wide_deep",
                 "dataset_name": dataset_name,
+                "dataset_variant": dataset_variant,
                 "run_id": run_id_final,
             }
         )
@@ -273,6 +275,7 @@ def main() -> None:
         metrics = {
             "model_name": "wide_deep",
             "dataset_name": dataset_name,
+            "dataset_variant": dataset_variant,
             "run_id": run_id_final,
             "split": split_name,
             "sample_count": len(result["labels"]),

@@ -78,7 +78,7 @@ def evaluate_model(
         all_labels_arr, all_scores_arr, all_preds_arr, threshold
     )
 
-    k_values = [5, 10, 20]
+    k_values = [5, 10, 20, 50]
     pk_metrics, pk_warnings = compute_precision_at_k(
         all_labels_arr, all_scores_arr, k_values
     )
@@ -141,6 +141,7 @@ def main() -> None:
     feature_info_path = project_root / config["feature_info_path"]
     metrics_config_path = project_root / config["metrics_config_path"]
     dataset_name = config.get("dataset_name", "sample0427")
+    dataset_variant = config.get("dataset_variant", "")
     model_name = config.get("model_name", "multimodal")
 
     # ── 2. 确定输出目录 ─────────────────────────────────────
@@ -257,6 +258,7 @@ def main() -> None:
                 "split": split_name,
                 "model_name": model_name,
                 "dataset_name": dataset_name,
+                "dataset_variant": dataset_variant,
                 "run_id": run_id,
             }
         )

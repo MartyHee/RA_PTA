@@ -1,0 +1,64 @@
+{
+  "comparison_run_id": "202605112107",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "no_interaction_leakage",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\comparison\\202605112107",
+  "started_at": "2026-05-11 21:07:29",
+  "finished_at": "2026-05-11 21:07:29",
+  "config_path": "configs/common/comparison_real_raw_5000.yaml",
+  "model_runs": {
+    "dnn": {
+      "run_id": "202605111858",
+      "output_dir": "outputs/dnn/real_raw_5000/202605111858"
+    },
+    "wide_deep": {
+      "run_id": "202605111921",
+      "output_dir": "outputs/wide_deep/real_raw_5000/202605111921"
+    },
+    "graphsage": {
+      "run_id": "202605112028",
+      "output_dir": "outputs/graphsage/real_raw_5000/202605112028"
+    },
+    "multimodal": {
+      "run_id": "202605111759",
+      "output_dir": "outputs/multimodal/real_raw_5000/202605111759"
+    }
+  },
+  "input_metrics_paths": [
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605111858\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_5000\\202605111921\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\real_raw_5000\\202605112028\\metrics.json",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605111759\\metrics.json"
+  ],
+  "input_predictions_paths": [
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605111858\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\wide_deep\\real_raw_5000\\202605111921\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\graphsage\\real_raw_5000\\202605112028\\predictions_test.csv",
+    "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605111759\\predictions_test.csv"
+  ],
+  "output_files": [
+    "cross_model_consistency_check.json",
+    "metric_bar_auc.png",
+    "metric_bar_f1.png",
+    "metric_bar_precision_recall.png",
+    "model_comparison_report.md",
+    "model_metrics_summary.csv",
+    "model_metrics_summary.json",
+    "model_prediction_quality_check.csv",
+    "model_prediction_quality_check.json",
+    "model_score_distribution.csv",
+    "model_score_distribution.png",
+    "topk_comparison.csv",
+    "val_metrics_summary.csv"
+  ],
+  "notes": [
+    "当前对比基于 real_raw_5000 真实网页端 raw 数据。",
+    "标签为 interaction_score 伪标签，不代表真实 CTR/CVR/完播/转化。",
+    "digg_count/comment_count/share_count/collect_count 仅用于构造 label，未进入任何模型输入。",
+    "test split 仅用于最终评估，未参与模型选择或早停。",
+    "所有模型结果均为离线实验对比，不代表线上推荐效果。",
+    "当前数据来自公开网页端，不代表平台内部完整数据。",
+    "历史 real_raw_1000 实验 AUC≈0.99 主要来自标签构造字段泄漏，当前 no-leakage 口径 AUC≈0.78-0.84。"
+  ],
+  "warnings": []
+}

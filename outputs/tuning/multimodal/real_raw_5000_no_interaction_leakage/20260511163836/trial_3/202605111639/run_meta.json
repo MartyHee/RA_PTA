@@ -1,0 +1,30 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "no_interaction_leakage",
+  "run_id": "202605111639",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\tuning\\multimodal\\real_raw_5000_no_interaction_leakage\\20260511163836\\trial_3\\202605111639",
+  "input_dims": {
+    "text": 32,
+    "visual": 18,
+    "structured": 33
+  },
+  "train_started_at": "2026-05-11 16:39:52",
+  "train_finished_at": "2026-05-11 16:40:00",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\tuning\\multimodal\\real_raw_5000_no_interaction_leakage\\20260511163836\\trial_3_config.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+  "best_epoch": 3,
+  "best_val_loss": 0.484546,
+  "final_train_loss": 0.508115,
+  "final_val_loss": 0.486839,
+  "test_loss": 0.5021293322216793,
+  "device": "cuda",
+  "num_params": 7697,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "leakage_control_passed": true,
+  "warnings": [],
+  "source_tuning_run_id": null,
+  "source_best_trial_id": null
+}
