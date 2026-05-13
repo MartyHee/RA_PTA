@@ -94,7 +94,7 @@
     "max_comment_digg_count/avg_related_digg_count/avg_related_comment_count 等 潜在泄漏字段已从聚合特征中排除。",
     "interaction_score 仅作为审计列保留，不进入模型特征。"
   ],
-  "generated_at": "2026-05-11 13:58:34",
+  "generated_at": "2026-05-12 21:21:19",
   "known_limitations": [
     "real_raw_5000 来自公开网页端，不代表平台内部完整数据。",
     "当前没有真实曝光、点击、完播、转化、留存标签。",

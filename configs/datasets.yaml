@@ -18,8 +18,16 @@ datasets:
   # real_raw_1000 — 1000 条样本，历史参照组
   # ---------------------------------------------------------------------------
   real_raw_1000:
-    description: "1000 条样本，含泄漏的历史实验数据"
+    description: "1000 条样本，历史参照组"
     raw_config: configs/common/real_raw_1000.yaml
+    tabular_config: configs/common/feature_tabular_real_raw.yaml
+    tabular_params:
+      data_root: "douyin_data_project/data/interim/20260507_230322"
+      file_suffix: "20260507_230322"
+      features_dir: "data/features/real_raw_1000"
+      check_dir: "outputs/data_check/real_raw_1000"
+      expected_unique_video_ids: 1000
+      high_confidence_video_ids: null
     variants:
       default:
         train_npz_path: data/multimodal/real_raw_1000/multimodal_train.npz
@@ -33,8 +41,16 @@ datasets:
   real_raw_5000:
     description: "5000 条样本，当前主线数据源"
     raw_config: configs/common/real_raw_5000.yaml
+    tabular_config: configs/common/feature_tabular_real_raw.yaml
+    tabular_params:
+      data_root: "douyin_data_project/data/interim/real_raw_5000"
+      file_suffix: "real_raw_5000"
+      features_dir: "data/features/real_raw_5000"
+      check_dir: "outputs/data_check/real_raw_5000"
+      expected_unique_video_ids: 5000
+      high_confidence_video_ids: "douyin_data_project/data/processed/real_raw_5000/high_confidence_video_ids.txt"
     variants:
-      no_interaction_leakage:
+      default:
         train_npz_path: data/multimodal/real_raw_5000/multimodal_train.npz
         val_npz_path: data/multimodal/real_raw_5000/multimodal_val.npz
         test_npz_path: data/multimodal/real_raw_5000/multimodal_test.npz

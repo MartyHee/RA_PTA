@@ -1,3 +1,0 @@
-﻿group,group_role,sample_count,positive_count,label_positive_rate,score_mean,score_std,score_median,pred_positive_count,pred_positive_rate,precision,recall,f1,precision_at_5,precision_at_10,recall_at_5,recall_at_10
-control,control,8,2,0.25,0.46547890999999997,0.16128202110036335,0.413957205,2,0.25,1.0,1.0,1.0,0.4,0.25,1.0,1.0
-treatment,treatment,8,4,0.5,0.5692332625000001,0.2320219569155633,0.442140295,3,0.375,0.6666666666666666,0.5,0.5714285714285714,0.6,0.5,0.75,1.0

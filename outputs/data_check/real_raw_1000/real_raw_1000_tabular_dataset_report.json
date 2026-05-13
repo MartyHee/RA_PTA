@@ -1,22 +1,24 @@
 {
   "dataset_name": "real_raw_1000",
-  "run_id": "20260507_230322",
+  "run_id": "real_raw_1000",
   "input_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\20260507_230322",
+  "quality_filter_mode": "full",
   "output_train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_train.csv",
   "output_val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_val.csv",
   "output_test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_test.csv",
   "output_feature_info_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_1000\\tabular_feature_info.json",
-  "total_rows": 1000,
+  "original_total": 1000,
+  "filtered_total": 1000,
   "train_rows": 700,
   "val_rows": 150,
   "test_rows": 150,
-  "total_columns": 56,
-  "total_features": 51,
-  "numeric_feature_count": 31,
-  "categorical_feature_count": 5,
+  "total_columns": 51,
+  "total_features": 45,
+  "numeric_feature_count": 27,
+  "categorical_feature_count": 2,
   "text_stat_feature_count": 7,
-  "aggregation_feature_count": 10,
-  "wide_cross_feature_count": 3,
+  "aggregation_feature_count": 9,
+  "wide_cross_feature_count": 1,
   "excluded_fields": {
     "raw_author": [
       "crawl_time",
@@ -43,6 +45,20 @@
       "video_meta_raw"
     ]
   },
+  "excluded_label_source_features": [
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count"
+  ],
+  "excluded_potential_leakage_cols": [
+    "max_comment_digg_count",
+    "avg_related_digg_count",
+    "avg_related_comment_count",
+    "play_count",
+    "recommend_count",
+    "admire_count"
+  ],
   "label_summary": {
     "method": "interaction_binary",
     "threshold": 18147.799999999996,
@@ -69,23 +85,24 @@
   ],
   "missing_summary": {},
   "warnings": [
-    "none-match 样本 212 条 (21.2%) 中，176 条 interaction 字段全为 0/NaN，36 条有部分互动数据。",
-    "play_count: 993/1000 条为 0 (99.3%)",
-    "region 原始缺失 635/1000 (63.5%)，已填充为 __MISSING__",
-    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条，泛化评估稳定性有限。",
+    "none-match 样本 0 条 (0.0%) 中互动字段覆盖率较低。",
+    "play_count 已被排除（潜在泄漏字段）。",
+    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条。",
     "raw_video_tag 当前为空表，不作为特征来源。",
-    "raw_chapter 当前为空表，不作为特征来源。"
+    "raw_chapter 当前为空表，不作为特征来源。",
+    "digg_count/comment_count/share_count/collect_count 已从特征中排除 (leakage control)。",
+    "max_comment_digg_count/avg_related_digg_count/avg_related_comment_count 等 潜在泄漏字段已从聚合特征中排除。",
+    "interaction_score 仅作为审计列保留，不进入模型特征。"
   ],
-  "generated_at": "2026-05-08 15:46:03",
+  "generated_at": "2026-05-12 21:48:45",
   "known_limitations": [
     "real_raw_1000 来自公开网页端，不代表平台内部完整数据。",
     "当前没有真实曝光、点击、完播、转化、留存标签。",
     "标签为 interaction_score 分位数伪标签，仅用于离线多模型对比。",
     "raw_video_tag 当前为空。",
     "raw_chapter 当前为空。",
-    "none-match 样本占 21.2%，176 条无互动数据。",
+    "none-match 样本占 0.0%，部分互动字段覆盖率低。",
     "评论和相关推荐不是每个视频都触发。",
-    "部分字段低覆盖（region 36.5%, item_title 60.7%），已自动过滤最低覆盖字段。",
     "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
   ]
 }

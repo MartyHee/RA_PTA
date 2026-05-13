@@ -1,0 +1,40 @@
+{
+  "leakage_check_passed": true,
+  "excluded_label_source_features": {
+    "defined": [
+      "digg_count",
+      "comment_count",
+      "share_count",
+      "collect_count"
+    ],
+    "found_in_csv": [],
+    "found_in_feature_info": [],
+    "status": "OK"
+  },
+  "interaction_score_in_features": {
+    "status": "OK"
+  },
+  "audit_id_cols_in_features": {
+    "defined": [
+      "sample_id",
+      "video_id",
+      "author_id",
+      "interaction_score"
+    ],
+    "found_in_feature_info": []
+  },
+  "excluded_potential_leakage_cols": {
+    "defined": [
+      "max_comment_digg_count",
+      "avg_related_digg_count",
+      "avg_related_comment_count",
+      "play_count",
+      "recommend_count",
+      "admire_count"
+    ],
+    "found_in_feature_info": [],
+    "status": "OK"
+  },
+  "errors": [],
+  "warnings": []
+}

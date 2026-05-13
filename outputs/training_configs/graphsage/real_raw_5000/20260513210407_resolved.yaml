@@ -1,0 +1,35 @@
+activation: relu
+dataset_name: real_raw_5000
+dataset_variant: default
+device: cuda
+dropout: 0.3
+early_stopping:
+  enabled: true
+  patience: 10
+edge_path: data/graph/real_raw_5000/edges.csv
+epochs: 80
+feature_normalization:
+  enabled: true
+  exclude_prefixes:
+  - node_type_
+  fit_on: train_labeled_nodes
+  method: zscore
+graph_data_dir: data/graph/real_raw_5000
+graph_meta_path: data/graph/real_raw_5000/graph_meta.json
+hidden_dim: 64
+input_type: graph
+labels_path: data/graph/real_raw_5000/labels.npy
+learning_rate: 0.001
+loss: bce
+model_name: graphsage
+node_features_path: data/graph/real_raw_5000/node_features.npy
+node_path: data/graph/real_raw_5000/nodes.csv
+num_layers: 2
+optimizer: adam
+output_root: outputs/graphsage
+random_seed: 2026
+test_mask_path: data/graph/real_raw_5000/test_mask.npy
+threshold: 0.5
+train_mask_path: data/graph/real_raw_5000/train_mask.npy
+val_mask_path: data/graph/real_raw_5000/val_mask.npy
+weight_decay: 0.0001

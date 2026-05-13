@@ -1,0 +1,24 @@
+activation: relu
+batch_size: 128
+dataset_name: real_raw_5000
+dataset_variant: default
+deep_hidden_units:
+- 64
+- 32
+device: cuda
+dropout: 0.3
+early_stopping_patience: 10
+epochs: 50
+feature_info_path: data/features/real_raw_5000/tabular_feature_info.json
+leakage_report_path: outputs/data_check/real_raw_5000/real_raw_5000_leakage_check_report.json
+learning_rate: 0.001
+loss: bce
+model_name: wide_deep
+optimizer: adam
+output_root: outputs/wide_deep/real_raw_5000
+random_seed: 2026
+test_data_path: data/features/real_raw_5000/tabular_test.csv
+train_data_path: data/features/real_raw_5000/tabular_train.csv
+val_data_path: data/features/real_raw_5000/tabular_val.csv
+weight_decay: 0.0001
+wide_embedding_dim: 1

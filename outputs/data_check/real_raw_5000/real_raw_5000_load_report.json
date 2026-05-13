@@ -3,7 +3,7 @@
   "run_id": "real_raw_5000",
   "root_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\real_raw_5000",
   "delivery_doc": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\douyin_data_project\\data\\interim\\real_raw_5000\\real_raw_5000_delivery.md",
-  "generated_at": "2026-05-11 13:21:42",
+  "generated_at": "2026-05-12 20:26:00",
   "table_status": {
     "raw_video_detail": {
       "file_name": "raw_video_detail_real_raw_5000.csv",
@@ -223,5 +223,5 @@
     "当前来自公开网页端数据，不代表平台内部完整数据。",
     "评论和相关推荐不是全量触发（comment 37.5%，related 45.3%）。"
   ],
-  "next_step": "完成读取检查后，下一步可基于 real_raw_5000 构建 no_interaction_leakage 版 tabular 数据集。"
+  "next_step": "完成读取检查后，下一步可基于 real_raw_5000 构建 tabular 数据集。"
 }

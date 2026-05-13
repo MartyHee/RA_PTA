@@ -106,6 +106,12 @@
     "recommend_count",
     "admire_count"
   ],
+  "hardcoded_excluded_label_source": [
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count"
+  ],
   "field_quality_report": {
     "raw_author": {
       "author_user_id": {
@@ -327,6 +333,12 @@
       "author_id",
       "interaction_score"
     ],
+    "hardcoded_excluded_label_source": [
+      "digg_count",
+      "comment_count",
+      "share_count",
+      "collect_count"
+    ],
     "leakage_check_passed": true
   },
   "warnings": [
@@ -349,7 +361,7 @@
     "评论和相关推荐不是每个视频都触发。",
     "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
   ],
-  "generated_at": "2026-05-11 13:58:34",
+  "generated_at": "2026-05-12 21:21:19",
   "notes": [
     "本数据集基于 real_raw_5000 真实网页端 raw 数据构建 (quality_filter_mode=full)。",
     "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",

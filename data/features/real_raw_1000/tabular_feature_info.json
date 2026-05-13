@@ -1,40 +1,38 @@
 {
   "dataset_name": "real_raw_1000",
-  "run_id": "20260507_230322",
+  "run_id": "real_raw_1000",
+  "quality_filter_mode": "full",
   "label_col": "label",
   "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 18147.80 (P60 分位数)",
   "label_threshold": 18147.799999999996,
   "id_cols": [
     "sample_id",
     "video_id",
-    "author_id"
+    "author_id",
+    "interaction_score"
   ],
   "numeric_features": [
     "duration_ms",
-    "digg_count",
-    "comment_count",
-    "share_count",
-    "collect_count",
-    "play_count",
-    "recommend_count",
-    "admire_count",
     "create_time",
-    "is_top",
-    "original",
     "aweme_type",
     "media_type",
+    "is_top",
+    "original",
     "follower_count",
     "total_favorited",
     "verification_type",
+    "music_duration",
+    "video_width",
+    "video_height",
     "origin_cover_width",
     "origin_cover_height",
-    "comment_permission_status",
+    "private_status",
+    "review_status",
     "publish_hour",
     "publish_weekday",
     "hashtag_count",
     "video_tag_count",
     "comment_table_count",
-    "max_comment_digg_count",
     "chapter_count",
     "related_video_count",
     "comment_user_count",
@@ -43,10 +41,7 @@
     "dynamic_cover_url_count"
   ],
   "categorical_features": [
-    "author_id",
     "region",
-    "music_title",
-    "music_author",
     "hashtag_name_top"
   ],
   "text_stat_features": [
@@ -62,7 +57,6 @@
     "hashtag_count",
     "video_tag_count",
     "comment_table_count",
-    "max_comment_digg_count",
     "chapter_count",
     "related_video_count",
     "comment_user_count",
@@ -71,8 +65,6 @@
     "dynamic_cover_url_count"
   ],
   "wide_cross_features": [
-    "author_id_x_top_hashtag",
-    "author_id_x_music_title",
     "duration_bucket_x_top_hashtag"
   ],
   "excluded_fields": {
@@ -101,6 +93,26 @@
       "video_meta_raw"
     ]
   },
+  "excluded_label_source_features": [
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count"
+  ],
+  "excluded_potential_leakage_cols": [
+    "max_comment_digg_count",
+    "avg_related_digg_count",
+    "avg_related_comment_count",
+    "play_count",
+    "recommend_count",
+    "admire_count"
+  ],
+  "hardcoded_excluded_label_source": [
+    "digg_count",
+    "comment_count",
+    "share_count",
+    "collect_count"
+  ],
   "field_quality_report": {
     "raw_author": {
       "author_user_id": {
@@ -243,7 +255,7 @@
     },
     "raw_video_status_control": {}
   },
-  "total_features": 51,
+  "total_features": 45,
   "split_info": {
     "method": "stratified_by_label",
     "seed": 2026,
@@ -301,13 +313,44 @@
     "author_id",
     "source_video_id"
   ],
+  "leakage_control": {
+    "excluded_label_source_features": [
+      "digg_count",
+      "comment_count",
+      "share_count",
+      "collect_count"
+    ],
+    "excluded_potential_leakage_cols": [
+      "max_comment_digg_count",
+      "avg_related_digg_count",
+      "avg_related_comment_count",
+      "play_count",
+      "recommend_count",
+      "admire_count"
+    ],
+    "audit_id_cols": [
+      "sample_id",
+      "video_id",
+      "author_id",
+      "interaction_score"
+    ],
+    "hardcoded_excluded_label_source": [
+      "digg_count",
+      "comment_count",
+      "share_count",
+      "collect_count"
+    ],
+    "leakage_check_passed": true
+  },
   "warnings": [
-    "none-match 样本 212 条 (21.2%) 中，176 条 interaction 字段全为 0/NaN，36 条有部分互动数据。",
-    "play_count: 993/1000 条为 0 (99.3%)",
-    "region 原始缺失 635/1000 (63.5%)，已填充为 __MISSING__",
-    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条，泛化评估稳定性有限。",
+    "none-match 样本 0 条 (0.0%) 中互动字段覆盖率较低。",
+    "play_count 已被排除（潜在泄漏字段）。",
+    "当前样本量 1000 条，train/val/test 三路切分后 test 约 150 条。",
     "raw_video_tag 当前为空表，不作为特征来源。",
-    "raw_chapter 当前为空表，不作为特征来源。"
+    "raw_chapter 当前为空表，不作为特征来源。",
+    "digg_count/comment_count/share_count/collect_count 已从特征中排除 (leakage control)。",
+    "max_comment_digg_count/avg_related_digg_count/avg_related_comment_count 等 潜在泄漏字段已从聚合特征中排除。",
+    "interaction_score 仅作为审计列保留，不进入模型特征。"
   ],
   "known_limitations": [
     "real_raw_1000 来自公开网页端，不代表平台内部完整数据。",
@@ -315,17 +358,17 @@
     "标签为 interaction_score 分位数伪标签，仅用于离线多模型对比。",
     "raw_video_tag 当前为空。",
     "raw_chapter 当前为空。",
-    "none-match 样本占 21.2%，176 条无互动数据。",
+    "none-match 样本占 0.0%，部分互动字段覆盖率低。",
     "评论和相关推荐不是每个视频都触发。",
-    "部分字段低覆盖（region 36.5%, item_title 60.7%），已自动过滤最低覆盖字段。",
     "所有模型结果仍属于离线实验结果，不代表线上业务收益。"
   ],
-  "generated_at": "2026-05-08 15:46:03",
+  "generated_at": "2026-05-12 21:48:45",
   "notes": [
-    "本数据集基于 real_raw_1000 真实网页端 raw 数据构建。",
+    "本数据集基于 real_raw_1000 真实网页端 raw 数据构建 (quality_filter_mode=full)。",
     "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",
     "train/val/test 三路切分，按 video_id 分层。",
-    "字段排除基于数据质量动态计算，非硬编码。",
+    "已实施 no_interaction_leakage 控制: 四个 label source 字段已从特征中删除。",
+    "潜在泄漏字段（comment_digg/related_digg 等）已从聚合特征中排除。",
     "共包含来自 11 张源表的特征。"
   ]
 }

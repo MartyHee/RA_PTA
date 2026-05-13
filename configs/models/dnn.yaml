@@ -1,0 +1,30 @@
+# =============================================================================
+# DNN 统一模型配置
+# =============================================================================
+# 本配置由统一训练入口 (src/training/train.py) 加载，
+# 与 configs/datasets.yaml 中的数据集信息合并为 resolved config。
+# =============================================================================
+
+model:
+  name: dnn
+  input_type: tabular
+  default_params:
+    hidden_units: [64, 32]
+    dropout: 0.3
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    batch_size: 128
+    epochs: 50
+    early_stopping_patience: 10
+
+training:
+  seed: 2026
+  device: cuda
+  threshold: 0.5
+  select_metric: val_loss
+
+evaluation:
+  k_values: [5, 10, 20, 50]
+
+output:
+  root_template: outputs/{model_name}/{dataset_name}

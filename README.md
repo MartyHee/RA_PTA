@@ -84,20 +84,29 @@ high_confidence_filter_report.json
 - `data/processed/real_raw_5000/` 是 high-confidence 辅助筛选信息，不替代 11 张 raw 表。
 - 后续特征构建可通过配置选择 `full` 或 `high_confidence`。
 
-### 2.3 当前下一步：
+### 2.3 当前状态：real_raw_5000 全流程适配完成
 
-1. `real_raw_5000` 读取适配；
-2. 构建 `real_raw_5000` tabular 数据；
-3. 保证 `digg_count/comment_count/share_count/collect_count` 只用于构造 label，不进入任何模型输入；
-4. 用 tuned Multimodal 配置做迁移验证；
-5. 再视情况重训四类模型并做统一对比。
+已完成 `real_raw_5000` 数据集的全流程适配与四模型统一训练入口：
 
-在标签与特征泄漏问题确认后，进入端到端推荐流水线工程化：
+| 阶段 | 状态 |
+|------|------|
+| `real_raw_5000` 数据读取适配 | ✅ 完成 |
+| `real_raw_5000` tabular 输入构建（no-leakage 强制） | ✅ 完成 |
+| `real_raw_5000` graph 输入构建（no-leakage 强制） | ✅ 完成 |
+| `real_raw_5000` multimodal 输入构建（no-leakage 强制） | ✅ 完成 |
+| DNN / Wide & Deep / GraphSAGE / Multimodal 统一训练入口 | ✅ 完成 |
+| DNN wrapper run（202605132017） | ✅ Test AUC=0.8414, F1=0.7315 |
+| Wide & Deep wrapper run（202605132026） | ✅ Test AUC=0.8242, F1=0.6859 |
+| GraphSAGE wrapper run（202605132107） | ✅ Test AUC=0.8327, F1=0.7289 |
+| Multimodal wrapper run（202605132210） | ✅ Test AUC=0.7812, F1=0.6400 |
 
-- 设计模块化数据预处理和特征工程脚本
-- 实现训练脚本支持参数配置，保证可复现训练过程
-- 建立推理服务接口（如 REST API）模拟线上推荐流程
-- 编写流水线使用说明和系统架构文档
+**当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
+
+### 2.4 下一步
+
+1. 进入统一多模型对比实验（run_comparison）。
+2. 评估去泄漏后各模型指标是否异常高。
+3. 进入端到端推荐流水线工程化阶段。
 
 ---
 
@@ -209,27 +218,24 @@ label 生成完成后，它们必须从最终建模输入中删除。
 
 ## 5. 当前建议开发顺序
 
-### 5.1 立即任务
+### 5.1 已完成
 
-1. 新增 `real_raw_5000` 读取配置。
-2. 读取并检查 `data/interim/real_raw_5000/` 下的 11 张 raw 表。
-3. 构建 `real_raw_5000_no_leakage` tabular 数据集。
-4. 严格删除 `digg_count/comment_count/share_count/collect_count` 四个 label source 字段。
-5. 生成 `leakage_check_report.json`。
-6. 使用 tuned Multimodal 配置先做迁移验证。
+- `real_raw_5000` 数据读取适配 — ✅
+- `real_raw_5000` tabular 输入构建（no-leakage 强制） — ✅
+- `real_raw_5000` graph 输入构建（no-leakage 强制） — ✅
+- `real_raw_5000` multimodal 输入构建（no-leakage 强制） — ✅
+- Multimodal tuned 迁移验证 — ✅
+- DNN / Wide & Deep / GraphSAGE / Multimodal 统一训练入口 — ✅
 
-### 5.2 实验复验
+### 5.2 当前任务
 
-7. 构建 no-leakage graph 输入。
-8. 构建 no-leakage multimodal 输入。
-9. 重训 DNN / Wide & Deep / GraphSAGE / Multimodal。
-10. 统一多模型对比。
-11. 对比 real_raw_1000 历史结果与 real_raw_5000 no-leakage 结果。
-12. 判断历史高 AUC 是否主要来自标签构造字段泄漏。
+1. 统一多模型对比（run_comparison）。
+2. 评估去泄漏后各模型指标是否异常高。
+3. 对比 real_raw_1000 历史结果与 real_raw_5000 no-leakage 结果。
 
-### 5.3 工程化阶段
+### 5.3 工程化阶段（待开始）
 
-在完成 no-leakage 复验后，再进入端到端流水线工程化：
+在完成去泄漏复验后，再进入端到端流水线工程化：
 
 1. 设计模块化数据预处理和特征工程脚本；
 2. 实现训练脚本支持参数配置，保证可复现训练过程；
@@ -272,10 +278,10 @@ RA_PTA/
 │           └── real_raw_5000/
 ├── src/
 │   ├── data/
-│   │   ├── load_real_raw_5000.py
-│   │   ├── build_tabular_real_raw_5000.py
-│   │   ├── build_graph_real_raw_5000.py
-│   │   └── build_multimodal_real_raw_5000.py
+│   │   ├── load_raw.py
+│   │   ├── build_tabular.py
+│   │   ├── build_graph_real_raw.py
+│   │   └── build_multimodal_real_raw.py
 │   ├── features/
 │   ├── models/
 │   ├── evaluation/
@@ -296,19 +302,48 @@ RA_PTA/
 
 | 脚本                                           | 用途                                  |
 | ---------------------------------------------- | ------------------------------------- |
-| `src/data/load_real_raw_5000.py`             | real_raw_5000 真实 raw 数据读取与检查 |
-| `src/data/build_tabular_real_raw_5000.py`    | no-leakage tabular 数据集构建         |
-| `src/data/build_graph_real_raw_5000.py`      | no-leakage 图节点、边、特征构建       |
-| `src/data/build_multimodal_real_raw_5000.py` | no-leakage 多模态数据集构建           |
+| `src/data/load_raw.py`                   | 统一数据读取入口（通过 --dataset 指定数据集）            |
+| `src/data/build_tabular.py`              | 统一 tabular 数据集构建（no_interaction_leakage 强制） |
+| `src/data/build_graph_real_raw.py`       | no-leakage 图节点、边、特征构建                         |
+| `src/data/build_multimodal_real_raw.py`  | no-leakage 多模态数据集构建                             |
 
-### 模型训练与评估
+### 模型训练与评估（统一训练入口）
 
-| 脚本                                                 | 用途                   |
-| ---------------------------------------------------- | ---------------------- |
-| `src/models/dnn/train.py` / `evaluate.py`        | DNN 训练与评估         |
-| `src/models/wide_deep/train.py` / `evaluate.py`  | Wide & Deep 训练与评估 |
-| `src/models/graphsage/train.py` / `evaluate.py`  | GraphSAGE 训练与评估   |
-| `src/models/multimodal/train.py` / `evaluate.py` | Multimodal 训练与评估  |
+推荐使用统一训练入口 `src/training/train.py`：
+
+| 命令 | 用途 |
+|------|------|
+| `python src/training/train.py --dataset real_raw_5000 --model dnn` | DNN 训练与评估 |
+| `python src/training/train.py --dataset real_raw_5000 --model wide_deep` | Wide & Deep 训练与评估 |
+| `python src/training/train.py --dataset real_raw_5000 --model graphsage` | GraphSAGE 训练与评估 |
+| `python src/training/train.py --dataset real_raw_5000 --model multimodal` | Multimodal 训练与评估 |
+
+支持 `--dry-run` 预览 resolved config：
+
+```bash
+python src/training/train.py --dataset real_raw_5000 --model dnn --dry-run
+python src/training/train.py --dataset real_raw_5000 --model multimodal --dry-run
+```
+
+支持 `--override` 临时覆盖超参数：
+
+```bash
+python src/training/train.py --dataset real_raw_5000 --model dnn --override epochs=30
+```
+
+底层模型入口（`src/models/<model>/train.py`）仍保留，但推荐使用统一训练入口。
+
+#### 模型默认配置
+
+| 模型 | 默认配置路径 |
+|------|-------------|
+| DNN | `configs/models/dnn.yaml` |
+| Wide & Deep | `configs/models/wide_deep.yaml` |
+| GraphSAGE | `configs/models/graphsage.yaml` |
+| Multimodal | `configs/models/multimodal.yaml` |
+
+数据集注册：`configs/datasets.yaml`
+Resolved config 自动输出到 `outputs/training_configs/<model>/<dataset>/<timestamp>_resolved.yaml`。
 
 ### 实验入口
 

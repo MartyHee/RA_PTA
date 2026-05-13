@@ -1,0 +1,40 @@
+# =============================================================================
+# Multimodal 统一模型配置
+# =============================================================================
+# 本配置由统一训练入口 (src/training/train.py) 加载，
+# 与 configs/datasets.yaml 中的数据集信息合并为 resolved config。
+#
+# 超参数源自 tuned config (multimodal_real_raw_5000_tuned.yaml, best trial #10):
+#   search_run_id:   20260511163836
+#   best_trial_id:   10
+#   best_val_auc:    0.8413
+#   best_val_f1:     0.7162
+#   best_test_auc:   0.7843
+#   best_test_f1:    0.6831
+# =============================================================================
+
+model:
+  name: multimodal
+  input_type: multimodal
+  default_params:
+    text_hidden: 16
+    visual_hidden: 8
+    structured_hidden: 16
+    fusion_hidden: 32
+    dropout: 0.205
+    learning_rate: 0.001225
+    weight_decay: 0.000018
+    batch_size: 128
+    epochs: 50
+    early_stopping_patience: 8
+
+training:
+  seed: 2026
+  device: cuda
+  select_metric: val_loss
+
+evaluation:
+  k_values: [5, 10, 20, 50]
+
+output:
+  root_template: outputs/{model_name}/{dataset_name}
