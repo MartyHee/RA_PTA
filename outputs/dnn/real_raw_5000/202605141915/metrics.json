@@ -1,0 +1,67 @@
+{
+  "val_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "default",
+    "run_id": "202605141915",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4573955833911896,
+    "auc": 0.8348444444444444,
+    "accuracy": 0.732,
+    "precision": 0.6246851385390428,
+    "recall": 0.8266666666666667,
+    "f1": 0.7116212338593975,
+    "precision_at_k": {
+      "precision_at_5": 0.800000011920929,
+      "precision_at_10": 0.8999999761581421,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.8199999928474426
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.13666666666666666
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-14 19:15:08"
+  },
+  "test_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "default",
+    "run_id": "202605141915",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.45627596974372864,
+    "auc": 0.835088888888889,
+    "accuracy": 0.7506666666666667,
+    "precision": 0.6475195822454308,
+    "recall": 0.8266666666666667,
+    "f1": 0.726207906295754,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.8199999928474426
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.03333333333333333,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.13666666666666666
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-14 19:15:08"
+  },
+  "generated_at": "2026-05-14 19:15:08"
+}

@@ -1,0 +1,22 @@
+{
+  "trial_id": 0,
+  "run_id": "202605141914",
+  "tuning_run_id": "20260514_191432",
+  "model_name": "dnn",
+  "dataset_name": "real_raw_5000",
+  "selected_metric": "val_auc",
+  "selected_direction": "maximize",
+  "selected_metric_value": 0.8413185185185186,
+  "learning_rate": 0.008079775183819827,
+  "weight_decay": 0.0005416032125151468,
+  "dropout": 0.31440901618668793,
+  "hidden_units": [
+    256,
+    128
+  ],
+  "batch_size": 256,
+  "epochs": 50,
+  "early_stopping_patience": 10,
+  "params_json": "{\"learning_rate\": 0.008079775183819827, \"weight_decay\": 0.0005416032125151468, \"dropout\": 0.31440901618668793, \"hidden_units\": [256, 128], \"batch_size\": 256, \"epochs\": 50, \"early_stopping_patience\": 10, \"random_seed\": 2039}",
+  "generated_at": "2026-05-14 19:16:08"
+}

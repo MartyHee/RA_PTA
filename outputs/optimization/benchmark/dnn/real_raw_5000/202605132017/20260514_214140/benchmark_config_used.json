@@ -1,0 +1,26 @@
+{
+  "cli_args": {
+    "model": "dnn",
+    "dataset": "real_raw_5000",
+    "run_id": "202605132017",
+    "input": "data/features/real_raw_5000/tabular_test.csv",
+    "device": "cpu",
+    "num_warmup": 3,
+    "num_repeat": 10,
+    "batch_size": null,
+    "output_dir": null,
+    "dry_run": false
+  },
+  "resolved_paths": {
+    "model_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605132017",
+    "input_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv",
+    "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\optimization\\benchmark\\dnn\\real_raw_5000\\202605132017\\20260514_214140"
+  },
+  "python_version": "3.9.25 (main, Nov  3 2025, 22:44:01) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "torch_version": "2.6.0+cu124",
+  "cuda_available": true,
+  "device_used": "cpu",
+  "timestamp": "2026-05-14 21:41:40",
+  "dry_run": false
+}

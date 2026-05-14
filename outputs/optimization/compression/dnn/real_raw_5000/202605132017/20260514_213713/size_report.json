@@ -1,0 +1,10 @@
+{
+  "source_model_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605132017",
+  "compressed_model_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\optimization\\compression\\dnn\\real_raw_5000\\202605132017\\20260514_213713\\model_compressed.pt",
+  "source_model_size_bytes": 101352,
+  "compressed_model_size_bytes": 89196,
+  "source_model_size_mb": 0.0967,
+  "compressed_model_size_mb": 0.0851,
+  "compression_ratio": 0.88,
+  "size_reduction_percent": 12.0
+}

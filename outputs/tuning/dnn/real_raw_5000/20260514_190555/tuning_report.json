@@ -1,0 +1,17 @@
+{
+  "tuning_run_id": "20260514_190555",
+  "model_name": "dnn",
+  "dataset_name": "real_raw_5000",
+  "search_config": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\configs\\tuning\\dnn_random.yaml",
+  "num_trials": 3,
+  "num_completed": 0,
+  "num_failed": 0,
+  "metric": "val_auc",
+  "direction": "maximize",
+  "seed": 2026,
+  "dry_run": true,
+  "warnings": [
+    "Dry-run 模式，未执行实际训练。"
+  ],
+  "generated_at": "2026-05-14 19:05:55"
+}

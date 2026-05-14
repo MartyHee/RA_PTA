@@ -101,14 +101,19 @@ high_confidence_filter_report.json
 | Multimodal wrapper run（202605132210） | ✅ Test AUC=0.7812, F1=0.6400 |
 | 端到端 DNN pipeline orchestrator 第一版 | ✅ 完成 |
 | pipeline orchestrator infer-only 验证 | ✅ 输出: outputs/inference/dnn/real_raw_5000/202605132017/20260514_171959/ |
+| 统一调参入口 tune.py 第一版（DNN random search） | ✅ 完成 |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
+
+**最新 tuning best trial：** trial_000（run_id=202605141914, val_auc=0.8413, test_auc=0.8348）。
+详情见 `outputs/tuning/dnn/real_raw_5000/20260514_191432/`。
 
 ### 2.4 下一步
 
 1. 进入统一多模型对比实验（run_comparison）。
 2. 评估去泄漏后各模型指标是否异常高。
-3. 统一调参入口设计（tune.py）。
+3. 统一调参扩展到 Wide & Deep / GraphSAGE / Multimodal。
+4. 优化方向：尝试 static quantization 或 pruning（当前 dynamic_quantization 已验证不适合 DNN baseline）。
 
 ---
 
@@ -228,6 +233,7 @@ label 生成完成后，它们必须从最终建模输入中删除。
 - `real_raw_5000` multimodal 输入构建（no-leakage 强制） — ✅
 - Multimodal tuned 迁移验证 — ✅
 - DNN / Wide & Deep / GraphSAGE / Multimodal 统一训练入口 — ✅
+- 统一调参入口 tune.py 第一版（DNN random search） — ✅
 
 ### 5.2 当前任务
 
@@ -286,6 +292,9 @@ RA_PTA/
 │   │   └── build_multimodal_real_raw.py
 │   ├── features/
 │   ├── models/
+│   ├── optimization/            # 模型压缩与推理 benchmark
+│   │   ├── benchmark.py         # 推理耗时/吞吐/score 一致性测试
+│   │   └── compress.py          # 模型压缩（当前仅 DNN dynamic_quantization）
 │   ├── evaluation/
 │   ├── experiment/
 │   └── pipeline/
@@ -346,6 +355,39 @@ python src/training/train.py --dataset real_raw_5000 --model dnn --override epoc
 
 数据集注册：`configs/datasets.yaml`
 Resolved config 自动输出到 `outputs/training_configs/<model>/<dataset>/<timestamp>_resolved.yaml`。
+
+### 调参入口（第一版）
+
+统一超参调优入口 `src/training/tune.py`，第一版只支持 DNN + real_raw_5000 随机搜索：
+
+| 命令 | 用途 |
+|------|------|
+| `python src/training/tune.py --dataset real_raw_5000 --model dnn --num-trials 3 --dry-run` | Dry-run：只生成 trial 配置，不训练 |
+| `python src/training/tune.py --dataset real_raw_5000 --model dnn --num-trials 3` | 小规模真实搜索 |
+| `python src/training/tune.py --dataset real_raw_5000 --model dnn --num-trials 20` | 完整搜索（需确认耗时） |
+
+默认搜索空间配置：`configs/tuning/dnn_random.yaml`
+
+**说明：**
+- 第一版只支持 `model=dnn` 和 `dataset=real_raw_5000`。
+- 调参会重复训练并生成多个 `outputs/dnn/real_raw_5000/<run_id>/`。
+- best trial 选择基于 val 指标，test 指标只记录。
+- Wide & Deep / GraphSAGE / Multimodal 调参暂未接入。
+
+### Optimization 入口
+
+| 命令 | 用途 |
+|------|------|
+| `python src/optimization/benchmark.py --model dnn --dataset real_raw_5000 --run-id <run_id> --input data/features/real_raw_5000/tabular_test.csv --device cpu --num-warmup 3 --num-repeat 10` | 原始 DNN 模型 CPU benchmark |
+| `python src/optimization/compress.py --model dnn --dataset real_raw_5000 --run-id <run_id> --method dynamic_quantization --device cpu` | DNN 动态量化压缩（dry-run 加 `--dry-run`） |
+| `python src/optimization/benchmark.py --model dnn --dataset real_raw_5000 --run-id <run_id> --input data/features/real_raw_5000/tabular_test.csv --device cpu --num-warmup 3 --num-repeat 10 --compressed-dir <compression_output_dir>` | 压缩模型 benchmark（与原模型自动对比） |
+
+**说明：**
+- 第一版只支持 `model=dnn` 和 `dataset=real_raw_5000`。
+- dynamic_quantization 只支持 CPU，不支持 GPU。
+- 压缩模型输出到独立目录，不覆盖原始 model.pt。
+- 当前 DNN baseline 不推荐使用 dynamic_quantization（已验证变慢约 6 倍）。
+- 详细使用说明见 `docs/optimization_usage.md`。
 
 ### 实验入口
 
@@ -436,9 +478,24 @@ python src/pipeline/run_pipeline.py --dataset real_raw_5000 --model dnn --steps 
 
 | 阶段 | 入口 | 当前状态 |
 |------|------|----------|
-| 统一调参 | `src/training/tune.py` | ❌ 暂未实现 |
-| 模型压缩 | `src/optimization/compress.py` | ❌ 暂未实现 |
-| 推理 benchmark | `src/optimization/benchmark.py` | ❌ 暂未实现 |
+| 统一调参 | `src/training/tune.py` | ✅ 第一版已完成（仅支持 DNN） |
+| 模型压缩 | `src/optimization/compress.py` | ✅ 第一版已完成（仅支持 DNN dynamic_quantization） |
+| 推理 benchmark | `src/optimization/benchmark.py` | ✅ 已完成，支持 DNN 原模型和压缩模型 benchmark |
+
+**当前 optimization 关键结论：**
+
+| 指标 | 值 |
+|------|-----|
+| 原模型大小 | 0.0967 MB（DNN baseline，run_id=202605132017） |
+| 压缩后大小 | 0.0851 MB |
+| 体积缩减 | 12.0% |
+| 原模型 CPU 推理均值 | 0.19 ms |
+| 压缩模型 CPU 推理均值 | 1.15 ms |
+| 加速比 | 0.165x（压缩后约慢 6 倍） |
+| max_abs_score_diff | 0.1216 |
+| 结论 | **dynamic_quantization 不推荐用于当前 DNN baseline** |
+
+**说明：** 对于 DNN baseline（24K 参数，0.097 MB），PyTorch dynamic_quantization 的运行时开销（packing/unpacking）超过了小模型的计算节省，导致推理变慢约 6 倍。体积收益仅 12%。压缩模型不得覆盖原始 model.pt。
 
 ---
 

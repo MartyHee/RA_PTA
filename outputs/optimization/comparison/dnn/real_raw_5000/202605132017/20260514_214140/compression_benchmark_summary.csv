@@ -1,0 +1,2 @@
+comparison_run_id,source_model_run_id,model_name,dataset_name,source_model_size_mb,compressed_model_size_mb,compression_ratio,size_reduction_percent,original_inference_time_ms_mean,compressed_inference_time_ms_mean,speedup_ratio,original_throughput_samples_per_sec,compressed_throughput_samples_per_sec,max_abs_score_diff,mean_abs_score_diff,pearson_corr
+20260514_214140,202605132017,dnn,real_raw_5000,0.0967,0.0851,0.88,12.0,0.19,1.15,0.1652,3947368.42,652173.91,0.12163907,0.01337982,0.997645

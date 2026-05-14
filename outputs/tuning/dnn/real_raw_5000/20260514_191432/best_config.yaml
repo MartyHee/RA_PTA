@@ -1,0 +1,19 @@
+batch_size: 256
+dataset_name: real_raw_5000
+dropout: 0.31440901618668793
+early_stopping_patience: 10
+epochs: 50
+generated_at: '2026-05-14 19:16:08'
+hidden_units:
+- 256
+- 128
+learning_rate: 0.008079775183819827
+model_name: dnn
+selected_direction: maximize
+selected_metric: val_auc
+selected_metric_value: 0.8413185185185186
+source_run_id: '202605141914'
+source_trial_id: 0
+train_command: python src/training/train.py --dataset real_raw_5000 --model dnn
+tuning_run_id: '20260514_191432'
+weight_decay: 0.0005416032125151468
