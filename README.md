@@ -102,6 +102,8 @@ high_confidence_filter_report.json
 | 端到端 DNN pipeline orchestrator 第一版 | ✅ 完成 |
 | pipeline orchestrator infer-only 验证 | ✅ 输出: outputs/inference/dnn/real_raw_5000/202605132017/20260514_171959/ |
 | 统一调参入口 tune.py 第一版（DNN random search） | ✅ 完成 |
+| REST API 本地模拟服务（FastAPI） | ✅ 已完成，尚未部署上线 |
+| 系统架构文档（docs/system_architecture.md） | ✅ 完成 |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
 
@@ -114,6 +116,15 @@ high_confidence_filter_report.json
 2. 评估去泄漏后各模型指标是否异常高。
 3. 统一调参扩展到 Wide & Deep / GraphSAGE / Multimodal。
 4. 优化方向：尝试 static quantization 或 pruning（当前 dynamic_quantization 已验证不适合 DNN baseline）。
+5. 最终交付文档与清单整理。
+6. 如需上线 API，另行设计 Docker / 部署 / 鉴权 / 监控。
+7. 如需提升效果，接入更可靠标签或真实反馈数据。
+8. 如需扩展工程能力，再考虑多模型 inference / pipeline / tune。
+
+**API 状态说明：** REST API 目前已实现本地 FastAPI 模拟服务（`src/serving/api.py`），支持 `GET /health`、`GET /model-info`、`POST /predict`、`POST /rank` 四个端点。但 **尚未部署上线**，未实现 Docker 容器化、鉴权、监控、并发压测和生产部署。启动命令示例：
+```bash
+python src/serving/api.py --model dnn --dataset real_raw_5000 --run-id <run_id>
+```
 
 ---
 
@@ -497,6 +508,17 @@ python src/pipeline/run_pipeline.py --dataset real_raw_5000 --model dnn --steps 
 
 **说明：** 对于 DNN baseline（24K 参数，0.097 MB），PyTorch dynamic_quantization 的运行时开销（packing/unpacking）超过了小模型的计算节省，导致推理变慢约 6 倍。体积收益仅 12%。压缩模型不得覆盖原始 model.pt。
 
+### 7.7 主要文档索引
+
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| 系统架构文档 | `docs/system_architecture.md` | 项目整体模块结构、数据流转、各层职责 |
+| Pipeline 设计文档 | `docs/batch8_pipeline_design.md` | Pipeline orchestrator 设计说明 |
+| Pipeline 使用说明 | `docs/pipeline_usage.md` | Pipeline orchestrator 使用指南 |
+| 调参使用说明 | `docs/tuning_usage.md` | 统一调参入口 tune.py 使用指南 |
+| Optimization 使用说明 | `docs/optimization_usage.md` | 推理 benchmark 与模型压缩使用指南 |
+| REST API 设计文档 | `docs/batch7_rest_api_design.md` | 服务模拟层设计说明 |
+
 ---
 
 ## 8. 统一评估口径
@@ -629,6 +651,6 @@ warnings
 5. REST API 推理服务，模拟线上推荐流程； ✅ 已完成（serving/api）
 6. 流水线设计文档； ✅ 已完成（docs/batch8_pipeline_design.md）
 7. 使用说明文档； ✅ 已完成（docs/pipeline_usage.md）
-8. 系统架构文档。
+8. 系统架构文档。 ✅ 已完成（docs/system_architecture.md）
 
 在完成去泄漏复验前，不要急于固化 pipeline。
