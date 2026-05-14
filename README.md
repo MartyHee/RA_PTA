@@ -99,6 +99,8 @@ high_confidence_filter_report.json
 | Wide & Deep wrapper run（202605132026） | ✅ Test AUC=0.8242, F1=0.6859 |
 | GraphSAGE wrapper run（202605132107） | ✅ Test AUC=0.8327, F1=0.7289 |
 | Multimodal wrapper run（202605132210） | ✅ Test AUC=0.7812, F1=0.6400 |
+| 端到端 DNN pipeline orchestrator 第一版 | ✅ 完成 |
+| pipeline orchestrator infer-only 验证 | ✅ 输出: outputs/inference/dnn/real_raw_5000/202605132017/20260514_171959/ |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
 
@@ -106,7 +108,7 @@ high_confidence_filter_report.json
 
 1. 进入统一多模型对比实验（run_comparison）。
 2. 评估去泄漏后各模型指标是否异常高。
-3. 进入端到端推荐流水线工程化阶段。
+3. 统一调参入口设计（tune.py）。
 
 ---
 
@@ -255,7 +257,7 @@ RA_PTA/
 ├── configs/
 │   ├── common/
 │   │   ├── real_raw_5000.yaml
-│   │   └── feature_tabular_real_raw_5000.yaml
+│   │   └── feature_tabular_real_raw.yaml
 │   ├── dnn/
 │   ├── wide_deep/
 │   ├── graphsage/
@@ -404,6 +406,40 @@ Resolved config 自动输出到 `outputs/training_configs/<model>/<dataset>/<tim
 4. 在实验配置 `configs/experiments/multimodal_search.yaml` 中修改
    `dataset_name` 和 `dataset_variant` 以指向新数据集。
 
+### 7.6 Pipeline Orchestrator（第一版）
+
+轻量端到端 pipeline orchestrator，串联 DNN 主线四个阶段：
+
+```bash
+# 预览完整 DNN 主线命令，不执行
+python src/pipeline/run_pipeline.py --dataset real_raw_5000 --model dnn --dry-run
+
+# 使用已有 DNN run 做 batch inference
+python src/pipeline/run_pipeline.py --dataset real_raw_5000 --model dnn --steps infer --run-id 202605132017
+
+# 全流程命令（会重新训练，谨慎执行）
+python src/pipeline/run_pipeline.py --dataset real_raw_5000 --model dnn --steps load,tabular,train,infer
+```
+
+**说明：**
+
+- 第一版只支持 `dataset=real_raw_5000` 和 `model=dnn`。
+- `--dry-run` 只打印命令，不执行。
+- `--steps infer` 必须提供 `--run-id`，除非同一次 pipeline 包含 train 阶段。
+- pipeline 不自动启动 REST API，只打印启动命令。
+- 如果需要启动服务，手动执行：
+  ```bash
+  python src/serving/api.py --model dnn --dataset real_raw_5000 --run-id <run_id>
+  ```
+
+**后续调参、压缩、benchmark 规划：**
+
+| 阶段 | 入口 | 当前状态 |
+|------|------|----------|
+| 统一调参 | `src/training/tune.py` | ❌ 暂未实现 |
+| 模型压缩 | `src/optimization/compress.py` | ❌ 暂未实现 |
+| 推理 benchmark | `src/optimization/benchmark.py` | ❌ 暂未实现 |
+
 ---
 
 ## 8. 统一评估口径
@@ -529,13 +565,13 @@ warnings
 
 在完成 `real_raw_5000` 复验后，进入流水线工程化阶段，产出包括：
 
-1. 端到端推荐流水线代码；
+1. 端到端推荐流水线代码； ✅ 已完成（第一版）
 2. 模块化数据预处理与特征工程脚本；
-3. 支持参数配置与可复现训练过程的训练脚本；
-4. 批量推理入口；
-5. REST API 推理服务，模拟线上推荐流程；
-6. 流水线设计文档；
-7. 使用说明文档；
+3. 支持参数配置与可复现训练过程的训练脚本； ✅ 已完成（统一训练入口）
+4. 批量推理入口； ✅ 已完成（batch_predict）
+5. REST API 推理服务，模拟线上推荐流程； ✅ 已完成（serving/api）
+6. 流水线设计文档； ✅ 已完成（docs/batch8_pipeline_design.md）
+7. 使用说明文档； ✅ 已完成（docs/pipeline_usage.md）
 8. 系统架构文档。
 
 在完成去泄漏复验前，不要急于固化 pipeline。
