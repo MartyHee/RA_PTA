@@ -1,0 +1,58 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "default",
+  "run_id": "202605211853",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605211853",
+  "input_dims": {
+    "text": 32,
+    "visual": 18,
+    "structured": 33
+  },
+  "train_started_at": "2026-05-21 18:53:05",
+  "train_finished_at": "2026-05-21 18:53:46",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\training_configs\\multimodal\\real_raw_5000\\20260521185257_resolved.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+  "best_epoch": 24,
+  "best_val_loss": 0.464618,
+  "final_train_loss": 0.472404,
+  "final_val_loss": 0.466234,
+  "ablation_name": "all_modalities_no_cat_seed2027",
+  "enabled_modalities": [
+    "structured",
+    "text",
+    "media"
+  ],
+  "disabled_modalities": [],
+  "feature_dims": {
+    "text": 32,
+    "media": 18,
+    "structured": 33
+  },
+  "modality_branch_mode": "dynamic_disable",
+  "categorical_enabled": false,
+  "categorical_active": false,
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_vocab_sizes": [],
+  "categorical_embedding_dims": [],
+  "categorical_embedding_total_dim": 0,
+  "structured_numeric_dim": 33,
+  "structured_cat_concat_dim": 33,
+  "future_categorical_candidates": [
+    "author_id",
+    "music_id"
+  ],
+  "test_loss": 0.5054513479114467,
+  "device": "cuda",
+  "num_params": 2569,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "leakage_control_passed": true,
+  "warnings": [],
+  "source_tuning_run_id": null,
+  "source_best_trial_id": null
+}

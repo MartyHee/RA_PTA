@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211850",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4597502916432196,
+    "auc": 0.8317666666666667,
+    "accuracy": 0.7346666666666667,
+    "precision": 0.6489675516224189,
+    "recall": 0.7333333333333333,
+    "f1": 0.6885758998435054,
+    "precision_at_k": {
+      "precision_at_5": 0.8,
+      "precision_at_10": 0.9,
+      "precision_at_20": 0.8,
+      "precision_at_50": 0.88
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.05333333333333334,
+      "recall_at_50": 0.14666666666666667
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 18:51:21"
+  },
+  "test_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211850",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.5000788510899368,
+    "auc": 0.7755037037037036,
+    "accuracy": 0.6906666666666667,
+    "precision": 0.5988372093023255,
+    "recall": 0.6866666666666666,
+    "f1": 0.639751552795031,
+    "precision_at_k": {
+      "precision_at_5": 0.4,
+      "precision_at_10": 0.5,
+      "precision_at_20": 0.65,
+      "precision_at_50": 0.58
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.006666666666666667,
+      "recall_at_10": 0.016666666666666666,
+      "recall_at_20": 0.043333333333333335,
+      "recall_at_50": 0.09666666666666666
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 18:51:21"
+  },
+  "generated_at": "2026-05-21 18:51:21"
+}

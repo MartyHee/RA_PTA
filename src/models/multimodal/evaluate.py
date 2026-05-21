@@ -54,8 +54,11 @@ def evaluate_model(
             text_t = item["text"].unsqueeze(0).to(device)
             visual_t = item["visual"].unsqueeze(0).to(device)
             struct_t = item["structured"].unsqueeze(0).to(device)
+            cat_t = item.get("categorical")
+            if cat_t is not None:
+                cat_t = cat_t.unsqueeze(0).to(device)
 
-            logit = model(text_t, visual_t, struct_t)
+            logit = model(text_t, visual_t, struct_t, cat_t)
             score = torch.sigmoid(logit)
 
             all_logits.append(logit.cpu().item())
@@ -187,13 +190,29 @@ def main() -> None:
     metrics_config = load_yaml(metrics_config_path)
     k_values = metrics_config.get("k_values", [5, 10, 20])
 
+    # ── 5a. 从 feature_config_used 中读取消融信息 ──────────
+    eval_enabled_modalities = feature_config.get(
+        "enabled_modalities", ["structured", "text", "media"]
+    )
+    logger.info(f"评估时 enabled_modalities: {eval_enabled_modalities}")
+
     # ── 6. 加载数据 ─────────────────────────────────────────
     is_three_way = "val_npz_path" in config
+
+    # ── Categorical 配置（从 feature_config 或 feature_info 读取） ──────
+    cat_enabled_eval = feature_config.get("categorical_enabled", False)
+    if not cat_enabled_eval:
+        # 回退检查 config
+        cat_block = config.get("categorical", {})
+        if isinstance(cat_block, dict):
+            cat_enabled_eval = cat_block.get("enabled", False)
+        else:
+            cat_enabled_eval = False
 
     val_npz_path = project_root / config.get(
         "val_npz_path", config.get("eval_npz_path", "")
     )
-    val_dataset = MultimodalDataset(val_npz_path, feature_info)
+    val_dataset = MultimodalDataset(val_npz_path, feature_info, categorical_enabled=cat_enabled_eval)
     for warn in val_dataset.warnings:
         logger.warning(f"验证集: {warn}")
     logger.info(f"验证样本数: {len(val_dataset)}")
@@ -201,7 +220,7 @@ def main() -> None:
     test_dataset = None
     if is_three_way:
         test_npz_path = project_root / config["test_npz_path"]
-        test_dataset = MultimodalDataset(test_npz_path, feature_info)
+        test_dataset = MultimodalDataset(test_npz_path, feature_info, categorical_enabled=cat_enabled_eval)
         for warn in test_dataset.warnings:
             logger.warning(f"测试集: {warn}")
         logger.info(f"测试样本数: {len(test_dataset)}")
@@ -212,6 +231,11 @@ def main() -> None:
         logger.warning("CUDA 不可用，回退到 CPU")
         device = "cpu"
 
+    # Categorical embed dims from feature_config or feature_info
+    cat_embed_dims_eval = feature_config.get("cat_embed_dims", [])
+    if not cat_embed_dims_eval:
+        cat_embed_dims_eval = feature_info.get("cat_embed_dims", [])
+
     model = MultimodalFusionModel(
         text_dim=text_dim,
         visual_dim=visual_dim,
@@ -221,6 +245,9 @@ def main() -> None:
         structured_hidden_dim=config.get("structured_hidden_dim", 32),
         fusion_hidden_dim=config.get("fusion_hidden_dim", 64),
         dropout=config.get("dropout", 0.3),
+        enabled_modalities=eval_enabled_modalities,
+        categorical_enabled=cat_enabled_eval,
+        cat_embed_dims=cat_embed_dims_eval,
     ).to(device)
 
     model_path = run_dir / "model.pt"

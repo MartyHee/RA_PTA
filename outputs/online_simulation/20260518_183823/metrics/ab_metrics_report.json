@@ -1,0 +1,143 @@
+{
+  "log_dir": "outputs\\online_simulation\\20260518_183823",
+  "generated_at": "2026-05-18T19:06:42",
+  "experiments": {
+    "exp_dnn_baseline_vs_tuned": {
+      "experiment_id": "exp_dnn_baseline_vs_tuned",
+      "groups": {
+        "A (dnn_baseline)": {
+          "experiment_id": "exp_dnn_baseline_vs_tuned",
+          "group": "A",
+          "model_key": "dnn_baseline",
+          "request_count": 6,
+          "unique_users": 2,
+          "success_requests": 6,
+          "failed_requests": 0,
+          "error_rate": 0.0,
+          "avg_latency_ms": 3.64,
+          "p50_latency_ms": 3.76,
+          "p95_latency_ms": 4.01,
+          "assignment_count": 18,
+          "traffic_ratio": 0.692308,
+          "expected_traffic_ratio": 0.5,
+          "traffic_diff_abs": 0.192308,
+          "traffic_balance_warning": false,
+          "impression_count": 90,
+          "unique_recommended_items": 5,
+          "avg_score": 0.058519,
+          "score_std": 0.113907,
+          "score_min": 0.001057,
+          "score_max": 0.286329,
+          "score_p25": 0.001264,
+          "score_p50": 0.001264,
+          "score_p75": 0.002679,
+          "coverage": 1.0,
+          "total_candidate_items": 5,
+          "coverage_note": "",
+          "clicks": null,
+          "ctr": null,
+          "likes": null,
+          "comments": null,
+          "shares": null,
+          "collects": null,
+          "interaction_count": null,
+          "interaction_rate": null
+        },
+        "B (dnn_tuned)": {
+          "experiment_id": "exp_dnn_baseline_vs_tuned",
+          "group": "B",
+          "model_key": "dnn_tuned",
+          "request_count": 0,
+          "unique_users": 0,
+          "success_requests": 0,
+          "failed_requests": 0,
+          "error_rate": 0.0,
+          "avg_latency_ms": 0.0,
+          "p50_latency_ms": 0.0,
+          "p95_latency_ms": 0.0,
+          "assignment_count": 8,
+          "traffic_ratio": 0.307692,
+          "expected_traffic_ratio": 0.5,
+          "traffic_diff_abs": 0.192308,
+          "traffic_balance_warning": false,
+          "impression_count": 40,
+          "unique_recommended_items": 5,
+          "avg_score": 0.054803,
+          "score_std": 0.106638,
+          "score_min": 0.000502,
+          "score_max": 0.268063,
+          "score_p25": 0.000734,
+          "score_p50": 0.000734,
+          "score_p75": 0.003984,
+          "coverage": 1.0,
+          "total_candidate_items": 5,
+          "coverage_note": "",
+          "clicks": null,
+          "ctr": null,
+          "likes": null,
+          "comments": null,
+          "shares": null,
+          "collects": null,
+          "interaction_count": null,
+          "interaction_rate": null
+        }
+      },
+      "warnings": [
+        {
+          "type": "sample_size_warning",
+          "severity": "warning",
+          "message": "组 'A (dnn_baseline)' 样本量不足: request_count=6 < 100",
+          "detail": {
+            "group": "A (dnn_baseline)",
+            "request_count": 6,
+            "min_requests_per_group": 100
+          }
+        },
+        {
+          "type": "sample_size_warning",
+          "severity": "warning",
+          "message": "组 'B (dnn_tuned)' 样本量不足: request_count=0 < 100",
+          "detail": {
+            "group": "B (dnn_tuned)",
+            "request_count": 0,
+            "min_requests_per_group": 100
+          }
+        },
+        {
+          "type": "traffic_balance_warning",
+          "severity": "warning",
+          "message": "组 'A (dnn_baseline)' 流量比例偏离: 实际=69.2%, 预期=50.0%, 差值=19.2%",
+          "detail": {
+            "group": "A (dnn_baseline)",
+            "actual_ratio": 0.692308,
+            "expected_ratio": 0.5,
+            "diff_abs": 0.192308,
+            "tolerance": 0.05
+          }
+        },
+        {
+          "type": "traffic_balance_warning",
+          "severity": "warning",
+          "message": "组 'B (dnn_tuned)' 流量比例偏离: 实际=30.8%, 预期=50.0%, 差值=19.2%",
+          "detail": {
+            "group": "B (dnn_tuned)",
+            "actual_ratio": 0.307692,
+            "expected_ratio": 0.5,
+            "diff_abs": 0.192308,
+            "tolerance": 0.05
+          }
+        }
+      ],
+      "verdict": {
+        "primary_metric": "avg_score",
+        "winner": null,
+        "effect_size": 0.003716,
+        "effect_percentage": 6.7807,
+        "significance_test": "not_performed",
+        "conclusion": "inconclusive",
+        "note": "存在 warning，不能判定胜负"
+      }
+    }
+  },
+  "disclaimer": "This is a local simulation A/B test. Results do not represent real online business metrics. All metrics are computed from offline simulation logs."
+}

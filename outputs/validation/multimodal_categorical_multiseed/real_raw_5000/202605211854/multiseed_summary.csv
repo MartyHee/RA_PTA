@@ -1,0 +1,11 @@
+config_type,metric,mean,std,min,max,median,count
+all_modalities_cat,val_auc,0.837126,0.004308,0.831311,0.841607,0.838459,3
+all_modalities_cat,test_auc,0.813057,0.005618,0.805289,0.818385,0.815496,3
+all_modalities_cat,test_f1,0.703606,0.002187,0.700752,0.706065,0.704000,3
+all_modalities_cat,best_epoch,16.67,3.09,14.00,21.00,15.00,3
+all_modalities_cat,num_params,22221.00,0.00,22221.00,22221.00,22221.00,3
+all_modalities_no_cat,val_auc,0.829342,0.005099,0.822248,0.834011,0.831767,3
+all_modalities_no_cat,test_auc,0.774862,0.005492,0.767837,0.781244,0.775504,3
+all_modalities_no_cat,test_f1,0.649139,0.013100,0.639752,0.667665,0.640000,3
+all_modalities_no_cat,best_epoch,23.00,0.82,22.00,24.00,23.00,3
+all_modalities_no_cat,num_params,2569.00,0.00,2569.00,2569.00,2569.00,3

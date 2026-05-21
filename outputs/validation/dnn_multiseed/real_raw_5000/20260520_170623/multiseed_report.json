@@ -1,0 +1,188 @@
+{
+  "validation_run_id": "20260520_170623",
+  "generated_at": "2026-05-20T17:06:23",
+  "baseline": {
+    "config_type": "baseline",
+    "num_runs": 5,
+    "config": {
+      "source": "configs/models/dnn.yaml",
+      "hidden_units": [
+        64,
+        32
+      ],
+      "dropout": 0.3,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 128
+    },
+    "summary": {
+      "test_auc": {
+        "mean": 0.83855,
+        "std": 0.004076,
+        "min": 0.832978,
+        "max": 0.842007,
+        "median": 0.840941,
+        "count": 5
+      },
+      "test_f1": {
+        "mean": 0.728291,
+        "std": 0.004816,
+        "min": 0.720238,
+        "max": 0.732224,
+        "median": 0.72969,
+        "count": 5
+      },
+      "test_accuracy": {
+        "mean": 0.755467,
+        "std": 0.005383,
+        "min": 0.749333,
+        "max": 0.764,
+        "median": 0.754667,
+        "count": 5
+      },
+      "test_precision": {
+        "mean": 0.655628,
+        "std": 0.008748,
+        "min": 0.647815,
+        "max": 0.67036,
+        "median": 0.654255,
+        "count": 5
+      },
+      "test_recall": {
+        "mean": 0.819333,
+        "std": 0.013824,
+        "min": 0.806667,
+        "max": 0.84,
+        "median": 0.82,
+        "count": 5
+      },
+      "val_auc": {
+        "mean": 0.834354,
+        "std": 0.003384,
+        "min": 0.830659,
+        "max": 0.838644,
+        "median": 0.833659,
+        "count": 5
+      },
+      "val_f1": {
+        "mean": 0.7162,
+        "std": 0.006846,
+        "min": 0.70901,
+        "max": 0.723589,
+        "median": 0.714078,
+        "count": 5
+      },
+      "val_loss": {
+        "mean": null,
+        "std": null,
+        "min": null,
+        "max": null,
+        "median": null,
+        "count": 0
+      }
+    }
+  },
+  "tuned": {
+    "config_type": "tuned",
+    "num_runs": 5,
+    "config": {
+      "source": "outputs/tuning/dnn/real_raw_5000/20260514_191432/best_config.yaml",
+      "hidden_units": [
+        256,
+        128
+      ],
+      "dropout": 0.314,
+      "learning_rate": 0.00808,
+      "weight_decay": 0.000542,
+      "batch_size": 256
+    },
+    "summary": {
+      "test_auc": {
+        "mean": 0.839031,
+        "std": 0.004548,
+        "min": 0.833585,
+        "max": 0.844615,
+        "median": 0.839452,
+        "count": 5
+      },
+      "test_f1": {
+        "mean": 0.728878,
+        "std": 0.006294,
+        "min": 0.720827,
+        "max": 0.736091,
+        "median": 0.731214,
+        "count": 5
+      },
+      "test_accuracy": {
+        "mean": 0.746933,
+        "std": 0.006211,
+        "min": 0.738667,
+        "max": 0.753333,
+        "median": 0.748,
+        "count": 5
+      },
+      "test_precision": {
+        "mean": 0.637984,
+        "std": 0.01016,
+        "min": 0.626829,
+        "max": 0.647215,
+        "median": 0.643392,
+        "count": 5
+      },
+      "test_recall": {
+        "mean": 0.850667,
+        "std": 0.024653,
+        "min": 0.813333,
+        "max": 0.88,
+        "median": 0.856667,
+        "count": 5
+      },
+      "val_auc": {
+        "mean": 0.833926,
+        "std": 0.00613,
+        "min": 0.825341,
+        "max": 0.842089,
+        "median": 0.835163,
+        "count": 5
+      },
+      "val_f1": {
+        "mean": 0.725766,
+        "std": 0.006589,
+        "min": 0.716157,
+        "max": 0.732782,
+        "median": 0.72549,
+        "count": 5
+      },
+      "val_loss": {
+        "mean": null,
+        "std": null,
+        "min": null,
+        "max": null,
+        "median": null,
+        "count": 0
+      }
+    }
+  },
+  "comparison": {
+    "primary_metric": "test_auc",
+    "baseline_mean": 0.83855,
+    "baseline_std": 0.004076,
+    "tuned_mean": 0.839031,
+    "tuned_std": 0.004548,
+    "diff_mean": 0.000481,
+    "conclusion": "KEEP_BASELINE_WITHIN_NOISE",
+    "details": {
+      "reason": "tuned mean > baseline mean but within noise range",
+      "baseline_mean": 0.83855,
+      "baseline_std": 0.004076,
+      "tuned_mean": 0.839031,
+      "tuned_std": 0.004548,
+      "tuned_lower_bound": 0.834483,
+      "baseline_upper_bound": 0.842626
+    }
+  },
+  "warnings": [
+    "所有指标基于离线代理标签（interaction_score 分位数二分类），不代表真实线上收益",
+    "只使用了描述性统计，未做正式统计检验"
+  ]
+}

@@ -1,0 +1,6 @@
+ablation_name,enabled_modalities,num_params,val_auc,test_auc,test_f1,best_epoch,feature_dims
+structured_only,structured,1121,0.5353,0.5082,0.0,7,"{structured:33}"
+text_only,text,1105,0.8243,0.7707,0.6607,46,"{text:32}"
+media_only,media,473,0.7038,0.6831,0.7034,2,"{media:18}"
+structured_text,"structured, text",2161,0.8192,0.7655,0.6476,40,"{structured:33, text:32}"
+all_modalities,"structured, text, media",2569,0.8340,0.7812,0.6400,23,"{structured:33, text:32, media:18}"

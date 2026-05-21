@@ -1,0 +1,7 @@
+config_type,seed,run_id,ablation_name,categorical_enabled,enabled_modalities,status,val_auc,test_auc,test_f1,best_epoch,best_val_loss,num_params
+all_modalities_cat,2025,202605211846,all_modalities_cat_seed2025,true,"structured, text, media",completed,0.8385,0.8155,0.7061,15,0.45229,22221
+all_modalities_cat,2026,202605211847,all_modalities_cat_seed2026,true,"structured, text, media",completed,0.8416,0.8184,0.7040,21,0.45252,22221
+all_modalities_cat,2027,202605211849,all_modalities_cat_seed2027,true,"structured, text, media",completed,0.8313,0.8053,0.7008,14,0.46128,22221
+all_modalities_no_cat,2025,202605211850,all_modalities_no_cat_seed2025,false,"structured, text, media",completed,0.8318,0.7755,0.6398,22,0.45975,2569
+all_modalities_no_cat,2026,202605211851,all_modalities_no_cat_seed2026,false,"structured, text, media",completed,0.8340,0.7812,0.6400,23,0.45757,2569
+all_modalities_no_cat,2027,202605211853,all_modalities_no_cat_seed2027,false,"structured, text, media",completed,0.8222,0.7678,0.6677,24,0.46462,2569

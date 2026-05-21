@@ -1,0 +1,67 @@
+{
+  "val_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "default",
+    "run_id": "20260520175705",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.45519593358039856,
+    "auc": 0.8431037037037037,
+    "accuracy": 0.7586666666666667,
+    "precision": 0.662125340599455,
+    "recall": 0.81,
+    "f1": 0.7286356821589205,
+    "precision_at_k": {
+      "precision_at_5": 0.800000011920929,
+      "precision_at_10": 0.8999999761581421,
+      "precision_at_20": 0.8999999761581421,
+      "precision_at_50": 0.800000011920929
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.06,
+      "recall_at_50": 0.13333333333333333
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-20 17:57:12"
+  },
+  "test_metrics": {
+    "model_name": "dnn",
+    "dataset_name": "real_raw_5000",
+    "dataset_variant": "default",
+    "run_id": "20260520175705",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.45455285906791687,
+    "auc": 0.8376370370370372,
+    "accuracy": 0.7506666666666667,
+    "precision": 0.6582633053221288,
+    "recall": 0.7833333333333333,
+    "f1": 0.715372907153729,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "precision_at_20": 0.949999988079071,
+      "precision_at_50": 0.8199999928474426
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.03333333333333333,
+      "recall_at_20": 0.06333333333333334,
+      "recall_at_50": 0.13666666666666666
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-20 17:57:12"
+  },
+  "generated_at": "2026-05-20 17:57:12"
+}

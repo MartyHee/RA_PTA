@@ -1,0 +1,14 @@
+batch_size: 64
+dataset_name: real_raw_5000
+dropout: 0.45163613026609917
+early_stopping_patience: 10
+epochs: 50
+hidden_units:
+- 256
+- 128
+learning_rate: 0.001340760852864911
+model_name: dnn
+random_seed: 2088
+trial_id: 7
+tuning_run_id: '20260520_174218'
+weight_decay: 0.0008478148698275977

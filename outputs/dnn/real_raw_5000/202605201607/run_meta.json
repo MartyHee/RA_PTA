@@ -1,0 +1,29 @@
+{
+  "model_name": "dnn",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "default",
+  "leakage_control_passed": true,
+  "feature_profile": {
+    "numeric_count": 33,
+    "categorical_count": 2,
+    "text_stat_count": 7,
+    "total_features": 35,
+    "feature_source": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_feature_info.json"
+  },
+  "run_id": "202605201607",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605201607",
+  "train_started_at": "2026-05-20 16:07:10",
+  "train_finished_at": "2026-05-20 16:07:14",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\training_configs\\dnn\\real_raw_5000\\20260520160706_resolved.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_train.csv",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_val.csv",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv",
+  "best_epoch": 7,
+  "best_val_loss": 0.448821,
+  "final_train_loss": 0.424287,
+  "final_val_loss": 0.46358,
+  "device": "cuda",
+  "num_params": 24581,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "warnings": []
+}

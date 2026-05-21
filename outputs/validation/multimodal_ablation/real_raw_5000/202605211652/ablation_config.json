@@ -1,0 +1,89 @@
+{
+  "experiment": "Multimodal 核心模态消融实验 Batch 14C",
+  "project_root": "D:/CodeData/Program Coding/ByteDance/RA_PTA",
+  "dataset_name": "real_raw_5000",
+  "model": "multimodal",
+  "config": "configs/models/multimodal.yaml",
+  "ablation_run_id": "202605211652",
+  "started_at": "2026-05-21 16:47",
+  "finished_at": "2026-05-21 16:52",
+  "variants": {
+    "A": {
+      "ablation_name": "structured_only",
+      "enabled_modalities": ["structured"],
+      "disabled_modalities": ["text", "media"],
+      "purpose": "确认结构化特征的独立 baseline"
+    },
+    "B": {
+      "ablation_name": "text_only",
+      "enabled_modalities": ["text"],
+      "disabled_modalities": ["structured", "media"],
+      "purpose": "确认文本分支的独立预测能力"
+    },
+    "C": {
+      "ablation_name": "media_only",
+      "enabled_modalities": ["media"],
+      "disabled_modalities": ["structured", "text"],
+      "purpose": "确认媒体元信息的独立预测能力"
+    },
+    "D": {
+      "ablation_name": "structured_text",
+      "enabled_modalities": ["structured", "text"],
+      "disabled_modalities": ["media"],
+      "purpose": "确认文本对结构化特征的补充效果"
+    },
+    "G": {
+      "ablation_name": "all_modalities",
+      "enabled_modalities": ["structured", "text", "media"],
+      "disabled_modalities": [],
+      "purpose": "全模态融合对照（当前 baseline）"
+    }
+  },
+  "excluded_variants": {
+    "E": {
+      "ablation_name": "structured_media",
+      "reason": "按 Batch 14C 设计，暂不运行"
+    },
+    "F": {
+      "ablation_name": "text_media",
+      "reason": "按 Batch 14C 设计，暂不运行"
+    }
+  },
+  "data_paths": {
+    "train_npz": "data/multimodal/real_raw_5000/multimodal_train.npz",
+    "val_npz": "data/multimodal/real_raw_5000/multimodal_val.npz",
+    "test_npz": "data/multimodal/real_raw_5000/multimodal_test.npz",
+    "feature_info": "data/multimodal/real_raw_5000/multimodal_feature_info.json"
+  },
+  "hyperparameters": {
+    "text_hidden": 16,
+    "visual_hidden": 8,
+    "structured_hidden": 16,
+    "fusion_hidden": 32,
+    "dropout": 0.205,
+    "learning_rate": 0.001225,
+    "weight_decay": 0.000018,
+    "batch_size": 128,
+    "epochs": 50,
+    "early_stopping_patience": 8,
+    "seed": 2026
+  },
+  "feature_info": {
+    "text_dim": 32,
+    "text_method": "tfidf_svd",
+    "visual_dim": 18,
+    "visual_method": "media_metadata_only",
+    "structured_dim": 33,
+    "structured_method": "tabular_numeric_scaled"
+  },
+  "label_info": {
+    "definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "is_offline_surrogate": true,
+    "not_real_business_label": true
+  },
+  "comparison_benchmark": {
+    "dnn_baseline_run_id": "202605132017",
+    "dnn_test_auc": 0.8414,
+    "dnn_test_f1": 0.7315
+  }
+}

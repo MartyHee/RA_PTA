@@ -1,0 +1,117 @@
+{
+  "experiment": "Multimodal 核心模态消融实验 (Batch 14C)",
+  "ablation_run_id": "202605211652",
+  "completed_at": "2026-05-21 16:52",
+  "dataset": "real_raw_5000",
+  "model": "multimodal",
+  "variants_completed": 5,
+  "variants_failed": 0,
+  "variants": {
+    "structured_only": {
+      "run_id": "202605211639",
+      "val_auc": 0.5353,
+      "test_auc": 0.5082,
+      "test_f1": 0.0,
+      "num_params": 1121,
+      "best_epoch": 7,
+      "conclusion": "接近随机（AUC≈0.51），说明无 categorical embedding 的 structured 分支在当前 Multimodal 架构下无独立预测能力。与 DNN（AUC=0.8414, 含 categorical embedding）的差距主要由缺失类别特征 embedding 导致。"
+    },
+    "text_only": {
+      "run_id": "202605211647",
+      "val_auc": 0.8243,
+      "test_auc": 0.7707,
+      "test_f1": 0.6607,
+      "num_params": 1105,
+      "best_epoch": 46,
+      "conclusion": "显著高于随机（AUC≈0.82）。当前 TF-IDF+SVD 32 维文本表征具有强独立预测能力。text_only 的 val_auc（0.8243）甚至略高于 structured_text（0.8192），提示文本分支是当前 Multimodal 的最强模态。"
+    },
+    "media_only": {
+      "run_id": "202605211648",
+      "val_auc": 0.7038,
+      "test_auc": 0.6831,
+      "test_f1": 0.7034,
+      "num_params": 473,
+      "best_epoch": 2,
+      "conclusion": "高于随机（AUC≈0.70），18 维媒体元信息具有中等独立预测能力。参数量极低（473），早停于 epoch 2，说明信号有限但非零。注意 recall=1.0, precision≈0.54——预测几乎全部为正类。"
+    },
+    "structured_text": {
+      "run_id": "202605211649",
+      "val_auc": 0.8192,
+      "test_auc": 0.7655,
+      "test_f1": 0.6476,
+      "num_params": 2161,
+      "best_epoch": 40,
+      "conclusion": "略低于 text_only（0.8192 vs 0.8243），未显示文本对结构化特征的互补增益。当前结构化特征（无 categorical embedding）在融合中未贡献额外有用信息。"
+    },
+    "all_modalities": {
+      "run_id": "202605211651",
+      "val_auc": 0.8340,
+      "test_auc": 0.7812,
+      "test_f1": 0.6400,
+      "num_params": 2569,
+      "best_epoch": 23,
+      "conclusion": "val_auc（0.8340）为所有变体中最高，略好于 text_only（0.8243）。全模态融合提供了边际增益。test_auc（0.7812）匹配历史 baseline。"
+    }
+  },
+  "comparisons": {
+    "structured_only_vs_random": {
+      "question": "structured_only 是否接近随机？",
+      "answer": "是。Val AUC=0.5353, Test AUC=0.5082，接近随机（0.5）。当前 33 维结构化特征（仅数值+文本统计，无 categorical embedding）无独立预测能力。",
+      "severity": "严重"
+    },
+    "text_only_vs_random": {
+      "question": "text_only 是否有独立预测能力？",
+      "answer": "有且很强。Val AUC=0.8243，远超随机。当前 TF-IDF+SVD 32 维文本表征是 Multimodal 的最强模态。",
+      "severity": "正向发现"
+    },
+    "media_only_vs_random": {
+      "question": "media_only 是否有独立预测能力？",
+      "answer": "有，中等。Val AUC=0.7038，高于随机但明显弱于 text_only。18 维媒体元信息含有限信号。recall=1.0 表明倾向于将全部样本预测为正类。",
+      "severity": "中等"
+    },
+    "structured_text_vs_structured_only": {
+      "question": "structured_text 是否优于 structured_only？",
+      "answer": "显著优于（0.8192 vs 0.5353），但增益几乎全部来自 text 分支。structured 分支未提供额外贡献。",
+      "severity": "重要"
+    },
+    "all_modalities_vs_structured_only": {
+      "question": "all_modalities 是否优于 structured_only？",
+      "answer": "显著优于（0.8340 vs 0.5353），增益主要来自 text 和 media 模态。",
+      "severity": "重要"
+    },
+    "all_modalities_vs_text_only": {
+      "question": "all_modalities 是否优于 text_only？",
+      "answer": "小幅优于（0.8340 vs 0.8243，+0.0097 val_auc）。全模态融合相比纯文本有边际增益，但幅度很小。test_auc（0.7812 vs 0.7707，+0.0105）趋势一致。",
+      "severity": "边际"
+    },
+    "structured_text_vs_text_only": {
+      "question": "structured_text 是否优于 text_only？",
+      "answer": "否。Val AUC 略低于 text_only（0.8192 vs 0.8243），说明当前结构化分支在融合中未提供额外价值，甚至可能引入微弱噪声。",
+      "severity": "诊断发现"
+    }
+  },
+  "diagnosis_summary": {
+    "main_shortcoming": "结构化分支缺少 categorical embedding 是当前 Multimodal 的最大短板。",
+    "text_branch": "当前最强模态，具有独立预测能力。但仍是 TF-IDF 字符 n-gram，无语义表征，有进一步提升空间。",
+    "media_branch": "有中等独立预测能力但 recall=1.0 表明分类边界弱。参数量极小（473），早停极快（epoch 2）。与 structured 特征有重叠。",
+    "fusion_strategy": "全模态融合略优于 text_only，但增益边际。structured 分支在融合中贡献有限。",
+    "next_steps": [
+      "优先方向：为 structured 分支加入 categorical embedding（Batch 14F）",
+      "次优方向：文本分支增强（分字段编码、提高 SVD 维度）（Batch 14D）",
+      "注意：必须先做结构化增强，再做融合策略改进（Batch 14E）",
+      "至少 3 seed 验证重要结论"
+    ]
+  },
+  "limitations": [
+    "单次消融，未多 seed 验证",
+    "所有结论基于离线代理标签（interaction_score P60 伪标签）",
+    "media 为 media_metadata（18 维元信息），非真实视觉语义",
+    "media_only recall=1.0，precision 和 F1 不可靠",
+    "structured_only 无 categorical embedding，不代表结构化分支的潜力",
+    "structured_text 与 all_modalities 比较时，media 分支贡献较小"
+  ],
+  "warnings": [
+    "test_auc 不参与选择，仅做参考",
+    "所有结果不代表线上推荐收益"
+  ]
+}

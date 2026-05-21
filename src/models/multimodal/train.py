@@ -56,8 +56,11 @@ def evaluate_model(
             text_t = item["text"].unsqueeze(0).to(device)
             visual_t = item["visual"].unsqueeze(0).to(device)
             struct_t = item["structured"].unsqueeze(0).to(device)
+            cat_t = item.get("categorical")
+            if cat_t is not None:
+                cat_t = cat_t.unsqueeze(0).to(device)
 
-            logit = model(text_t, visual_t, struct_t)
+            logit = model(text_t, visual_t, struct_t, cat_t)
             score = torch.sigmoid(logit)
 
             all_logits.append(logit.cpu().item())
@@ -152,6 +155,44 @@ def main() -> None:
     text_dim = feature_info.get("text_dim", 32)
     visual_dim = feature_info.get("visual_dim", 18)
     structured_dim = feature_info.get("structured_dim", 38)
+
+    # ── Categorical 配置 ─────────────────────────────────────
+    # 支持两种 override 方式: 嵌套 categorical.enabled 或扁平 categorical_enabled
+    cat_block = config.get("categorical", {})
+    if isinstance(cat_block, dict):
+        categorical_enabled = cat_block.get("enabled", config.get("categorical_enabled", False))
+    else:
+        categorical_enabled = config.get("categorical_enabled", False)
+    categorical_enabled = bool(categorical_enabled)
+
+    cat_embed_dims: list[list[int]] | None = None
+    cat_features_list: list[str] = feature_info.get("categorical_features", [])
+    if categorical_enabled:
+        cat_embed_dims = feature_info.get("cat_embed_dims", [])
+        if not cat_embed_dims:
+            logger.warning("categorical_enabled=True 但 multimodal_feature_info 中无 cat_embed_dims，禁用 categorical")
+            categorical_enabled = False
+        elif not cat_features_list:
+            logger.warning("categorical_enabled=True 但 multimodal_feature_info 中无 categorical_features，禁用 categorical")
+            categorical_enabled = False
+        else:
+            logger.info(f"Categorical embedding 已启用: features={cat_features_list}, embed_dims={cat_embed_dims}")
+
+    # ── 消融实验配置 ─────────────────────────────────────────
+    enabled_modalities = config.get("enabled_modalities", ["structured", "text", "media"])
+    ablation_name = config.get("ablation_name", "all_modalities")
+    if isinstance(enabled_modalities, str):
+        # 兼容 YAML 字符串列表解析
+        import json as _json
+        try:
+            enabled_modalities = _json.loads(enabled_modalities.replace("'", '"'))
+        except Exception:
+            enabled_modalities = [m.strip() for m in enabled_modalities.strip("[]").split(",")]
+    logger.info(
+        f"消融配置: ablation_name={ablation_name}, "
+        f"enabled_modalities={enabled_modalities}"
+    )
+
     label_definition = feature_info.get(
         "label_definition",
         "interaction_score >= threshold (离线实验伪标签)",
@@ -185,12 +226,12 @@ def main() -> None:
     # 三路切分模式 (real_raw_1000): 配置中含 test_npz_path
     is_three_way = "test_npz_path" in config
 
-    train_dataset = MultimodalDataset(train_npz_path, feature_info)
+    train_dataset = MultimodalDataset(train_npz_path, feature_info, categorical_enabled=categorical_enabled)
 
     if is_three_way:
         test_npz_path = project_root / config["test_npz_path"]
-        val_dataset = MultimodalDataset(val_npz_path, feature_info)
-        test_dataset = MultimodalDataset(test_npz_path, feature_info)
+        val_dataset = MultimodalDataset(val_npz_path, feature_info, categorical_enabled=categorical_enabled)
+        test_dataset = MultimodalDataset(test_npz_path, feature_info, categorical_enabled=categorical_enabled)
         logger.info(f"测试样本: {len(test_dataset)}")
     else:
         # 二路切分模式 (sample0427): val 用作 eval
@@ -239,12 +280,20 @@ def main() -> None:
         structured_hidden_dim=config.get("structured_hidden_dim", 32),
         fusion_hidden_dim=config.get("fusion_hidden_dim", 64),
         dropout=config.get("dropout", 0.3),
+        enabled_modalities=enabled_modalities,
+        categorical_enabled=categorical_enabled,
+        cat_embed_dims=cat_embed_dims,
     ).to(device)
+
+    # 获取消融元信息，供后续 metadata 使用
+    ablation_info = model.get_ablation_info()
 
     n_params = sum(p.numel() for p in model.parameters())
     logger.info(f"模型参数数: {n_params}")
     logger.info(
         f"模型结构: "
+        f"ablation={ablation_name}, "
+        f"modalities={enabled_modalities}, "
         f"text({text_dim}->{config.get('text_hidden_dim', 32)}), "
         f"visual({visual_dim}->{config.get('visual_hidden_dim', 16)}), "
         f"structured({structured_dim}->{config.get('structured_hidden_dim', 32)}), "
@@ -278,9 +327,12 @@ def main() -> None:
             visual_b = batch["visual"].to(device)
             struct_b = batch["structured"].to(device)
             labels_b = batch["label"].to(device)
+            cat_b = batch.get("categorical")
+            if cat_b is not None:
+                cat_b = cat_b.to(device)
 
             optimizer.zero_grad()
-            logits = model(text_b, visual_b, struct_b)
+            logits = model(text_b, visual_b, struct_b, cat_b)
             loss = criterion(logits.squeeze(), labels_b)
             loss.backward()
             optimizer.step()
@@ -300,8 +352,11 @@ def main() -> None:
                 visual_t = item["visual"].unsqueeze(0).to(device)
                 struct_t = item["structured"].unsqueeze(0).to(device)
                 labels_t = item["label"].unsqueeze(0).to(device)
+                cat_t = item.get("categorical")
+                if cat_t is not None:
+                    cat_t = cat_t.unsqueeze(0).to(device)
 
-                logit = model(text_t, visual_t, struct_t)
+                logit = model(text_t, visual_t, struct_t, cat_t)
                 loss = criterion(logit.view(-1), labels_t.view(-1))
                 epoch_val_losses.append(loss.item())
 
@@ -456,8 +511,23 @@ def main() -> None:
     logger.info(f"指标已保存: {output_dir / 'metrics.json'}")
 
     # ── 14. 保存特征配置 ──────────────────────────────────
+    # Categorical metadata
+    cat_feature_list = feature_info.get("categorical_features", [])
+    cat_vocab_sizes = (
+        ablation_info.get("categorical_vocab_sizes", [])
+        if categorical_enabled else []
+    )
+    cat_embed_dims_only = (
+        ablation_info.get("categorical_embedding_dims", [])
+        if categorical_enabled else []
+    )
+
     feature_config = {
         "dataset_name": dataset_name,
+        "ablation_name": ablation_name,
+        "enabled_modalities": enabled_modalities,
+        "disabled_modalities": ablation_info["disabled_modalities"],
+        "feature_dims": ablation_info["feature_dims"],
         "train_npz_path": str(train_npz_path),
         "val_npz_path": str(val_npz_path),
         "text_dim": text_dim,
@@ -477,6 +547,22 @@ def main() -> None:
             "structured": config.get("structured_hidden_dim", 32),
         },
         "fusion_hidden_dim": config.get("fusion_hidden_dim", 64),
+        # Categorical info
+        "categorical_enabled": categorical_enabled,
+        "categorical_active": ablation_info.get("categorical_active", False),
+        "categorical_features": cat_feature_list,
+        "categorical_vocab_sizes": cat_vocab_sizes,
+        "categorical_embedding_dims": cat_embed_dims_only,
+        "categorical_embedding_total_dim": ablation_info.get("cat_total_dim", 0),
+        "categorical_vocab_source": feature_info.get(
+            "categorical_vocab_source",
+            "data/features/real_raw_5000/tabular_feature_info.json",
+        ),
+        "future_categorical_candidates": feature_info.get(
+            "future_categorical_candidates", []
+        ),
+        "structured_numeric_dim": structured_dim,
+        # Misc
         "no_image_download_confirmed": config.get("no_image_download", True),
         "no_external_api_confirmed": config.get("no_external_api", True),
         "no_large_pretrained_model_confirmed": config.get(
@@ -520,6 +606,25 @@ def main() -> None:
         "best_val_loss": round(best_val_loss, 6),
         "final_train_loss": final_train_loss,
         "final_val_loss": final_val_loss,
+        "ablation_name": ablation_name,
+        "enabled_modalities": enabled_modalities,
+        "disabled_modalities": ablation_info["disabled_modalities"],
+        "feature_dims": ablation_info["feature_dims"],
+        "modality_branch_mode": ablation_info["modality_branch_mode"],
+        "categorical_enabled": categorical_enabled,
+        "categorical_active": ablation_info.get("categorical_active", False),
+        "categorical_features": cat_feature_list,
+        "categorical_vocab_sizes": cat_vocab_sizes,
+        "categorical_embedding_dims": cat_embed_dims_only,
+        "categorical_embedding_total_dim": ablation_info.get("cat_total_dim", 0),
+        "structured_numeric_dim": structured_dim,
+        "structured_cat_concat_dim": (
+            structured_dim + ablation_info.get("cat_total_dim", 0)
+            if categorical_enabled else structured_dim
+        ),
+        "future_categorical_candidates": feature_info.get(
+            "future_categorical_candidates", []
+        ),
         "test_loss": test_result["eval_loss"] if test_result else None,
         "device": device,
         "num_params": n_params,

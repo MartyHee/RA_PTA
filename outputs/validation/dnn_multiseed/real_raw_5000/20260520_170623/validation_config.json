@@ -1,0 +1,40 @@
+{
+  "validation_run_id": "20260520_170623",
+  "project_root": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA",
+  "generated_at": "2026-05-20T17:06:23",
+  "description": "DNN 多 seed 验证 — Batch 13B",
+  "seeds": [
+    2024,
+    2025,
+    2026,
+    2027,
+    2028
+  ],
+  "configs": {
+    "baseline": {
+      "source": "configs/models/dnn.yaml",
+      "hidden_units": [
+        64,
+        32
+      ],
+      "dropout": 0.3,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 128
+    },
+    "tuned": {
+      "source": "outputs/tuning/dnn/real_raw_5000/20260514_191432/best_config.yaml",
+      "hidden_units": [
+        256,
+        128
+      ],
+      "dropout": 0.314,
+      "learning_rate": 0.00808,
+      "weight_decay": 0.000542,
+      "batch_size": 256
+    }
+  },
+  "num_total_runs": 10,
+  "num_completed": 10,
+  "num_failed": 0
+}

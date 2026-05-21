@@ -11,17 +11,19 @@ from torch.utils.data import Dataset
 
 
 class MultimodalDataset(Dataset):
-    """多模态 PyTorch Dataset，加载 npz 中的三模态特征。
+    """多模态 PyTorch Dataset，加载 npz 中的三模态特征 + 可选的 categorical 特征。
 
     Args:
         npz_path: .npz 文件路径
         feature_info: 可选的 feature_info dict, 用于维度校验
+        categorical_enabled: 是否启用 categorical embedding
     """
 
     def __init__(
         self,
         npz_path: str | Path,
         feature_info: dict[str, Any] | None = None,
+        categorical_enabled: bool = False,
     ) -> None:
         self.npz_path = str(npz_path)
         data = np.load(self.npz_path, allow_pickle=True)
@@ -39,6 +41,28 @@ class MultimodalDataset(Dataset):
         self.split: np.ndarray = data["split"]
 
         self.n_samples = len(self.label)
+
+        # ── Categorical features ──────────────────────────────
+        self.categorical_enabled = categorical_enabled
+        if "categorical_features" in data:
+            self.categorical_features: np.ndarray = data["categorical_features"].astype(
+                np.int64
+            )
+            self.categorical_dim = self.categorical_features.shape[1]
+        else:
+            self.categorical_features = None
+            self.categorical_dim = 0
+
+        if self.categorical_enabled and self.categorical_features is None:
+            raise ValueError(
+                "categorical_enabled=True 但 NPZ 中无 categorical_features。"
+                "请重新运行 build_multimodal_real_raw.py 重建 NPZ。"
+            )
+        if self.categorical_enabled and self.categorical_dim == 0:
+            raise ValueError(
+                "categorical_enabled=True 但 categorical_features 列为空。"
+                "当前数据集没有注册的 categorical features。"
+            )
 
         # ── 维度校验 ──────────────────────────────────────────
         if feature_info is not None:
@@ -61,6 +85,14 @@ class MultimodalDataset(Dataset):
                     f"expected {expected_structured_dim}, "
                     f"got {self.structured_features.shape[1]}"
                 )
+            # 校验 categorical_dim
+            if self.categorical_enabled and self.categorical_features is not None:
+                expected_cat_dim = feature_info.get("categorical_dim", 0)
+                if self.categorical_dim != expected_cat_dim:
+                    raise ValueError(
+                        f"categorical_features dim mismatch: "
+                        f"expected {expected_cat_dim}, got {self.categorical_dim}"
+                    )
 
         # ── label 只包含 0/1 检查 ──────────────────────────────
         unique_labels = np.unique(self.label)
@@ -93,7 +125,7 @@ class MultimodalDataset(Dataset):
         return self.n_samples
 
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
-        return {
+        result: dict[str, torch.Tensor] = {
             "text": torch.from_numpy(self.text_features[idx]),
             "visual": torch.from_numpy(self.visual_features[idx]),
             "structured": torch.from_numpy(self.structured_features[idx]),
@@ -103,6 +135,9 @@ class MultimodalDataset(Dataset):
             "author_id": str(self.author_id[idx]),
             "split": str(self.split[idx]),
         }
+        if self.categorical_enabled and self.categorical_features is not None:
+            result["categorical"] = torch.from_numpy(self.categorical_features[idx])
+        return result
 
     def get_all_labels(self) -> np.ndarray:
         """返回全部 label 数组，用于训练循环中的批量指标计算。"""
@@ -125,7 +160,14 @@ class MultimodalDataset(Dataset):
                     .unsqueeze(0)
                     .to(device)
                 )
-                logit = model(text_t, visual_t, struct_t)
+                cat_t = None
+                if self.categorical_enabled and self.categorical_features is not None:
+                    cat_t = (
+                        torch.from_numpy(self.categorical_features[i])
+                        .unsqueeze(0)
+                        .to(device)
+                    )
+                logit = model(text_t, visual_t, struct_t, cat_t)
                 score = torch.sigmoid(logit)
                 all_scores.append(score.cpu().item())
         return np.array(all_scores, dtype=np.float32)
@@ -138,5 +180,7 @@ class MultimodalDataset(Dataset):
             "text_dim": self.text_features.shape[1],
             "visual_dim": self.visual_features.shape[1],
             "structured_dim": self.structured_features.shape[1],
+            "categorical_dim": self.categorical_dim,
+            "categorical_enabled": self.categorical_enabled,
             "warnings": self.warnings,
         }

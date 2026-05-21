@@ -1,0 +1,46 @@
+[
+  {
+    "type": "sample_size_warning",
+    "severity": "warning",
+    "message": "组 'A (dnn_baseline)' 样本量不足: request_count=6 < 100",
+    "detail": {
+      "group": "A (dnn_baseline)",
+      "request_count": 6,
+      "min_requests_per_group": 100
+    }
+  },
+  {
+    "type": "sample_size_warning",
+    "severity": "warning",
+    "message": "组 'B (dnn_tuned)' 样本量不足: request_count=0 < 100",
+    "detail": {
+      "group": "B (dnn_tuned)",
+      "request_count": 0,
+      "min_requests_per_group": 100
+    }
+  },
+  {
+    "type": "traffic_balance_warning",
+    "severity": "warning",
+    "message": "组 'A (dnn_baseline)' 流量比例偏离: 实际=69.2%, 预期=50.0%, 差值=19.2%",
+    "detail": {
+      "group": "A (dnn_baseline)",
+      "actual_ratio": 0.692308,
+      "expected_ratio": 0.5,
+      "diff_abs": 0.192308,
+      "tolerance": 0.05
+    }
+  },
+  {
+    "type": "traffic_balance_warning",
+    "severity": "warning",
+    "message": "组 'B (dnn_tuned)' 流量比例偏离: 实际=30.8%, 预期=50.0%, 差值=19.2%",
+    "detail": {
+      "group": "B (dnn_tuned)",
+      "actual_ratio": 0.307692,
+      "expected_ratio": 0.5,
+      "diff_abs": 0.192308,
+      "tolerance": 0.05
+    }
+  }
+]

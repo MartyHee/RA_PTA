@@ -104,27 +104,50 @@ high_confidence_filter_report.json
 | 统一调参入口 tune.py 第一版（DNN random search） | ✅ 完成 |
 | REST API 本地模拟服务（FastAPI） | ✅ 已完成，尚未部署上线 |
 | 系统架构文档（docs/system_architecture.md） | ✅ 完成 |
+| 本地端到端推荐流水线第一版 | ✅ 完成 |
+| 线上模拟环境搭建与 A/B 测试设计 | 📝 下一阶段 |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
 
 **最新 tuning best trial：** trial_000（run_id=202605141914, val_auc=0.8413, test_auc=0.8348）。
 详情见 `outputs/tuning/dnn/real_raw_5000/20260514_191432/`。
 
-### 2.4 下一步
+### 2.4 下一阶段：线上模拟环境搭建与 A/B 测试设计
 
-1. 进入统一多模型对比实验（run_comparison）。
-2. 评估去泄漏后各模型指标是否异常高。
-3. 统一调参扩展到 Wide & Deep / GraphSAGE / Multimodal。
-4. 优化方向：尝试 static quantization 或 pruning（当前 dynamic_quantization 已验证不适合 DNN baseline）。
-5. 最终交付文档与清单整理。
-6. 如需上线 API，另行设计 Docker / 部署 / 鉴权 / 监控。
-7. 如需提升效果，接入更可靠标签或真实反馈数据。
-8. 如需扩展工程能力，再考虑多模型 inference / pipeline / tune。
+#### 技术栈说明
 
-**API 状态说明：** REST API 目前已实现本地 FastAPI 模拟服务（`src/serving/api.py`），支持 `GET /health`、`GET /model-info`、`POST /predict`、`POST /rank` 四个端点。但 **尚未部署上线**，未实现 Docker 容器化、鉴权、监控、并发压测和生产部署。启动命令示例：
-```bash
-python src/serving/api.py --model dnn --dataset real_raw_5000 --run-id <run_id>
-```
+本项目现有服务层已经使用 FastAPI 并完成本地接口验证（`src/serving/api.py` + `src/serving/schemas.py`）。预测核心已封装为通用 Predictor 类（`src/inference/predictor.py`），被 batch_predict 和 api.py 共同复用。
+
+后续如需要正式部署，可单独设计 Docker 容器化、Gunicorn/Uvicorn workers、鉴权、监控等内容，但不在本阶段范围内。
+
+#### 工作内容
+
+1. 基于现有 FastAPI 服务扩展本地推荐系统线上模拟环境。
+2. 支持多模型注册、部署和接口调用的设计。
+3. 设计流量分配策略和用户分组机制。
+4. 设计关键指标监控方案：CTR、留存、互动率等。
+5. 明确 A/B 测试胜负判定标准和异常检测方法。
+6. 撰写 A/B 测试实施方案和注意事项。
+
+#### 产出要求
+
+1. 本地线上模拟推荐服务代码。
+2. 服务使用和部署说明文档。
+3. 完整 A/B 测试方案文档。
+
+#### 边界说明
+
+- 当前 API 尚未部署上线。
+- 下一阶段的线上模拟环境仍然是本地 simulation，不是生产系统。
+- 第一版不做 Docker、鉴权、监控、并发压测和真实线上部署。
+- 当前没有真实点击、曝光、留存日志，CTR / 留存等指标第一版只能做模拟或方案设计。
+- 不应把模拟 A/B 结果写成真实线上实验结论。
+
+#### 问题备注
+
+1. 当前模型体积已很小（DNN baseline 仅 0.097 MB），压缩收益有限，后续优化重点应转向服务流程、实验设计、特征和模型稳定性。
+2. 当前 DNN best trial 仅来自 3 次小规模搜索，未做多 seed 验证。
+3. Multimodal AUC=0.7812，低于 DNN AUC=0.8414，后续需优化文本/视觉分支和融合策略。
 
 ---
 
@@ -248,19 +271,38 @@ label 生成完成后，它们必须从最终建模输入中删除。
 
 ### 5.2 当前任务
 
-1. 统一多模型对比（run_comparison）。
-2. 评估去泄漏后各模型指标是否异常高。
-3. 对比 real_raw_1000 历史结果与 real_raw_5000 no-leakage 结果。
+当前阶段已进入"线上模拟环境搭建与 A/B 测试设计"：
 
-### 5.3 工程化阶段（待开始）
+1. FastAPI online simulation service 扩展设计。
+2. A/B 测试方案设计。
+3. 后续实现多模型注册、流量分配、请求日志和模拟指标计算。
 
-在完成去泄漏复验后，再进入端到端流水线工程化：
+### 5.3 工程化阶段（已完成）
 
-1. 设计模块化数据预处理和特征工程脚本；
-2. 实现训练脚本支持参数配置，保证可复现训练过程；
-3. 建立推理服务接口，例如 REST API，模拟线上推荐流程；
-4. 编写流水线使用说明和系统架构文档；
-5. 产出端到端推荐流水线代码。
+端到端推荐流水线工程化阶段已完成：
+
+1. 模块化数据预处理与特征工程脚本 — ✅（现有 build_tabular/build_graph/build_multimodal）
+2. 可配置、可复现训练入口 — ✅（统一训练入口 train.py）
+3. REST API 推理服务 — ✅（本地模拟服务，尚未部署上线）
+4. 推理 batch 入口 — ✅（batch_predict.py）
+5. Pipeline orchestrator — ✅（第一版，仅 DNN）
+6. 统一调参入口 — ✅（tune.py 第一版，仅 DNN）
+7. 推理 benchmark 与模型压缩 — ✅（已验证 dynamic_quantization 不推荐）
+8. 流水线设计文档和系统架构文档 — ✅
+
+### 5.4 线上模拟环境搭建与 A/B 测试设计（下一阶段）
+
+本阶段建议按以下批次推进。每次任务只做一个窄步骤，不要合并成大任务。
+
+建议批次顺序：
+
+1. **Batch 12A：README / CLAUDE 阶段同步** — 更新文档，不写代码。
+2. **Batch 12B：FastAPI online simulation service 扩展设计文档** — 设计多模型注册、部署、流量分配方案。
+3. **Batch 12C：A/B 测试方案设计文档** — 设计用户分组、指标体系、胜负判定标准。
+4. **Batch 12D：FastAPI online simulation service 扩展第一版** — 多模型部署、流量分配、请求日志。
+5. **Batch 12E：A/B 日志与指标计算** — 日志记录、离线指标计算、模拟实验报告。
+6. **Batch 12F：A/B 测试实施方案完善** — 完善流程、边界条件、注意事项。
+7. **Batch 12G：模型改进规划** — Multimodal 优化、充分调参、多 seed 验证等。
 
 ---
 

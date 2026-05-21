@@ -390,6 +390,73 @@ def main() -> None:
     structured_dim = train_struct_scaled.shape[1]
     logger(f"  structured_features shape: train={train_struct_scaled.shape}, val={val_struct_scaled.shape}, test={test_struct_scaled.shape}")
 
+    # ── 6.5 构建 Categorical Features ──────────────────────────────────
+    logger("[build_multimodal_real_raw] 构建 categorical_features...")
+
+    categorical_features = tabular_feature_info.get("categorical_features", [])
+    logger(f"  categorical_features 列表: {categorical_features}")
+
+    if not categorical_features:
+        logger("  [WARN] tabular_feature_info 中无 categorical_features")
+        cat_train_arr = np.empty((len(train_ids), 0), dtype=np.int64)
+        cat_val_arr = np.empty((len(val_ids), 0), dtype=np.int64)
+        cat_test_arr = np.empty((len(test_ids), 0), dtype=np.int64)
+        cat_vocabs = {}
+        cat_embed_dims: list[list[int]] = []
+    else:
+        # 从训练集构建 vocab（与 DNNDataProcessor.fit() 一致）
+        cat_vocabs: dict[str, dict] = {}
+        cat_embed_dims: list[list[int]] = []
+        for col in categorical_features:
+            raw_series = tabular_train[col].fillna("__MISSING__")
+            unique_vals = sorted(raw_series.unique().tolist())
+            vocab: dict = {"__UNK__": 0}
+            for i, v in enumerate(unique_vals):
+                vocab[v] = i + 1  # 0 保留给 UNK
+            # 确保 __MISSING__ 在 vocab 中
+            if "__MISSING__" not in vocab and "__MISSING__" not in unique_vals:
+                # 缺失值不在训练数据中，但可能出现在 val/test
+                pass  # 缺失值会映射到 __UNK__ (0)
+            cat_vocabs[col] = vocab
+            embed_dim = min(16, max(4, int(len(vocab) ** 0.5) + 1))
+            cat_embed_dims.append([len(vocab), embed_dim])
+            logger(f"    {col}: vocab_size={len(vocab)}, embed_dim={embed_dim}")
+
+        # 将原始值映射为索引
+        def map_cat_to_indices(
+            df: pd.DataFrame, cat_vocabs: dict, cat_features: list[str]
+        ) -> np.ndarray:
+            indices_list = []
+            for col in cat_features:
+                raw = df[col].fillna("__MISSING__").values
+                indices = [cat_vocabs[col].get(v, 0) for v in raw]
+                indices_list.append(indices)
+            # (num_cat, N) → (N, num_cat)
+            return np.array(indices_list, dtype=np.int64).T
+
+        cat_train_arr = map_cat_to_indices(
+            tabular_train.set_index("video_id").loc[sorted(train_ids)].reset_index(),
+            cat_vocabs, categorical_features,
+        )
+        cat_val_arr = map_cat_to_indices(
+            tabular_val.set_index("video_id").loc[sorted(val_ids)].reset_index(),
+            cat_vocabs, categorical_features,
+        )
+        cat_test_arr = map_cat_to_indices(
+            tabular_test.set_index("video_id").loc[sorted(test_ids)].reset_index(),
+            cat_vocabs, categorical_features,
+        )
+
+        logger(f"  categorical_features shape: "
+               f"train={cat_train_arr.shape}, val={cat_val_arr.shape}, test={cat_test_arr.shape}")
+        # 检查 UNK 比例
+        for label, arr in [("train", cat_train_arr), ("val", cat_val_arr), ("test", cat_test_arr)]:
+            if arr.size > 0:
+                unk_count = int((arr == 0).sum())
+                unk_pct = unk_count / arr.size * 100
+                if unk_pct > 0:
+                    logger(f"  [INFO] {label} UNK 占比: {unk_pct:.1f}% ({unk_count}/{arr.size})")
+
     # ── 7. 对齐样本并保存 npz ───────────────────────────────────────────
     logger("[build_multimodal_real_raw] 对齐样本并保存 npz...")
 
@@ -398,6 +465,7 @@ def main() -> None:
         text_vec: np.ndarray,
         vis_vec: np.ndarray,
         struct_vec: np.ndarray,
+        cat_arr: np.ndarray,
         split_label: str,
     ) -> dict[str, Any]:
         """构建单个 npz 的内容字典。"""
@@ -409,7 +477,7 @@ def main() -> None:
         video_ids_arr = tabular_subset["video_id"].values.astype(np.int64)
         author_ids = tabular_subset["author_id"].values.astype(str)
 
-        return {
+        result = {
             "sample_id": sample_ids,
             "video_id": video_ids_arr,
             "author_id": author_ids,
@@ -419,14 +487,17 @@ def main() -> None:
             "structured_features": struct_vec.astype(np.float32),
             "split": np.array([split_label] * len(video_ids_sorted), dtype=object),
         }
+        if cat_arr.shape[1] > 0:
+            result["categorical_features"] = cat_arr
+        return result
 
     train_vids_sorted = sorted(train_ids)
     val_vids_sorted = sorted(val_ids)
     test_vids_sorted = sorted(test_ids)
 
-    train_data = build_npz(train_vids_sorted, train_text_vec, train_vis, train_struct_scaled, "train")
-    val_data = build_npz(val_vids_sorted, val_text_vec, val_vis, val_struct_scaled, "val")
-    test_data = build_npz(test_vids_sorted, test_text_vec, test_vis, test_struct_scaled, "test")
+    train_data = build_npz(train_vids_sorted, train_text_vec, train_vis, train_struct_scaled, cat_train_arr, "train")
+    val_data = build_npz(val_vids_sorted, val_text_vec, val_vis, val_struct_scaled, cat_val_arr, "val")
+    test_data = build_npz(test_vids_sorted, test_text_vec, test_vis, test_struct_scaled, cat_test_arr, "test")
 
     # 保存
     train_npz_path = multimodal_dir / "multimodal_train.npz"
@@ -510,6 +581,14 @@ def main() -> None:
         "no_large_pretrained_model": True,
         "fit_text_on_train_only": True,
         "fit_struct_scaler_on_train_only": True,
+        # categorical
+        "categorical_features_available": len(categorical_features) > 0,
+        "categorical_features": categorical_features,
+        "categorical_dim": len(categorical_features),
+        "cat_vocabs": cat_vocabs,
+        "cat_embed_dims": cat_embed_dims,
+        "future_categorical_candidates": ["author_id", "music_id"],
+        "categorical_vocab_source": "data/features/real_raw_5000/tabular_feature_info.json",
         # misc
         "warnings": warnings,
         "notes": notes
@@ -588,6 +667,11 @@ def main() -> None:
         "structured_feature_shape_train": list(train_struct_scaled.shape),
         "structured_feature_shape_val": list(val_struct_scaled.shape),
         "structured_feature_shape_test": list(test_struct_scaled.shape),
+        "categorical_features_available": len(categorical_features) > 0,
+        "categorical_features": categorical_features,
+        "categorical_shape_train": list(cat_train_arr.shape),
+        "categorical_shape_val": list(cat_val_arr.shape),
+        "categorical_shape_test": list(cat_test_arr.shape),
         "missing_text_count_train": train_text_empty,
         "missing_text_count_val": val_text_empty,
         "missing_text_count_test": test_text_empty,
@@ -657,6 +741,8 @@ def main() -> None:
     logger(f"  text_dim: {actual_text_dim}")
     logger(f"  visual_dim: {vis_info['visual_dim']}")
     logger(f"  structured_dim: {structured_dim}")
+    cat_dim_str = f"categorical_dim={len(categorical_features)}" if categorical_features else "no categorical"
+    logger(f"  categorical: {cat_dim_str}")
     logger(f"  文本方法: {text_info.get('method', 'unknown')}")
     logger(f"  视觉方法: media_metadata_only (未下载图片)")
     logger(f"  结构化方法: tabular_numeric_scaled ({len(structured_cols)} 列)")

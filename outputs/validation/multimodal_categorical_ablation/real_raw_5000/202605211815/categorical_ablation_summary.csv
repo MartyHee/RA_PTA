@@ -1,0 +1,7 @@
+ablation_name,enabled_modalities,categorical_enabled,run_id,val_auc,test_auc,val_f1,test_f1,best_epoch,best_val_loss,num_params,categorical_embedding_total_dim,structured_dim,text_dim,visual_dim
+structured_only_no_cat,structured,false,202605211639,0.5353,0.5082,0.0000,0.0000,7,0.67233,1121,0,33,0,0
+structured_text_no_cat,"structured, text",false,202605211649,0.8192,0.7655,0.6787,0.6476,40,0.47165,2161,0,33,32,0
+all_modalities_no_cat,"structured, text, media",false,202605211651,0.8340,0.7812,0.6817,0.6400,23,0.45757,2569,0,33,32,18
+structured_only_cat,structured,true,202605211752,0.7971,0.7896,0.6893,0.6862,14,0.51383,20773,20,33,0,0
+structured_text_cat,"structured, text",true,202605211810,0.8284,0.8183,0.7033,0.7145,17,0.47314,21813,20,33,32,0
+all_modalities_cat,"structured, text, media",true,202605211813,0.8416,0.8184,0.6831,0.7040,21,0.45252,22221,20,33,32,18

@@ -27,6 +27,13 @@ model:
     batch_size: 128
     epochs: 50
     early_stopping_patience: 8
+    enabled_modalities: ["structured", "text", "media"]
+    ablation_name: "all_modalities"
+    categorical_enabled: false
+    categorical_features: ["region", "hashtag_name_top"]
+    categorical_embedding_dim_rule: from_feature_info
+    categorical_unknown_token: "__UNK__"
+    categorical_missing_token: "__MISSING__"
 
 training:
   seed: 2026

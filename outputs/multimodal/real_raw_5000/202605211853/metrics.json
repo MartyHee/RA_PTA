@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211853",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.46461841907289847,
+    "auc": 0.8222481481481481,
+    "accuracy": 0.724,
+    "precision": 0.628808864265928,
+    "recall": 0.7566666666666667,
+    "f1": 0.686838124054463,
+    "precision_at_k": {
+      "precision_at_5": 1.0,
+      "precision_at_10": 0.9,
+      "precision_at_20": 0.85,
+      "precision_at_50": 0.86
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.016666666666666666,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.056666666666666664,
+      "recall_at_50": 0.14333333333333334
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 18:53:48"
+  },
+  "test_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211853",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.5054513479114467,
+    "auc": 0.767837037037037,
+    "accuracy": 0.704,
+    "precision": 0.6059782608695652,
+    "recall": 0.7433333333333333,
+    "f1": 0.6676646706586826,
+    "precision_at_k": {
+      "precision_at_5": 0.2,
+      "precision_at_10": 0.2,
+      "precision_at_20": 0.45,
+      "precision_at_50": 0.64
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.0033333333333333335,
+      "recall_at_10": 0.006666666666666667,
+      "recall_at_20": 0.03,
+      "recall_at_50": 0.10666666666666667
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 18:53:48"
+  },
+  "generated_at": "2026-05-21 18:53:48"
+}

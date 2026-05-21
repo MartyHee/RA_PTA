@@ -1,0 +1,65 @@
+{
+  "val_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211647",
+    "split": "val",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.4618021110749276,
+    "auc": 0.8242962962962963,
+    "accuracy": 0.74,
+    "precision": 0.6422764227642277,
+    "recall": 0.79,
+    "f1": 0.7085201793721974,
+    "precision_at_k": {
+      "precision_at_5": 0.8,
+      "precision_at_10": 0.9,
+      "precision_at_20": 0.8,
+      "precision_at_50": 0.78
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.013333333333333334,
+      "recall_at_10": 0.03,
+      "recall_at_20": 0.05333333333333334,
+      "recall_at_50": 0.13
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 16:48:16"
+  },
+  "test_metrics": {
+    "model_name": "multimodal",
+    "dataset_name": "real_raw_5000",
+    "run_id": "202605211647",
+    "split": "test",
+    "sample_count": 750,
+    "positive_count": 300,
+    "negative_count": 450,
+    "eval_loss": 0.5136023154052539,
+    "auc": 0.7707222222222222,
+    "accuracy": 0.6973333333333334,
+    "precision": 0.5989159891598916,
+    "recall": 0.7366666666666667,
+    "f1": 0.6606875934230194,
+    "precision_at_k": {
+      "precision_at_5": 0.4,
+      "precision_at_10": 0.5,
+      "precision_at_20": 0.55,
+      "precision_at_50": 0.66
+    },
+    "recall_at_k": {
+      "recall_at_5": 0.006666666666666667,
+      "recall_at_10": 0.016666666666666666,
+      "recall_at_20": 0.03666666666666667,
+      "recall_at_50": 0.11
+    },
+    "threshold": 0.5,
+    "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+    "warnings": [],
+    "generated_at": "2026-05-21 16:48:16"
+  },
+  "generated_at": "2026-05-21 16:48:16"
+}

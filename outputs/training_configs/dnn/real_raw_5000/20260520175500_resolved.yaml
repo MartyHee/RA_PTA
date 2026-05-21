@@ -1,0 +1,25 @@
+activation: relu
+batch_size: 64
+dataset_name: real_raw_5000
+dataset_variant: default
+device: cuda
+dropout: 0.4444320590887778
+early_stopping_patience: 10
+epochs: 50
+feature_info_path: data/features/real_raw_5000/tabular_feature_info.json
+hidden_units:
+- 256
+- 128
+input_type: tabular
+leakage_report_path: outputs/data_check/real_raw_5000/real_raw_5000_leakage_check_report.json
+learning_rate: 0.002560225788406334
+loss: bce
+model_name: dnn
+optimizer: adam
+output_root: outputs/dnn/real_raw_5000
+random_seed: 2123
+test_data_path: data/features/real_raw_5000/tabular_test.csv
+threshold: 0.5
+train_data_path: data/features/real_raw_5000/tabular_train.csv
+val_data_path: data/features/real_raw_5000/tabular_val.csv
+weight_decay: 4.489906128893106e-05

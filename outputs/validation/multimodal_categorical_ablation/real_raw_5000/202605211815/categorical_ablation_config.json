@@ -1,0 +1,75 @@
+{
+  "ablation_run_id": "202605211815",
+  "generated_at": "2026-05-21 18:15:00",
+  "batch": "Batch 14F-experiment",
+  "dataset": "real_raw_5000",
+  "experiment_name": "Multimodal Categorical Embedding 消融实验",
+  "experiment_design_ref": "docs/multimodal_categorical_embedding_design.md",
+  "prior_ablation_ref": "outputs/validation/multimodal_ablation/real_raw_5000/202605211652/",
+  "categorical_features": ["region", "hashtag_name_top"],
+  "categorical_vocab_sizes": [13, 1185],
+  "categorical_embedding_dims": [4, 16],
+  "categorical_embedding_total_dim": 20,
+  "categorical_vocab_source": "data/features/real_raw_5000/tabular_feature_info.json",
+  "variants": {
+    "structured_only_cat": {
+      "run_id": "202605211752",
+      "enabled_modalities": ["structured"],
+      "categorical_enabled": true,
+      "categorical_active": true,
+      "ablation_name": "structured_only_cat",
+      "code_version": "Batch 14F-impl1 (同代码版本)"
+    },
+    "structured_text_cat": {
+      "run_id": "202605211810",
+      "enabled_modalities": ["structured", "text"],
+      "categorical_enabled": true,
+      "categorical_active": true,
+      "ablation_name": "structured_text_cat",
+      "code_version": "Batch 14F-impl1 (同代码版本)"
+    },
+    "all_modalities_cat": {
+      "run_id": "202605211813",
+      "enabled_modalities": ["structured", "text", "media"],
+      "categorical_enabled": true,
+      "categorical_active": true,
+      "ablation_name": "all_modalities_cat",
+      "code_version": "Batch 14F-impl1 (同代码版本)"
+    }
+  },
+  "baselines": {
+    "structured_only_no_cat": {
+      "run_id": "202605211639",
+      "ablation_name": "structured_only",
+      "code_version": "Batch 14C"
+    },
+    "structured_text_no_cat": {
+      "run_id": "202605211649",
+      "ablation_name": "structured_text",
+      "code_version": "Batch 14C"
+    },
+    "all_modalities_no_cat": {
+      "run_id": "202605211651",
+      "ablation_name": "all_modalities",
+      "code_version": "Batch 14C"
+    },
+    "dnn_baseline": {
+      "run_id": "202605132017",
+      "test_auc": 0.8414,
+      "code_version": "real_raw_5000 DNN baseline"
+    }
+  },
+  "comparison_pairs": [
+    "structured_only_no_cat vs structured_only_cat",
+    "structured_text_no_cat vs structured_text_cat",
+    "all_modalities_no_cat vs all_modalities_cat",
+    "all_modalities_cat vs DNN baseline"
+  ],
+  "notes": [
+    "本实验基于 Batch 14F-impl1 已接入的 region + hashtag_name_top categorical embedding。",
+    "所有 cat 变体使用相同的 categorical 配置（vocab/embedding dim）。",
+    "no_cat 基线复用 Batch 14C 消融结果，因 categorical_enabled=false 时代码路径一致。",
+    "本实验不包含 author_id/music_id 等高基数字段。",
+    "单次结果不是最终结论，若提升明显，后续应做 3 seed 验证。"
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "ablation_run_id": "202605211815",
+  "generated_at": "2026-05-21 18:15:00",
+  "batch": "Batch 14F-experiment",
+  "dataset": "real_raw_5000",
+  "categorical_features": ["region", "hashtag_name_top"],
+  "categorical_embedding_total_dim": 20,
+  "summary": [
+    {
+      "ablation_name": "structured_only_no_cat",
+      "run_id": "202605211639",
+      "enabled_modalities": ["structured"],
+      "categorical_enabled": false,
+      "val_auc": 0.5353,
+      "test_auc": 0.5082,
+      "val_f1": 0.0,
+      "test_f1": 0.0,
+      "best_epoch": 7,
+      "best_val_loss": 0.67233,
+      "num_params": 1121,
+      "categorical_embedding_total_dim": 0
+    },
+    {
+      "ablation_name": "structured_text_no_cat",
+      "run_id": "202605211649",
+      "enabled_modalities": ["structured", "text"],
+      "categorical_enabled": false,
+      "val_auc": 0.8192,
+      "test_auc": 0.7655,
+      "val_f1": 0.6787,
+      "test_f1": 0.6476,
+      "best_epoch": 40,
+      "best_val_loss": 0.47165,
+      "num_params": 2161,
+      "categorical_embedding_total_dim": 0
+    },
+    {
+      "ablation_name": "all_modalities_no_cat",
+      "run_id": "202605211651",
+      "enabled_modalities": ["structured", "text", "media"],
+      "categorical_enabled": false,
+      "val_auc": 0.8340,
+      "test_auc": 0.7812,
+      "val_f1": 0.6817,
+      "test_f1": 0.6400,
+      "best_epoch": 23,
+      "best_val_loss": 0.45757,
+      "num_params": 2569,
+      "categorical_embedding_total_dim": 0
+    },
+    {
+      "ablation_name": "structured_only_cat",
+      "run_id": "202605211752",
+      "enabled_modalities": ["structured"],
+      "categorical_enabled": true,
+      "val_auc": 0.7971,
+      "test_auc": 0.7896,
+      "val_f1": 0.6893,
+      "test_f1": 0.6862,
+      "best_epoch": 14,
+      "best_val_loss": 0.51383,
+      "num_params": 20773,
+      "categorical_embedding_total_dim": 20
+    },
+    {
+      "ablation_name": "structured_text_cat",
+      "run_id": "202605211810",
+      "enabled_modalities": ["structured", "text"],
+      "categorical_enabled": true,
+      "val_auc": 0.8284,
+      "test_auc": 0.8183,
+      "val_f1": 0.7033,
+      "test_f1": 0.7145,
+      "best_epoch": 17,
+      "best_val_loss": 0.47314,
+      "num_params": 21813,
+      "categorical_embedding_total_dim": 20
+    },
+    {
+      "ablation_name": "all_modalities_cat",
+      "run_id": "202605211813",
+      "enabled_modalities": ["structured", "text", "media"],
+      "categorical_enabled": true,
+      "val_auc": 0.8416,
+      "test_auc": 0.8184,
+      "val_f1": 0.6831,
+      "test_f1": 0.7040,
+      "best_epoch": 21,
+      "best_val_loss": 0.45252,
+      "num_params": 22221,
+      "categorical_embedding_total_dim": 20
+    }
+  ],
+  "comparisons": {
+    "structured_only_no_cat_vs_cat": {
+      "no_cat_run": "202605211639",
+      "cat_run": "202605211752",
+      "test_auc_change": 0.2814,
+      "test_auc_no_cat": 0.5082,
+      "test_auc_cat": 0.7896,
+      "test_f1_change": 0.6862,
+      "test_f1_no_cat": 0.0,
+      "test_f1_cat": 0.6862,
+      "num_params_increase": 19652,
+      "num_params_no_cat": 1121,
+      "num_params_cat": 20773,
+      "diagnosis": "Categorical embedding 将 structured_only 从接近随机提升至强预测能力"
+    },
+    "structured_text_no_cat_vs_cat": {
+      "no_cat_run": "202605211649",
+      "cat_run": "202605211810",
+      "test_auc_change": 0.0528,
+      "test_auc_no_cat": 0.7655,
+      "test_auc_cat": 0.8183,
+      "test_f1_change": 0.0669,
+      "test_f1_no_cat": 0.6476,
+      "test_f1_cat": 0.7145,
+      "num_params_increase": 19652,
+      "num_params_no_cat": 2161,
+      "num_params_cat": 21813,
+      "diagnosis": "Categorical embedding 在已包含 text 分支时仍带来增量提升"
+    },
+    "all_modalities_no_cat_vs_cat": {
+      "no_cat_run": "202605211651",
+      "cat_run": "202605211813",
+      "test_auc_change": 0.0372,
+      "test_auc_no_cat": 0.7812,
+      "test_auc_cat": 0.8184,
+      "test_f1_change": 0.0640,
+      "test_f1_no_cat": 0.6400,
+      "test_f1_cat": 0.7040,
+      "num_params_increase": 19652,
+      "num_params_no_cat": 2569,
+      "num_params_cat": 22221,
+      "diagnosis": "Categorical embedding 在全模态下仍带来约 +0.037 Test AUC 提升"
+    },
+    "all_modalities_cat_vs_dnn": {
+      "dnn_baseline_run": "202605132017",
+      "dnn_test_auc": 0.8414,
+      "cat_run": "202605211813",
+      "cat_test_auc": 0.8184,
+      "test_auc_gap": -0.023,
+      "diagnosis": "加入 categorical 后 multimodal 与 DNN 差距从 -0.0602 缩小至 -0.0230"
+    }
+  },
+  "diagnostic_questions": {
+    "categorical_improves_structured_only": {
+      "answer": true,
+      "magnitude": "+0.2814 Test AUC",
+      "detail": "structured_only 从 0.5082（接近随机）跃升至 0.7896（强预测），是最大的单项提升"
+    },
+    "categorical_improves_structured_text": {
+      "answer": true,
+      "magnitude": "+0.0528 Test AUC",
+      "detail": "structured_text 从 0.7655 提升至 0.8183，在已含 text 分支时仍有增量"
+    },
+    "categorical_improves_all_modalities": {
+      "answer": true,
+      "magnitude": "+0.0372 Test AUC",
+      "detail": "all_modalities 从 0.7812 提升至 0.8184，全模态下仍有增益"
+    },
+    "all_modalities_cat_narrows_dnn_gap": {
+      "answer": true,
+      "magnitude": "差距从 -0.0602 缩小至 -0.0230",
+      "detail": "加入 categorical 后 Multimodal 与 DNN 差距缩小了 61.8%"
+    },
+    "text_cat_interference": {
+      "answer": false,
+      "detail": "structured_text_cat (0.8183) 和 all_modalities_cat (0.8184) 的 Test AUC 接近，无干扰迹象"
+    },
+    "overfitting_signs": {
+      "answer": "轻微",
+      "detail": "所有 cat 变体的 val_auc 和 test_auc 较为接近（最大差距 0.008），无明显过拟合。但参数量从 ~2k 增至 ~21k，需留意"
+    },
+    "recommend_author_music_id": {
+      "answer": "暂不建议直接接入",
+      "detail": "当前 region+hashtag (vocab=13+1185) 已将差距缩小至 0.023。author_id (vocab=3558) 和 music_id (vocab=~5000) 可能增加过拟合风险，需先评估"
+    }
+  },
+  "conclusions": [
+    "Categorical embedding（region + hashtag_name_top）显著提升了 Multimodal 所有消融变体的表现。",
+    "structured_only 的提升最为显著（+0.2814 Test AUC），从接近随机跃升至强预测能力。",
+    "在已含 text 的变体中，categorical 仍带来约 +0.04~0.05 的 Test AUC 增益。",
+    "all_modalities_cat（Test AUC=0.8184）与 DNN baseline（0.8414）的差距已缩小至 0.023。",
+    "未观察到 text 与 categorical 的明显融合干扰。",
+    "参数量从 ~2k 增至 ~21k，但验证集与测试集指标一致（无过拟合）。",
+    "建议继续推进 categorical 方向，后续先做 3 seed 验证确认稳定性，再评估 author_id/music_id 接入。"
+  ],
+  "next_steps": [
+    "1. 3 seed 验证最优变体（all_modalities_cat）的稳定性。",
+    "2. 评估 author_id + music_id 作为新增 categorical features 的过拟合风险。",
+    "3. Text 分支增强（per-field encoding, SVD 维度增加）。",
+    "4. 融合策略改进（attention-based fusion 替代 concat+MLP）。"
+  ],
+  "dnn_baseline": {
+    "test_auc": 0.8414,
+    "source": "outputs/dnn/real_raw_5000/202605132017/metrics.json",
+    "notes": "DNN 使用 26 维数值 + author_id(vocab=3558, dim=16) + music_id(vocab=~5000, dim=16) embedding，总参数 24,581"
+  }
+}

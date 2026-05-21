@@ -1,0 +1,30 @@
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_rec_001", "user_id": "test_u_001", "endpoint": "/recommend", "num_items": 5, "top_k": 10, "status": "ok", "latency_ms": 4.01}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_ab_001", "user_id": "test_u_002", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 10, "status": "ok", "latency_ms": 4.0}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_stable_0", "user_id": "stability_user_42", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.09}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_stable_1", "user_id": "stability_user_42", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.53}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_stable_2", "user_id": "stability_user_42", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 4.02}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_stable_3", "user_id": "stability_user_42", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.99}
+{"timestamp": "2026-05-18T18:38:28", "request_id": "test_req_stable_4", "user_id": "stability_user_42", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.21}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_0", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.52}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_1", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.51}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_2", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.51}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_3", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 5.52}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_4", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.99}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_5", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.0}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_6", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 4.53}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_7", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.52}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_8", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.51}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_9", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.0}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_10", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 5.79}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_11", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.7}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_12", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.22}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_13", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 4.01}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_14", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 4.88}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_15", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.12}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_16", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.51}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_17", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 4.53}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_18", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 5.01}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": "user_19", "endpoint": "/ab/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 2.72}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": null, "endpoint": "/recommend", "num_items": 5, "top_k": null, "status": "error", "latency_ms": 0.0, "error_code": "MODEL_KEY_NOT_FOUND"}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": null, "endpoint": "/recommend", "num_items": 5, "top_k": null, "status": "error", "latency_ms": 0.0, "error_code": "MODEL_NOT_LOADED"}
+{"timestamp": "2026-05-18T18:38:28", "request_id": null, "user_id": null, "endpoint": "/recommend", "num_items": 5, "top_k": 5, "status": "ok", "latency_ms": 3.53}

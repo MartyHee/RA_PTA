@@ -19,6 +19,7 @@ import sys
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
+import time
 from typing import Any
 
 import pandas as pd
@@ -35,15 +36,27 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from src.inference.predictor import Predictor
+from src.serving.ab_assigner import ABAssigner
+from src.serving.model_registry import ModelRegistry
+from src.serving.request_logger import RequestLogger
 from src.serving.schemas import (
+    ABRecommendRequest,
+    ABRecommendResponse,
+    ExperimentInfo,
+    ExperimentsListResponse,
     HealthResponse,
+    ModelInfo,
     ModelInfoResponse,
+    ModelsListResponse,
     PredictRequest,
     PredictResponse,
     PredictResult,
     RankRequest,
     RankResponse,
     RankResult,
+    RecommendRequest,
+    RecommendResult,
+    RecommendResponse,
 )
 
 
@@ -79,13 +92,39 @@ def create_app(model: str, dataset: str, run_id: str,
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        predictor = Predictor(model_dir=str(model_dir), device=device)
-        predictor.load()
-        app.state.predictor = predictor
-        app.state.loaded_at = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-        print(f"模型加载成功: {model_dir}")
+        # 初始化 ModelRegistry，注册并加载所有预定义模型
+        registry = ModelRegistry.register_defaults(
+            project_root=PROJECT_ROOT,
+            device=device,
+        )
+        registry.load_all()
+        app.state.registry = registry
+
+        # 向后兼容：将 dnn_baseline 的 Predictor 设为 app.state.predictor
+        dnn_entry = registry.get_model("dnn_baseline")
+        if dnn_entry and dnn_entry.status == "loaded":
+            app.state.predictor = dnn_entry.predictor
+            app.state.loaded_at = dnn_entry.loaded_at
+            print(f"dnn_baseline 加载成功: {dnn_entry.model_dir}")
+        else:
+            app.state.predictor = None
+            app.state.loaded_at = None
+            err = dnn_entry.error_message if dnn_entry else "dnn_baseline 未注册"
+            print(f"dnn_baseline 加载失败: {err}")
+
+        # 初始化请求日志记录器
+        app.state.logger = RequestLogger()
+        print(f"在线模拟日志目录: {app.state.logger.output_dir}")
+
+        # 初始化 A/B 分配器
+        app.state.ab_assigner = ABAssigner()
+
         yield
+
+        app.state.registry = None
         app.state.predictor = None
+        app.state.logger = None
+        app.state.ab_assigner = None
 
     app = FastAPI(title="RA_PTA Inference API", lifespan=lifespan)
 
@@ -264,6 +303,276 @@ def create_app(model: str, dataset: str, run_id: str,
             results=results,
         )
 
+    # ------------------------------------------------------------------
+    # 新增：Online Simulation 路由
+    # ------------------------------------------------------------------
+
+    @app.get("/models", response_model=ModelsListResponse)
+    async def list_models():
+        registry: ModelRegistry | None = getattr(app.state, "registry", None)
+        if registry is None:
+            return JSONResponse(
+                status_code=503,
+                content={"error": {"code": "SERVICE_NOT_READY",
+                                   "message": "服务未就绪"}},
+            )
+        entries = registry.list_models()
+        models = []
+        for entry in entries:
+            models.append(ModelInfo(
+                model_key=entry.model_key,
+                model_name=entry.model_name,
+                dataset_name=entry.dataset_name,
+                run_id=entry.run_id,
+                status=entry.status,
+                inference_supported=entry.inference_supported,
+                auto_load=entry.auto_load,
+                metrics_summary=entry.metrics_summary,
+                loaded_at=entry.loaded_at,
+                error_message=entry.error_message,
+            ))
+        return ModelsListResponse(models=models)
+
+    # ------------------------------------------------------------------
+
+    class _ServiceError(Exception):
+        def __init__(self, status_code: int, code: str, message: str):
+            self.status_code = status_code
+            self.code = code
+            self.message = message
+
+    @app.exception_handler(_ServiceError)
+    async def service_error_handler(request: Request, exc: _ServiceError):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"error": {"code": exc.code, "message": exc.message}},
+        )
+
+    def _predict_items(
+        registry: ModelRegistry,
+        model_key: str,
+        items: list[dict[str, Any]],
+    ):
+        """通用推荐逻辑：获取模型、预测、返回 (entry, scores, video_ids)。"""
+        entry = registry.get_model(model_key)
+        if entry is None:
+            raise _ServiceError(404, "MODEL_KEY_NOT_FOUND",
+                                f"model_key '{model_key}' 未在 registry 中注册")
+        if entry.status != "loaded":
+            raise _ServiceError(503, "MODEL_NOT_LOADED",
+                                f"模型 '{model_key}' 状态为 '{entry.status}'，未加载")
+        if not entry.inference_supported:
+            raise _ServiceError(503, "INFERENCE_NOT_SUPPORTED",
+                                f"模型 '{model_key}' 不支持推理")
+
+        df, video_ids = _items_to_df(items)
+        try:
+            scores = entry.predictor.predict(df)
+        except ValueError as e:
+            raise _ServiceError(422, "MISSING_FEATURE", str(e))
+        except Exception as e:
+            raise _ServiceError(500, "PREDICTION_ERROR", str(e))
+
+        return entry, scores, video_ids
+
+    # ------------------------------------------------------------------
+
+    @app.post("/recommend", response_model=RecommendResponse)
+    async def recommend(req: RecommendRequest):
+        registry: ModelRegistry | None = getattr(app.state, "registry", None)
+        logger_inst: RequestLogger | None = getattr(app.state, "logger", None)
+
+        if registry is None:
+            return JSONResponse(
+                status_code=503,
+                content={"error": {"code": "SERVICE_NOT_READY",
+                                   "message": "服务未就绪"}},
+            )
+
+        start_time = time.time()
+        try:
+            entry, scores, video_ids = _predict_items(registry, req.model_key, req.items)
+        except _ServiceError as e:
+            latency = (time.time() - start_time) * 1000
+            if logger_inst:
+                logger_inst.log_request(req.request_id, req.user_id, "/recommend",
+                                         len(req.items), req.top_k, "error", latency, e.code)
+            return JSONResponse(
+                status_code=e.status_code,
+                content={"error": {"code": e.code, "message": e.message}},
+            )
+
+        latency = (time.time() - start_time) * 1000
+
+        # 排序 + top_k 截断
+        raw = [
+            {"video_id": vid, "score": float(s)}
+            for vid, s in zip(video_ids, scores)
+        ]
+        raw.sort(key=lambda x: x["score"], reverse=True)
+        k = req.top_k
+        if k is not None:
+            raw = raw[:k]
+
+        results = [
+            RecommendResult(rank=i + 1, video_id=r["video_id"], score=r["score"])
+            for i, r in enumerate(raw)
+        ]
+
+        # 日志
+        if logger_inst:
+            logger_inst.log_request(req.request_id, req.user_id, "/recommend",
+                                     len(req.items), req.top_k, "ok", latency)
+            for r in results:
+                logger_inst.log_recommendation(
+                    request_id=req.request_id,
+                    user_id=req.user_id,
+                    model_key=req.model_key,
+                    video_id=r.video_id,
+                    rank=r.rank,
+                    score=r.score,
+                )
+
+        return RecommendResponse(
+            request_id=req.request_id,
+            user_id=req.user_id,
+            model_key=req.model_key,
+            model_name=entry.model_name,
+            dataset_name=entry.dataset_name,
+            run_id=entry.run_id,
+            num_items=len(results),
+            top_k=req.top_k,
+            results=results,
+        )
+
+    # ------------------------------------------------------------------
+
+    @app.post("/ab/recommend", response_model=ABRecommendResponse)
+    async def ab_recommend(req: ABRecommendRequest):
+        registry: ModelRegistry | None = getattr(app.state, "registry", None)
+        assigner: ABAssigner | None = getattr(app.state, "ab_assigner", None)
+        logger_inst: RequestLogger | None = getattr(app.state, "logger", None)
+
+        if registry is None or assigner is None:
+            return JSONResponse(
+                status_code=503,
+                content={"error": {"code": "SERVICE_NOT_READY",
+                                   "message": "服务未就绪"}},
+            )
+
+        # 1. 校验 experiment_id
+        experiment = assigner.get_experiment(req.experiment_id)
+        if experiment is None:
+            return JSONResponse(
+                status_code=404,
+                content={"error": {"code": "EXPERIMENT_NOT_FOUND",
+                                   "message": f"experiment_id '{req.experiment_id}' 不存在"}},
+            )
+
+        # 2. 校验实验状态
+        if experiment.status != "active":
+            return JSONResponse(
+                status_code=400,
+                content={"error": {"code": "EXPERIMENT_NOT_ACTIVE",
+                                   "message": f"实验 '{req.experiment_id}' 状态为 '{experiment.status}'"}},
+            )
+
+        # 3. 校验 user_id / request_id
+        if not req.user_id and not req.request_id:
+            return JSONResponse(
+                status_code=400,
+                content={"error": {"code": "MISSING_USER_ID",
+                                   "message": "user_id 和 request_id 均缺失，至少需要提供一个"}},
+            )
+
+        start_time = time.time()
+
+        # 4. 分组
+        try:
+            assignment = assigner.assign(req.experiment_id, req.user_id, req.request_id)
+        except ValueError as e:
+            return JSONResponse(
+                status_code=400,
+                content={"error": {"code": "ASSIGNMENT_ERROR",
+                                   "message": str(e)}},
+            )
+
+        group = assignment["group"]
+        model_key = assignment["model_key"]
+
+        # 5. 获取模型并推理
+        try:
+            entry, scores, video_ids = _predict_items(registry, model_key, req.items)
+        except _ServiceError as e:
+            latency = (time.time() - start_time) * 1000
+            if logger_inst:
+                logger_inst.log_request(req.request_id, req.user_id, "/ab/recommend",
+                                         len(req.items), req.top_k, "error", latency, e.code)
+            return JSONResponse(
+                status_code=e.status_code,
+                content={"error": {"code": e.code, "message": e.message}},
+            )
+
+        latency = (time.time() - start_time) * 1000
+
+        # 6. 排序 + top_k 截断
+        raw = [
+            {"video_id": vid, "score": float(s)}
+            for vid, s in zip(video_ids, scores)
+        ]
+        raw.sort(key=lambda x: x["score"], reverse=True)
+        k = req.top_k
+        if k is not None:
+            raw = raw[:k]
+
+        results = [
+            RecommendResult(rank=i + 1, video_id=r["video_id"], score=r["score"])
+            for i, r in enumerate(raw)
+        ]
+
+        # 7. 日志
+        if logger_inst:
+            logger_inst.log_request(req.request_id, req.user_id, "/ab/recommend",
+                                     len(req.items), req.top_k, "ok", latency)
+            logger_inst.log_assignment(
+                experiment_id=req.experiment_id,
+                request_id=req.request_id,
+                user_id=req.user_id,
+                group=group,
+                model_key=model_key,
+                assignment_strategy=assignment.get("assignment_strategy", "hash_mod"),
+                hash_value=assignment.get("hash_value"),
+                traffic_bucket=assignment.get("traffic_bucket"),
+            )
+            for r in results:
+                logger_inst.log_recommendation(
+                    request_id=req.request_id,
+                    user_id=req.user_id,
+                    model_key=model_key,
+                    video_id=r.video_id,
+                    rank=r.rank,
+                    score=r.score,
+                    experiment_id=req.experiment_id,
+                    group=group,
+                )
+
+        assignment_reason = assignment.get("assignment_strategy", "hash_mod")
+
+        return ABRecommendResponse(
+            experiment_id=req.experiment_id,
+            user_id=req.user_id,
+            request_id=req.request_id,
+            group=group,
+            model_key=model_key,
+            model_name=entry.model_name,
+            dataset_name=entry.dataset_name,
+            run_id=entry.run_id,
+            assignment_reason=assignment_reason,
+            num_items=len(results),
+            top_k=req.top_k,
+            results=results,
+        )
+
     return app
 
 
@@ -301,8 +610,11 @@ def main():
     print(f"  路由:")
     print(f"    GET  /health")
     print(f"    GET  /model-info")
+    print(f"    GET  /models")
     print(f"    POST /predict")
     print(f"    POST /rank")
+    print(f"    POST /recommend")
+    print(f"    POST /ab/recommend")
 
     uvicorn.run(app, host=args.host, port=args.port)
 

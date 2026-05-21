@@ -1,0 +1,109 @@
+{
+  "validation_run_id": "202605211854",
+  "generated_at": "2026-05-21 18:54:00",
+  "batch": "Batch 14G",
+  "dataset": "real_raw_5000",
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_embedding_total_dim": 20,
+  "seeds": [
+    2025,
+    2026,
+    2027
+  ],
+  "summary": [
+    {
+      "config_type": "all_modalities_cat",
+      "metric": "val_auc",
+      "mean": 0.837126,
+      "std": 0.004308,
+      "min": 0.831311,
+      "max": 0.841607,
+      "values": [
+        0.838459,
+        0.841607,
+        0.831311
+      ]
+    },
+    {
+      "config_type": "all_modalities_cat",
+      "metric": "test_auc",
+      "mean": 0.813057,
+      "std": 0.005618,
+      "min": 0.805289,
+      "max": 0.818385,
+      "values": [
+        0.815496,
+        0.818385,
+        0.805289
+      ]
+    },
+    {
+      "config_type": "all_modalities_no_cat",
+      "metric": "val_auc",
+      "mean": 0.829342,
+      "std": 0.005099,
+      "min": 0.822248,
+      "max": 0.834011,
+      "values": [
+        0.831767,
+        0.834011,
+        0.822248
+      ]
+    },
+    {
+      "config_type": "all_modalities_no_cat",
+      "metric": "test_auc",
+      "mean": 0.774862,
+      "std": 0.005492,
+      "min": 0.767837,
+      "max": 0.781244,
+      "values": [
+        0.775504,
+        0.781244,
+        0.767837
+      ]
+    }
+  ],
+  "comparisons": {
+    "cat_vs_nocat_test_auc": {
+      "cat_mean": 0.813057,
+      "cat_std": 0.005618,
+      "nocat_mean": 0.774862,
+      "nocat_std": 0.005492,
+      "delta_mean": 0.038195,
+      "diagnosis": "Categorical embedding 的 3 seed mean Test AUC 显著高于 no-cat 对照"
+    },
+    "cat_vs_dnn": {
+      "dnn_test_auc": 0.8414,
+      "cat_mean_test_auc": 0.813057,
+      "cat_max_test_auc": 0.818385,
+      "gap_vs_dnn_mean": -0.028343,
+      "gap_vs_dnn_best": -0.023015,
+      "diagnosis": "Cat 3 seed mean 仍低于 DNN baseline, 但 best seed 已接近"
+    }
+  },
+  "conclusions": [
+    "all_modalities_cat 3 seed 验证完成，categorical embedding 提升稳定。",
+    "Cat Test AUC mean=0.8131, std=0.0056, 所有 3 seed 均高于 no-cat。",
+    "No-cat Test AUC mean=0.7749, std=0.0055。",
+    "Cat vs No-cat Test AUC 差距: +0.0382 (mean)。",
+    "Cat 3 seed best=0.8184 (seed=2026), worst=0.8053 (seed=2027)。",
+    "Cat mean Test AUC (0.8131) vs DNN baseline (0.8414): 差距=-0.0283。",
+    "未观察到 no-cat > cat 的情况，categorical embedding 方向成立。",
+    "Cat 3 seed Test AUC 范围完全位于 No-cat 之上，无重叠。",
+    "建议继续推进 categorical embedding 方向，接入 author_id/music_id 需先评估。"
+  ],
+  "next_steps": [
+    "author_id + music_id 接入设计（评估过拟合风险）。",
+    "Text 分支增强（per-field encoding, 更高 SVD 维度）。",
+    "融合策略改进（attention-based fusion）。",
+    "充分调参（当前使用默认 multimodal 配置）。"
+  ],
+  "dnn_baseline": {
+    "test_auc": 0.8414,
+    "source": "outputs/dnn/real_raw_5000/202605132017/metrics.json"
+  }
+}

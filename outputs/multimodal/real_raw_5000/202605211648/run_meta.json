@@ -1,0 +1,44 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "default",
+  "run_id": "202605211648",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605211648",
+  "input_dims": {
+    "text": 32,
+    "visual": 18,
+    "structured": 33
+  },
+  "train_started_at": "2026-05-21 16:48:53",
+  "train_finished_at": "2026-05-21 16:49:07",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\training_configs\\multimodal\\real_raw_5000\\20260521164848_resolved.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+  "best_epoch": 2,
+  "best_val_loss": 0.496455,
+  "final_train_loss": 0.511047,
+  "final_val_loss": 0.497656,
+  "ablation_name": "media_only",
+  "enabled_modalities": [
+    "media"
+  ],
+  "disabled_modalities": [
+    "structured",
+    "text"
+  ],
+  "feature_dims": {
+    "text": null,
+    "media": 18,
+    "structured": null
+  },
+  "modality_branch_mode": "dynamic_disable",
+  "test_loss": 0.5110733551279752,
+  "device": "cuda",
+  "num_params": 473,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "leakage_control_passed": true,
+  "warnings": [],
+  "source_tuning_run_id": null,
+  "source_best_trial_id": null
+}

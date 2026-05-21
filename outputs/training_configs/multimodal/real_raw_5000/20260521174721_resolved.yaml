@@ -1,0 +1,37 @@
+ablation_name: all_modalities
+activation: relu
+batch_size: 128
+categorical_embedding_dim_rule: from_feature_info
+categorical_enabled: false
+categorical_features:
+- region
+- hashtag_name_top
+categorical_missing_token: __MISSING__
+categorical_unknown_token: __UNK__
+dataset_name: real_raw_5000
+dataset_variant: default
+device: cuda
+dropout: 0.205
+early_stopping_patience: 8
+enabled_modalities:
+- structured
+- text
+- media
+epochs: 50
+feature_info_path: data/multimodal/real_raw_5000/multimodal_feature_info.json
+fusion_hidden_dim: 32
+input_type: multimodal
+leakage_report_path: outputs/data_check/real_raw_5000/multimodal_leakage_check_report.json
+learning_rate: 0.001225
+loss: bce
+model_name: multimodal
+optimizer: adam
+output_root: outputs/multimodal/real_raw_5000
+random_seed: 2026
+structured_hidden_dim: 16
+test_npz_path: data/multimodal/real_raw_5000/multimodal_test.npz
+text_hidden_dim: 16
+train_npz_path: data/multimodal/real_raw_5000/multimodal_train.npz
+val_npz_path: data/multimodal/real_raw_5000/multimodal_val.npz
+visual_hidden_dim: 8
+weight_decay: 1.8e-05

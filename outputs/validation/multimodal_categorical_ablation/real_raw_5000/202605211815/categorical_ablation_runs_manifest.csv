@@ -1,0 +1,7 @@
+ablation_name,enabled_modalities,categorical_enabled,categorical_active,categorical_features,run_id,code_version
+structured_only_no_cat,structured,false,false,,202605211639,Batch 14C
+structured_text_no_cat,"structured, text",false,false,,202605211649,Batch 14C
+all_modalities_no_cat,"structured, text, media",false,false,,202605211651,Batch 14C
+structured_only_cat,structured,true,true,"region, hashtag_name_top",202605211752,Batch 14F-impl1
+structured_text_cat,"structured, text",true,true,"region, hashtag_name_top",202605211810,Batch 14F-impl1
+all_modalities_cat,"structured, text, media",true,true,"region, hashtag_name_top",202605211813,Batch 14F-impl1

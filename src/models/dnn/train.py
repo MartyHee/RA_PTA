@@ -131,7 +131,7 @@ def main() -> None:
     model_name = config.get("model_name", "dnn")
 
     # ── 2. 生成 run_id ──────────────────────────────────────
-    run_id = datetime.now().strftime("%Y%m%d%H%M")
+    run_id = datetime.now().strftime("%Y%m%d%H%M%S")
     train_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Run ID: {run_id}")
     logger.info(f"Dataset: {dataset_name}")
