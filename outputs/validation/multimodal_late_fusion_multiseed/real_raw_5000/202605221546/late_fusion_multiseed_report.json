@@ -1,0 +1,137 @@
+{
+  "validation_run_id": "202605221546",
+  "generated_at": "2026-05-22 15:47:39",
+  "batch": "Batch 14L-experiment",
+  "dataset": "real_raw_5000",
+  "fusion_type": "late_fusion",
+  "late_fusion_mode": "weighted_sum",
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_embedding_total_dim": 20,
+  "seeds": [
+    2025,
+    2026,
+    2027
+  ],
+  "summary": [
+    {
+      "config_type": "all_modalities_cat_late_fusion",
+      "metric": "test_auc",
+      "mean": 0.825649,
+      "std": 0.002676,
+      "min": 0.822289,
+      "max": 0.828837,
+      "values": [
+        0.822289,
+        0.828837,
+        0.825822
+      ]
+    },
+    {
+      "config_type": "all_modalities_cat_late_fusion",
+      "metric": "val_auc",
+      "mean": 0.841042,
+      "std": 0.001618,
+      "min": 0.83977,
+      "max": 0.843326,
+      "values": [
+        0.843326,
+        0.83977,
+        0.84003
+      ]
+    }
+  ],
+  "late_fusion_weights": {
+    "text": {
+      "mean": 0.3413,
+      "std": 0.0044,
+      "min": 0.3369,
+      "max": 0.3473,
+      "median": 0.3396,
+      "values": [
+        0.3369,
+        0.3396,
+        0.3473
+      ]
+    },
+    "media": {
+      "mean": 0.2852,
+      "std": 0.01,
+      "min": 0.2714,
+      "max": 0.2948,
+      "median": 0.2894,
+      "values": [
+        0.2714,
+        0.2894,
+        0.2948
+      ]
+    },
+    "structured": {
+      "mean": 0.3736,
+      "std": 0.0139,
+      "min": 0.3579,
+      "max": 0.3917,
+      "median": 0.3711,
+      "values": [
+        0.3917,
+        0.3711,
+        0.3579
+      ]
+    },
+    "modality_order": [
+      "text",
+      "media",
+      "structured"
+    ]
+  },
+  "comparisons": {
+    "late_fusion_vs_concat_mlp": {
+      "late_fusion_mean_test_auc": 0.8256,
+      "late_fusion_std": 0.0027,
+      "concat_mlp_mean": 0.8131,
+      "concat_mlp_std": 0.0056,
+      "delta_mean": 0.0125,
+      "concat_mlp_source": "outputs/validation/multimodal_categorical_multiseed/real_raw_5000/202605211854/",
+      "diagnosis": "Late fusion 3 seed mean (0.8256) >= cat mean + 0.005 (0.8181), 判定稳定优于 concat_mlp"
+    },
+    "late_fusion_vs_dnn": {
+      "dnn_test_auc": 0.8414,
+      "late_fusion_mean_test_auc": 0.8256,
+      "late_fusion_max_test_auc": 0.8288,
+      "gap_vs_dnn_mean": -0.0158,
+      "gap_vs_dnn_best": -0.0126,
+      "dnn_source": "outputs/dnn/real_raw_5000/202605132017/metrics.json"
+    }
+  },
+  "conclusions": [
+    "Late fusion 3 seed mean Test AUC = 0.8256 >= 0.8181，判定 late_fusion 稳定优于 concat_mlp。",
+    "建议考虑将 late_fusion 作为 Multimodal 内部默认 fusion_type。",
+    "Late fusion weights 分布相对稳定 (text=0.341, media=0.285, structured=0.374)，未出现单模态塌缩。",
+    "Late fusion mean (0.8256) 与 DNN (0.8414) 仍有差距 (Δ=-0.0158)，不替换 DNN baseline。",
+    "建议继续尝试 gated_fusion 作为下一个改进方向。"
+  ],
+  "next_steps": [
+    "考虑将 late_fusion 作为 Multimodal 内部新的默认 fusion_type。",
+    "继续尝试 gated_fusion 看是否能进一步提升。",
+    "DNN 仍保留为推荐 baseline，直至 Multimodal 在 3 seed 上超过 0.8414。",
+    "如后续验证充分，可写 Multimodal 融合策略阶段总结文档。"
+  ],
+  "concat_mlp_baseline": {
+    "test_auc_mean": 0.8131,
+    "test_auc_std": 0.0056,
+    "source": "outputs/validation/multimodal_categorical_multiseed/real_raw_5000/202605211854/"
+  },
+  "dnn_baseline": {
+    "test_auc": 0.8414,
+    "source": "outputs/dnn/real_raw_5000/202605132017/metrics.json"
+  },
+  "judgment": {
+    "stable_superior": true,
+    "weight_collapse": false,
+    "recommend_gated_fusion": true,
+    "recommend_late_fusion_as_default": true,
+    "keep_dnn_as_baseline": true
+  }
+}

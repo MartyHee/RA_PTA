@@ -41,6 +41,8 @@ class MultimodalFusionModel(nn.Module):
         enabled_modalities: list[str] | None = None,
         categorical_enabled: bool = False,
         cat_embed_dims: list[list[int]] | None = None,
+        fusion_type: str = "concat_mlp",
+        late_fusion_mode: str = "weighted_sum",
     ) -> None:
         super().__init__()
 
@@ -55,6 +57,10 @@ class MultimodalFusionModel(nn.Module):
             ALL_MODALITIES - set(enabled_modalities)
         )
 
+        # ── Fusion 类型 ────────────────────────────────────────
+        self.fusion_type = fusion_type
+        self.late_fusion_mode = late_fusion_mode
+
         # ── Categorical embedding 状态 ─────────────────────────
         # 只在 structured 模态启用时激活 categorical embedding
         self.categorical_enabled = (
@@ -66,6 +72,9 @@ class MultimodalFusionModel(nn.Module):
         # 条件创建分支 + 记录 feature_dims
         self._branch_output_dims: list[int] = []
 
+        # 记录模态顺序（用于 late_fusion weights）
+        self._late_fusion_modalities: list[str] = []
+
         if "text" in self.enabled_modalities:
             self.text_branch = nn.Sequential(
                 nn.Linear(text_dim, text_hidden_dim),
@@ -74,6 +83,9 @@ class MultimodalFusionModel(nn.Module):
             )
             self._feature_dims["text"] = text_dim
             self._branch_output_dims.append(text_hidden_dim)
+            if self.fusion_type == "late_fusion":
+                self.text_head = nn.Linear(text_hidden_dim, 1)
+                self._late_fusion_modalities.append("text")
         else:
             self._feature_dims["text"] = None
 
@@ -85,6 +97,9 @@ class MultimodalFusionModel(nn.Module):
             )
             self._feature_dims["media"] = visual_dim
             self._branch_output_dims.append(visual_hidden_dim)
+            if self.fusion_type == "late_fusion":
+                self.visual_head = nn.Linear(visual_hidden_dim, 1)
+                self._late_fusion_modalities.append("media")
         else:
             self._feature_dims["media"] = None
 
@@ -110,17 +125,27 @@ class MultimodalFusionModel(nn.Module):
                 structured_output_dim = base_structured_output
 
             self._branch_output_dims.append(structured_output_dim)
+            if self.fusion_type == "late_fusion":
+                self.structured_head = nn.Linear(structured_output_dim, 1)
+                self._late_fusion_modalities.append("structured")
         else:
             self._feature_dims["structured"] = None
 
         # ── fusion ────────────────────────────────────────────
-        fusion_input_dim = sum(self._branch_output_dims)
-        self.fusion = nn.Sequential(
-            nn.Linear(fusion_input_dim, fusion_hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(fusion_hidden_dim, 1),
-        )
+        if self.fusion_type == "concat_mlp":
+            fusion_input_dim = sum(self._branch_output_dims)
+            self.fusion = nn.Sequential(
+                nn.Linear(fusion_input_dim, fusion_hidden_dim),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(fusion_hidden_dim, 1),
+            )
+        elif self.fusion_type == "late_fusion":
+            num_modalities = len(self._late_fusion_modalities)
+            self.fusion_weights = nn.Parameter(torch.zeros(num_modalities))
+        else:
+            raise ValueError(f"未知 fusion_type: {self.fusion_type}, "
+                             f"支持: concat_mlp, late_fusion")
 
     @staticmethod
     def _validate_enabled_modalities(modalities: list[str]) -> None:
@@ -150,6 +175,8 @@ class MultimodalFusionModel(nn.Module):
             "categorical_enabled": self.categorical_enabled,
             "categorical_active": self.categorical_enabled,
             "cat_total_dim": self.cat_total_dim,
+            "fusion_type": self.fusion_type,
+            "late_fusion_mode": self.late_fusion_mode if self.fusion_type == "late_fusion" else None,
         }
         if self.categorical_enabled:
             # 注意：cat_embed_dims 包含 vocab_size 和 embed_dim
@@ -157,6 +184,12 @@ class MultimodalFusionModel(nn.Module):
             cat_embed_dims_only = [vd[1] for vd in self.cat_embed_dims]
             info["categorical_vocab_sizes"] = cat_vocab_sizes
             info["categorical_embedding_dims"] = cat_embed_dims_only
+        if self.fusion_type == "late_fusion" and hasattr(self, "fusion_weights"):
+            with torch.no_grad():
+                weights_softmax = torch.softmax(self.fusion_weights, dim=0)
+                info["late_fusion_modality_order"] = self._late_fusion_modalities
+                info["late_fusion_weights_raw"] = self.fusion_weights.detach().tolist()
+                info["late_fusion_weights_softmax"] = weights_softmax.tolist()
         return info
 
     def forward(
@@ -180,6 +213,25 @@ class MultimodalFusionModel(nn.Module):
         Returns:
             logits: (batch, 1)
         """
+        if self.fusion_type == "late_fusion":
+            return self._forward_late_fusion(
+                text_features, visual_features,
+                structured_features, categorical_features,
+            )
+        # concat_mlp (default)
+        return self._forward_concat_mlp(
+            text_features, visual_features,
+            structured_features, categorical_features,
+        )
+
+    def _forward_concat_mlp(
+        self,
+        text_features: torch.Tensor,
+        visual_features: torch.Tensor,
+        structured_features: torch.Tensor,
+        categorical_features: torch.Tensor | None = None,
+    ) -> torch.Tensor:
+        """原始 concat + MLP 前向（与修改前行为完全一致）。"""
         branch_outputs: list[torch.Tensor] = []
 
         if hasattr(self, "text_branch"):
@@ -209,3 +261,45 @@ class MultimodalFusionModel(nn.Module):
         )
         logit = self.fusion(fused)
         return logit
+
+    def _forward_late_fusion(
+        self,
+        text_features: torch.Tensor,
+        visual_features: torch.Tensor,
+        structured_features: torch.Tensor,
+        categorical_features: torch.Tensor | None = None,
+    ) -> torch.Tensor:
+        """Late fusion 前向：各模态独立出 logit → 可学习加权 sum。"""
+        logits: list[torch.Tensor] = []
+
+        if hasattr(self, "text_branch"):
+            text_repr = self.text_branch(text_features)
+            logits.append(self.text_head(text_repr))
+
+        if hasattr(self, "visual_branch"):
+            visual_repr = self.visual_branch(visual_features)
+            logits.append(self.visual_head(visual_repr))
+
+        if hasattr(self, "structured_branch"):
+            num_repr = self.structured_branch(structured_features)
+            if (
+                hasattr(self, "cat_embeddings")
+                and categorical_features is not None
+            ):
+                cat_embs = [
+                    emb(categorical_features[:, i])
+                    for i, emb in enumerate(self.cat_embeddings)
+                ]
+                cat_flat = torch.cat(cat_embs, dim=1)
+                struct_repr = torch.cat([num_repr, cat_flat], dim=1)
+            else:
+                struct_repr = num_repr
+            logits.append(self.structured_head(struct_repr))
+
+        # 可学习加权 sum
+        logits_tensor = torch.stack(logits, dim=1)  # (batch, num_modalities, 1)
+        weights = torch.softmax(self.fusion_weights, dim=0)  # (num_modalities,)
+        final_logit = (logits_tensor.squeeze(-1) * weights.unsqueeze(0)).sum(
+            dim=1, keepdim=True
+        )
+        return final_logit

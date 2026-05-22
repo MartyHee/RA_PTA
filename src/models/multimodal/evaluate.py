@@ -190,11 +190,14 @@ def main() -> None:
     metrics_config = load_yaml(metrics_config_path)
     k_values = metrics_config.get("k_values", [5, 10, 20])
 
-    # ── 5a. 从 feature_config_used 中读取消融信息 ──────────
+    # ── 5a. 从 feature_config_used 中读取消融和 fusion 信息 ──
     eval_enabled_modalities = feature_config.get(
         "enabled_modalities", ["structured", "text", "media"]
     )
     logger.info(f"评估时 enabled_modalities: {eval_enabled_modalities}")
+    eval_fusion_type = feature_config.get("fusion_type", "concat_mlp")
+    eval_late_fusion_mode = feature_config.get("late_fusion_mode")
+    logger.info(f"评估时 fusion_type: {eval_fusion_type}")
 
     # ── 6. 加载数据 ─────────────────────────────────────────
     is_three_way = "val_npz_path" in config
@@ -248,6 +251,8 @@ def main() -> None:
         enabled_modalities=eval_enabled_modalities,
         categorical_enabled=cat_enabled_eval,
         cat_embed_dims=cat_embed_dims_eval,
+        fusion_type=eval_fusion_type,
+        late_fusion_mode=eval_late_fusion_mode or "weighted_sum",
     ).to(device)
 
     model_path = run_dir / "model.pt"

@@ -1,0 +1,134 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "default",
+  "run_id": "202605212204",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605212204",
+  "input_dims": {
+    "text": 64,
+    "visual": 18,
+    "structured": 33
+  },
+  "train_started_at": "2026-05-21 22:04:50",
+  "train_finished_at": "2026-05-21 22:05:12",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\training_configs\\multimodal\\real_raw_5000\\20260521220445_resolved.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+  "best_epoch": 17,
+  "best_val_loss": 0.460858,
+  "final_train_loss": 0.410612,
+  "final_val_loss": 0.468281,
+  "ablation_name": "all_modalities_cat_fieldwise_v1_seed2026",
+  "enabled_modalities": [
+    "structured",
+    "text",
+    "media"
+  ],
+  "disabled_modalities": [],
+  "feature_dims": {
+    "text": 64,
+    "media": 18,
+    "structured": 33
+  },
+  "modality_branch_mode": "dynamic_disable",
+  "categorical_enabled": true,
+  "categorical_active": true,
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_vocab_sizes": [
+    13,
+    1185
+  ],
+  "categorical_embedding_dims": [
+    4,
+    16
+  ],
+  "categorical_embedding_total_dim": 20,
+  "structured_numeric_dim": 33,
+  "structured_cat_concat_dim": 53,
+  "future_categorical_candidates": [
+    "author_id",
+    "music_id"
+  ],
+  "test_loss": 0.47535581695708123,
+  "device": "cuda",
+  "num_params": 22733,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "text_profile": {
+    "name": "fieldwise_text_v1",
+    "mode": "fieldwise_tfidf_svd",
+    "total_dim": 64,
+    "fields": [
+      {
+        "name": "desc",
+        "dim": 16,
+        "max_features": 5000,
+        "svd_explained_variance_ratio": 0.42468260909847444,
+        "effective_samples": 3195,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "caption",
+        "dim": 12,
+        "max_features": 5000,
+        "svd_explained_variance_ratio": 0.12355192535181483,
+        "effective_samples": 2477,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "hashtag_name",
+        "dim": 8,
+        "max_features": 3000,
+        "svd_explained_variance_ratio": 0.11837669505124679,
+        "effective_samples": 1784,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "comment_text",
+        "dim": 12,
+        "max_features": 5000,
+        "svd_explained_variance_ratio": 0.14020443463969304,
+        "effective_samples": 1317,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "music_title",
+        "dim": 4,
+        "max_features": 2000,
+        "svd_explained_variance_ratio": 0.35839569097609875,
+        "effective_samples": 3072,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "music_author",
+        "dim": 4,
+        "max_features": 1000,
+        "svd_explained_variance_ratio": 0.07074714360114945,
+        "effective_samples": 2549,
+        "svd_reduced": false,
+        "skipped": false
+      },
+      {
+        "name": "signature",
+        "dim": 8,
+        "max_features": 3000,
+        "svd_explained_variance_ratio": 0.05953648645893434,
+        "effective_samples": 2476,
+        "svd_reduced": false,
+        "skipped": false
+      }
+    ]
+  },
+  "leakage_control_passed": true,
+  "warnings": [],
+  "source_tuning_run_id": null,
+  "source_best_trial_id": null
+}

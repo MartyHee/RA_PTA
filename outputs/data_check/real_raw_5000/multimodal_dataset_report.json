@@ -29,15 +29,15 @@
   },
   "text_feature_shape_train": [
     3500,
-    32
+    64
   ],
   "text_feature_shape_val": [
     750,
-    32
+    64
   ],
   "text_feature_shape_test": [
     750,
-    32
+    64
   ],
   "visual_feature_shape_train": [
     3500,
@@ -91,11 +91,11 @@
     "passed": true,
     "report_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\data_check\\real_raw_5000\\multimodal_leakage_check_report.json"
   },
-  "generated_at": "2026-05-21 17:44:08",
+  "generated_at": "2026-05-22 14:55:36",
   "warnings": [],
   "notes": [
     "当前多模态数据集基于 real_raw_5000 真实网页端 raw 数据构建。",
-    "text_features 基于 combined_text（desc + caption + comment + hashtag + music_title + signature）。",
+    "text_features 使用 merged_text_v2_dim64 编码 (merged_tfidf_svd)，维度=64。",
     "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
     "structured_features 从 tabular 数值特征筛选，经 z-score 标准化（fit on train only）。",
     "split 与 tabular 完全一致。"

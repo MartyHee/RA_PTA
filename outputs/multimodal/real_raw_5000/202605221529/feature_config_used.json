@@ -1,0 +1,86 @@
+{
+  "dataset_name": "real_raw_5000",
+  "ablation_name": "all_modalities_cat_late_fusion_seed2026",
+  "enabled_modalities": [
+    "structured",
+    "text",
+    "media"
+  ],
+  "disabled_modalities": [],
+  "feature_dims": {
+    "text": 64,
+    "media": 18,
+    "structured": 33
+  },
+  "train_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "text_dim": 64,
+  "visual_dim": 18,
+  "structured_dim": 33,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "text_feature_method": "tfidf_svd",
+  "text_profile": {
+    "name": "merged_text_v2_dim64",
+    "mode": "merged_tfidf_svd",
+    "total_dim": 64
+  },
+  "visual_feature_method": "media_metadata_only",
+  "structured_feature_method": "tabular_numeric_scaled",
+  "branch_hidden_dims": {
+    "text": 16,
+    "visual": 8,
+    "structured": 16
+  },
+  "fusion_hidden_dim": 32,
+  "fusion_type": "late_fusion",
+  "late_fusion_mode": "weighted_sum",
+  "late_fusion_modality_order": [
+    "text",
+    "media",
+    "structured"
+  ],
+  "late_fusion_weights_raw": [
+    0.0488460510969162,
+    -0.11100321263074875,
+    0.13754652440547943
+  ],
+  "late_fusion_weights_softmax": [
+    0.33955562114715576,
+    0.2893938422203064,
+    0.37105053663253784
+  ],
+  "categorical_enabled": true,
+  "categorical_active": true,
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_vocab_sizes": [
+    13,
+    1185
+  ],
+  "categorical_embedding_dims": [
+    4,
+    16
+  ],
+  "categorical_embedding_total_dim": 20,
+  "categorical_vocab_source": "data/features/real_raw_5000/tabular_feature_info.json",
+  "future_categorical_candidates": [
+    "author_id",
+    "music_id"
+  ],
+  "structured_numeric_dim": 33,
+  "no_image_download_confirmed": true,
+  "no_external_api_confirmed": true,
+  "no_large_pretrained_model_confirmed": true,
+  "warnings": [
+    "标签为 interaction_score 伪标签，不代表真实业务目标"
+  ],
+  "notes": [
+    "当前多模态模型基于 real_raw_5000 数据训练",
+    "未下载图片。",
+    "未调用外部 API。",
+    "未使用大型预训练模型。"
+  ],
+  "test_npz_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz"
+}

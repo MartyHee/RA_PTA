@@ -105,49 +105,58 @@ high_confidence_filter_report.json
 | REST API 本地模拟服务（FastAPI） | ✅ 已完成，尚未部署上线 |
 | 系统架构文档（docs/system_architecture.md） | ✅ 完成 |
 | 本地端到端推荐流水线第一版 | ✅ 完成 |
-| 线上模拟环境搭建与 A/B 测试设计 | 📝 下一阶段 |
+| 线上模拟环境搭建与 A/B 测试设计（Stage 2） | ✅ 完成 |
+| 阶段二交付文档（delivery document） | ✅ 完成 |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
+
+**Multimodal 当前最佳：** all_modalities_cat + late_fusion（3 seed mean Test AUC=0.8256）。
+- 原始 Multimodal no-cat：0.7812
+- +categorical embedding：0.8131（3 seed mean）
+- +late_fusion：0.8256（3 seed mean）← **Multimodal 当前 preferred config**
+- 与 DNN 差距从 -0.0602 缩小至 -0.0158（缩小 73.8%）
+- Multimodal 尚未超过 DNN，DNN 保持全项目推荐 baseline
 
 **最新 tuning best trial：** trial_000（run_id=202605141914, val_auc=0.8413, test_auc=0.8348）。
 详情见 `outputs/tuning/dnn/real_raw_5000/20260514_191432/`。
 
-### 2.4 下一阶段：线上模拟环境搭建与 A/B 测试设计
+### 2.4 已完成：阶段二（线上模拟环境搭建与 A/B 测试设计 + 模型改进）
 
-#### 技术栈说明
+阶段二已完整结束，涵盖以下 7 个方向：
 
-本项目现有服务层已经使用 FastAPI 并完成本地接口验证（`src/serving/api.py` + `src/serving/schemas.py`）。预测核心已封装为通用 Predictor 类（`src/inference/predictor.py`），被 batch_predict 和 api.py 共同复用。
+| 方向 | 批次 | 关键产出 |
+|------|------|---------|
+| FastAPI online simulation service 扩展设计 | Batch 12B | `docs/online_simulation_design.md` |
+| A/B 测试方案设计 | Batch 12C | `docs/ab_test_design.md` |
+| FastAPI online simulation service 扩展实现 | Batch 12D | `src/serving/api.py` 扩展（`/models`, `/recommend`, `/ab/recommend`） |
+| A/B 日志与指标计算 | Batch 12E | `src/serving/ab_metrics.py`, `outputs/online_simulation/20260518_183823/` |
+| A/B 测试实施方案完善 | Batch 12F | `docs/ab_test_implementation_plan.md` |
+| DNN 多 seed 验证与 20-trial 调参 | Batch 13A–13C | baseline 5 seed mean=0.8386, 20-trial 未超越 baseline |
+| Multimodal 改进（消融 → categorical → 文本 → late_fusion） | Batch 14A–14L-summary | 从 0.7812 提升至 0.8256（late_fusion 3 seed mean） |
 
-后续如需要正式部署，可单独设计 Docker 容器化、Gunicorn/Uvicorn workers、鉴权、监控等内容，但不在本阶段范围内。
+阶段二交付总结文档：
 
-#### 工作内容
+```text
+docs/stage2_online_ab_model_improvement_delivery.md
+```
 
-1. 基于现有 FastAPI 服务扩展本地推荐系统线上模拟环境。
-2. 支持多模型注册、部署和接口调用的设计。
-3. 设计流量分配策略和用户分组机制。
-4. 设计关键指标监控方案：CTR、留存、互动率等。
-5. 明确 A/B 测试胜负判定标准和异常检测方法。
-6. 撰写 A/B 测试实施方案和注意事项。
+#### 阶段二核心结论
 
-#### 产出要求
+- **API 仍为本地 FastAPI simulation，未部署上线。**
+- **A/B 测试为本地模拟，没有真实线上点击/留存事件。**
+- **DNN（0.8414）仍是全项目推荐 baseline。**
+- **Multimodal 内部 baseline：all_modalities_cat + late_fusion（3 seed mean=0.8256），尚未超过 DNN（Δ=-0.0158）。**
+- **所有结果基于离线代理标签（interaction_score P60 分位数二分类），不代表真实线上推荐收益。**
 
-1. 本地线上模拟推荐服务代码。
-2. 服务使用和部署说明文档。
-3. 完整 A/B 测试方案文档。
+### 2.5 当前任务：最终交付材料整理
 
-#### 边界说明
+阶段二所有实验与工程任务已完成。当前默认不继续新实验，优先任务为：
 
-- 当前 API 尚未部署上线。
-- 下一阶段的线上模拟环境仍然是本地 simulation，不是生产系统。
-- 第一版不做 Docker、鉴权、监控、并发压测和真实线上部署。
-- 当前没有真实点击、曝光、留存日志，CTR / 留存等指标第一版只能做模拟或方案设计。
-- 不应把模拟 A/B 结果写成真实线上实验结论。
+1. 整理最终报告和演示材料（如需要）。
+2. 归档阶段一和阶段二的关键结论、文档、输出产物。
+3. 明确后续是进入最终交付还是启动新实验阶段（需用户明确指示）。
 
-#### 问题备注
-
-1. 当前模型体积已很小（DNN baseline 仅 0.097 MB），压缩收益有限，后续优化重点应转向服务流程、实验设计、特征和模型稳定性。
-2. 当前 DNN best trial 仅来自 3 次小规模搜索，未做多 seed 验证。
-3. Multimodal AUC=0.7812，低于 DNN AUC=0.8414，后续需优化文本/视觉分支和融合策略。
+> **注意：默认不要启动新实验。如需继续实验（如 gated_fusion、DNN 更充分调参），必须由用户明确要求。**
 
 ---
 
@@ -268,14 +277,28 @@ label 生成完成后，它们必须从最终建模输入中删除。
 - Multimodal tuned 迁移验证 — ✅
 - DNN / Wide & Deep / GraphSAGE / Multimodal 统一训练入口 — ✅
 - 统一调参入口 tune.py 第一版（DNN random search） — ✅
+- Multimodal 模态消融实验（Batch 14C）— ✅
+- Multimodal categorical embedding 接入与多 seed 验证（Batch 14F/14G）— ✅
+- Multimodal 文本分支探索（fieldwise/dim64，Batch 14K）— ✅
+- Multimodal late_fusion 实现与 3 seed 验证（Batch 14L）— ✅
+- Multimodal 改进阶段总结文档（Batch 14L-summary）— ✅
 
-### 5.2 当前任务
+### 5.2 阶段二（线上模拟与 A/B + 模型改进）— ✅ 已完成
 
-当前阶段已进入"线上模拟环境搭建与 A/B 测试设计"：
+阶段二已完整结束，涵盖：
 
-1. FastAPI online simulation service 扩展设计。
-2. A/B 测试方案设计。
-3. 后续实现多模型注册、流量分配、请求日志和模拟指标计算。
+| 方向 | 状态 |
+|------|:----:|
+| FastAPI online simulation service 扩展设计（Batch 12B） | ✅ |
+| A/B 测试方案设计（Batch 12C） | ✅ |
+| FastAPI online simulation service 扩展实现（Batch 12D） | ✅ |
+| A/B 日志与指标计算（Batch 12E） | ✅ |
+| A/B 测试实施方案完善（Batch 12F） | ✅ |
+| DNN 多 seed 验证与 20-trial 调参（Batch 13A–13C） | ✅ |
+| Multimodal 改进（消融 → categorical → 文本 → late_fusion）（Batch 14A–14L-summary） | ✅ |
+| 阶段二交付总结文档（Batch 15A） | ✅ |
+
+阶段二交付文档：`docs/stage2_online_ab_model_improvement_delivery.md`
 
 ### 5.3 工程化阶段（已完成）
 
@@ -290,19 +313,15 @@ label 生成完成后，它们必须从最终建模输入中删除。
 7. 推理 benchmark 与模型压缩 — ✅（已验证 dynamic_quantization 不推荐）
 8. 流水线设计文档和系统架构文档 — ✅
 
-### 5.4 线上模拟环境搭建与 A/B 测试设计（下一阶段）
+### 5.4 当前阶段：最终交付材料整理
 
-本阶段建议按以下批次推进。每次任务只做一个窄步骤，不要合并成大任务。
+阶段一（数据 + 工程化）和阶段二（线上模拟/A/B + 模型改进）已全部结束。当前默认不启动新实验，优先任务：
 
-建议批次顺序：
+1. **整理最终报告/演示材料**（如需要，由用户明确指示）。
+2. **归档关键结论**：README.md 已同步，CLAUDE.md 已同步。
+3. **等待用户指示**：后续方向（最终交付 / 继续实验 / 生产部署）由用户决定。
 
-1. **Batch 12A：README / CLAUDE 阶段同步** — 更新文档，不写代码。
-2. **Batch 12B：FastAPI online simulation service 扩展设计文档** — 设计多模型注册、部署、流量分配方案。
-3. **Batch 12C：A/B 测试方案设计文档** — 设计用户分组、指标体系、胜负判定标准。
-4. **Batch 12D：FastAPI online simulation service 扩展第一版** — 多模型部署、流量分配、请求日志。
-5. **Batch 12E：A/B 日志与指标计算** — 日志记录、离线指标计算、模拟实验报告。
-6. **Batch 12F：A/B 测试实施方案完善** — 完善流程、边界条件、注意事项。
-7. **Batch 12G：模型改进规划** — Multimodal 优化、充分调参、多 seed 验证等。
+> **非用户明确要求，不启动任何新实验、新代码、新运行。**
 
 ---
 

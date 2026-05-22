@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import pickle
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -36,8 +37,12 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.features.text_features import (  # noqa: E402
+    TEXT_PROFILES,
     build_combined_text,
+    build_fieldwise_texts,
+    fit_fieldwise_text_vectorizers,
     fit_text_vectorizer,
+    transform_fieldwise_text,
     transform_text,
 )
 from src.features.image_features import build_visual_features  # noqa: E402
@@ -153,6 +158,12 @@ def main() -> None:
         default=str(_PROJECT_ROOT / "configs/multimodal/multimodal_real_raw_5000.yaml"),
         help="配置文件路径",
     )
+    parser.add_argument(
+        "--text-profile",
+        type=str,
+        default=None,
+        help="text_profile 名称（覆盖配置文件中的值），可选: merged_text_v1 / fieldwise_text_v1 / fieldwise_text_v2",
+    )
     args = parser.parse_args()
 
     # ── 1. 加载配置 ─────────────────────────────────────────────────────
@@ -171,6 +182,22 @@ def main() -> None:
     text_dim = config.get("text_dim", 32)
     random_seed = config.get("random_seed", 2026)
     leakage_cfg = config.get("leakage_control", {})
+
+    # ── text_profile 解析 ──────────────────────────────────────
+    text_profile_name = args.text_profile or config.get("text_profile", "merged_text_v1")
+    if text_profile_name not in TEXT_PROFILES:
+        logger(f"[ERROR] 未知 text_profile: {text_profile_name}")
+        logger(f"  可选: {list(TEXT_PROFILES.keys())}")
+        sys.exit(1)
+    text_profile = TEXT_PROFILES[text_profile_name]
+    logger(f"  text_profile: {text_profile_name} (mode={text_profile['mode']}, total_dim={text_profile['total_dim']})")
+
+    # 使用 text_profile 的 total_dim 覆盖 config 的 text_dim（如果 profile 有定义）
+    # 使 merged 模式能通过 text_profile 控制总维度，而非只依赖 config 中的 text_dim
+    if text_profile.get("total_dim") and text_profile["total_dim"] != text_dim:
+        logger(f"  text_dim 从配置值 {text_dim} 更新为 text_profile 的 {text_profile['total_dim']}")
+        text_dim = text_profile["total_dim"]
+
     notes: list[str] = []
     warnings: list[str] = []
     used_fallback = False
@@ -237,73 +264,146 @@ def main() -> None:
     # ── 4. 构建 Text Features ────────────────────────────────────────────
     logger("[build_multimodal_real_raw] 构建 text_features...")
 
-    # 4a. 合并文本
-    text_df = build_combined_text(
-        video_detail=video_detail,
-        chapter=chapter if not chapter.empty else None,
-        comment=comment if not comment.empty else None,
-        hashtag=hashtag if not hashtag.empty else None,
-        music=music if not music.empty else None,
-        author=author if not author.empty else None,
-    )
-    logger(f"  combined_text 覆盖 video_ids: {len(text_df)}")
+    text_profile_mode = text_profile["mode"]
+    field_vectorizers_dir = multimodal_dir / "field_vectorizers"
 
-    # 4b. 分离 train/val/test text
-    text_train = text_df[text_df["video_id"].isin(train_ids)].copy()
-    text_val = text_df[text_df["video_id"].isin(val_ids)].copy()
-    text_test = text_df[text_df["video_id"].isin(test_ids)].copy()
+    if text_profile_mode == "merged_tfidf_svd":
+        # ── 4M. Merged 模式（当前默认方案） ─────────────────────────────
+        logger("  使用 merged_text_v1 模式（所有字段合并 → TF-IDF → SVD）")
 
-    # 补充缺失的 video_id（填空文本）
-    for label, ids, subset in [
-        ("train", train_ids, text_train),
-        ("val", val_ids, text_val),
-        ("test", test_ids, text_test),
-    ]:
-        missing = ids - set(subset["video_id"])
-        if missing:
-            logger(f"  [WARN] {label} 中 {len(missing)} 个 video_id 无文本 → 填空")
-            for vid in missing:
-                subset = pd.concat(
-                    [subset, pd.DataFrame({"video_id": [vid], "combined_text": [""]})],
-                    ignore_index=True,
-                )
-        # 按 video_id 排序对齐
-        if label == "train":
-            text_train = subset.sort_values("video_id").reset_index(drop=True)
-        elif label == "val":
-            text_val = subset.sort_values("video_id").reset_index(drop=True)
-        else:
-            text_test = subset.sort_values("video_id").reset_index(drop=True)
+        text_df = build_combined_text(
+            video_detail=video_detail,
+            chapter=chapter if not chapter.empty else None,
+            comment=comment if not comment.empty else None,
+            hashtag=hashtag if not hashtag.empty else None,
+            music=music if not music.empty else None,
+            author=author if not author.empty else None,
+        )
+        logger(f"  combined_text 覆盖 video_ids: {len(text_df)}")
 
-    text_train = text_train.sort_values("video_id").reset_index(drop=True)
-    text_val = text_val.sort_values("video_id").reset_index(drop=True)
-    text_test = text_test.sort_values("video_id").reset_index(drop=True)
+        text_train = text_df[text_df["video_id"].isin(train_ids)].copy()
+        text_val = text_df[text_df["video_id"].isin(val_ids)].copy()
+        text_test = text_df[text_df["video_id"].isin(test_ids)].copy()
 
-    logger(f"  text_train: {len(text_train)}, text_val: {len(text_val)}, text_test: {len(text_test)}")
+        for label, ids, subset in [
+            ("train", train_ids, text_train),
+            ("val", val_ids, text_val),
+            ("test", test_ids, text_test),
+        ]:
+            missing = ids - set(subset["video_id"])
+            if missing:
+                logger(f"  [WARN] {label} 中 {len(missing)} 个 video_id 无文本 → 填空")
+                for vid in missing:
+                    subset = pd.concat(
+                        [subset, pd.DataFrame({"video_id": [vid], "combined_text": [""]})],
+                        ignore_index=True,
+                    )
+            if label == "train":
+                text_train = subset.sort_values("video_id").reset_index(drop=True)
+            elif label == "val":
+                text_val = subset.sort_values("video_id").reset_index(drop=True)
+            else:
+                text_test = subset.sort_values("video_id").reset_index(drop=True)
 
-    # 4c. 拟合 vectorizer（仅在 train 上 fit）
-    logger("  拟合 text vectorizer (TF-IDF + SVD / HashingVectorizer 回退)...")
-    vectorizer, svd, text_info = fit_text_vectorizer(
-        text_train["combined_text"], text_dim=text_dim, random_seed=random_seed
-    )
-    logger(f"  text_feature_method: {text_info.get('method', 'unknown')}")
-    if text_info.get("tfidf_failed"):
-        logger(f"  TF-IDF 失败: {text_info.get('tfidf_error')}")
-    if text_info.get("method", "").startswith("stats_fallback"):
-        used_fallback = True
-        warnings.append("文本特征使用统计特征回退（非 TF-IDF/SVD）")
+        text_train = text_train.sort_values("video_id").reset_index(drop=True)
+        text_val = text_val.sort_values("video_id").reset_index(drop=True)
+        text_test = text_test.sort_values("video_id").reset_index(drop=True)
+        logger(f"  text_train: {len(text_train)}, text_val: {len(text_val)}, text_test: {len(text_test)}")
 
-    # 4d. 转换 train/val/test
-    train_text_vec = transform_text(
-        text_train["combined_text"], vectorizer, svd, text_dim
-    )
-    val_text_vec = transform_text(
-        text_val["combined_text"], vectorizer, svd, text_dim
-    )
-    test_text_vec = transform_text(
-        text_test["combined_text"], vectorizer, svd, text_dim
-    )
-    actual_text_dim = train_text_vec.shape[1]
+        logger("  拟合 text vectorizer (TF-IDF + SVD)...")
+        vectorizer, svd, text_info = fit_text_vectorizer(
+            text_train["combined_text"], text_dim=text_dim, random_seed=random_seed
+        )
+        logger(f"  text_feature_method: {text_info.get('method', 'unknown')}")
+        if text_info.get("tfidf_failed"):
+            logger(f"  TF-IDF 失败: {text_info.get('tfidf_error')}")
+        if text_info.get("method", "").startswith("stats_fallback"):
+            used_fallback = True
+            warnings.append("文本特征使用统计特征回退（非 TF-IDF/SVD）")
+
+        train_text_vec = transform_text(
+            text_train["combined_text"], vectorizer, svd, text_dim
+        )
+        val_text_vec = transform_text(
+            text_val["combined_text"], vectorizer, svd, text_dim
+        )
+        test_text_vec = transform_text(
+            text_test["combined_text"], vectorizer, svd, text_dim
+        )
+        actual_text_dim = train_text_vec.shape[1]
+
+        text_info_for_feature_info = text_info
+
+    elif text_profile_mode == "fieldwise_tfidf_svd":
+        # ── 4F. Fieldwise 模式（每字段独立 TF-IDF + SVD → concat） ─────
+        logger(f"  使用 fieldwise 模式 ({text_profile_name})：7 字段独立编码 → concat({text_profile['total_dim']})")
+
+        field_texts = build_fieldwise_texts(
+            video_detail=video_detail,
+            comment=comment if not comment.empty else None,
+            hashtag=hashtag if not hashtag.empty else None,
+            music=music if not music.empty else None,
+            author=author if not author.empty else None,
+        )
+
+        # Fit on train only
+        logger("  拟合每字段 TF-IDF + SVD（fit on train only）...")
+        f_vectorizers, f_svds, f_field_info = fit_fieldwise_text_vectorizers(
+            field_texts=field_texts,
+            profile=text_profile,
+            train_video_ids=train_ids,
+            random_seed=random_seed,
+        )
+
+        # 记录各字段 explained_variance
+        for fn, info in f_field_info.items():
+            evr = info.get("explained_variance_ratio", 0)
+            eff = info.get("effective_samples", 0)
+            skipped = info.get("skipped", False)
+            status = "SKIPPED" if skipped else "OK"
+            logger(f"    {fn}: dim={info['dim']}, effective={eff}, "
+                   f"explained_var={evr:.4f}, status={status}")
+
+        # Transform train/val/test
+        train_vids_sorted = sorted(train_ids)
+        val_vids_sorted = sorted(val_ids)
+        test_vids_sorted = sorted(test_ids)
+
+        train_text_vec = transform_fieldwise_text(
+            field_texts, f_vectorizers, f_svds, text_profile, train_vids_sorted
+        )
+        val_text_vec = transform_fieldwise_text(
+            field_texts, f_vectorizers, f_svds, text_profile, val_vids_sorted
+        )
+        test_text_vec = transform_fieldwise_text(
+            field_texts, f_vectorizers, f_svds, text_profile, test_vids_sorted
+        )
+        actual_text_dim = train_text_vec.shape[1]
+
+        # Save field vectorizers
+        field_vectorizers_dir.mkdir(parents=True, exist_ok=True)
+        for fn in f_vectorizers:
+            v_path = field_vectorizers_dir / f"{fn}_vectorizer.pkl"
+            with open(v_path, "wb") as f:
+                pickle.dump(f_vectorizers[fn], f)
+        for fn in f_svds:
+            s_path = field_vectorizers_dir / f"{fn}_svd.pkl"
+            with open(s_path, "wb") as f:
+                pickle.dump(f_svds[fn], f)
+        logger(f"  field vectorizers 已保存: {field_vectorizers_dir}")
+
+        # 构建 text_info
+        text_info = {
+            "method": "fieldwise_tfidf_svd",
+            "text_profile_name": text_profile_name,
+            "total_dim": text_profile["total_dim"],
+            "field_info": f_field_info,
+        }
+
+    else:
+        logger(f"[ERROR] 未知 text_profile mode: {text_profile_mode}")
+        sys.exit(1)
+
     logger(f"  text_features shape: train={train_text_vec.shape}, val={val_text_vec.shape}, test={test_text_vec.shape}")
 
     # ── 5. 构建 Visual Features ───────────────────────────────────────────
@@ -538,6 +638,28 @@ def main() -> None:
         "author": ["signature"],
     }
 
+    # 构建 text_profile 元信息
+    text_profile_info = {
+        "name": text_profile_name,
+        "mode": text_profile_mode,
+        "total_dim": text_profile.get("total_dim", text_dim),
+    }
+    if text_profile_mode == "fieldwise_tfidf_svd":
+        field_info_list = []
+        for fc in text_profile.get("fields", []):
+            fn = fc["name"]
+            fi = text_info.get("field_info", {}).get(fn, {})
+            field_info_list.append({
+                "name": fn,
+                "dim": fc["dim"],
+                "max_features": fc.get("max_features", 5000),
+                "svd_explained_variance_ratio": fi.get("explained_variance_ratio", 0),
+                "effective_samples": fi.get("effective_samples", 0),
+                "svd_reduced": fi.get("svd_reduced", False),
+                "skipped": fi.get("skipped", False),
+            })
+        text_profile_info["fields"] = field_info_list
+
     feature_info: dict[str, Any] = {
         "dataset_name": config["dataset_name"],
         "label_col": "label",
@@ -549,6 +671,7 @@ def main() -> None:
         "label_distribution_val": {"pos": val_pos, "neg": val_neg},
         "label_distribution_test": {"pos": test_pos, "neg": test_neg},
         # text
+        "text_profile": text_profile_info,
         "text_feature_method": text_info.get("method", "unknown"),
         "text_dim": actual_text_dim,
         "text_source_fields": text_source_fields,
@@ -594,8 +717,8 @@ def main() -> None:
         "notes": notes
         + [
             f"本数据集基于 {config['dataset_name']} 真实网页端 raw 数据构建。",
+            f"text_features 使用 {text_profile_name} 编码 ({text_profile_mode})，维度={actual_text_dim}。",
             "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",
-            "text_features 基于 TF-IDF+SVD 或 HashingVectorizer，非大型语言模型。",
             "visual_features 仅使用媒体元信息（URL 存在性、尺寸、水印），未下载图片。",
             "structured_features 复用 tabular 数值+文本统计特征，经 z-score 标准化（fit on train only）。",
             "未下载图片，未调用外部 API，未使用大型预训练模型。",
@@ -687,7 +810,7 @@ def main() -> None:
         "warnings": warnings,
         "notes": [
             f"当前多模态数据集基于 {config['dataset_name']} 真实网页端 raw 数据构建。",
-            "text_features 基于 combined_text（desc + caption + comment + hashtag + music_title + signature）。",
+            f"text_features 使用 {text_profile_name} 编码 ({text_profile_mode})，维度={actual_text_dim}。",
             "visual_features 仅使用 raw_video_media 元信息，未下载任何图片。",
             "structured_features 从 tabular 数值特征筛选，经 z-score 标准化（fit on train only）。",
             "split 与 tabular 完全一致。",
@@ -702,25 +825,34 @@ def main() -> None:
     # ── 10. 输出 multimodal_dataset_preview.csv ─────────────────────────
     logger("[build_multimodal_real_raw] 输出 multimodal_dataset_preview.csv...")
 
+    # fieldwise 模式下 text_train/val/test 未定义，用 None 占位
+    text_train_ref = locals().get("text_train", None)
+    text_val_ref = locals().get("text_val", None)
+    text_test_ref = locals().get("text_test", None)
+
     preview_rows: list[dict[str, Any]] = []
     for split_name, vid_list, tvec, vvec, svec, tdf in [
-        ("train", train_vids_sorted, train_text_vec, train_vis, train_struct_scaled, text_train),
-        ("val", val_vids_sorted, val_text_vec, val_vis, val_struct_scaled, text_val),
-        ("test", test_vids_sorted, test_text_vec, test_vis, test_struct_scaled, text_test),
+        ("train", train_vids_sorted, train_text_vec, train_vis, train_struct_scaled, text_train_ref),
+        ("val", val_vids_sorted, val_text_vec, val_vis, val_struct_scaled, text_val_ref),
+        ("test", test_vids_sorted, test_text_vec, test_vis, test_struct_scaled, text_test_ref),
     ]:
         for i, vid in enumerate(vid_list):
             tab_row = tabular_all[tabular_all["video_id"] == vid]
             if tab_row.empty:
                 continue
+            combined_text_len = 0
+            if tdf is not None and i < len(tdf):
+                try:
+                    combined_text_len = int(len(str(tdf.iloc[i]["combined_text"])))
+                except (KeyError, TypeError):
+                    combined_text_len = 0
             preview_rows.append({
                 "sample_id": int(tab_row.iloc[0].get("sample_id", vid)),
                 "video_id": int(vid),
                 "author_id": str(tab_row.iloc[0].get("author_id", "0")),
                 "label": int(tab_row.iloc[0].get("label", -1)),
                 "split": split_name,
-                "combined_text_length": int(len(str(tdf.iloc[i]["combined_text"])))
-                if i < len(tdf)
-                else 0,
+                "combined_text_length": combined_text_len,
                 "visual_non_null_count": int(np.sum(vvec[i] != 0)) if i < len(vvec) else 0,
                 "structured_non_null_count": int(np.sum(~np.isnan(svec[i]))) if i < len(svec) else 0,
             })
@@ -738,6 +870,7 @@ def main() -> None:
     logger(f"  Train 样本: {len(train_vids_sorted)}")
     logger(f"  Val   样本: {len(val_vids_sorted)}")
     logger(f"  Test  样本: {len(test_vids_sorted)}")
+    logger(f"  text_profile: {text_profile_name}")
     logger(f"  text_dim: {actual_text_dim}")
     logger(f"  visual_dim: {vis_info['visual_dim']}")
     logger(f"  structured_dim: {structured_dim}")

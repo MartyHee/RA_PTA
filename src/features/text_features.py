@@ -269,6 +269,271 @@ def transform_text(
         return _stats_fallback(valid_texts, text_dim)
 
 
+# ── Text profile registry ────────────────────────────────────────────────────
+TEXT_PROFILES: dict[str, dict] = {
+    "merged_text_v1": {
+        "name": "merged_text_v1",
+        "mode": "merged_tfidf_svd",
+        "total_dim": 32,
+    },
+    "fieldwise_text_v1": {
+        "name": "fieldwise_text_v1",
+        "mode": "fieldwise_tfidf_svd",
+        "total_dim": 64,
+        "fields": [
+            {"name": "desc", "dim": 16, "max_features": 5000},
+            {"name": "caption", "dim": 12, "max_features": 5000},
+            {"name": "hashtag_name", "dim": 8, "max_features": 3000},
+            {"name": "comment_text", "dim": 12, "max_features": 5000},
+            {"name": "music_title", "dim": 4, "max_features": 2000},
+            {"name": "music_author", "dim": 4, "max_features": 1000},
+            {"name": "signature", "dim": 8, "max_features": 3000},
+        ],
+    },
+    "merged_text_v2_dim64": {
+        "name": "merged_text_v2_dim64",
+        "mode": "merged_tfidf_svd",
+        "total_dim": 64,
+        # 注意: max_features 由 fit_text_vectorizer() 内部管理（当前 256）
+        # merged_text_v2_dim64 仅提升 total_dim 32→64，保持 max_features 不变
+    },
+    "fieldwise_text_v2": {
+        "name": "fieldwise_text_v2",
+        "mode": "fieldwise_tfidf_svd",
+        "total_dim": 96,
+        "fields": [
+            {"name": "desc", "dim": 24, "max_features": 5000},
+            {"name": "caption", "dim": 16, "max_features": 5000},
+            {"name": "hashtag_name", "dim": 12, "max_features": 3000},
+            {"name": "comment_text", "dim": 16, "max_features": 5000},
+            {"name": "music_title", "dim": 8, "max_features": 2000},
+            {"name": "music_author", "dim": 4, "max_features": 1000},
+            {"name": "signature", "dim": 16, "max_features": 3000},
+        ],
+    },
+}
+
+
+def build_fieldwise_texts(
+    video_detail: pd.DataFrame,
+    comment: pd.DataFrame | None = None,
+    hashtag: pd.DataFrame | None = None,
+    music: pd.DataFrame | None = None,
+    author: pd.DataFrame | None = None,
+    video_id_col: str = "video_id",
+) -> dict[str, pd.DataFrame]:
+    """提取每个文本字段的独立文本数据用于 fieldwise 编码。
+
+    Args:
+        video_detail: raw_video_detail DataFrame
+        comment: raw_comment DataFrame（可选）
+        hashtag: raw_hashtag DataFrame（可选）
+        music: raw_music DataFrame（可选）
+        author: raw_author DataFrame（可选）
+        video_id_col: video_id 列名
+
+    Returns:
+        dict[str, DataFrame]，每项包含 video_id + field_text 两列
+    """
+    result: dict[str, pd.DataFrame] = {}
+
+    # desc / caption from video_detail
+    desc_df = video_detail[[video_id_col, "desc"]].copy()
+    desc_df.columns = ["video_id", "field_text"]
+    result["desc"] = desc_df
+
+    caption_df = video_detail[[video_id_col, "caption"]].copy()
+    caption_df.columns = ["video_id", "field_text"]
+    result["caption"] = caption_df
+
+    # hashtag_name
+    if hashtag is not None and not hashtag.empty:
+        hgrp = (
+            hashtag.groupby(video_id_col)["hashtag_name"]
+            .apply(lambda x: " ".join(x.dropna().astype(str)))
+            .reset_index()
+        )
+        hgrp.columns = ["video_id", "field_text"]
+        result["hashtag_name"] = hgrp
+    else:
+        result["hashtag_name"] = pd.DataFrame(columns=["video_id", "field_text"])
+
+    # comment_text
+    if comment is not None and not comment.empty:
+        cgrp = (
+            comment.groupby(video_id_col)["comment_text"]
+            .apply(lambda x: ". ".join(x.dropna().astype(str)))
+            .reset_index()
+        )
+        cgrp.columns = ["video_id", "field_text"]
+        result["comment_text"] = cgrp
+    else:
+        result["comment_text"] = pd.DataFrame(columns=["video_id", "field_text"])
+
+    # music_title / music_author
+    if music is not None and not music.empty:
+        mt_df = music[[video_id_col, "music_title"]].copy()
+        mt_df.columns = ["video_id", "field_text"]
+        result["music_title"] = mt_df
+
+        ma_df = music[[video_id_col, "music_author"]].copy()
+        ma_df.columns = ["video_id", "field_text"]
+        result["music_author"] = ma_df
+    else:
+        result["music_title"] = pd.DataFrame(columns=["video_id", "field_text"])
+        result["music_author"] = pd.DataFrame(columns=["video_id", "field_text"])
+
+    # signature（通过 video_detail.author_id 关联 author.signature）
+    if author is not None and not author.empty:
+        auth_sig = author[["author_id", "signature"]].copy()
+        auth_sig.columns = ["author_id", "field_text"]
+        vd_auth = video_detail[["video_id", "author_id"]].copy()
+        sig_df = vd_auth.merge(auth_sig, on="author_id", how="left")
+        sig_df = sig_df[["video_id", "field_text"]]
+        result["signature"] = sig_df
+    else:
+        result["signature"] = pd.DataFrame(columns=["video_id", "field_text"])
+
+    return result
+
+
+def fit_fieldwise_text_vectorizers(
+    field_texts: dict[str, pd.DataFrame],
+    profile: dict,
+    train_video_ids: set,
+    random_seed: int = 2026,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """在 train 集上拟合每字段的 TF-IDF + SVD。
+
+    Args:
+        field_texts: build_fieldwise_texts() 输出的 dict
+        profile: text_profile 配置 dict（含 fields list）
+        train_video_ids: 训练集 video_id set
+        random_seed: 随机种子
+
+    Returns:
+        (vectorizers, svds, field_info)
+    """
+    vectorizers: dict[str, Any] = {}
+    svds: dict[str, Any] = {}
+    field_info: dict[str, Any] = {}
+
+    for field_cfg in profile.get("fields", []):
+        field_name = field_cfg["name"]
+        field_dim = field_cfg["dim"]
+        max_features = field_cfg.get("max_features", 5000)
+
+        # 提取该字段在 train 上的文本
+        ft_df = field_texts.get(field_name, pd.DataFrame(columns=["video_id", "field_text"]))
+        ft_train = ft_df[ft_df["video_id"].isin(train_video_ids)].copy()
+        text_map = dict(zip(ft_train["video_id"], ft_train["field_text"]))
+        texts_series = pd.Series(
+            [text_map.get(vid, "") for vid in sorted(train_video_ids)]
+        )
+
+        # Fit TF-IDF
+        tfidf = TfidfVectorizer(
+            max_features=max_features,
+            analyzer="char_wb",
+            ngram_range=(2, 4),
+            min_df=1,
+            max_df=1.0,
+            sublinear_tf=True,
+        )
+        tfidf_matrix = tfidf.fit_transform(texts_series.fillna("").astype(str))
+        n_features = tfidf_matrix.shape[1]
+
+        # 检查有效样本
+        effective = int((texts_series.fillna("").astype(str).str.strip() != "").sum())
+
+        if n_features == 0 or effective == 0:
+            # 无有效特征 → 跳过 SVD，输出零向量
+            field_info[field_name] = {
+                "dim": field_dim,
+                "actual_svd_dim": 0,
+                "tfidf_features": n_features,
+                "explained_variance_ratio": 0.0,
+                "effective_samples": effective,
+                "svd_reduced": True,
+                "skipped": True,
+            }
+            vectorizers[field_name] = tfidf
+            svds[field_name] = None
+            continue
+
+        n_components = min(field_dim, max(1, n_features - 1))
+        svd = TruncatedSVD(n_components=n_components, random_state=random_seed)
+        svd.fit(tfidf_matrix)
+
+        vectorizers[field_name] = tfidf
+        svds[field_name] = svd
+
+        svd_reduced = n_components < field_dim
+        field_info[field_name] = {
+            "dim": field_dim,
+            "actual_svd_dim": n_components,
+            "tfidf_features": n_features,
+            "explained_variance_ratio": float(svd.explained_variance_ratio_.sum()),
+            "effective_samples": effective,
+            "svd_reduced": svd_reduced,
+            "skipped": False,
+        }
+
+    return vectorizers, svds, field_info
+
+
+def transform_fieldwise_text(
+    field_texts: dict[str, pd.DataFrame],
+    vectorizers: dict[str, Any],
+    svds: dict[str, Any],
+    profile: dict,
+    video_ids: list,
+) -> np.ndarray:
+    """使用拟合好的 vectorizer/SVD 转换每字段文本并拼接。
+
+    Args:
+        field_texts: build_fieldwise_texts() 输出的 dict
+        vectorizers: fit_fieldwise_text_vectorizers() 返回的 vectorizers
+        svds: fit_fieldwise_text_vectorizers() 返回的 svds
+        profile: text_profile 配置 dict
+        video_ids: 排序后的 video_id 列表
+
+    Returns:
+        [n, total_dim] numpy array
+    """
+    field_vectors: list[np.ndarray] = []
+    n = len(video_ids)
+
+    for field_cfg in profile.get("fields", []):
+        field_name = field_cfg["name"]
+        field_dim = field_cfg["dim"]
+
+        ft_df = field_texts.get(field_name, pd.DataFrame(columns=["video_id", "field_text"]))
+        text_map = dict(zip(ft_df["video_id"], ft_df["field_text"]))
+        texts_series = pd.Series([text_map.get(vid, "") for vid in video_ids])
+
+        tfidf = vectorizers.get(field_name)
+        svd = svds.get(field_name)
+
+        if tfidf is None or svd is None:
+            # 该字段被跳过，输出零向量
+            field_vectors.append(np.zeros((n, field_dim), dtype=np.float32))
+            continue
+
+        tfidf_matrix = tfidf.transform(texts_series.fillna("").astype(str))
+        reduced = svd.transform(tfidf_matrix)  # [n, actual_dim]
+        d = reduced.shape[1]
+
+        if d >= field_dim:
+            field_vectors.append(reduced[:, :field_dim].astype(np.float32))
+        else:
+            padded = np.zeros((n, field_dim), dtype=np.float32)
+            padded[:, :d] = reduced[:, :d]
+            field_vectors.append(padded)
+
+    return np.concatenate(field_vectors, axis=1)
+
+
 def _stats_fallback(texts: pd.Series, text_dim: int = 32) -> np.ndarray:
     """纯统计特征回退：文本长度、词数等统计特征。
 

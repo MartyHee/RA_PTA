@@ -271,6 +271,13 @@ def main() -> None:
         device = "cpu"
     logger.info(f"设备: {device}")
 
+    # ── Fusion 类型 ──────────────────────────────────────────
+    fusion_type = config.get("fusion_type", "concat_mlp")
+    late_fusion_mode = config.get("late_fusion_mode", "weighted_sum")
+    logger.info(f"Fusion 类型: {fusion_type}")
+    if fusion_type == "late_fusion":
+        logger.info(f"Late fusion 模式: {late_fusion_mode}")
+
     model = MultimodalFusionModel(
         text_dim=text_dim,
         visual_dim=visual_dim,
@@ -283,6 +290,8 @@ def main() -> None:
         enabled_modalities=enabled_modalities,
         categorical_enabled=categorical_enabled,
         cat_embed_dims=cat_embed_dims,
+        fusion_type=fusion_type,
+        late_fusion_mode=late_fusion_mode,
     ).to(device)
 
     # 获取消融元信息，供后续 metadata 使用
@@ -436,6 +445,8 @@ def main() -> None:
         )
         model.load_state_dict(torch.load(str(output_dir / "model.pt"),
                                          map_location=device))
+        # 重新获取 ablation_info（包含训练后的 late_fusion 权重）
+        ablation_info = model.get_ablation_info()
     else:
         logger.warning("未保存任何最佳模型，使用当前模型直接评估")
 
@@ -535,6 +546,7 @@ def main() -> None:
         "structured_dim": structured_dim,
         "label_definition": label_definition,
         "text_feature_method": feature_info.get("text_feature_method", "tfidf_svd"),
+        "text_profile": feature_info.get("text_profile", {"name": "merged_text_v1", "mode": "merged_tfidf_svd"}),
         "visual_feature_method": feature_info.get(
             "visual_feature_method", "media_metadata_only"
         ),
@@ -547,6 +559,12 @@ def main() -> None:
             "structured": config.get("structured_hidden_dim", 32),
         },
         "fusion_hidden_dim": config.get("fusion_hidden_dim", 64),
+        # Fusion info
+        "fusion_type": fusion_type,
+        "late_fusion_mode": late_fusion_mode if fusion_type == "late_fusion" else None,
+        "late_fusion_modality_order": ablation_info.get("late_fusion_modality_order"),
+        "late_fusion_weights_raw": ablation_info.get("late_fusion_weights_raw"),
+        "late_fusion_weights_softmax": ablation_info.get("late_fusion_weights_softmax"),
         # Categorical info
         "categorical_enabled": categorical_enabled,
         "categorical_active": ablation_info.get("categorical_active", False),
@@ -611,6 +629,11 @@ def main() -> None:
         "disabled_modalities": ablation_info["disabled_modalities"],
         "feature_dims": ablation_info["feature_dims"],
         "modality_branch_mode": ablation_info["modality_branch_mode"],
+        "fusion_type": fusion_type,
+        "late_fusion_mode": late_fusion_mode if fusion_type == "late_fusion" else None,
+        "late_fusion_modality_order": ablation_info.get("late_fusion_modality_order"),
+        "late_fusion_weights_raw": ablation_info.get("late_fusion_weights_raw"),
+        "late_fusion_weights_softmax": ablation_info.get("late_fusion_weights_softmax"),
         "categorical_enabled": categorical_enabled,
         "categorical_active": ablation_info.get("categorical_active", False),
         "categorical_features": cat_feature_list,
@@ -629,6 +652,7 @@ def main() -> None:
         "device": device,
         "num_params": n_params,
         "label_definition": label_definition,
+        "text_profile": feature_info.get("text_profile", {"name": "merged_text_v1", "mode": "merged_tfidf_svd"}),
         "leakage_control_passed": leakage_control_passed,
         "warnings": leakage_check_errors.copy(),
         "source_tuning_run_id": config.get("source_tuning_run_id"),

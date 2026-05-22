@@ -1,0 +1,62 @@
+{
+  "validation_run_id": "202605221546",
+  "generated_at": "2026-05-22 15:47:39",
+  "batch": "Batch 14L-experiment",
+  "dataset": "real_raw_5000",
+  "experiment_name": "Multimodal Late Fusion 3 seed 验证",
+  "experiment_design_ref": "docs/multimodal_fusion_strategy_design.md",
+  "prior_impl_ref": "Batch 14L-impl",
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_vocab_sizes": [
+    13,
+    1185
+  ],
+  "categorical_embedding_dims": [
+    4,
+    16
+  ],
+  "categorical_embedding_total_dim": 20,
+  "fusion_type": "late_fusion",
+  "late_fusion_mode": "weighted_sum",
+  "late_fusion_modality_order": [
+    "text",
+    "media",
+    "structured"
+  ],
+  "text_profile": "merged_text_v2_dim64",
+  "seeds": [
+    2025,
+    2026,
+    2027
+  ],
+  "config_types": {
+    "all_modalities_cat_late_fusion": {
+      "categorical_enabled": true,
+      "enabled_modalities": [
+        "structured",
+        "text",
+        "media"
+      ],
+      "fusion_type": "late_fusion"
+    }
+  },
+  "concat_mlp_baseline": {
+    "test_auc_mean": 0.8131,
+    "test_auc_std": 0.0056,
+    "source": "outputs/validation/multimodal_categorical_multiseed/real_raw_5000/202605211854/"
+  },
+  "dnn_baseline": {
+    "test_auc": 0.8414,
+    "source": "outputs/dnn/real_raw_5000/202605132017/metrics.json"
+  },
+  "notes": [
+    "对 all_modalities_cat + late_fusion (weighted_sum) 做 3 seed (2025/2026/2027) 验证。",
+    "所有 runs 使用相同的 categorical 配置 (region+hashtag_name_top, embed_dim=4+16=20)。",
+    "所有 runs 使用相同的 text_profile (merged_text_v2_dim64)。",
+    "不修改代码/config/data。不运行 gated_fusion/dropout/residual。",
+    "离线代理标签结果不代表真实线上收益。"
+  ]
+}

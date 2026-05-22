@@ -31,6 +31,8 @@ model:
     ablation_name: "all_modalities"
     categorical_enabled: false
     categorical_features: ["region", "hashtag_name_top"]
+    fusion_type: concat_mlp
+    late_fusion_mode: weighted_sum
     categorical_embedding_dim_rule: from_feature_info
     categorical_unknown_token: "__UNK__"
     categorical_missing_token: "__MISSING__"

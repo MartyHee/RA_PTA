@@ -1,0 +1,86 @@
+{
+  "model_name": "multimodal",
+  "dataset_name": "real_raw_5000",
+  "dataset_variant": "default",
+  "run_id": "202605221526",
+  "output_dir": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\multimodal\\real_raw_5000\\202605221526",
+  "input_dims": {
+    "text": 64,
+    "visual": 18,
+    "structured": 33
+  },
+  "train_started_at": "2026-05-22 15:26:32",
+  "train_finished_at": "2026-05-22 15:27:18",
+  "config_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\training_configs\\multimodal\\real_raw_5000\\20260522152625_resolved.yaml",
+  "train_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_train.npz",
+  "val_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_val.npz",
+  "test_path": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\multimodal\\real_raw_5000\\multimodal_test.npz",
+  "best_epoch": 19,
+  "best_val_loss": 0.449082,
+  "final_train_loss": 0.406115,
+  "final_val_loss": 0.45225,
+  "ablation_name": "all_modalities_cat_late_fusion_seed2026",
+  "enabled_modalities": [
+    "structured",
+    "text",
+    "media"
+  ],
+  "disabled_modalities": [],
+  "feature_dims": {
+    "text": 64,
+    "media": 18,
+    "structured": 33
+  },
+  "modality_branch_mode": "dynamic_disable",
+  "fusion_type": "late_fusion",
+  "late_fusion_mode": "weighted_sum",
+  "late_fusion_modality_order": [
+    "text",
+    "media",
+    "structured"
+  ],
+  "late_fusion_weights_raw": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "late_fusion_weights_softmax": [
+    0.3333333432674408,
+    0.3333333432674408,
+    0.3333333432674408
+  ],
+  "categorical_enabled": true,
+  "categorical_active": true,
+  "categorical_features": [
+    "region",
+    "hashtag_name_top"
+  ],
+  "categorical_vocab_sizes": [
+    13,
+    1185
+  ],
+  "categorical_embedding_dims": [
+    4,
+    16
+  ],
+  "categorical_embedding_total_dim": 20,
+  "structured_numeric_dim": 33,
+  "structured_cat_concat_dim": 53,
+  "future_categorical_candidates": [
+    "author_id",
+    "music_id"
+  ],
+  "test_loss": 0.4624378039389207,
+  "device": "cuda",
+  "num_params": 20814,
+  "label_definition": "离线实验伪标签: interaction_score (digg_count+comment_count+share_count+collect_count) >= 10039.60 (P60 分位数)",
+  "text_profile": {
+    "name": "merged_text_v2_dim64",
+    "mode": "merged_tfidf_svd",
+    "total_dim": 64
+  },
+  "leakage_control_passed": true,
+  "warnings": [],
+  "source_tuning_run_id": null,
+  "source_best_trial_id": null
+}

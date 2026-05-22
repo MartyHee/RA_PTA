@@ -46,6 +46,11 @@ tabular_feature_info: tabular_feature_info.json
 # ---------------------------------------------------------------------------
 # 文本特征参数
 # ---------------------------------------------------------------------------
+# text_profile 选择: merged_text_v1 | fieldwise_text_v1 | fieldwise_text_v2
+#   merged_text_v1    = 当前方案: 所有字段合并 → TF-IDF → SVD(32)
+#   fieldwise_text_v1 = 新方案: 7 字段独立 TF-IDF + SVD → concat(64)
+#   fieldwise_text_v2 = 扩展: 7 字段独立 TF-IDF + SVD → concat(96)
+text_profile: merged_text_v1
 text_dim: 32
 random_seed: 2026
 

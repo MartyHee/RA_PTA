@@ -1,0 +1,9 @@
+config_type,metric,mean,std,min,max,median,count
+all_modalities_cat_late_fusion,val_auc,0.841042,0.001618,0.839770,0.843326,0.840030,3
+all_modalities_cat_late_fusion,test_auc,0.825649,0.002676,0.822289,0.828837,0.825822,3
+all_modalities_cat_late_fusion,test_f1,0.716248,0.005265,0.708861,0.720749,0.719136,3
+all_modalities_cat_late_fusion,best_epoch,25.666667,5.734884,19.000000,33.000000,25.000000,3
+all_modalities_cat_late_fusion,num_params,20814.000000,0.000000,20814.000000,20814.000000,20814.000000,3
+all_modalities_cat_late_fusion,late_fusion_weight_text,0.341261,0.004392,0.336941,0.347286,0.339556,3
+all_modalities_cat_late_fusion,late_fusion_weight_media,0.285186,0.009994,0.271397,0.294766,0.289394,3
+all_modalities_cat_late_fusion,late_fusion_weight_structured,0.373553,0.013877,0.357948,0.391662,0.371051,3

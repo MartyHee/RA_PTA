@@ -17,8 +17,13 @@
     "pos": 300,
     "neg": 450
   },
+  "text_profile": {
+    "name": "merged_text_v2_dim64",
+    "mode": "merged_tfidf_svd",
+    "total_dim": 64
+  },
   "text_feature_method": "tfidf_svd",
-  "text_dim": 32,
+  "text_dim": 64,
   "text_source_fields": {
     "video_detail": [
       "caption",
@@ -39,12 +44,12 @@
     ]
   },
   "text_vectorizer_info": {
-    "text_dim": 32,
+    "text_dim": 64,
     "sklearn_available": true,
     "tfidf_features": 256,
     "method": "tfidf_svd",
-    "svd_components": 32,
-    "explained_variance_ratio": 0.8194092883139795
+    "svd_components": 64,
+    "explained_variance_ratio": 0.9785745541981722
   },
   "text_empty_count_train": 294,
   "text_empty_count_val": 59,
@@ -1465,13 +1470,13 @@
   "warnings": [],
   "notes": [
     "本数据集基于 real_raw_5000 真实网页端 raw 数据构建。",
+    "text_features 使用 merged_text_v2_dim64 编码 (merged_tfidf_svd)，维度=64。",
     "标签为 interaction_score 分位数伪标签，仅供离线多模型对比实验使用。",
-    "text_features 基于 TF-IDF+SVD 或 HashingVectorizer，非大型语言模型。",
     "visual_features 仅使用媒体元信息（URL 存在性、尺寸、水印），未下载图片。",
     "structured_features 复用 tabular 数值+文本统计特征，经 z-score 标准化（fit on train only）。",
     "未下载图片，未调用外部 API，未使用大型预训练模型。",
     "raw_video_tag 为空表，未参与文本特征。",
     "raw_chapter 为空表，未参与文本特征。"
   ],
-  "generated_at": "2026-05-21 17:44:08"
+  "generated_at": "2026-05-22 14:55:36"
 }
