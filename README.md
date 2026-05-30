@@ -107,6 +107,7 @@ high_confidence_filter_report.json
 | 本地端到端推荐流水线第一版 | ✅ 完成 |
 | 线上模拟环境搭建与 A/B 测试设计（Stage 2） | ✅ 完成 |
 | 阶段二交付文档（delivery document） | ✅ 完成 |
+| 多目标优化与项目总结（Batch 16A–16G） | ⏳ 进行中 |
 
 **当前推荐 baseline：DNN**（Test AUC=0.8414, F1=0.7315）。
 
@@ -148,15 +149,37 @@ docs/stage2_online_ab_model_improvement_delivery.md
 - **Multimodal 内部 baseline：all_modalities_cat + late_fusion（3 seed mean=0.8256），尚未超过 DNN（Δ=-0.0158）。**
 - **所有结果基于离线代理标签（interaction_score P60 分位数二分类），不代表真实线上推荐收益。**
 
-### 2.5 当前任务：最终交付材料整理
+### 2.5 当前任务：多目标优化与项目总结
 
-阶段二所有实验与工程任务已完成。当前默认不继续新实验，优先任务为：
+阶段一（数据工程 + 流水线工程化）和阶段二（线上模拟/A/B + 模型改进）已全部结束。当前已进入最终阶段：多目标优化与项目总结。
 
-1. 整理最终报告和演示材料（如需要）。
-2. 归档阶段一和阶段二的关键结论、文档、输出产物。
-3. 明确后续是进入最终交付还是启动新实验阶段（需用户明确指示）。
+本阶段工作包括：
 
-> **注意：默认不要启动新实验。如需继续实验（如 gated_fusion、DNN 更充分调参），必须由用户明确要求。**
+1. 设计 relevance-diversity-coverage 多目标优化方案（Batch 16B）。
+2. 实现多样性、覆盖度、新颖性等推荐列表指标（Batch 16C）。
+3. 实现多目标 reranking 模块（Batch 16D）。
+4. 运行多目标实验，分析相关性与多样性之间的 trade-off（Batch 16E）。
+5. 输出多目标优化实验报告（Batch 16F）。
+6. 汇总整个项目流程、关键技术、实验结果和心得体会（Batch 16G）。
+
+**推荐实现路线：**
+
+| 批次 | 任务 | 预期产出 |
+|------|------|---------|
+| Batch 16A | README / CLAUDE 阶段同步 | 本文档更新 |
+| Batch 16B | 多目标优化设计文档 | `docs/multi_objective_optimization_design.md` |
+| Batch 16C | 多样性与覆盖度指标实现 | `src/evaluation/diversity_metrics.py` |
+| Batch 16D | 多目标 reranking 实现 | `src/reranking/multi_objective_rerank.py` |
+| Batch 16E | 多目标实验运行 | `outputs/multi_objective/` |
+| Batch 16F | 多目标实验报告 | `docs/multi_objective_experiment_report.md` |
+| Batch 16G | 项目总结文档 | `docs/final_project_summary.md` |
+
+**当前基线口径：**
+
+- 全项目推荐 baseline：DNN，Test AUC=0.8414。
+- Multimodal 内部 baseline：all_modalities_cat + late_fusion，3 seed mean Test AUC=0.8256。
+- API 当前为本地 FastAPI simulation，未部署上线。
+- A/B 测试流程已完成本地模拟闭环。
 
 ---
 
@@ -313,15 +336,17 @@ label 生成完成后，它们必须从最终建模输入中删除。
 7. 推理 benchmark 与模型压缩 — ✅（已验证 dynamic_quantization 不推荐）
 8. 流水线设计文档和系统架构文档 — ✅
 
-### 5.4 当前阶段：最终交付材料整理
+### 5.4 当前阶段：多目标优化与项目总结
 
-阶段一（数据 + 工程化）和阶段二（线上模拟/A/B + 模型改进）已全部结束。当前默认不启动新实验，优先任务：
+阶段一（数据 + 工程化）和阶段二（线上模拟/A/B + 模型改进）已全部结束。当前已进入最后阶段：多目标优化与项目总结。
 
-1. **整理最终报告/演示材料**（如需要，由用户明确指示）。
-2. **归档关键结论**：README.md 已同步，CLAUDE.md 已同步。
-3. **等待用户指示**：后续方向（最终交付 / 继续实验 / 生产部署）由用户决定。
+优先任务：
 
-> **非用户明确要求，不启动任何新实验、新代码、新运行。**
+1. **先设计文档**：`docs/multi_objective_optimization_design.md`（Batch 16B）。
+2. **再实现指标**：`src/evaluation/diversity_metrics.py`（Batch 16C）。
+3. **再实现 reranking**：`src/reranking/multi_objective_rerank.py`（Batch 16D）。
+4. **再运行实验**：多目标实验与报告（Batch 16E–16F）。
+5. **最后做项目总结文档**：`docs/final_project_summary.md`（Batch 16G）。
 
 ---
 

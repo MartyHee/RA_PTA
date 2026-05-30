@@ -1,0 +1,31 @@
+{
+  "rerank_run_id": "20260526102144",
+  "timestamp": "2026-05-26 10:21:44 UTC",
+  "preset": "diversity_medium",
+  "alpha": 1.0,
+  "beta": 0.1,
+  "gamma": 0.0,
+  "top_k": 20,
+  "eval_k": [
+    10,
+    20,
+    50
+  ],
+  "diversity_fields": [
+    "author_id",
+    "hashtag_name_top",
+    "region"
+  ],
+  "diversity_gain_weights": {
+    "author_id": 0.4,
+    "hashtag_name_top": 0.4,
+    "region": 0.2
+  },
+  "novelty_formula": "1/log(freq+2)",
+  "freq_source": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_train.csv",
+  "input": {
+    "predictions": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\outputs\\dnn\\real_raw_5000\\202605132017\\predictions_test.csv",
+    "features": "D:\\CodeData\\Program Coding\\ByteDance\\RA_PTA\\data\\features\\real_raw_5000\\tabular_test.csv"
+  },
+  "output_dir": "outputs/multi_objective/rerank\\20260526102144"
+}

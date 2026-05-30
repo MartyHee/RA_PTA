@@ -1,0 +1,295 @@
+{
+  "metadata": {
+    "experiment_run_id": "20260526110629",
+    "timestamp": "2026-05-26 11:06:29 UTC",
+    "dataset": "real_raw_5000",
+    "model_name": "dnn",
+    "source_run_id": "202605132017"
+  },
+  "input_paths": {
+    "baseline_metrics": "outputs/multi_objective/metrics/20260526092752",
+    "rerank_runs": {
+      "diversity_light": "outputs/multi_objective/rerank/2026052610250378",
+      "diversity_medium": "outputs/multi_objective/rerank/20260526102344",
+      "diversity_novelty": "outputs/multi_objective/rerank/2026052610252476"
+    }
+  },
+  "experiment_presets": {
+    "diversity_light": {
+      "alpha": 1.0,
+      "beta": 0.05,
+      "gamma": 0.0
+    },
+    "diversity_medium": {
+      "alpha": 1.0,
+      "beta": 0.1,
+      "gamma": 0.0
+    },
+    "diversity_novelty": {
+      "alpha": 1.0,
+      "beta": 0.1,
+      "gamma": 0.05
+    },
+    "baseline": {
+      "alpha": 1.0,
+      "beta": 0.0,
+      "gamma": 0.0
+    }
+  },
+  "summary_by_k": {
+    "10": {
+      "k": 10,
+      "baseline": {
+        "mean_relevance_score": 0.980826,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 1.0,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 1.0,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.6,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.1,
+        "coverage_hashtag": 0.019,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8632,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "baseline"
+      },
+      "diversity_light": {
+        "mean_relevance_score": 0.980826,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 1.0,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 1.0,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.6,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.1,
+        "coverage_hashtag": 0.019,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8632,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      },
+      "diversity_medium": {
+        "mean_relevance_score": 0.97518,
+        "mean_relevance_score_delta_pct": -0.58,
+        "positive_rate": 1.0,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 1.0,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.8,
+        "hashtag_diversity_delta_pct": 33.33,
+        "region_diversity": 0.1,
+        "coverage_hashtag": 0.0253,
+        "coverage_hashtag_delta_pct": 33.16,
+        "novelty_mean": 0.8743,
+        "novelty_mean_delta_pct": 1.29,
+        "recommendation_flag": "good_tradeoff"
+      },
+      "diversity_novelty": {
+        "mean_relevance_score": 0.970325,
+        "mean_relevance_score_delta_pct": -1.07,
+        "positive_rate": 1.0,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 1.0,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.9,
+        "hashtag_diversity_delta_pct": 50.0,
+        "region_diversity": 0.1,
+        "coverage_hashtag": 0.0285,
+        "coverage_hashtag_delta_pct": 50.0,
+        "novelty_mean": 0.8839,
+        "novelty_mean_delta_pct": 2.4,
+        "recommendation_flag": "good_tradeoff"
+      }
+    },
+    "20": {
+      "k": 20,
+      "baseline": {
+        "mean_relevance_score": 0.943782,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.9,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.9974,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.65,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.05,
+        "coverage_hashtag": 0.0411,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.9038,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "baseline"
+      },
+      "diversity_light": {
+        "mean_relevance_score": 0.943782,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.9,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.9974,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.65,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.05,
+        "coverage_hashtag": 0.0411,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.9038,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      },
+      "diversity_medium": {
+        "mean_relevance_score": 0.943782,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.9,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.9957,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.65,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.05,
+        "coverage_hashtag": 0.0411,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.9038,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      },
+      "diversity_novelty": {
+        "mean_relevance_score": 0.940773,
+        "mean_relevance_score_delta_pct": -0.32,
+        "positive_rate": 0.85,
+        "positive_rate_delta_pct": -5.56,
+        "ndcg": 0.9965,
+        "author_diversity": 1.0,
+        "hashtag_diversity": 0.7,
+        "hashtag_diversity_delta_pct": 7.69,
+        "region_diversity": 0.05,
+        "coverage_hashtag": 0.0443,
+        "coverage_hashtag_delta_pct": 7.79,
+        "novelty_mean": 0.9134,
+        "novelty_mean_delta_pct": 1.06,
+        "recommendation_flag": "relevance_risk"
+      }
+    },
+    "50": {
+      "k": 50,
+      "baseline": {
+        "mean_relevance_score": 0.850078,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.8,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.978,
+        "author_diversity": 0.96,
+        "hashtag_diversity": 0.76,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.02,
+        "coverage_hashtag": 0.1203,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8546,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "baseline"
+      },
+      "diversity_light": {
+        "mean_relevance_score": 0.850078,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.8,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.978,
+        "author_diversity": 0.96,
+        "hashtag_diversity": 0.76,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.02,
+        "coverage_hashtag": 0.1203,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8546,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      },
+      "diversity_medium": {
+        "mean_relevance_score": 0.850078,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.8,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.9769,
+        "author_diversity": 0.96,
+        "hashtag_diversity": 0.76,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.02,
+        "coverage_hashtag": 0.1203,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8546,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      },
+      "diversity_novelty": {
+        "mean_relevance_score": 0.850078,
+        "mean_relevance_score_delta_pct": 0.0,
+        "positive_rate": 0.8,
+        "positive_rate_delta_pct": 0.0,
+        "ndcg": 0.9757,
+        "author_diversity": 0.96,
+        "hashtag_diversity": 0.76,
+        "hashtag_diversity_delta_pct": 0.0,
+        "region_diversity": 0.02,
+        "coverage_hashtag": 0.1203,
+        "coverage_hashtag_delta_pct": 0.0,
+        "novelty_mean": 0.8546,
+        "novelty_mean_delta_pct": 0.0,
+        "recommendation_flag": "ineffective"
+      }
+    }
+  },
+  "best_preset_by_objective": {
+    "hashtag_diversity": "diversity_novelty",
+    "novelty_mean": "diversity_novelty",
+    "mean_relevance_score": "baseline",
+    "positive_rate": "baseline"
+  },
+  "tradeoff_analysis": {
+    "diversity_medium": {
+      "mean_score_delta_pct_10": -0.58,
+      "mean_score_delta_pct_20": 0.0,
+      "positive_rate_delta_pct_20": 0.0,
+      "hashtag_diversity_delta_pct_10": 33.33,
+      "hashtag_diversity_delta_pct_20": 0.0,
+      "novelty_mean_delta_pct_10": 1.29,
+      "novelty_mean_delta_pct_20": 0.0,
+      "recommendation_flag": "ineffective"
+    },
+    "diversity_novelty": {
+      "mean_score_delta_pct_10": -1.07,
+      "mean_score_delta_pct_20": -0.32,
+      "positive_rate_delta_pct_20": -5.56,
+      "hashtag_diversity_delta_pct_10": 50.0,
+      "hashtag_diversity_delta_pct_20": 7.69,
+      "novelty_mean_delta_pct_10": 2.4,
+      "novelty_mean_delta_pct_20": 1.06,
+      "recommendation_flag": "relevance_risk"
+    },
+    "diversity_light": {
+      "mean_score_delta_pct_10": 0.0,
+      "mean_score_delta_pct_20": 0.0,
+      "positive_rate_delta_pct_20": 0.0,
+      "hashtag_diversity_delta_pct_10": 0.0,
+      "hashtag_diversity_delta_pct_20": 0.0,
+      "novelty_mean_delta_pct_10": 0.0,
+      "novelty_mean_delta_pct_20": 0.0,
+      "recommendation_flag": "ineffective"
+    }
+  },
+  "warnings": [
+    "diversity_light beta=0.05 过小，top-20 无排序变化。",
+    "diversity_novelty positive_rate@20 下降 5.6%，超过 3% 阈值。",
+    "第一版仅实现 P0 字段，region 覆盖和 hashtag 覆盖有限。",
+    "所有结果基于离线代理标签，不代表真实线上推荐收益。"
+  ],
+  "recommendation": {
+    "recommended_preset": "diversity_medium",
+    "reason": "diversity_medium (alpha=1.0, beta=0.10, gamma=0.0) 在 K=10 提升 hashtag_diversity 33.3%，coverage_hashtag 33.2%，relevance 仅下降 0.57%，trade-off 最优。K=20 relevance 无损，positive_rate 不变。",
+    "rejected_presets": {
+      "diversity_light": "beta=0.05 过弱，排序无任何变化。",
+      "diversity_novelty": "多样性最强 (K=10 hashtag_diversity +50%)，但 K=20 positive_rate 下降 5.6% > 3% 阈值，relevance proxy 风险偏高。"
+    },
+    "limitations": "1. author_diversity 已饱和 (647 unique / 750 rows)，reranking 无法进一步改善。\n2. region_diversity 仅 4-5 唯一 region 且 59.6% 缺失，reranking 无效。\n3. K=20 的 diversity 改善弱于 K=10，因 top-20 rerank 窗口有限。\n4. 所有结果基于离线代理标签，不代表真实线上推荐收益。"
+  }
+}

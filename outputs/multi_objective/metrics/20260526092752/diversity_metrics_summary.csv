@@ -1,0 +1,4 @@
+k,mean_relevance_score,positive_rate,precision,ndcg,author_diversity,coverage_author,novelty_author,hashtag_diversity,coverage_hashtag,novelty_hashtag,region_diversity,coverage_region,novelty_region,novelty_mean,warning_count
+10,0.980826,1.0,1.0,1.0,1.0,0.0155,1.3542,0.6,0.019,1.0968,0.1,0.2,0.1387,0.8632,0
+20,0.943782,0.9,0.9,0.9974,1.0,0.0309,1.3452,0.65,0.0411,1.2276,0.05,0.2,0.1387,0.9038,0
+50,0.850078,0.8,0.8,0.978,0.96,0.0742,1.3196,0.76,0.1203,1.1056,0.02,0.2,0.1387,0.8546,0
